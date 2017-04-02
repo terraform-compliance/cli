@@ -43,4 +43,4 @@ All radish features are available
 
 The capabilities are stored in [radish](radish) directory where you can add any steps as a capability.
 
-Tests, or _features/scenarios_ in radish-style, are stored in [providers](providers) directory.
+Tests, or _features/scenarios_ in radish-style, are stored in [provider](provider) directory.
