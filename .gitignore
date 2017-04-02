@@ -1,0 +1,4 @@
+venv
+*.pyc
+*.sublime-*
+tf_files/*

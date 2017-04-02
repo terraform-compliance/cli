@@ -1,0 +1,2 @@
+terraform_validate
+radish-bdd
