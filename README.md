@@ -13,7 +13,7 @@ This tool uses ;
 ### Installation
 Clone this repository
 
-	# git clone https://github.com/eeerkunt/terraform-compliance
+	# git clone https://github.com/eerkunt/terraform-compliance
 	# cd terraform-compliance
 
 
