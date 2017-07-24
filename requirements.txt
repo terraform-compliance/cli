@@ -1,2 +1,2 @@
-terraform_validate
-radish-bdd
+terraform_validate==2.3.1
+radish-bdd==0.6.7
