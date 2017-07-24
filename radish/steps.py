@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from radish import step, arg_expr
+from radish import step, custom_type
 import terraform_validate
 import os
 import sys
@@ -48,7 +48,7 @@ regex = {
 }
 
 # New Arguments
-@arg_expr("ANY", r"[\.\/_\-A-Za-z0-9\s]+")
+@custom_type("ANY", r"[\.\/_\-A-Za-z0-9\s]+")
 def arg_exp_for_secure_text(text):
     return text
 
