@@ -44,6 +44,10 @@ regex = {
     "Name": "^\${var.platform}_\${var.environment}_.*"
 }
 
+# New Arguments
+@custom_type("ANY", r"[\.\/_\-A-Za-z0-9\s]+")
+def arg_exp_for_secure_text(text):
+    return text
 
 @step(r'Given I define {resource}')
 def define_a_resource(step, resource):
