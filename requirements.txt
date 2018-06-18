@@ -1,2 +1,3 @@
 terraform_validate
+radish
 radish-bdd
