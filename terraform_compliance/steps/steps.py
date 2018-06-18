@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from radish import step, world
+from radish import step, world, custom_type
 
 untaggable_resources = [
     "aws_route_table",

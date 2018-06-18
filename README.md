@@ -49,7 +49,7 @@
 ![Example Run](terraform-compliance-demo.gif)
 ```sh
 [~] $ terraform-compliance -f example/example_01 -t example/tf_files
-terraform-compliance v0.0.1 initiated
+terraform-compliance v0.1.0 initiated
 Features : /Users/sharky/Repository/terraform-compliance/example/example_01
 Steps    : /Users/sharky/Repository/venv2/lib/python2.7/site-packages/terraform_compliance/steps
 TF Files : /Users/sharky/Repository/terraform-compliance/example/tf_files
@@ -143,7 +143,7 @@ You can also push additional arguments that is specific for `radish`. Just to ex
 For e.g.
 ```sh
 [~] $ terraform-compliance -f /path/to/features -t /path/to/terraform_files -v
-terraform-compliance v0.0.1 initiated
+terraform-compliance v0.1.0 initiated
 Features : /Users/sharky/Repository/terraform-compliance/example/example_01
 Steps    : /Users/sharky/Repository/venv2/lib/python2.7/site-packages/terraform_compliance/steps
 TF Files : /Users/sharky/Repository/terraform-compliance/example/tf_files
