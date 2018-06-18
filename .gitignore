@@ -1,4 +1,8 @@
 venv
 *.pyc
 *.sublime-*
-tf_files/*
+.idea/*
+build
+dist
+example/tf_files/*
+terraform_compliance.egg-info
