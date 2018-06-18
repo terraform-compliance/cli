@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from radish import step, arg_expr
-import terraform_validate
-import os
-import sys
+from radish import step, world, custom_type
 
 untaggable_resources = [
     "aws_route_table",
@@ -48,90 +45,87 @@ regex = {
 }
 
 # New Arguments
-@arg_expr("ANY", r"[\.\/_\-A-Za-z0-9\s]+")
+@custom_type("ANY", r"[\.\/_\-A-Za-z0-9\s]+")
 def arg_exp_for_secure_text(text):
     return text
 
-@step(r'Given I define {resource:ANY}')
+@step(r'Given I define {resource}')
 def define_a_resource(step, resource):
-
-    if(resource in resource_name.keys()):
+    if (resource in resource_name.keys()):
         resource = resource_name[resource]
 
     step.context.resource_type = resource
-    step.context.stash = step.context.resources = step.context.validator.resources(resource)
+    step.context.stash = step.context.resources = world.config.terraform.resources(resource)
 
-@step(r'When I {action:ANY} them')
-def i_action_them(step, action):
-    if action == "count":
+
+@step(r'When I {action_type} them')
+def i_action_them(step, action_type):
+    if action_type == "count":
         step.context.stash = len(step.context.stash.resource_list)
-    elif action == "sum":
+    elif action_type == "sum":
         step.context.stash = sum(step.context.stash.resource_list)
     else:
-        AssertionError("Invalid action in the scenario: "+str(action))
+        AssertionError("Invalid action_type in the scenario: {}".format(action))
 
-@step(r'Then I expect the result is {operator:ANY} than {number:d}')
-def i_expect_the_result_is_operator_than_number(step, operator, number):
+
+@step(r'Then I expect the result is {operator} than {number:d}')
+def func(step, operator, number):
     value = int(step.context.stash)
 
     if operator == "more":
-        assert value > number, str(value)+" is not more than "+str(number)
+        assert value > number, str(value) + " is not more than " + str(number)
     elif operator == "more and equal":
-        assert value >= number, str(value)+" is not more and equal than "+str(number)
+        assert value >= number, str(value) + " is not more and equal than " + str(number)
     elif operator == "less":
-        assert value < number, str(value)+" is not less than "+str(number)
+        assert value < number, str(value) + " is not less than " + str(number)
     elif operator == "less and equal":
-        assert value <= number, str(value)+" is not less and equal than "+str(number)
+        assert value <= number, str(value) + " is not less and equal than " + str(number)
     else:
-        AssertionError("Invalid operator: "+str(operator))
+        AssertionError("Invalid operator: " + str(operator))
 
-@step('it contains {property:ANY}')
-def it_contains_a(step, property):
 
-    if(property in resource_name.keys()):
-        property = resource_name[property]
+@step('it must contain {something}')
+def func(step, something):
+    world.config.terraform.error_if_property_missing()
 
-    step.context.resource_type = property
-    step.context.resources = step.context.resources.property(property)
+    if something in resource_name.keys():
+        something = resource_name[something]
 
-@step('it must contain {property:ANY}')
-def it_must_contain_a(step, property):
-    step.context.validator.error_if_property_missing()
-    if(property in resource_name.keys()):
-        property = resource_name[property]
+    step.context.resource_type = something
+    step.context.resources = step.context.resources.property(something)
 
-    step.context.resource_type = property
-    step.context.resources = step.context.resources.property(property)
 
 @step('encryption must be enabled')
-def encryption_must_be_enabled(step):
-    step.context.validator.error_if_property_missing()
+def func(step):
+    world.config.terraform.error_if_property_missing()
     prop = encryption_property[step.context.resource_type]
     step.context.resources.property(prop).should_equal(True)
 
 
 @step(u'it must have the "([^"]*)" tag')
-def it_must_have_the_tag(step, tag):
-    step.context.validator.error_if_property_missing()
+def func(step, tag):
+    world.config.terraform.error_if_property_missing()
     step.context.tag = tag
     step.context.properties = step.context.resources.property('tags')
     step.context.properties.should_have_properties(tag)
 
 
 @step(u'And its value must match the "([^"]*)" regex')
-def it_must_have_the_tag(step, regex_type):
-    step.context.validator.error_if_property_missing()
+def func(step, regex_type):
+    world.config.terraform.error_if_property_missing()
     step.context.regex = regex[regex_type]
     step.context.properties.property(regex_type).should_match_regex(step.context.regex)
 
+
 @step(u'And its value must be set by a variable')
-def and_its_value_must_be_set_by_a_variable(step):
+def func(step):
     step.context.resources.property('tags').property(step.context.tag).should_match_regex('\${var.(.*)}')
 
-@step(r'with {proto:ANY} protocol and not port {value:d} for {cidr:ANY}')
-def and_it_must_have_key_attribute_with_value_value(step, proto, value, cidr):
+
+@step(r'with {proto} protocol and not port {port} for {cidr}')
+def func(step, proto, port, cidr):
     proto = str(proto)
-    value = int(value)
+    port = int(port)
     cidr = str(cidr)
 
     giveError = False
@@ -161,19 +155,15 @@ def and_it_must_have_key_attribute_with_value_value(step, proto, value, cidr):
                 else:
                     cidr_blocks = str(i.property_value[y])
 
-
-
         if int(to_port) > int(from_port):
-            if int(from_port) <= value <= int(to_port) and protocol == proto and cidr_blocks == cidr:
+            if int(from_port) <= port <= int(to_port) and protocol == proto and cidr_blocks == cidr:
                 giveError = True
         elif int(from_port) > int(to_port):
-            if int(to_port) <= value <= int(from_port) or protocol == proto and cidr_blocks == cidr:
+            if int(to_port) <= port <= int(from_port) or protocol == proto and cidr_blocks == cidr:
                 giveError = True
         elif int(from_port) == int(to_port):
-            if int(from_port) == value and protocol == proto and cidr_blocks == cidr:
+            if int(from_port) == port and protocol == proto and cidr_blocks == cidr:
                 giveError = True
 
         if giveError:
-            raise AssertionError("Found "+proto+"/"+str(value)+" for "+str(cidr_blocks))
-
-
+            raise AssertionError("Found " + proto + "/" + str(port) + " for " + str(cidr_blocks))
