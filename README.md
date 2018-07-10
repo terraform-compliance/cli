@@ -10,11 +10,6 @@
 <br />
 
 <div align="center">
-  <!-- Stability -->
-    <img src="https://img.shields.io/badge/stability-experimental-orange.svg?style=flat-square"
-      alt="Code Stability" />
-  </a>
-
   <!-- Build Status -->
   <!--
   <a href="https://travis-ci.org/eerkunt/terraform-compliance">
@@ -33,7 +28,7 @@
 
   <!-- Downloads -->
   <a href="https://pypi.org/project/terraform-compliance/">
-    <img src="https://img.shields.io/pypi/v/terraform-compliance.svg?style=flat-square&label=version"
+    <img src="https://img.shields.io/pypi/v/terraform-compliance.svg"
       alt="Downloads" />
   </a>
 </div>
