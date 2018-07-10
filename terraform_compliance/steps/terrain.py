@@ -4,4 +4,6 @@ from terraform_compliance import Validator
 
 @before.each_feature
 def load_terraform_data(feature):
-    world.config.terraform = Validator(world.config.user_data['tf_dir'])
+    v = Validator(world.config.user_data['tf_dir'])
+    v.enable_variable_expansion()
+    world.config.terraform = v
