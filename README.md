@@ -10,23 +10,25 @@
 <br />
 
 <div align="center">
-  <!-- Stability -->
-    <img src="https://img.shields.io/badge/stability-experimental-orange.svg?style=flat-square"
-      alt="Code Stability" />
-  </a>
   <!-- Build Status -->
+  <!--
   <a href="https://travis-ci.org/eerkunt/terraform-compliance">
     <img src="https://img.shields.io/travis/eerkunt/terraform-compliance/master.svg?style=flat-square"
       alt="Build Status" />
   </a>
+  -->
+
   <!-- Test Coverage -->
+  <!--
   <a href="https://codecov.io/github/eerkunt/terraform-compliance">
     <img src="https://img.shields.io/codecov/c/github/eerkunt/terraform-compliance/master.svg?style=flat-square"
       alt="Test Coverage" />
   </a>
+  -->
+
   <!-- Downloads -->
-  <a href="https://npmjs.org/package/choo">
-    <img src="https://img.shields.io/pypi/v/terraform-compliance.svg?style=flat-square&label=version"
+  <a href="https://pypi.org/project/terraform-compliance/">
+    <img src="https://img.shields.io/pypi/v/terraform-compliance.svg"
       alt="Downloads" />
   </a>
 </div>
@@ -49,7 +51,7 @@
 ![Example Run](terraform-compliance-demo.gif)
 ```sh
 [~] $ terraform-compliance -f example/example_01 -t example/tf_files
-terraform-compliance v0.1.0 initiated
+terraform-compliance v0.1.1 initiated
 Features : /Users/sharky/Repository/terraform-compliance/example/example_01
 Steps    : /Users/sharky/Repository/venv2/lib/python2.7/site-packages/terraform_compliance/steps
 TF Files : /Users/sharky/Repository/terraform-compliance/example/tf_files
@@ -143,7 +145,7 @@ You can also push additional arguments that is specific for `radish`. Just to ex
 For e.g.
 ```sh
 [~] $ terraform-compliance -f /path/to/features -t /path/to/terraform_files -v
-terraform-compliance v0.1.0 initiated
+terraform-compliance v0.1.1 initiated
 Features : /Users/sharky/Repository/terraform-compliance/example/example_01
 Steps    : /Users/sharky/Repository/venv2/lib/python2.7/site-packages/terraform_compliance/steps
 TF Files : /Users/sharky/Repository/terraform-compliance/example/tf_files
@@ -153,6 +155,24 @@ Running tests.
 0.8.6
 ```
 Please note that `0.8.6` is the `radish` version comes from `-v` parameter.
+
+## Using remote repositories for features or terraform files
+`terraform-compliance` also supports remote fetching if any of the feature or terraform files exist in a remote git repo. Sample usage is like ;
+
+```sh
+[~] $ terraform-compliance -f git:https://some.git.repository/compliance-code.git -t /path/to/terraform_files -v
+terraform-compliance v0.1.1 initiated
+Using remote git repository: https://some.git.repository/compliance-code.git
+Steps    : /Users/sharky/Repository/terraform-compliance/terraform_compliance/steps
+Features : /var/folders/1k/7vm1m4p12db2tqbd5jcn004m0000gn/T/tmpsrlnAG (https://some.git.repository/compliance-code.git)
+TF Files : /Users/sharky/Repository/terraform-compliance/example/tf_files
+Validating terraform files.
+All HCL files look good.
+Running tests.
+Feature: Resources should be encrypted  # /var/folders/1k/7vm1m4p12db2tqbd5jcn004m0000gn/T/tmpsrlnAG/aws/encryption.feature
+```
+
+This is also applicable for terraform files ( `-t` argument ), too.
 
 
 ## License
