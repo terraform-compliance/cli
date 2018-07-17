@@ -90,5 +90,6 @@ def cli():
     print('Running tests.')
     return call_radish(args=commands[1:])
 
+cli()
 
 #TODO: Implement a cleanup for temporary directories since they are not deleted.
