@@ -29,7 +29,6 @@ def enable_resource_mounting(tf_conf, processing_resource=None, resource=None):
                         if target[-1] in ['id', 'name']:
                             target.pop(-1)
 
-
                         _change_value_in_dict(tf_conf, target, {source: processing_resource})
 
             elif type(sub_value) is list:
@@ -56,5 +55,5 @@ def _change_value_in_dict(target_dictionary, path_to_change, value_to_change):
     try:
         exec('target_dictionary{}.update({})'.format(path_to_change, value_to_change))
     except:
-        # Yes I know.
+        # Yes I know, this is against PEP8.
         pass
