@@ -66,6 +66,7 @@ def func(step, something):
     step.context.resource_type = something
     step.context.resources = step.context.resources.property(something)
 
+@step(u'encryption is enabled')
 @step(u'encryption must be enabled')
 def func(step):
     world.config.terraform.error_if_property_missing()

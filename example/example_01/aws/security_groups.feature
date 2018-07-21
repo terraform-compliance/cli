@@ -14,7 +14,7 @@ Feature: Security Groups should be used to protect services/instances
 
   Scenario Outline: Well-known insecure protocol exposure on Public Network for ingress traffic
   	When I define AWS Security Group
-  	Then it must contain ingress
+  	Then it contains ingress
   	with <proto> protocol and not port <portNumber> for 0.0.0.0/0
 
   Examples:
