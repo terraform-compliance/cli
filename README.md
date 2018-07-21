@@ -11,26 +11,17 @@
 
 <div align="center">
   <!-- Build Status -->
-  <!--
   <a href="https://travis-ci.org/eerkunt/terraform-compliance">
     <img src="https://img.shields.io/travis/eerkunt/terraform-compliance/master.svg?style=flat-square"
       alt="Build Status" />
   </a>
-  -->
 
-  <!-- Test Coverage -->
-  <!--
-  <a href="https://codecov.io/github/eerkunt/terraform-compliance">
-    <img src="https://img.shields.io/codecov/c/github/eerkunt/terraform-compliance/master.svg?style=flat-square"
-      alt="Test Coverage" />
-  </a>
-  -->
-
-  <!-- Downloads -->
+  <!-- License -->
   <a href="https://pypi.org/project/terraform-compliance/">
-    <img src="https://img.shields.io/pypi/v/terraform-compliance.svg"
+    <img src="https://img.shields.io/pypi/l/terraform-compliance.svg"
       alt="Downloads" />
   </a>
+
 </div>
 
 ## Table of Contents
