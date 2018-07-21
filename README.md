@@ -12,16 +12,18 @@
 <div align="center">
   <!-- Build Status -->
   <a href="https://travis-ci.org/eerkunt/terraform-compliance">
-    <img src="https://img.shields.io/travis/eerkunt/terraform-compliance/master.svg?style=flat-square"
-      alt="Build Status" />
+    <img src="https://img.shields.io/travis/eerkunt/terraform-compliance/master.svg?style=flat-square" alt="Build" />
   </a>
 
   <!-- License -->
   <a href="https://pypi.org/project/terraform-compliance/">
-    <img src="https://img.shields.io/pypi/l/terraform-compliance.svg"
-      alt="Downloads" />
+    <img src="https://img.shields.io/pypi/l/terraform-compliance.svg" alt="License" />
   </a>
 
+  <!-- PyPI Version -->
+  <a href="https://pypi.org/project/terraform-compliance/">
+    <img src="https://img.shields.io/pypi/v/terraform-compliance.svg" alt="Package Version" />
+  </a>
 </div>
 
 ## Table of Contents
