@@ -1,4 +1,9 @@
 import re
+import sys
+
+
+if sys.version_info[0] > 2:
+    unicode = str
 
 
 def enable_resource_mounting(tf_conf, processing_resource=None, resource=None):
