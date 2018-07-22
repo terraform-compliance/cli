@@ -12,7 +12,7 @@
 <div align="center">
   <!-- Build Status -->
   <a href="https://travis-ci.org/eerkunt/terraform-compliance">
-    <img src="https://img.shields.io/travis/eerkunt/terraform-compliance/master.svg?style=flat-square" alt="Build" />
+    <img src="https://img.shields.io/travis/eerkunt/terraform-compliance/master.svg" alt="Build" />
   </a>
 
   <!-- License -->
