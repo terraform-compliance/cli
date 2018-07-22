@@ -218,3 +218,6 @@ class MockedData(object):
             }
         }
     }
+
+    # check_port_cidr_ranges() tests
+    plain_security_group = ''

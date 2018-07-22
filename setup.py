@@ -8,7 +8,8 @@ dependencies = [
     'radish-bdd',
     'radish',
     'terraform-validate',
-    'gitpython'
+    'gitpython',
+    'netaddr'
 ]
 
 setup(

@@ -104,6 +104,6 @@ def func(step, proto, port, cidr):
     for item in step.context.resources.properties:
         if type(item.property_value) is list:
             for security_group in item.property_value:
-                check_port_cidr_ranges(security_group, proto, port, cidr)
+                check_port_cidr_ranges(world.config.terraform.terraform_config, security_group, proto, port, cidr)
         else:
-            check_port_cidr_ranges(item.property_value, proto, port, cidr)
+            check_port_cidr_ranges(world.config.terraform.terraform_config, item.property_value, proto, port, cidr)
