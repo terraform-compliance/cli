@@ -26,3 +26,4 @@ Feature: Security Groups should be used to protect services/instances
     | MSSQL        | tcp   | 1443       |
     | NetBIOS      | tcp   | 139        |
     | RDP          | tcp   | 3389       |
+    | Jenkins Slave| tcp   | 50000      |

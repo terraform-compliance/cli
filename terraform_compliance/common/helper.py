@@ -71,8 +71,8 @@ def check_port_cidr_ranges(tf_conf, security_group, proto, port, cidr):
     giveError = False
 
     # This is because of resource_mounting
-    if 'referenced_name' in security_group:
-        return
+    #if 'referenced_name' in security_group:
+    #    return
 
     if 'cidr_blocks' in security_group:
         if type(security_group['cidr_blocks']) is list:

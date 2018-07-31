@@ -14,7 +14,11 @@ def enable_resource_mounting(tf_conf, processing_resource=None, resource=None):
         resource = resource.strip()
 
     if not processing_resource:
+        if resource not in tf_conf:
+            return
+
         processing_resource = tf_conf[resource]
+
 
     source = resource.strip()
     source = (source[:-3] if source.endswith('.id') else source)
