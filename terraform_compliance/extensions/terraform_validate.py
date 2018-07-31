@@ -1,6 +1,7 @@
 import re
 import sys
-
+from terraform_compliance.common.helper import generate_target_resource
+from terraform_compliance.common.helper import change_value_in_dict
 
 if sys.version_info[0] > 2:
     unicode = str
@@ -13,7 +14,11 @@ def enable_resource_mounting(tf_conf, processing_resource=None, resource=None):
         resource = resource.strip()
 
     if not processing_resource:
+        if resource not in tf_conf:
+            return
+
         processing_resource = tf_conf[resource]
+
 
     source = resource.strip()
     source = (source[:-3] if source.endswith('.id') else source)
@@ -29,12 +34,8 @@ def enable_resource_mounting(tf_conf, processing_resource=None, resource=None):
 
                 if matches is not None:
                     if not matches.group(1).startswith(('var', 'data', 'module')) and '(' not in matches.group(1):
-                        target = matches.group(1).strip()
-                        target = 'resource.{}'.format(target).split('.')
-                        if target[-1] in ['id', 'name']:
-                            target.pop(-1)
-
-                        _change_value_in_dict(tf_conf, target, {source: processing_resource})
+                        target = generate_target_resource(matches.group(1))
+                        change_value_in_dict(tf_conf, target, {source: processing_resource})
 
             elif type(sub_value) is list:
                 for value in sub_value:
@@ -42,23 +43,5 @@ def enable_resource_mounting(tf_conf, processing_resource=None, resource=None):
                         matches = re.match(regex, value)
                         if matches is not None:
                             if not matches.group(1).startswith(('var', 'data', 'module')) and '(' not in matches.group(1):
-                                target = matches.group(1).strip()
-                                target = 'resource.{}'.format(target).split('.')
-                                if target[-1] in ['id', 'name']:
-                                    target.pop(-1)
-
-                                _change_value_in_dict(tf_conf, target, {source: processing_resource})
-
-
-def _change_value_in_dict(target_dictionary, path_to_change, value_to_change):
-    if type(path_to_change) is str:
-        path_to_change = path_to_change.split('.')
-
-    if type(path_to_change) is list:
-        path_to_change = '["{}"]'.format('"]["'.join(path_to_change))
-
-    try:
-        exec('target_dictionary{}.update({})'.format(path_to_change, value_to_change))
-    except:
-        # Yes I know, this is against PEP8.
-        pass
+                                target = generate_target_resource(matches.group(1))
+                                change_value_in_dict(tf_conf, target, {source: processing_resource})

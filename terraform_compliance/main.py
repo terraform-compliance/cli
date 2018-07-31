@@ -8,7 +8,7 @@ from shutil import rmtree
 from git import Repo
 
 __app_name__ = "terraform-compliance"
-__version__ = "0.1.1"
+__version__ = "0.2.0"
 
 
 class ArgHandling(object):
