@@ -2,6 +2,7 @@
 
 from radish import step, world, custom_type, then, when, given
 from terraform_compliance.steps import untaggable_resources, regex, resource_name, encryption_property
+from terraform_compliance.common.helper import check_port_cidr_ranges
 
 
 # New Arguments
@@ -66,6 +67,7 @@ def func(step, something):
     step.context.resource_type = something
     step.context.resources = step.context.resources.property(something)
 
+@step(u'encryption is enabled')
 @step(u'encryption must be enabled')
 def func(step):
     world.config.terraform.error_if_property_missing()
@@ -99,42 +101,9 @@ def func(step, proto, port, cidr):
     port = int(port)
     cidr = str(cidr)
 
-    giveError = False
-    for i in step.context.resources.properties:
-        protocol = ''
-        from_port = 0
-        to_port = 0
-        cidr_blocks = False
-
-        for y in i.property_value:
-
-            if i.property_value[y] == proto:
-                protocol = i.property_value[y]
-
-            if y == 'from_port' and i.property_value[y] > 0:
-                from_port = int(i.property_value[y])
-
-            if y == 'to_port' and i.property_value[y] > 0:
-                to_port = int(i.property_value[y])
-
-            if y == 'cidr_blocks':
-                if type(i.property_value[y] is list):
-                    # There must be a CIDR check here.
-                    # if cidr(parameter) is a member of given CIDR blocks,
-                    # then accept it.
-                    cidr_blocks = str(i.property_value[y][0])
-                else:
-                    cidr_blocks = str(i.property_value[y])
-
-        if int(to_port) > int(from_port):
-            if int(from_port) <= port <= int(to_port) and protocol == proto and cidr_blocks == cidr:
-                giveError = True
-        elif int(from_port) > int(to_port):
-            if int(to_port) <= port <= int(from_port) or protocol == proto and cidr_blocks == cidr:
-                giveError = True
-        elif int(from_port) == int(to_port):
-            if int(from_port) == port and protocol == proto and cidr_blocks == cidr:
-                giveError = True
-
-        if giveError:
-            raise AssertionError("Found " + proto + "/" + str(port) + " for " + str(cidr_blocks))
+    for item in step.context.resources.properties:
+        if type(item.property_value) is list:
+            for security_group in item.property_value:
+                check_port_cidr_ranges(world.config.terraform.terraform_config, security_group, proto, port, cidr)
+        else:
+            check_port_cidr_ranges(world.config.terraform.terraform_config, item.property_value, proto, port, cidr)
