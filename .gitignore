@@ -1,4 +1,6 @@
 venv
+.scannerwork
+.pytest_cache
 *.pyc
 *.sublime-*
 .idea/*
