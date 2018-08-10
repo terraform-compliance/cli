@@ -60,13 +60,6 @@ def func(step, something):
     step.context.resource_type = something
     step.context.resources = step.context.resources.property(something)
 
-@step(u'it contains {something:ANY}')
-def func(step, something):
-    if something in resource_name.keys():
-        something = resource_name[something]
-
-    step.context.resource_type = something
-    step.context.resources = step.context.resources.property(something)
 
 @step(u'encryption is enabled')
 @step(u'encryption must be enabled')
@@ -76,14 +69,14 @@ def func(step):
     step.context.resources.property(prop).should_equal(True)
 
 
-@step(u'it must have the "{tag:ANY}" tag')
-def func(step, tag):
+@step(u'it must have the "{value:ANY}" {property_name:ANY} property')
+def func(step, value, property_name):
     world.config.terraform.error_if_property_missing()
-    step.context.search_value = tag
+    step.context.search_value = value
 
-    step.context.properties = step.context.resources.property('tags')
+    step.context.properties = step.context.resources.property(property_name)
     normalise_tag_values(step.context.properties)
-    step.context.properties.should_have_properties(tag)
+    step.context.properties.should_have_properties(value)
 
 
 @step(u'its value must match the "{regex_type}" regex')
@@ -98,7 +91,16 @@ def func(step):
     step.context.resources.property(step.context.search_value).should_match_regex('\${var.(.*)}')
 
 
-@step(u'with {proto} protocol and not port {port:d} for {cidr:ANY}')
+@step(u'it contains {something:ANY}')
+def func(step, something):
+    if something in resource_name.keys():
+        something = resource_name[something]
+
+    step.context.resource_type = something
+    step.context.resources = step.context.resources.property(something)
+
+
+@step(u'it should not have {proto} protocol and port {port:d} for {cidr:ANY}')
 def func(step, proto, port, cidr):
     proto = str(proto)
     port = int(port)

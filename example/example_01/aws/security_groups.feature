@@ -10,12 +10,11 @@ Feature: Security Groups should be used to protect services/instances
   Examples:
     | policy_name |
     | ingress     |
-    | egress      |
 
   Scenario Outline: Well-known insecure protocol exposure on Public Network for ingress traffic
-  	When I define AWS Security Group
-  	Then it contains ingress
-  	with <proto> protocol and not port <portNumber> for 0.0.0.0/0
+  	Given I define AWS Security Group
+  	And it contains ingress
+    Then it should not have <proto> protocol and port <portNumber> for 0.0.0.0/0
 
   Examples:
     | ProtocolName | proto | portNumber |

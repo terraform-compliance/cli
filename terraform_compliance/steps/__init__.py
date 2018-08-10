@@ -18,7 +18,8 @@ untaggable_resources = [
     "aws_directory_service_directory",
     "azurerm_resource_group",
     "aws_efs_mount_target",
-    "aws_ecs_cluster"
+    "aws_ecs_cluster",
+    "aws_launch_configuration"
 ]
 
 encryption_property = {
