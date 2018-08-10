@@ -90,4 +90,7 @@ def cli():
     return call_radish(args=commands[1:])
 
 
+if __name__ == '__main__':
+    cli()
+
 #TODO: Implement a cleanup for temporary directories since they are not deleted.
