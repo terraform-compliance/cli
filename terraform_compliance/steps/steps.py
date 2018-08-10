@@ -3,6 +3,7 @@
 from radish import step, world, custom_type, then, when, given
 from terraform_compliance.steps import untaggable_resources, regex, resource_name, encryption_property
 from terraform_compliance.common.helper import check_port_cidr_ranges
+from terraform_compliance.extensions.terraform_validate import normalise_tag_values
 
 
 # New Arguments
@@ -78,21 +79,23 @@ def func(step):
 @step(u'it must have the "{tag:ANY}" tag')
 def func(step, tag):
     world.config.terraform.error_if_property_missing()
-    step.context.tag = tag
+    step.context.search_value = tag
+
     step.context.properties = step.context.resources.property('tags')
+    normalise_tag_values(step.context.properties)
     step.context.properties.should_have_properties(tag)
 
 
 @step(u'its value must match the "{regex_type}" regex')
 def func(step, regex_type):
     world.config.terraform.error_if_property_missing()
-    step.context.regex = regex[regex_type]
+    normalise_tag_values(step.context.properties)
     step.context.properties.property(regex_type).should_match_regex(step.context.regex)
 
 
 @step(u'its value must be set by a variable')
 def func(step):
-    step.context.resources.property('tags').property(step.context.tag).should_match_regex('\${var.(.*)}')
+    step.context.resources.property(step.context.search_value).should_match_regex('\${var.(.*)}')
 
 
 @step(u'with {proto} protocol and not port {port:d} for {cidr:ANY}')
