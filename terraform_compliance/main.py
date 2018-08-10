@@ -4,11 +4,10 @@ from argparse import ArgumentParser, Action
 from terraform_compliance import Validator
 from radish.main import main as call_radish
 from tempfile import mkdtemp
-from shutil import rmtree
 from git import Repo
 
 __app_name__ = "terraform-compliance"
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 
 
 class ArgHandling(object):
