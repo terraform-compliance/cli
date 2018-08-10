@@ -86,8 +86,10 @@ def check_port_cidr_ranges(tf_conf, security_group, proto, port, cidr):
     #TODO: Add custom protocol support where HCL has numbers instead of protocol names like tcp, udp
     #TODO: Add IP Range/Netmask check with the given CIDR.
     for y in security_group:
-        if security_group[y] == proto:
-            protocol = security_group[y]
+        if y == 'protocol':
+            protocol = [security_group[y]]
+            if protocol[0] == '-1':
+                protocol = ['tcp', 'udp']
 
         if y == 'from_port' and security_group[y] > 0:
             from_port = int(security_group[y])
@@ -99,14 +101,17 @@ def check_port_cidr_ranges(tf_conf, security_group, proto, port, cidr):
             if type(security_group[y] is list):
                 cidr_blocks = str(security_group[y])
 
+    if int(to_port) == 0 and int(from_port) == 0:
+        to_port = 65535
+
     if int(to_port) > int(from_port):
-        if int(from_port) <= port <= int(to_port) and protocol == proto and is_ip_in_cidr(cidr, cidr_blocks):
+        if int(from_port) <= port <= int(to_port) and proto in protocol and is_ip_in_cidr(cidr, cidr_blocks):
             giveError = True
     elif int(from_port) > int(to_port):
-        if int(to_port) <= port <= int(from_port) or protocol == proto and is_ip_in_cidr(cidr, cidr_blocks):
+        if int(to_port) <= port <= int(from_port) or proto in protocol and is_ip_in_cidr(cidr, cidr_blocks):
             giveError = True
     elif int(from_port) == int(to_port):
-        if int(from_port) == port and protocol == proto and is_ip_in_cidr(cidr, cidr_blocks):
+        if int(from_port) == port and proto in protocol and is_ip_in_cidr(cidr, cidr_blocks):
             giveError = True
 
     if giveError:
