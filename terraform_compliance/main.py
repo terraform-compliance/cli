@@ -7,7 +7,7 @@ from tempfile import mkdtemp
 from git import Repo
 
 __app_name__ = "terraform-compliance"
-__version__ = "0.2.1"
+__version__ = "0.2.2"
 
 
 class ArgHandling(object):
