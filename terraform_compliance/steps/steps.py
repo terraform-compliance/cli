@@ -11,10 +11,7 @@ from terraform_compliance.extensions.terraform_validate import normalise_tag_val
 def arg_exp_for_secure_text(text):
     return text
 
-
-@step(u'I define an {resource:ANY}')
-@step(u'I define a {resource:ANY}')
-@step(u'I define {resource:ANY}')
+@given(u'I have {resource:ANY} defined')
 def define_a_resource(step, resource):
     world.config.terraform.error_if_property_missing()
     if (resource in resource_name.keys()):
@@ -50,15 +47,19 @@ def func(step, operator, number):
         AssertionError("Invalid operator: " + str(operator))
 
 
-@step(u'it must contain {something:ANY}')
-def func(step, something):
-    world.config.terraform.error_if_property_missing()
+@step(u'it {condition:ANY} contain {something:ANY}')
+def func(step, condition, something):
+    if condition == 'must':
+        world.config.terraform.error_if_property_missing()
 
     if something in resource_name.keys():
         something = resource_name[something]
 
     step.context.resource_type = something
     step.context.resources = step.context.resources.property(something)
+
+    if condition == 'must':
+        assert step.context.resources.properties
 
 
 @step(u'encryption is enabled')
@@ -90,16 +91,7 @@ def func(step):
     step.context.resources.property(step.context.search_value).should_match_regex('\${var.(.*)}')
 
 
-@step(u'it contains {something:ANY}')
-def func(step, something):
-    if something in resource_name.keys():
-        something = resource_name[something]
-
-    step.context.resource_type = something
-    step.context.resources = step.context.resources.property(something)
-
-
-@step(u'it should not have {proto} protocol and port {port:d} for {cidr:ANY}')
+@step(u'it must not have {proto} protocol and port {port:d} for {cidr:ANY}')
 def func(step, proto, port, cidr):
     proto = str(proto)
     port = int(port)

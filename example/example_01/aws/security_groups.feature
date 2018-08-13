@@ -4,7 +4,7 @@ Feature: Security Groups should be used to protect services/instances
   We'll use AWS Security Groups as a Perimeter Defence
 
   Scenario Outline: Policy Structure
-    When I define AWS Security Group
+    Given I have AWS Security Group defined
     Then it must contain <policy_name>
 
   Examples:
@@ -12,9 +12,9 @@ Feature: Security Groups should be used to protect services/instances
     | ingress     |
 
   Scenario Outline: Well-known insecure protocol exposure on Public Network for ingress traffic
-  	Given I define AWS Security Group
-  	And it contains ingress
-    Then it should not have <proto> protocol and port <portNumber> for 0.0.0.0/0
+    Given I have AWS Security Group defined
+  	And it should contain ingress
+    Then it must not have <proto> protocol and port <portNumber> for 0.0.0.0/0
 
   Examples:
     | ProtocolName | proto | portNumber |

@@ -41,6 +41,7 @@ resource_name = {
     "Azure Storage Account": "azurerm_storage_account",
     "Azure SQL Database": "azurerm_sql_database",
     "AWS S3 Bucket": "aws_s3_bucket",
+    "AWS ELB resource": "aws_elb",
     "resource that supports tags": "(?!{0}).*".format("|".join(untaggable_resources))
 }
 

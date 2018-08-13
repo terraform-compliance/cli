@@ -88,7 +88,7 @@ TF Files : /Users/sharky/Repository/terraform-compliance/example/tf_files
 Validating terraform files.
 All HCL files look good.
 Running tests.
-Feature: Resources should be encrypted  # /var/folders/1k/7vm1m4p12db2tqbd5jcn004m0000gn/T/tmpsrlnAG/aws/encryption.feature
+Feature: Resources should be encrypted  encryption_at_rest.feature
 ```
 
 This is also applicable for terraform files ( `-t` argument ), too.
