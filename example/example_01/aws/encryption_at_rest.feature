@@ -4,13 +4,13 @@ Feature: Resources should use encryption at rest while they are created
   We'll enforce encryption at rest
 
   Scenario: RDS instances
-    When I define AWS RDS instance
+    Given I have AWS RDS instance defined
     Then encryption must be enabled
 
   Scenario: EBS volumes
-    When I define AWS EBS volume
+    Given I have AWS EBS volume defined
     Then encryption must be enabled
 
   Scenario: S3 Buckets
-    When I define AWS S3 Bucket
+    Given I have AWS S3 Bucket defined
     Then it must contain server_side_encryption_configuration
