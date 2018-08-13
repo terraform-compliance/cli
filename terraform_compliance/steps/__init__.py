@@ -40,6 +40,7 @@ resource_name = {
     "AWS Auto-Scaling Group": "aws_autoscaling_group",
     "Azure Storage Account": "azurerm_storage_account",
     "Azure SQL Database": "azurerm_sql_database",
+    "AWS S3 Bucket": "aws_s3_bucket",
     "resource that supports tags": "(?!{0}).*".format("|".join(untaggable_resources))
 }
 

@@ -81,7 +81,6 @@ def func(step, value, property_name):
 
 @step(u'its value must match the "{regex_type}" regex')
 def func(step, regex_type):
-    world.config.terraform.error_if_property_missing()
     normalise_tag_values(step.context.properties)
     step.context.properties.property(regex_type).should_match_regex(step.context.regex)
 

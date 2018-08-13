@@ -94,3 +94,4 @@ if __name__ == '__main__':
     cli()
 
 #TODO: Implement a cleanup for temporary directories since they are not deleted.
+#TODO: If .terraform directory exist in '.' the just exit with a different exit code.
