@@ -7,7 +7,7 @@ from tempfile import mkdtemp
 from git import Repo
 
 __app_name__ = "terraform-compliance"
-__version__ = "0.2.2"
+__version__ = "0.3.0"
 
 
 class ArgHandling(object):
@@ -94,3 +94,4 @@ if __name__ == '__main__':
     cli()
 
 #TODO: Implement a cleanup for temporary directories since they are not deleted.
+#TODO: If .terraform directory exist in '.' the just exit with a different exit code.
