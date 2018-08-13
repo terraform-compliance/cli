@@ -1,10 +1,13 @@
 language: python
-
 python:
-  - '2.7'
-
+- '2.7'
+before_install:
+- echo 'Testing docker credentials'
+- docker login -e=$DOCKER_HUB_EMAIL -u=$DOCKER_HUB_USER -p=$DOCKER_HUB_PASS
 install:
- - pip install -r requirements.txt
-
+- pip install -r requirements.txt
 script:
- - py.test -v
+- py.test -v
+env:
+  global:
+    secure: nfr681u7xIWwHB7BWOcxlNwRGs8QwMWF109o4hLSfsgAsw+oQ9e3scp8CuTARhDOMLUcYCNHs3QY3K9UQgxOOELXGW5jc221CTc32scYre3Y2xp2vA0VTsCIND3cTnLE+VWGQP1HY41TY9Qe22PSzrD65ZKqN7yB71pZXWxbaIDD1WeoO84L/YsaZDNmUrMGQbFDQGaAJTEGTyxwuy3gjSIYC8vGyBhQj8A+38u7xMCfzVYTsv51VHMwtCgg+YF30DC158BLWU7S0sOrfDD3opj/BJyj9fL6GJsdeAirWvv5zdNAykrOKADnOa1p+FcYSBNkicMz4cIko7SA7Ry/6F86qO6rfIcTrEwgZYhIqVCKDXBUc6CdUdkZSSIibXEjMnDiMPaHZr79dIp4YuN8V++QZ+XyRrGZW0FLTrE42EsPloc1GLv0vQeGEDyBXc4aKJImsvv+lSBY/Y+e0Sbz9XlJEmCbcFUnSHh1TAlzpaF/iGydvb+92tuEzC1FVZcWLmSP5ozqFW7oMbN/DVo5Y5MUg3YmmKbSdISCueBQcxnRKEyl2YB+0Hn7TFWrgJzGwN4gXnJqqMd2GCtLYjKr8rSenbC/3eYyPpOUdgEVbZJ+Bno8lJs4IJK79Ai+5I5lA5DAM7letjcKHFjNmx7YKSrz3IoHJbNq5XYH4wTlvRk=
