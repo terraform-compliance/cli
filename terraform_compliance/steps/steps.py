@@ -23,6 +23,9 @@ def define_a_resource(step, resource):
 
 @step(u'I {action_type:ANY} them')
 def i_action_them(step, action_type):
+    if not step.context.resources.resource_list:
+        return
+
     if action_type == "count":
         step.context.stash = len(step.context.stash.resource_list)
     elif action_type == "sum":
@@ -33,6 +36,9 @@ def i_action_them(step, action_type):
 
 @step(u'I expect the result is {operator:ANY} than {number:d}')
 def func(step, operator, number):
+    if not step.context.resources.resource_list:
+        return
+
     value = int(step.context.stash)
 
     if operator == "more":
@@ -49,6 +55,9 @@ def func(step, operator, number):
 
 @step(u'it {condition:ANY} contain {something:ANY}')
 def func(step, condition, something):
+    if not step.context.resources.resource_list:
+        return
+
     if condition == 'must':
         world.config.terraform.error_if_property_missing()
 
@@ -65,34 +74,36 @@ def func(step, condition, something):
 @step(u'encryption is enabled')
 @step(u'encryption must be enabled')
 def func(step):
+    if not step.context.resources.resource_list:
+        return
+
     world.config.terraform.error_if_property_missing()
     prop = encryption_property[step.context.resource_type]
     step.context.resources.property(prop).should_equal(True)
 
 
-@step(u'it must have the "{value:ANY}" {property_name:ANY} property')
-def func(step, value, property_name):
-    world.config.terraform.error_if_property_missing()
-    step.context.search_value = value
-
-    step.context.properties = step.context.resources.property(property_name)
-    normalise_tag_values(step.context.properties)
-    step.context.properties.should_have_properties(value)
-
-
 @step(u'its value must match the "{regex_type}" regex')
 def func(step, regex_type):
+    if not step.context.resources.resource_list:
+        return
+
     normalise_tag_values(step.context.properties)
     step.context.properties.property(regex_type).should_match_regex(step.context.regex)
 
 
 @step(u'its value must be set by a variable')
 def func(step):
+    if not step.context.resources.resource_list:
+        return
+
     step.context.resources.property(step.context.search_value).should_match_regex('\${var.(.*)}')
 
 
 @step(u'it must not have {proto} protocol and port {port:d} for {cidr:ANY}')
 def func(step, proto, port, cidr):
+    if not step.context.resources.resource_list:
+        return
+
     proto = str(proto)
     port = int(port)
     cidr = str(cidr)
