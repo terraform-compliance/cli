@@ -7,7 +7,7 @@ from tempfile import mkdtemp
 from git import Repo
 
 __app_name__ = "terraform-compliance"
-__version__ = "0.3.2"
+__version__ = "0.3.3"
 
 
 class ArgHandling(object):
@@ -41,8 +41,6 @@ class readable_dir(Action):
 
 
 def cli():
-    print('{} v{} initiated'.format(__app_name__, __version__))
-
     argument = ArgHandling()
     parser = ArgumentParser(prog=__app_name__,
                             description="BDD Test Framework for Hashicorp terraform")
@@ -50,8 +48,11 @@ def cli():
                         help="Directory consists of BDD features", required=True)
     parser.add_argument("--tfdir", "-t", dest="tf_dir", metavar='terraform_directory', action=readable_dir,
                         help="Directory (or git repository with 'git:' prefix) consists of Terraform Files", required=True)
+    parser.add_argument("--version", "-v", action="version", version=__version__)
 
     _, radish_arguments = parser.parse_known_args(namespace=argument)
+
+    print('{} v{} initiated'.format(__app_name__, __version__))
 
     steps_directory = os.path.join(os.path.split(os.path.abspath(__file__))[0], 'steps')
     print('Steps    : {}'.format(steps_directory))

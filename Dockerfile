@@ -1,6 +1,6 @@
 FROM python:2.7.15-slim
 
-LABEL terraform_compliance.version="0.3.0"
+LABEL terraform_compliance.version="0.3.3"
 LABEL author="Emre Erkunt <emre.erkunt@gmail.com>"
 LABEL source="https://github.com/eerkunt/terraform-compliance"
 
