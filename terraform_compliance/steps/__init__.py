@@ -19,7 +19,8 @@ untaggable_resources = [
     "azurerm_resource_group",
     "aws_efs_mount_target",
     "aws_ecs_cluster",
-    "aws_launch_configuration"
+    "aws_launch_configuration",
+    "aws_kms_alias"
 ]
 
 encryption_property = {
