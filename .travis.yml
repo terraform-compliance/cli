@@ -12,6 +12,7 @@ jobs:
           - if [ "$RELEASE_VERSION" != "$TRAVIS_TAG" ]; then echo "Release version ($RELEASE_VERSION) does not match with git tag ($TRAVIS_TAG)"; exit 1; fi
 
     - stage: pypi build & deploy
+      script: "echo 'PYPI Build & Deploy'"
       deploy:
           skip_cleanup: true
           provider: pypi
