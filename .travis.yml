@@ -1,7 +1,64 @@
 language: python
 python:
-- '2.7'
-install:
-- pip install -r requirements.txt
-script:
-- py.test -v
+  - '2.7'
+cache:
+  pip: true
+  custom_install: true
+jobs:
+  include:
+    - stage: Test
+      provider: script
+      script: py.test -v
+
+    - stage: Build & Deploy (PYPI)
+      script: "echo 'PYPI Build & Deploy'"
+      if: branch = master
+      deploy:
+          skip_cleanup: true
+          provider: pypi
+          user: $PYPI_USER
+          password: $PYPI_PASS
+          distributions: "sdist bdist_wheel"
+          on:
+            branch: master
+            fork: false
+
+    - stage: Build & Deploy (Docker)
+      provider: script
+      if: branch = master
+      script:
+        - echo "Docker Build & Deploy"
+        - echo "export RELEASE_VERSION=$(cat /home/travis/build/eerkunt/terraform-compliance/terraform_compliance/main.py | grep -e "__version__ = \".*\"" | cut -d " " -f3 | tr -d "\"")" > reqs.sh
+        - source reqs.sh
+        - echo "Release version identified as <$RELEASE_VERSION>"
+        - cat /home/travis/build/eerkunt/terraform-compliance/terraform_compliance/main.py | grep -e "__version__ = \".*\"" | cut -d " " -f3 | tr -d "\""
+        - if [ -z "$RELEASE_VERSION" ]; then echo "Can not identify the version!"; travis_terminate 1; fi
+        - sed s/__VERSION__/"$RELEASE_VERSION"/ Dockerfile.template > Dockerfile || travis_terminate 1
+        - docker build --compress --no-cache -t "$IMAGE_NAME" . || travis_terminate 1
+        - docker images || travis_terminate 1
+        - docker login -u "$DOCKER_HUB_USER" -p "$DOCKER_HUB_PASS" || travis_terminate 1
+        - docker tag "$IMAGE_NAME" eerkunt/terraform-compliance:travis || travis_terminate 1
+        - docker tag "$IMAGE_NAME" "$IMAGE_NAME":"$RELEASE_VERSION" || travis_terminate 1
+        - docker push "$IMAGE_NAME":travis || travis_terminate 1
+        - docker push "$IMAGE_NAME":"$RELEASE_VERSION" || travis_terminate 1
+
+    - stage: Release (GitHub)
+      script: "echo 'Releasing to GitHub'"
+      if: branch = master
+      before_deploy:
+          - git config --local user.name "Emre Erkunt" || travis_terminate 1
+          - git config --local user.email "emre.erkunt@gmail.com" || travis_terminate 1
+          - echo "export RELEASE_VERSION=$(cat /home/travis/build/eerkunt/terraform-compliance/terraform_compliance/main.py | grep -e "__version__ = \".*\"" | cut -d " " -f3 | tr -d "\"")" > reqs.sh
+          - source reqs.sh
+          - echo "Release version identified as <$RELEASE_VERSION>"
+          - if [ -z "$RELEASE_VERSION" ]; then echo "Can not identify the version!"; travis_terminate 1; fi
+          - git tag --force "$RELEASE_VERSION" || travis_terminate 1
+      deploy:
+          skip_cleanup: true
+          provider: releases
+          api_key: $GITHUB_OAUTH_TOKEN
+          skip_cleanup: true
+          name: $RELEASE_VERSION
+          on:
+            branch: master
+            fork: false
