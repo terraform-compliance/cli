@@ -6,7 +6,7 @@ jobs:
     - stage: Test
       provider: script
       script:
-          - echo "export RELEASE_VERSION=$(cat terraform_compliance/main.py | grep "__version__ = \".*\"" | grep -o "\d*\.\d*\.\d*")" > reqs.sh
+          - echo "export RELEASE_VERSION=$(cat terraform-compliance/terraform_compliance/main.py | grep "__version__ = \".*\"" | grep -o "\d*\.\d*\.\d*")" > reqs.sh
           - source reqs.sh
           - echo "Testing version $RELEASE_VERSION"
           - if [ "$RELEASE_VERSION" != "$TRAVIS_TAG" ]; then echo "Release version ($RELEASE_VERSION) does not match with git tag ($TRAVIS_TAG)"; exit 1; fi
