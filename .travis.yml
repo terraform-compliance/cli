@@ -12,8 +12,8 @@ jobs:
       deploy:
           skip_cleanup: true
           provider: pypi
-          user: env(PYPI_USER)
-          pass: env(PYPI_PASS)
+          user: $PYPI_USER
+          pass: $PYPI_PASS
           distributions: "sdist bdist_wheel"
           on:
             branch: travis_test
