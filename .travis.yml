@@ -44,7 +44,7 @@ jobs:
 
     - stage: Release (GitHub)
       script: "echo 'Releasing to GitHub'"
-      if: branch = travis_test
+      if: branch = master
       before_deploy:
           - git config --local user.name "Emre Erkunt" || travis_terminate 1
           - git config --local user.email "emre.erkunt@gmail.com" || travis_terminate 1
@@ -60,5 +60,5 @@ jobs:
           skip_cleanup: true
           name: $RELEASE_VERSION
           on:
-            branch: travis_test
+            branch: master
             fork: false
