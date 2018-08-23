@@ -27,25 +27,28 @@ jobs:
         - echo "Docker Build & Deploy"
         - echo "export RELEASE_VERSION=$(cat /home/travis/build/eerkunt/terraform-compliance/terraform_compliance/main.py | grep "__version__ = \".*\"" | grep -o "\d*\.\d*\.\d*")" > reqs.sh
         - source reqs.sh
-        - sed s/__VERSION__/"RELEASE_VERSION"/ Dockerfile.template > Dockerfile
-        - docker build --compress --no-cache -t "$IMAGE_NAME" .
-        - docker images
-        - docker login -u "$DOCKER_HUB_USER" -p "$DOCKER_HUB_PASS"
-        - docker tag "$IMAGE_NAME" eerkunt/terraform-compliance:travis
-        - docker tag "$IMAGE_NAME" "$IMAGE_NAME":"$RELEASE_VERSION"
-        - docker push "$IMAGE_NAME":travis
-        - docker push "$IMAGE_NAME":"$RELEASE_VERSION"
+        - echo "Release version identified as <$RELEASE_VERSION>"
+        - if [ -n $RELEASE_VERSION]; then travis_terminate 1; fi
+        - sed s/__VERSION__/"$RELEASE_VERSION"/ Dockerfile.template > Dockerfile || travis_terminate 1
+        - docker build --compress --no-cache -t "$IMAGE_NAME" . || travis_terminate 1
+        - docker images || travis_terminate 1
+        - docker login -u "$DOCKER_HUB_USER" -p "$DOCKER_HUB_PASS" || travis_terminate 1
+        - docker tag "$IMAGE_NAME" eerkunt/terraform-compliance:travis || travis_terminate 1
+        - docker tag "$IMAGE_NAME" "$IMAGE_NAME":"$RELEASE_VERSION" || travis_terminate 1
+        - docker push "$IMAGE_NAME":travis || travis_terminate 1
+        - docker push "$IMAGE_NAME":"$RELEASE_VERSION" || travis_terminate 1
 
     - stage: Release (GitHub)
       script: "echo 'Releasing to GitHub'"
       if: branch = travis_test
       before_deploy:
           # Set up git user name and tag this commit
-          - git config --local user.name "Emre Erkunt"
-          - git config --local user.email "emre.erkunt@gmail.com"
+          - git config --local user.name "Emre Erkunt" || travis_terminate 1
+          - git config --local user.email "emre.erkunt@gmail.com" || travis_terminate 1
           - echo "export RELEASE_VERSION=$(docker run --rm "$IMAGE_NAME" -v)" > reqs.sh
           - source reqs.sh
-          - git tag "$RELEASE_VERSION"
+          - if [ -n $RELEASE_VERSION]; then travis_terminate 1; fi
+          - git tag "$RELEASE_VERSION" || travis_terminate 1
       deploy:
           skip_cleanup: true
           provider: releases
