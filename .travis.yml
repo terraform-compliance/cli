@@ -9,7 +9,7 @@ jobs:
 
     - stage: Build & Deploy (PYPI)
       script: "echo 'PYPI Build & Deploy'"
-      if: branch = travis_test
+      if: branch = master
       deploy:
           skip_cleanup: true
           provider: pypi
@@ -25,10 +25,10 @@ jobs:
       if: branch = travis_test
       script:
         - echo "Docker Build & Deploy"
-        - docker build -t "$IMAGE_NAME" .
-        - echo "export RELEASE_VERSION=$(docker run --rm "$IMAGE_NAME" -v)" > reqs.sh
+        - echo "export RELEASE_VERSION=$(cat /home/travis/build/eerkunt/terraform-compliance/terraform_compliance/main.py | grep "__version__ = \".*\"" | grep -o "\d*\.\d*\.\d*")" > reqs.sh
         - source reqs.sh
         - sed s/__VERSION__/"RELEASE_VERSION"/ Dockerfile.template > Dockerfile
+        - docker build --compress --no-cache -t "$IMAGE_NAME" .
         - docker images
         - docker login -u "$DOCKER_HUB_USER" -p "$DOCKER_HUB_PASS"
         - docker tag "$IMAGE_NAME" eerkunt/terraform-compliance:travis
