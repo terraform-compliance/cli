@@ -3,42 +3,52 @@ python:
   - '2.7'
 jobs:
   include:
-    - stage: preperation
-      provider: script
-      script: pip install -r requirements.txt
-
     - stage: testing
       provider: script
       script: py.test -v
 
-    - stage: pypi
+    - stage: validation
+      provider: script
+      script:
+          - echo "export RELEASE_VERSION=$(cat terraform_compliance/main.py | grep "__version__ = \".*\"" | grep -o "\d*\.\d*\.\d*")" > reqs.sh
+          - source reqs.sh
+          - if [ "$RELEASE_VERSION" != "$TRAVIS_TAG" ]; then echo "Release version ($RELEASE_VERSION) does not match with git tag ($TRAVIS_TAG)"; exit 1; fi
+
+    - stage: pypi build & deploy
       deploy:
+          skip_cleanup: true
           provider: pypi
           user: env(PYPI_USER)
           pass: env(PYPI_PASS)
-          if: branch = travis_test AND \
-              tag IS present AND \
-              type == pull_request AND \
-              fork == false  AND \
-              commit_message !~ /(no-deploy|wip)/ AND \
-              env(PYPI_USER) IS present and env(PYPI_PASS) IS present
-          script:
-            - echo "export RELEASE_VERSION=$(cat terraform_compliance/main.py | grep "__version__ = \".*\"" | grep -o "\d*\.\d*\.\d*")" > reqs.sh
-            - source reqs.sh
-            - if [ "$RELEASE_VERSION" != "$TRAVIS_TAG" ]; then echo "Release version ($RELEASE_VERSION) does not match with git tag ($TRAVIS_TAG)"; exit 1; fi
           distributions: "sdist bdist_wheel"
+          on:
+            tags: true
+            branch: travis_test
+            condition:
+              - tag IS present
+              - type = pull_request
+              - fork = false
+              - commit_message !~ /(no-deploy|wip)/
+              - $PYPI_USER IS present
+              - $PYPI_PASS is present
 
-    - stage: docker
+    - stage: docker build & deploy
       deploy:
+          skip_cleanup: true
           services: docker
           env:
             - IMAGE_NAME = "eerkunt/terraform-compliance"
-          if: branch = travis_test AND \
-              tag IS present AND \
-              type == pull_request AND \
-              fork == false  AND \
-              commit_message !~ /(no-deploy|wip)/ AND \
-              env(DOCKER_HUB_USER) IS present AND env(DOCKER_HUB_PASS) IS present AND env(DOCKER_HUB_EMAIL) IS present
+          on:
+            tags: true
+            branch: travis_test
+            condition:
+              - tag IS present
+              - type = pull_request
+              - fork = false
+              - commit_message !~ /(no-deploy|wip)/
+              - $DOCKER_HUB_USER IS present
+              - $DOCKER_HUB_PASS is present
+              - $DOCKER_HUB_EMAIL is present
 
           script:
             - echo "export RELEASE_VERSION=$(docker run --rm "$IMAGE_NAME" -v)" > reqs.sh
@@ -52,3 +62,17 @@ jobs:
             - docker tag "$IMAGE_NAME" "$IMAGE_NAME":"$RELEASE_VERSION"
             - docker push "$IMAGE_NAME":travis
             - docker push "$IMAGE_NAME":"$RELEASE_VERSION"
+
+    - stage: github release
+      deploy:
+          skip_cleanup: true
+          provider: releases
+          api_key: $GITHUB_OAUTH_TOKEN
+          skip_cleanup: true
+          on:
+            tags: true
+            branch: travis_test
+            condition:
+              - type = pull_request
+              - fork = false
+              - commit_message !~ /(no-deploy|wip)/
