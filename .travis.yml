@@ -13,7 +13,7 @@ jobs:
           skip_cleanup: true
           provider: pypi
           user: $PYPI_USER
-          pass: $PYPI_PASS
+          password: $PYPI_PASS
           distributions: "sdist bdist_wheel"
           on:
             branch: travis_test
