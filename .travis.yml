@@ -3,7 +3,7 @@ python:
   - '2.7'
 jobs:
   include:
-    - stage: testing
+    - stage: Test
       provider: script
       script:
           - echo "export RELEASE_VERSION=$(cat terraform_compliance/main.py | grep "__version__ = \".*\"" | grep -o "\d*\.\d*\.\d*")" > reqs.sh
@@ -13,7 +13,7 @@ jobs:
           - py.test -v
 
 
-    - stage: pypi build & deploy
+    - stage: Build & Deploy (PYPI)
       script: "echo 'PYPI Build & Deploy'"
       deploy:
           skip_cleanup: true
@@ -27,7 +27,7 @@ jobs:
             type: pull_request
             fork: false
 
-    - stage: docker build & deploy
+    - stage: Build & Deploy (Docker)
       script: "echo 'Docker Build & Deploy'"
       deploy:
           skip_cleanup: true
@@ -53,8 +53,8 @@ jobs:
             - docker push "$IMAGE_NAME":travis
             - docker push "$IMAGE_NAME":"$RELEASE_VERSION"
 
-    - stage: github release
-    script: "echo 'Releasing to GitHub'"
+    - stage: Release (GitHub)
+      script: "echo 'Releasing to GitHub'"
       deploy:
           skip_cleanup: true
           provider: releases
