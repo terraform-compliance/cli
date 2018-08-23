@@ -9,6 +9,7 @@ jobs:
 
     - stage: Build & Deploy (PYPI)
       script: "echo 'PYPI Build & Deploy'"
+      if: branch = travis_test
       deploy:
           skip_cleanup: true
           provider: pypi
@@ -21,8 +22,6 @@ jobs:
 
     - stage: Build & Deploy (Docker)
       provider: script
-      env:
-        - IMAGE_NAME = "eerkunt/terraform-compliance"
       if: branch = travis_test
       script:
         - echo "Docker Build & Deploy"
@@ -39,6 +38,7 @@ jobs:
 
     - stage: Release (GitHub)
       script: "echo 'Releasing to GitHub'"
+      if: branch = travis_test
       before_deploy:
           # Set up git user name and tag this commit
           - git config --local user.name "Emre Erkunt"
