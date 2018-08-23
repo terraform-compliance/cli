@@ -5,11 +5,8 @@ jobs:
   include:
     - stage: testing
       provider: script
-      script: py.test -v
-
-    - stage: validation
-      provider: script
       script:
+          - py.test -v
           - echo "export RELEASE_VERSION=$(cat terraform_compliance/main.py | grep "__version__ = \".*\"" | grep -o "\d*\.\d*\.\d*")" > reqs.sh
           - source reqs.sh
           - if [ "$RELEASE_VERSION" != "$TRAVIS_TAG" ]; then echo "Release version ($RELEASE_VERSION) does not match with git tag ($TRAVIS_TAG)"; exit 1; fi
@@ -25,12 +22,9 @@ jobs:
             tags: true
             branch: travis_test
             condition:
-              - tag IS present
               - type = pull_request
               - fork = false
               - commit_message !~ /(no-deploy|wip)/
-              - $PYPI_USER IS present
-              - $PYPI_PASS is present
 
     - stage: docker build & deploy
       deploy:
@@ -42,13 +36,9 @@ jobs:
             tags: true
             branch: travis_test
             condition:
-              - tag IS present
               - type = pull_request
               - fork = false
               - commit_message !~ /(no-deploy|wip)/
-              - $DOCKER_HUB_USER IS present
-              - $DOCKER_HUB_PASS is present
-              - $DOCKER_HUB_EMAIL is present
 
           script:
             - echo "export RELEASE_VERSION=$(docker run --rm "$IMAGE_NAME" -v)" > reqs.sh
