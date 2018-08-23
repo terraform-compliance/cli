@@ -16,7 +16,7 @@ jobs:
           password: $PYPI_PASS
           distributions: "sdist bdist_wheel"
           on:
-            branch: travis_test
+            branch: master
             type: pull_request
             fork: false
 
@@ -24,7 +24,7 @@ jobs:
       script: "echo 'Docker Build & Deploy'"
       deploy:
           skip_cleanup: true
-          services: docker
+          provider: script
           env:
             - IMAGE_NAME = "eerkunt/terraform-compliance"
           on:
