@@ -25,14 +25,14 @@ jobs:
 
     - stage: Build & Deploy (Docker)
       provider: script
-      if: branch = travis_test
+      if: branch = master
       script:
         - echo "Docker Build & Deploy"
         - echo "export RELEASE_VERSION=$(cat /home/travis/build/eerkunt/terraform-compliance/terraform_compliance/main.py | grep -e "__version__ = \".*\"" | cut -d " " -f3 | tr -d "\"")" > reqs.sh
         - source reqs.sh
         - echo "Release version identified as <$RELEASE_VERSION>"
         - cat /home/travis/build/eerkunt/terraform-compliance/terraform_compliance/main.py | grep -e "__version__ = \".*\"" | cut -d " " -f3 | tr -d "\""
-        - if [ -n $RELEASE_VERSION]; then echo "Can not identify the version!"; travis_terminate 1; fi
+        - if [ -n "$RELEASE_VERSION" ]; then echo "Can not identify the version!"; travis_terminate 1; fi
         - sed s/__VERSION__/"$RELEASE_VERSION"/ Dockerfile.template > Dockerfile || travis_terminate 1
         - docker build --compress --no-cache -t "$IMAGE_NAME" . || travis_terminate 1
         - docker images || travis_terminate 1
@@ -49,9 +49,10 @@ jobs:
           # Set up git user name and tag this commit
           - git config --local user.name "Emre Erkunt" || travis_terminate 1
           - git config --local user.email "emre.erkunt@gmail.com" || travis_terminate 1
-          - echo "export RELEASE_VERSION=$(docker run --rm "$IMAGE_NAME" -v)" > reqs.sh
+          - echo "export RELEASE_VERSION=$(cat /home/travis/build/eerkunt/terraform-compliance/terraform_compliance/main.py | grep -e "__version__ = \".*\"" | cut -d " " -f3 | tr -d "\"")" > reqs.sh
           - source reqs.sh
-          - if [ -n $RELEASE_VERSION]; then echo "Can not identify the version!"; travis_terminate 1; fi
+          - echo "Release version identified as <$RELEASE_VERSION>"
+          - if [ -n "$RELEASE_VERSION" ]; then echo "Can not identify the version!"; travis_terminate 1; fi
           - git tag --force "$RELEASE_VERSION" || travis_terminate 1
       deploy:
           skip_cleanup: true
