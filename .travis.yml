@@ -37,9 +37,9 @@ jobs:
         - docker build --compress --no-cache -t "$IMAGE_NAME" . || travis_terminate 1
         - docker images || travis_terminate 1
         - docker login -u "$DOCKER_HUB_USER" -p "$DOCKER_HUB_PASS" || travis_terminate 1
-        - docker tag "$IMAGE_NAME" eerkunt/terraform-compliance:travis || travis_terminate 1
+        - docker tag "$IMAGE_NAME" eerkunt/terraform-compliance:latest || travis_terminate 1
         - docker tag "$IMAGE_NAME" "$IMAGE_NAME":"$RELEASE_VERSION" || travis_terminate 1
-        - docker push "$IMAGE_NAME":travis || travis_terminate 1
+        - docker push "$IMAGE_NAME":latest || travis_terminate 1
         - docker push "$IMAGE_NAME":"$RELEASE_VERSION" || travis_terminate 1
 
     - stage: Release (GitHub)
