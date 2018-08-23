@@ -5,13 +5,7 @@ jobs:
   include:
     - stage: Test
       provider: script
-      script:
-          - echo "export RELEASE_VERSION=$(cat terraform-compliance/terraform_compliance/main.py | grep "__version__ = \".*\"" | grep -o "\d*\.\d*\.\d*")" > reqs.sh
-          - source reqs.sh
-          - echo "Testing version $RELEASE_VERSION"
-          - if [ "$RELEASE_VERSION" != "$TRAVIS_TAG" ]; then echo "Release version ($RELEASE_VERSION) does not match with git tag ($TRAVIS_TAG)"; exit 1; fi
-          - py.test -v
-
+      script: py.test -v
 
     - stage: Build & Deploy (PYPI)
       script: "echo 'PYPI Build & Deploy'"
@@ -22,7 +16,6 @@ jobs:
           pass: env(PYPI_PASS)
           distributions: "sdist bdist_wheel"
           on:
-            tags: true
             branch: travis_test
             type: pull_request
             fork: false
@@ -35,7 +28,6 @@ jobs:
           env:
             - IMAGE_NAME = "eerkunt/terraform-compliance"
           on:
-            tags: true
             branch: travis_test
             type: pull_request
             fork: false
@@ -44,8 +36,7 @@ jobs:
             - docker build -t "$IMAGE_NAME" .
             - echo "export RELEASE_VERSION=$(docker run --rm "$IMAGE_NAME" -v)" > reqs.sh
             - source reqs.sh
-            - sed s/__VERSION__/"$TRAVIS_TAG"/ Dockerfile.template > Dockerfile
-            - if [ "$RELEASE_VERSION" != "$TRAVIS_TAG" ]; then echo "Release version ($RELEASE_VERSION) does not match with git tag ($TRAVIS_TAG)"; exit 1; fi
+            - sed s/__VERSION__/"RELEASE_VERSION"/ Dockerfile.template > Dockerfile
             - docker images
             - docker login -u "$DOCKER_HUB_USER" -p "$DOCKER_HUB_PASS"
             - docker tag "$IMAGE_NAME" eerkunt/terraform-compliance:travis
@@ -55,13 +46,19 @@ jobs:
 
     - stage: Release (GitHub)
       script: "echo 'Releasing to GitHub'"
+      before_deploy:
+          # Set up git user name and tag this commit
+          - git config --local user.name "Emre Erkunt"
+          - git config --local user.email "emre.erkunt@gmail.com"
+          - echo "export RELEASE_VERSION=$(docker run --rm "$IMAGE_NAME" -v)" > reqs.sh
+          - source reqs.sh
+          - git tag "$RELEASE_VERSION"
       deploy:
           skip_cleanup: true
           provider: releases
           api_key: $GITHUB_OAUTH_TOKEN
           skip_cleanup: true
           on:
-            tags: true
             branch: travis_test
             type: pull_request
             fork: false
