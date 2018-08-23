@@ -1,7 +1,53 @@
 language: python
 python:
-- '2.7'
-install:
-- pip install -r requirements.txt
-script:
-- py.test -v
+  - '2.7'
+jobs:
+  include:
+    - stage: preperation
+      provider: script
+      script: pip install -r requirements.txt
+
+    - stage: pypi_credentials_check
+
+    - stage: docker_credentials_check
+
+    - stage: testing
+      provider: script
+      script: py.test -v
+
+    - stage: pypi
+      provider: pypi
+      if: branch = travis_test AND \
+          tag IS present AND \
+          type == pull_request AND \
+          fork == false  AND \
+          commit_message !~ /(no-deploy|wip)/ AND \
+          env(PYPI_USER) IS present and env(PYPI_PASS) IS present
+      script:
+        - echo "export RELEASE_VERSION=$(cat terraform_compliance/main.py | grep "__version__ = \".*\"" | grep -o "\d*\.\d*\.\d*")" > reqs.sh
+        - source reqs.sh
+        - if [ "$RELEASE_VERSION" != "$TRAVIS_TAG" ]; then echo "Release version ($RELEASE_VERSION) does not match with git tag ($TRAVIS_TAG)"; exit 1; fi
+      user: env(PYPI_USER)
+      pass: env(PYPI_PASS)
+      distributions: "sdist bdist_wheel"
+
+    - stage: docker
+      if: branch = travis_test AND \
+          tag IS present AND \
+          type == pull_request AND \
+          fork == false  AND \
+          commit_message !~ /(no-deploy|wip)/ AND \
+          env(DOCKER_HUB_USER) IS present AND env(DOCKER_HUB_PASS) IS present AND env(DOCKER_HUB_EMAIL) IS present
+      services: docker
+      script:
+        - echo "export RELEASE_VERSION=$(docker run --rm eerkunt/terraform-compliance -v)" > reqs.sh
+        - source reqs.sh
+        - sed s/__VERSION__/"$TRAVIS_TAG"/ Dockerfile.template > Dockerfile
+        - docker build -t eerkunt/terraform-compliance .
+        - if [ "$RELEASE_VERSION" != "$TRAVIS_TAG" ]; then echo "Release version ($RELEASE_VERSION) does not match with git tag ($TRAVIS_TAG)"; exit 1; fi
+        - docker images
+        - docker login -u "$DOCKER_HUB_USER" -p "$DOCKER_HUB_PASS"
+        - docker tag eerkunt/terraform-compliance eerkunt/terraform-compliance:travis
+        - docker tag eerkunt/terraform-compliance eerkunt/terraform-compliance:"$RELEASE_VERSION"
+        - docker push eerkunt/terraform-compliance:travis
+        - docker push eerkunt/terraform-compliance:"$RELEASE_VERSION"
