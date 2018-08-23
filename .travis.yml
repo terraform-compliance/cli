@@ -17,32 +17,25 @@ jobs:
           distributions: "sdist bdist_wheel"
           on:
             branch: master
-            type: pull_request
             fork: false
 
     - stage: Build & Deploy (Docker)
-      script: "echo 'Docker Build & Deploy'"
-      deploy:
-          skip_cleanup: true
-          provider: script
-          env:
-            - IMAGE_NAME = "eerkunt/terraform-compliance"
-          on:
-            branch: travis_test
-            type: pull_request
-            fork: false
-
-          script:
-            - docker build -t "$IMAGE_NAME" .
-            - echo "export RELEASE_VERSION=$(docker run --rm "$IMAGE_NAME" -v)" > reqs.sh
-            - source reqs.sh
-            - sed s/__VERSION__/"RELEASE_VERSION"/ Dockerfile.template > Dockerfile
-            - docker images
-            - docker login -u "$DOCKER_HUB_USER" -p "$DOCKER_HUB_PASS"
-            - docker tag "$IMAGE_NAME" eerkunt/terraform-compliance:travis
-            - docker tag "$IMAGE_NAME" "$IMAGE_NAME":"$RELEASE_VERSION"
-            - docker push "$IMAGE_NAME":travis
-            - docker push "$IMAGE_NAME":"$RELEASE_VERSION"
+      provider: script
+      env:
+        - IMAGE_NAME = "eerkunt/terraform-compliance"
+      if: branch = travis_test
+      script:
+        - echo "Docker Build & Deploy"
+        - docker build -t "$IMAGE_NAME" .
+        - echo "export RELEASE_VERSION=$(docker run --rm "$IMAGE_NAME" -v)" > reqs.sh
+        - source reqs.sh
+        - sed s/__VERSION__/"RELEASE_VERSION"/ Dockerfile.template > Dockerfile
+        - docker images
+        - docker login -u "$DOCKER_HUB_USER" -p "$DOCKER_HUB_PASS"
+        - docker tag "$IMAGE_NAME" eerkunt/terraform-compliance:travis
+        - docker tag "$IMAGE_NAME" "$IMAGE_NAME":"$RELEASE_VERSION"
+        - docker push "$IMAGE_NAME":travis
+        - docker push "$IMAGE_NAME":"$RELEASE_VERSION"
 
     - stage: Release (GitHub)
       script: "echo 'Releasing to GitHub'"
@@ -60,5 +53,4 @@ jobs:
           skip_cleanup: true
           on:
             branch: travis_test
-            type: pull_request
             fork: false
