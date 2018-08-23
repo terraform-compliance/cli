@@ -58,6 +58,7 @@ jobs:
           provider: releases
           api_key: $GITHUB_OAUTH_TOKEN
           skip_cleanup: true
+          name: $RELEASE_VERSION
           on:
             branch: travis_test
             fork: false
