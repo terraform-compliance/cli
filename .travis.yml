@@ -28,10 +28,10 @@ jobs:
       if: branch = travis_test
       script:
         - echo "Docker Build & Deploy"
-        - echo "export RELEASE_VERSION=$(cat /home/travis/build/eerkunt/terraform-compliance/terraform_compliance/main.py | grep -e "__version__ = \".*\"" | grep -o "\d*\.\d*\.\d*")" > reqs.sh
+        - echo "export RELEASE_VERSION=$(cat /home/travis/build/eerkunt/terraform-compliance/terraform_compliance/main.py | grep -e "__version__ = \".*\"" | cut -d " " -f3 | tr -d "\"")" > reqs.sh
         - source reqs.sh
         - echo "Release version identified as <$RELEASE_VERSION>"
-        - cat /home/travis/build/eerkunt/terraform-compliance/terraform_compliance/main.py | grep -e "__version__ = \".*\"" | grep -o "\d*\.\d*\.\d*"
+        - cat /home/travis/build/eerkunt/terraform-compliance/terraform_compliance/main.py | grep -e "__version__ = \".*\"" | cut -d " " -f3 | tr -d "\""
         - if [ -n $RELEASE_VERSION]; then echo "Can not identify the version!"; travis_terminate 1; fi
         - sed s/__VERSION__/"$RELEASE_VERSION"/ Dockerfile.template > Dockerfile || travis_terminate 1
         - docker build --compress --no-cache -t "$IMAGE_NAME" . || travis_terminate 1
