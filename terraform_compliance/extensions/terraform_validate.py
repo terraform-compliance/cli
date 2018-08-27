@@ -32,17 +32,15 @@ def enable_resource_mounting(tf_conf, processing_resource=None, resource=None):
             if type(sub_value) is str or type(sub_value) is unicode:
                 matches = re.match(regex, sub_value)
 
-                if matches is not None:
-                    if not matches.group(1).startswith(('var', 'data', 'module')) and '(' not in matches.group(1):
-                        target = generate_target_resource(matches.group(1))
-                        change_value_in_dict(tf_conf, target, {source: processing_resource})
+                if matches is not None and not matches.group(1).startswith(('var', 'data', 'module')) and '(' not in matches.group(1):
+                    target = generate_target_resource(matches.group(1))
+                    change_value_in_dict(tf_conf, target, {source: processing_resource})
 
             elif type(sub_value) is list:
                 for value in sub_value:
                     if type(value) is str or type(value) is unicode:
                         matches = re.match(regex, value)
-                        if matches is not None:
-                            if not matches.group(1).startswith(('var', 'data', 'module')) and '(' not in matches.group(1):
+                        if matches is not None and not matches.group(1).startswith(('var', 'data', 'module')) and '(' not in matches.group(1):
                                 target = generate_target_resource(matches.group(1))
                                 change_value_in_dict(tf_conf, target, {source: processing_resource})
 
