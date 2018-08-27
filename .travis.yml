@@ -10,6 +10,15 @@ jobs:
       provider: script
       script: py.test -v
 
+    - stage: Code Quality
+      addons:
+        sonarcloud:
+          organization: "eerkunt-github"
+          token: $SONAR_LOGIN
+      script:
+        - "echo 'Scanning source code with SonarCloud'"
+        - sonar-scanner
+
     - stage: Build & Deploy (PYPI)
       script: "echo 'PYPI Build & Deploy'"
       if: branch = master
@@ -33,7 +42,7 @@ jobs:
         - echo "Release version identified as <$RELEASE_VERSION>"
         - cat /home/travis/build/eerkunt/terraform-compliance/terraform_compliance/main.py | grep -e "__version__ = \".*\"" | cut -d " " -f3 | tr -d "\""
         - if [ -z "$RELEASE_VERSION" ]; then echo "Can not identify the version!"; travis_terminate 1; fi
-        - sed s/__VERSION__/"$RELEASE_VERSION"/ Dockerfile.template > Dockerfile || travis_terminate 1
+        - sed s/__VERSION__/"$RELEASE_VERSION"/g Dockerfile.template > Dockerfile || travis_terminate 1
         - docker build --compress --no-cache -t "$IMAGE_NAME" . || travis_terminate 1
         - docker images || travis_terminate 1
         - docker login -u "$DOCKER_HUB_USER" -p "$DOCKER_HUB_PASS" || travis_terminate 1
