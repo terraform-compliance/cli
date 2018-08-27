@@ -1,5 +1,5 @@
 from unittest import TestCase
-from terraform_compliance.common.helper import flatten_list, check_port_cidr_ranges
+from terraform_compliance.common.helper import flatten_list, check_sg_rules
 from tests.mocks import MockedData
 from copy import deepcopy
 
