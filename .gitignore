@@ -1,4 +1,5 @@
 venv
+*,cover
 .coverage
 .scannerwork
 .pytest_cache
