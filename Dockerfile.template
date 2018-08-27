@@ -6,7 +6,7 @@ LABEL source="https://github.com/eerkunt/terraform-compliance"
 
 RUN  apt-get update && \
      apt-get install -y git && \
-     pip install terraform-compliance && \
+     pip install 'terraform-compliance==__VERSION__' && \
      pip uninstall -y radish radish-bdd && \
      pip install radish radish-bdd && \
      rm -rf /var/lib/apt/lists/* && \
