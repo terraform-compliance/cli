@@ -24,6 +24,9 @@ jobs:
           token: $SONAR_LOGIN
       script:
         - "echo 'Scanning source code with SonarCloud'"
+        - coverage erase
+        - coverage run --branch --source=terraform_compliance setup.py test
+        - coverage xml -i
         - sonar-scanner -Dsonar.projectKey=terraform-compliance -Dsonar.organization=eerkunt-github -Dsonar.sources=. -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_LOGIN
 
     - stage: Build & Deploy (PYPI)
