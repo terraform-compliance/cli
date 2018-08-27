@@ -5,14 +5,13 @@ services:
   - docker
 cache:
   pip: true
-install:
-  - pip install coveralls
 after_success: coveralls
 jobs:
   include:
     - stage: Tests
       provider: script
       script:
+        - pip install coveralls
         - py.test -v
         - coverage run --source terraform_compliance setup.py tests
 
