@@ -84,21 +84,22 @@ def assign_sg_params(rule):
     if type(cidr_blocks) is not list:
         cidr_blocks = [cidr_blocks]
 
-
     if to_port == 0 and from_port == 0:
         to_port = 65535
+
+    if from_port > to_port:
+        raise AssertionError('Invalid configuration from_port can not be bigger than to_port. {} > {} {} in {}'.format(from_port,
+                                                                                                                 to_port,
+                                                                                                                 protocol,
+                                                                                                                 cidr_blocks))
 
     return dict(protocol=protocol, from_port=from_port, to_port=to_port, cidr_blocks=cidr_blocks)
 
 
 def validate_sg_rule(proto, port, cidr, params):
-    if (params['to_port'] > params['from_port'] and params['from_port'] <= port <= params['to_port'] and proto in params['protocol'] and is_ip_in_cidr(cidr, params['cidr_blocks'])) or \
-       (params['from_port'] > params['to_port'] and params['to_port'] <= port <= params['from_port'] or proto in params['protocol'] and is_ip_in_cidr(cidr, params['cidr_blocks'])) or \
-       (params['from_port'] == params['to_port'] and params['from_port'] == port and proto in params['protocol'] and is_ip_in_cidr(cidr, params['cidr_blocks'])):
-        return True
-
-    raise AssertionError('Found {}/{} in {}/{}-{} for {}'.format(proto, port, params['protocol'], params['from_port'], params['to_port'], params['cidr_blocks']))
-
+    port = int(port)
+    if port >= params['from_port'] and port <= params['to_port'] and proto in params['protocol'] and is_ip_in_cidr(cidr, params['cidr_blocks']):
+        raise AssertionError('Found {}/{} in {}/{}-{} for {}'.format(proto, port, params['protocol'], params['from_port'], params['to_port'], params['cidr_blocks']))
 
 def change_value_in_dict(target_dictionary, path_to_change, value_to_change):
     if type(path_to_change) is str:
