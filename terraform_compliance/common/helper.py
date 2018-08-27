@@ -48,18 +48,12 @@ def check_if_cidr( value ):
     return False
 
 
-def is_ip_in_cidr( ip_cidr, cidr ):
-    return_value = False
-    cidr = eval(cidr)
-    if type(cidr) is list:
-        for ip_network in cidr:
-            if IPNetwork(ip_cidr) in IPNetwork(ip_network):
-                return_value = True
-    else:
-        if IPNetwork(ip_cidr) in IPNetwork(cidr):
-            return_value = True
+def is_ip_in_cidr(ip_cidr, cidr):
+    for ip_network in cidr:
+        if IPNetwork(ip_cidr) in IPNetwork(ip_network):
+            return True
 
-    return return_value
+    return False
 
 
 # A helper function that compares port related data with given dictionary
@@ -78,30 +72,23 @@ def check_sg_rules(tf_conf, security_group, proto, port, cidr):
     validate_sg_rule(proto=proto, port=port, cidr=cidr, params=assign_sg_params(security_group))
 
 def assign_sg_params(rule):
-    protocol = ''
-    from_port = 0
-    to_port = 0
-    cidr_blocks = None
+    from_port = int(rule.get('from_port', 0))
+    to_port = int(rule.get('to_port', 0))
+    protocol = [proto.lower() for proto in [rule.get('protocol', '-1')]]
 
-    for y in rule:
-        if y == 'protocol':
-            protocol = [rule[y]]
-            if protocol[0] == '-1':
-                protocol = ['tcp', 'udp']
+    if protocol[0] == '-1':
+        protocol = ['tcp', 'udp']
 
-        if y == 'from_port' and rule[y] > 0:
-            from_port = rule[y]
+    cidr_blocks = rule.get('cidr_blocks', [])
 
-        if y == 'to_port' and rule[y] > 0:
-            to_port = rule[y]
+    if type(cidr_blocks) is not list:
+        cidr_blocks = [cidr_blocks]
 
-        if y == 'cidr_blocks' and type(rule[y] is list):
-            cidr_blocks = rule[y]
 
     if to_port == 0 and from_port == 0:
         to_port = 65535
 
-    return dict(protocol=protocol, from_port=int(from_port), to_port=int(to_port), cidr_blocks=str(cidr_blocks))
+    return dict(protocol=protocol, from_port=from_port, to_port=to_port, cidr_blocks=cidr_blocks)
 
 
 def validate_sg_rule(proto, port, cidr, params):
