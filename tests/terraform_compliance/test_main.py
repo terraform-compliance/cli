@@ -1,5 +1,5 @@
 from unittest import TestCase
-from terraform_compliance.main import readable_dir
+from terraform_compliance.main import ReadableDir
 from mock import patch
 import os
 
@@ -10,7 +10,7 @@ class TestMain(TestCase):
         class Namespace(object):
             pass
 
-        resp = readable_dir('parser', 'value', 'git:value').__call__('parser', Namespace, 'git:value')
+        resp = ReadableDir('parser', 'value', 'git:value').__call__('parser', Namespace, 'git:value')
         self.assertEqual(Namespace.value, 'value')
         self.assertTrue(resp)
 
@@ -21,7 +21,7 @@ class TestMain(TestCase):
             pass
 
         with self.assertRaises(SystemExit):
-            readable_dir('parser','value','non_existing_dir').__call__('parser', Namespace, 'non_existing_dir')
+            ReadableDir('parser', 'value', 'non_existing_dir').__call__('parser', Namespace, 'non_existing_dir')
 
     @patch.object(os.path, 'isdir', return_value=True)
     @patch.object(os, 'access', return_value=True)
@@ -29,7 +29,7 @@ class TestMain(TestCase):
         class Namespace(object):
             pass
 
-        resp = readable_dir('parser', 'value', 'value').__call__('parser', Namespace, 'value')
+        resp = ReadableDir('parser', 'value', 'value').__call__('parser', Namespace, 'value')
         self.assertEqual(Namespace.value, 'value')
         self.assertTrue(resp)
 
@@ -40,7 +40,7 @@ class TestMain(TestCase):
             pass
 
         with self.assertRaises(SystemExit):
-            readable_dir('parser','value','non_accessible_dir').__call__('parser', Namespace, 'non_accessible_dir')
+            ReadableDir('parser', 'value', 'non_accessible_dir').__call__('parser', Namespace, 'non_accessible_dir')
 
 
     ''' 

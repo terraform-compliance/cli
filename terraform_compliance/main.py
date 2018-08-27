@@ -7,7 +7,7 @@ from tempfile import mkdtemp
 from git import Repo
 
 __app_name__ = "terraform-compliance"
-__version__ = "0.3.5"
+__version__ = "0.3.6"
 
 
 class ArgHandling(object):
@@ -16,7 +16,7 @@ class ArgHandling(object):
 #TODO: Handle all directory/protocol handling via a better class structure here.
 #TODO: Extend git: (on features or tf files argument) into native URLs instead of using a prefix here.
 
-class readable_dir(Action):
+class ReadableDir(Action):
     def __call__(self, parser, namespace, values, option_string=None):
         prospective_dir = values
 
@@ -44,9 +44,9 @@ def cli():
     argument = ArgHandling()
     parser = ArgumentParser(prog=__app_name__,
                             description="BDD Test Framework for Hashicorp terraform")
-    parser.add_argument("--features", "-f", dest="features", metavar='feature_directory', action=readable_dir,
+    parser.add_argument("--features", "-f", dest="features", metavar='feature_directory', action=ReadableDir,
                         help="Directory consists of BDD features", required=True)
-    parser.add_argument("--tfdir", "-t", dest="tf_dir", metavar='terraform_directory', action=readable_dir,
+    parser.add_argument("--tfdir", "-t", dest="tf_dir", metavar='terraform_directory', action=ReadableDir,
                         help="Directory (or git repository with 'git:' prefix) consists of Terraform Files", required=True)
     parser.add_argument("--version", "-v", action="version", version=__version__)
 
