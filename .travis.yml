@@ -15,7 +15,7 @@ jobs:
       provider: script
       script:
         - py.test -v
-        - coverage run --source terraform_compliance setup.py tests
+        - coverage run --source terraform_compliance setup.py test
 
     - stage: Code Quality
       addons:
