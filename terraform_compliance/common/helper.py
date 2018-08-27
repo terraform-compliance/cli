@@ -68,11 +68,7 @@ def check_port_cidr_ranges(tf_conf, security_group, proto, port, cidr):
     from_port = 0
     to_port = 0
     cidr_blocks = None
-    giveError = False
-
-    # This is because of resource_mounting
-    #if 'referenced_name' in security_group:
-    #    return
+    failed = False
 
     if 'cidr_blocks' in security_group:
         if type(security_group['cidr_blocks']) is list:
@@ -97,24 +93,18 @@ def check_port_cidr_ranges(tf_conf, security_group, proto, port, cidr):
         if y == 'to_port' and security_group[y] > 0:
             to_port = int(security_group[y])
 
-        if y == 'cidr_blocks':
-            if type(security_group[y] is list):
+        if y == 'cidr_blocks' and type(security_group[y] is list):
                 cidr_blocks = str(security_group[y])
 
     if int(to_port) == 0 and int(from_port) == 0:
         to_port = 65535
 
-    if int(to_port) > int(from_port):
-        if int(from_port) <= port <= int(to_port) and proto in protocol and is_ip_in_cidr(cidr, cidr_blocks):
-            giveError = True
-    elif int(from_port) > int(to_port):
-        if int(to_port) <= port <= int(from_port) or proto in protocol and is_ip_in_cidr(cidr, cidr_blocks):
-            giveError = True
-    elif int(from_port) == int(to_port):
-        if int(from_port) == port and proto in protocol and is_ip_in_cidr(cidr, cidr_blocks):
-            giveError = True
+    if (int(to_port) > int(from_port) and int(from_port) <= port <= int(to_port) and proto in protocol and is_ip_in_cidr(cidr, cidr_blocks)) or \
+       (int(from_port) > int(to_port) and int(to_port) <= port <= int(from_port) or proto in protocol and is_ip_in_cidr(cidr, cidr_blocks)) or  \
+       (int(from_port) == int(to_port) and int(from_port) == port and proto in protocol and is_ip_in_cidr(cidr, cidr_blocks)):
+        failed = True
 
-    if giveError:
+    if failed:
         raise AssertionError('Found {}/{} in {}/{}-{} for {}'.format(proto, port, protocol, from_port,
                                                                      to_port, cidr_blocks))
 
@@ -127,9 +117,6 @@ def change_value_in_dict(target_dictionary, path_to_change, value_to_change):
         return False
 
     path_to_adjust = '["{}"]'.format('"]["'.join(path_to_change))
-    path_to_check  = '["{}"]["type"]'.format('"]["'.join(path_to_change))
-    path_to_add    = '["{}"]'.format('"]["'.join(path_to_change[:-1]))
-
 
     try:
         target = eval('target_dictionary{}'.format(path_to_adjust))
@@ -142,8 +129,7 @@ def change_value_in_dict(target_dictionary, path_to_change, value_to_change):
 
                 if type_key not in target:
                     target[type_key] = list()
-                elif type_key in target:
-                    if type(target[type_key]) is not list:
+                elif type_key in target and type(target[type_key]) is not list:
                         target[type_key] = [target[type_key]]
 
                 target[type_key].append(source)
