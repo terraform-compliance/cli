@@ -63,12 +63,7 @@ def is_ip_in_cidr( ip_cidr, cidr ):
 
 
 # A helper function that compares port related data with given dictionary
-def check_port_cidr_ranges(tf_conf, security_group, proto, port, cidr):
-    protocol = ''
-    from_port = 0
-    to_port = 0
-    cidr_blocks = None
-    failed = False
+def check_sg_rules(tf_conf, security_group, proto, port, cidr):
 
     if 'cidr_blocks' in security_group:
         if type(security_group['cidr_blocks']) is list:
@@ -79,34 +74,43 @@ def check_port_cidr_ranges(tf_conf, security_group, proto, port, cidr):
             if not check_if_cidr(security_group['cidr_blocks']):
                 security_group['cidr_blocks'] = expand_variable(tf_conf, security_group['cidr_blocks'])['default']
 
-    #TODO: Add custom protocol support where HCL has numbers instead of protocol names like tcp, udp
-    #TODO: Add IP Range/Netmask check with the given CIDR.
-    for y in security_group:
+
+    validate_sg_rule(proto=proto, port=port, cidr=cidr, params=assign_sg_params(security_group))
+
+def assign_sg_params(rule):
+    protocol = ''
+    from_port = 0
+    to_port = 0
+    cidr_blocks = None
+
+    for y in rule:
         if y == 'protocol':
-            protocol = [security_group[y]]
+            protocol = [rule[y]]
             if protocol[0] == '-1':
                 protocol = ['tcp', 'udp']
 
-        if y == 'from_port' and security_group[y] > 0:
-            from_port = int(security_group[y])
+        if y == 'from_port' and rule[y] > 0:
+            from_port = rule[y]
 
-        if y == 'to_port' and security_group[y] > 0:
-            to_port = int(security_group[y])
+        if y == 'to_port' and rule[y] > 0:
+            to_port = rule[y]
 
-        if y == 'cidr_blocks' and type(security_group[y] is list):
-                cidr_blocks = str(security_group[y])
+        if y == 'cidr_blocks' and type(rule[y] is list):
+            cidr_blocks = rule[y]
 
-    if int(to_port) == 0 and int(from_port) == 0:
+    if to_port == 0 and from_port == 0:
         to_port = 65535
 
-    if (int(to_port) > int(from_port) and int(from_port) <= port <= int(to_port) and proto in protocol and is_ip_in_cidr(cidr, cidr_blocks)) or \
-       (int(from_port) > int(to_port) and int(to_port) <= port <= int(from_port) or proto in protocol and is_ip_in_cidr(cidr, cidr_blocks)) or  \
-       (int(from_port) == int(to_port) and int(from_port) == port and proto in protocol and is_ip_in_cidr(cidr, cidr_blocks)):
-        failed = True
+    return dict(protocol=protocol, from_port=int(from_port), to_port=int(to_port), cidr_blocks=str(cidr_blocks))
 
-    if failed:
-        raise AssertionError('Found {}/{} in {}/{}-{} for {}'.format(proto, port, protocol, from_port,
-                                                                     to_port, cidr_blocks))
+
+def validate_sg_rule(proto, port, cidr, params):
+    if (params['to_port'] > params['from_port'] and params['from_port'] <= port <= params['to_port'] and proto in params['protocol'] and is_ip_in_cidr(cidr, params['cidr_blocks'])) or \
+       (params['from_port'] > params['to_port'] and params['to_port'] <= port <= params['from_port'] or proto in params['protocol'] and is_ip_in_cidr(cidr, params['cidr_blocks'])) or \
+       (params['from_port'] == params['to_port'] and params['from_port'] == port and proto in params['protocol'] and is_ip_in_cidr(cidr, params['cidr_blocks'])):
+        return True
+
+    raise AssertionError('Found {}/{} in {}/{}-{} for {}'.format(proto, port, params['protocol'], params['from_port'], params['to_port'], params['cidr_blocks']))
 
 
 def change_value_in_dict(target_dictionary, path_to_change, value_to_change):

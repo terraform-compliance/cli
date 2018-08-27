@@ -24,17 +24,17 @@ class TestHelperFunctions(TestCase):
 
         self.assertEqual(flatten_list(a), b)
 
-    def test_check_port_cidr_ranges_port_fail(self):
+    def test_check_sg_rules_fail(self):
         pass
 
-    def test_check_port_cidr_ranges_port_passed_because_of_different_protocol(self):
+    def test_check_sg_rules_passed_because_of_different_protocol(self):
         pass
 
-    def test_check_port_cidr_ranges_port_fail_and_protocol_number_is_used(self):
+    def test_check_sg_rules_fail_and_protocol_number_is_used(self):
         pass
 
-    def test_check_port_cidr_ranges_port_not_fail_because_of_cidr(self):
+    def test_check_sg_rules_not_fail_because_of_cidr(self):
         pass
 
-    def test_check_port_cidr_ranges_port_fail_because_of_given_ip_is_a_member_of_cidr(self):
+    def test_check_sg_rules_fail_because_of_given_ip_is_a_member_of_cidr(self):
         pass

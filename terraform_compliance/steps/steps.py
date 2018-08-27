@@ -2,7 +2,7 @@
 
 from radish import step, world, custom_type, then, when, given
 from terraform_compliance.steps import untaggable_resources, regex, resource_name, encryption_property
-from terraform_compliance.common.helper import check_port_cidr_ranges
+from terraform_compliance.common.helper import check_sg_rules
 from terraform_compliance.extensions.terraform_validate import normalise_tag_values
 
 
@@ -111,6 +111,6 @@ def func(step, proto, port, cidr):
     for item in step.context.resources.properties:
         if type(item.property_value) is list:
             for security_group in item.property_value:
-                check_port_cidr_ranges(world.config.terraform.terraform_config, security_group, proto, port, cidr)
+                check_sg_rules(world.config.terraform.terraform_config, security_group, proto, port, cidr)
         else:
-            check_port_cidr_ranges(world.config.terraform.terraform_config, item.property_value, proto, port, cidr)
+            check_sg_rules(world.config.terraform.terraform_config, item.property_value, proto, port, cidr)
