@@ -6,7 +6,8 @@ from terraform_compliance.common.helper import (
     check_if_cidr,
     is_ip_in_cidr,
     assign_sg_params,
-    validate_sg_rule
+    validate_sg_rule,
+    change_value_in_dict
 )
 from tests.mocks import MockedData
 from copy import deepcopy
@@ -96,24 +97,12 @@ class TestHelperFunctions(TestCase):
 
             self.assertTrue('Found' in context.exception)
 
-    def test_validate_sg_rule_port_found_but_cidr_is_different(self):
-        pass
+    def test_change_value_in_dict_with_str_path(self):
+        target_dict = dict(key=dict(another_key='value'))
+        change_value_in_dict(target_dict, 'key', dict(added_key='added_value'))
+        self.assertEqual(target_dict, dict(key=dict(another_key='value', added_key='added_value')))
 
-    def test_validate_sg_rule_port_found_but_proto_is_different(self):
-        pass
-
-    def test_check_sg_rules_fail(self):
-        pass
-
-    def test_check_sg_rules_passed_because_of_different_protocol(self):
-        pass
-
-    def test_check_sg_rules_fail_and_protocol_number_is_used(self):
-        pass
-
-    def test_check_sg_rules_not_fail_because_of_cidr(self):
-        pass
-
-    def test_check_sg_rules_fail_because_of_given_ip_is_a_member_of_cidr(self):
-        pass
-
+    def test_change_value_in_dict_with_dict_path(self):
+        target_dict = dict(key=dict(another_key='value'))
+        change_value_in_dict(target_dict, ['key'], dict(added_key='added_value'))
+        self.assertEqual(target_dict, dict(key=dict(another_key='value', added_key='added_value')))
