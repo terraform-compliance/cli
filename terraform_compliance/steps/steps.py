@@ -101,9 +101,6 @@ def func(step):
 
 @step(u'it must not have {proto} protocol and port {port:d} for {cidr:ANY}')
 def func(step, proto, port, cidr):
-    if not step.context.resources.resource_list:
-        return
-
     proto = str(proto)
     port = int(port)
     cidr = str(cidr)
