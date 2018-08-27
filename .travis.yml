@@ -1,9 +1,10 @@
 language: python
 python:
   - '2.7'
+services:
+  - docker
 cache:
   pip: true
-  custom_install: true
 jobs:
   include:
     - stage: Tests
@@ -71,11 +72,3 @@ jobs:
           on:
             branch: master
             fork: false
-
-
-            sonar-scanner \
-              -Dsonar.projectKey=terraform-compliance \
-              -Dsonar.organization=eerkunt-github \
-              -Dsonar.sources=. \
-              -Dsonar.host.url=https://sonarcloud.io \
-              -Dsonar.login=c6ce2f98332dc27da056fd15ae27f445f888818e
