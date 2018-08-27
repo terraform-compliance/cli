@@ -74,10 +74,15 @@ def check_sg_rules(tf_conf, security_group, proto, port, cidr):
 def assign_sg_params(rule):
     from_port = int(rule.get('from_port', 0))
     to_port = int(rule.get('to_port', 0))
-    protocol = [proto.lower() for proto in [rule.get('protocol', '-1')]]
 
-    if protocol[0] == '-1':
+    protocol = [proto for proto in [rule.get('protocol', '-1')]]
+
+    # TODO: Make IANA Protocol numbers matching here.
+    # http://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml
+    if protocol[0] == '-1' or type(protocol[0]) is int:
         protocol = ['tcp', 'udp']
+
+    protocol[0] = protocol[0].lower()
 
     cidr_blocks = rule.get('cidr_blocks', [])
 
