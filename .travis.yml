@@ -6,7 +6,7 @@ cache:
   custom_install: true
 jobs:
   include:
-    - stage: Test
+    - stage: Tests
       provider: script
       script: py.test -v
 
@@ -17,7 +17,7 @@ jobs:
           token: $SONAR_LOGIN
       script:
         - "echo 'Scanning source code with SonarCloud'"
-        - sonar-scanner
+        - sonar-scanner -Dsonar.projectKey=terraform-compliance -Dsonar.organization=eerkunt-github -Dsonar.sources=. -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_LOGIN
 
     - stage: Build & Deploy (PYPI)
       script: "echo 'PYPI Build & Deploy'"
@@ -71,3 +71,11 @@ jobs:
           on:
             branch: master
             fork: false
+
+
+            sonar-scanner \
+              -Dsonar.projectKey=terraform-compliance \
+              -Dsonar.organization=eerkunt-github \
+              -Dsonar.sources=. \
+              -Dsonar.host.url=https://sonarcloud.io \
+              -Dsonar.login=c6ce2f98332dc27da056fd15ae27f445f888818e
