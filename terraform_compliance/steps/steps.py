@@ -14,16 +14,17 @@ def arg_exp_for_secure_text(text):
 @given(u'I have {resource:ANY} defined')
 def define_a_resource(step, resource):
     world.config.terraform.error_if_property_missing()
+
     if (resource in resource_name.keys()):
         resource = resource_name[resource]
 
     step.context.resource_type = resource
-    step.context.stash = step.context.resources = world.config.terraform.resources(resource)
+    step.context.stash = world.config.terraform.resources(resource)
 
 
 @step(u'I {action_type:ANY} them')
 def i_action_them(step, action_type):
-    if not step.context.resources.resource_list:
+    if not step.context.stash.resource_list:
         return
 
     if action_type == "count":
@@ -36,7 +37,7 @@ def i_action_them(step, action_type):
 
 @step(u'I expect the result is {operator:ANY} than {number:d}')
 def func(step, operator, number):
-    if not step.context.resources.resource_list:
+    if not step.context.stash.resource_list:
         return
 
     value = int(step.context.stash)
@@ -55,7 +56,7 @@ def func(step, operator, number):
 
 @step(u'it {condition:ANY} contain {something:ANY}')
 def func(step, condition, something):
-    if not step.context.resources.resource_list:
+    if not step.context.stash.resource_list:
         return
 
     if condition == 'must':
@@ -65,21 +66,21 @@ def func(step, condition, something):
         something = resource_name[something]
 
     step.context.resource_type = something
-    step.context.resources = step.context.resources.property(something)
+    step.context.stash = step.context.stash.property(something)
 
     if condition == 'must':
-        assert step.context.resources.properties
+        assert step.context.stash.properties
 
 
 @step(u'encryption is enabled')
 @step(u'encryption must be enabled')
 def func(step):
-    if not step.context.resources.resource_list:
+    if not step.context.stash.resource_list:
         return
 
     world.config.terraform.error_if_property_missing()
     prop = encryption_property[step.context.resource_type]
-    step.context.resources.property(prop).should_equal(True)
+    step.context.stash.property(prop).should_equal(True)
 
 
 @step(u'its value must match the "{regex_type}" regex')
@@ -96,7 +97,7 @@ def func(step):
     if not step.context.resources.resource_list:
         return
 
-    step.context.resources.property(step.context.search_value).should_match_regex('\${var.(.*)}')
+    step.context.stash.property(step.context.search_value).should_match_regex('\${var.(.*)}')
 
 
 @step(u'it must not have {proto} protocol and port {port:d} for {cidr:ANY}')
@@ -105,7 +106,7 @@ def func(step, proto, port, cidr):
     port = int(port)
     cidr = str(cidr)
 
-    for item in step.context.resources.properties:
+    for item in step.context.stash.properties:
         if type(item.property_value) is list:
             for security_group in item.property_value:
                 check_sg_rules(world.config.terraform.terraform_config, security_group, proto, port, cidr)
