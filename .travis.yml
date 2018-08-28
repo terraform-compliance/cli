@@ -27,7 +27,7 @@ jobs:
         - coverage erase
         - coverage run --branch --source=terraform_compliance setup.py test
         - coverage xml -i
-        - sonar-scanner -Dsonar.projectKey=terraform-compliance -Dsonar.organization=eerkunt-github -Dsonar.sources=. -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_LOGIN
+        - sonar-scanner -Dsonar.projectKey=terraform-compliance -Dsonar.organization=eerkunt-github -Dsonar.sources=. -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_LOGIN -Dsonar.python.coverage.reportPath=coverage.xml
 
     - stage: Build & Deploy (PYPI)
       script: "echo 'PYPI Build & Deploy'"
