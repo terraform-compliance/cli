@@ -24,7 +24,7 @@ def define_a_resource(step, resource):
 
 @step(u'I {action_type:ANY} them')
 def i_action_them(step, action_type):
-    if not step.context.stash.resource_list:
+    if hasattr(step.context.resources, 'resource_list') and not step.context.resource.resource_list:
         return
 
     if action_type == "count":
@@ -37,7 +37,7 @@ def i_action_them(step, action_type):
 
 @step(u'I expect the result is {operator:ANY} than {number:d}')
 def func(step, operator, number):
-    if not step.context.stash.resource_list:
+    if hasattr(step.context.resources, 'resource_list') and not step.context.resource.resource_list:
         return
 
     value = int(step.context.stash)
@@ -56,7 +56,7 @@ def func(step, operator, number):
 
 @step(u'it {condition:ANY} contain {something:ANY}')
 def func(step, condition, something):
-    if not step.context.stash.resource_list:
+    if hasattr(step.context.resources, 'resource_list') and not step.context.resource.resource_list:
         return
 
     if condition == 'must':
@@ -75,7 +75,7 @@ def func(step, condition, something):
 @step(u'encryption is enabled')
 @step(u'encryption must be enabled')
 def func(step):
-    if not step.context.stash.resource_list:
+    if hasattr(step.context.resources, 'resource_list') and not step.context.resource.resource_list:
         return
 
     world.config.terraform.error_if_property_missing()
@@ -85,7 +85,7 @@ def func(step):
 
 @step(u'its value must match the "{regex_type}" regex')
 def func(step, regex_type):
-    if not step.context.resources.resource_list:
+    if hasattr(step.context.resources, 'resource_list') and not step.context.resource.resource_list:
         return
 
     normalise_tag_values(step.context.properties)
@@ -94,7 +94,7 @@ def func(step, regex_type):
 
 @step(u'its value must be set by a variable')
 def func(step):
-    if not step.context.resources.resource_list:
+    if hasattr(step.context.resources, 'resource_list') and not step.context.resource.resource_list:
         return
 
     step.context.stash.property(step.context.search_value).should_match_regex('\${var.(.*)}')
