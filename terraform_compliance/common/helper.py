@@ -2,7 +2,7 @@ import re
 from netaddr import IPNetwork
 
 
-# A helper function that will be used to flattan a multi-dimensional multi-nested list
+# A helper function that will be used to flatten a multi-dimensional multi-nested list
 def flatten_list(input):
     new_list = []
     for i in input:
