@@ -20,13 +20,13 @@ class ArgHandling(object):
 #TODO: Extend git: (on features or tf files argument) into native URLs instead of using a prefix here.
 
 class ReadableDir(Action):
-    def __init__(self, **kwargs):
-        super(ReadableDir, self).__init__(**kwargs)
-        self.dest = kwargs['dest']
-        self.required = kwargs['required']
-        self.help = kwargs['help']
-        self.option_strings = kwargs['option_strings']
-        self.metavar = kwargs['metavar']
+    def __init__(self, dest, required, help, option_strings=None, metavar=None):
+        super(ReadableDir, self).__init__(dest, required, help, option_strings, metavar)
+        self.dest = dest
+        self.required = required
+        self.help = help
+        self.option_strings = option_strings
+        self.metavar = metavar
 
     def __call__(self, parser, namespace, values, option_string=None):
         prospective_dir = values
