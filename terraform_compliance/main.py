@@ -1,10 +1,11 @@
 import sys
 import os
 from argparse import ArgumentParser, Action
-from terraform_compliance import Validator
 from radish.main import main as call_radish
 from tempfile import mkdtemp
 from git import Repo
+from terraform_compliance.common.pyhcl_helper import load_tf_files
+
 
 __app_name__ = "terraform-compliance"
 __version__ = "0.3.6"
@@ -17,6 +18,14 @@ class ArgHandling(object):
 #TODO: Extend git: (on features or tf files argument) into native URLs instead of using a prefix here.
 
 class ReadableDir(Action):
+    def __init__(self, **kwargs):
+        super(ReadableDir, self).__init__(**kwargs)
+        self.dest = kwargs['dest']
+        self.required = kwargs['required']
+        self.help = kwargs['help']
+        self.option_strings = kwargs['option_strings']
+        self.metavar = kwargs['metavar']
+
     def __call__(self, parser, namespace, values, option_string=None):
         prospective_dir = values
 
@@ -77,16 +86,7 @@ def cli():
                 '--user-data=tf_dir={}'.format(tf_directory)]
     commands.extend(radish_arguments)
 
-    try:
-        print('Validating terraform files.')
-        Validator(tf_directory)
-        print('All HCL files look good.')
-
-    except ValueError:
-        print('Unable to validate Terraform Files.')
-        print('ERROR: {}'.format(sys.exc_info()[1]))
-        sys.exit(1)
-
+    load_tf_files(tf_directory)
     print('Running tests.')
     return call_radish(args=commands[1:])
 
