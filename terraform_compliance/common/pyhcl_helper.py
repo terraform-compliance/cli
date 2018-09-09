@@ -25,7 +25,8 @@ def load_tf_files(tf_directory):
             exit(1)
         except TerraformSyntaxException:
             pad_invalid_tf_files(exc_info()[1])
-            result = False
+
+    return result
 
 
 def pad_invalid_tf_files(exception_message):
@@ -34,6 +35,9 @@ def pad_invalid_tf_files(exception_message):
         filename = exception_message[0].split(' ')[-1:][0]
         print('Invalid HCL file: {}. Fixing it.'.format(filename))
         pad_tf_file(filename)
+        return True
+
+    return False
 
 
 def pad_tf_file(file):
