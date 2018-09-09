@@ -2,6 +2,7 @@ from sys import exc_info, exit
 from os.path import isdir
 from terraform_compliance import Validator
 from terraform_validate.terraform_validate import TerraformSyntaxException
+from shutil import rmtree
 
 
 def load_tf_files(tf_directory):
@@ -9,9 +10,7 @@ def load_tf_files(tf_directory):
     print('Reading terraform files.')
 
     if isdir('{}/.terraform'.format(tf_directory)):
-        print('ERROR: You already have a .terraform directory within your terraform files.')
-        print('       This will lead to run tests against those imported modules. Please delete the directory to continue.')
-        exit(2)
+        rmtree('{}/.terraform'.format(tf_directory))
 
     while result is False:
         try:
