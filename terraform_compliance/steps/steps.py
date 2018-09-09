@@ -4,7 +4,8 @@ from radish import step, world, custom_type, given
 from terraform_compliance.steps import resource_name, encryption_property
 from terraform_compliance.common.helper import check_sg_rules
 from terraform_compliance.extensions.terraform_validate import normalise_tag_values
-
+from terraform_validate.terraform_validate import TerraformPropertyList, TerraformResourceList
+import re
 
 # New Arguments
 @custom_type("ANY", r"[\.\/_\-A-Za-z0-9\s]+")
@@ -17,6 +18,7 @@ def define_a_resource(step, resource):
         resource = resource_name[resource]
 
     step.context.resource_type = resource
+    step.context.defined_resource = resource
     step.context.stash = world.config.terraform.resources(resource)
 
 
@@ -57,19 +59,27 @@ def it_contain(step, condition, something):
     if hasattr(step.context.stash, 'resource_list') and not step.context.stash.resource_list:
         return
 
-    if condition == 'must':
-        step.context.stash.should_have_properties(something)
+    if step.context.stash.__class__ is TerraformPropertyList:
+        for property in step.context.stash.properties:
+            assert property.property_value == something, \
+                '{} property in {} can not be found in {} ({}). It is set to {} instead'.format(something,
+                                                                                                property.property_name,
+                                                                                                property.resource_name,
+                                                                                                property.resource_type,
+                                                                                                property.property_value)
 
-    if something in resource_name.keys():
-        something = resource_name[something]
+    elif step.context.stash.__class__ is TerraformResourceList:
+        if condition == 'must':
+            step.context.stash.should_have_properties(something)
 
-    if type(something) not in [str, unicode]:
-        step.context.resource_type = something
+        if something in resource_name.keys():
+            something = resource_name[something]
 
-    step.context.stash = step.context.stash.property(something)
+        step.context.stash = step.context.stash.property(something)
 
-    if condition == 'must':
-        assert step.context.stash.properties
+        if condition == 'must':
+            assert step.context.stash.properties, \
+                '{} doesnt have a property list.'.format(something)
 
 
 @step(u'encryption is enabled')
@@ -82,13 +92,27 @@ def encryption_is_enabled(step):
     step.context.stash.property(prop).should_equal(True)
 
 
-@step(u'its value must match the "{regex_type}" regex')
-def func(step, regex_type):
-    if  hasattr(step.context.stash, 'resource_list') or not step.context.stash.resource_list:
+@step(u'its value must match the "{search_regex}" regex')
+def func(step, search_regex):
+    if hasattr(step.context.stash, 'resource_list') and not step.context.stash.resource_list:
         return
 
-    normalise_tag_values(step.context.properties)
-    step.context.properties.property(regex_type).should_match_regex(step.context.regex)
+    normalise_tag_values(step.context.stash)
+    regex = r'/{}/'.format(search_regex)
+
+    for property in step.context.stash.properties:
+        if type(property.property_value) in [str, unicode]:
+            property.property_value = [property.property_value]
+        elif type(property.property_value) is dict:
+            property.property_value = property.property_value.values()
+
+        for value in property.property_value:
+            matches = re.match(regex, value)
+            assert matches is not None, \
+                '{} property in {} does not match with {} regex. It is set to {} instead.'.format(property.property_name,
+                                                                                                  property.resource_name,
+                                                                                                  search_regex,
+                                                                                                  value)
 
 
 @step(u'its value must be set by a variable')

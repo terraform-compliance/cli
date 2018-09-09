@@ -11,7 +11,7 @@ class TestMain(TestCase):
             pass
 
         resp = ReadableDir('parser', 'value', 'git:value').__call__('parser', Namespace, 'git:value')
-        self.assertEqual(Namespace.parser, 'value')
+        self.assertEqual(Namespace.value, 'value')
         self.assertTrue(resp)
 
 
@@ -30,7 +30,7 @@ class TestMain(TestCase):
             pass
 
         resp = ReadableDir('parser', 'value', 'value').__call__('parser', Namespace, 'value')
-        self.assertEqual(Namespace.parser, 'value')
+        self.assertEqual(Namespace.value, 'value')
         self.assertTrue(resp)
 
     @patch.object(os.path, 'isdir', return_value=True)
