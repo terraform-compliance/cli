@@ -83,7 +83,7 @@ def cli():
         tf_git_repo = argument.tf_dir
         Repo.clone_from(tf_git_repo, tf_tmp_dir)
 
-    # A local direcotry is used here
+    # A local directory is used here
     else:
         # Copy the given local directory to another place, since we may change some tf files for compatibility.
         copy_tree(argument.tf_dir, tf_tmp_dir)
