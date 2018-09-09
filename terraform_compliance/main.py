@@ -10,7 +10,7 @@ from shutil import rmtree
 
 
 __app_name__ = "terraform-compliance"
-__version__ = "0.3.6"
+__version__ = "0.3.7"
 
 
 class ArgHandling(object):
