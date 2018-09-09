@@ -20,7 +20,7 @@ class ArgHandling(object):
 #TODO: Extend git: (on features or tf files argument) into native URLs instead of using a prefix here.
 
 def cli():
-    argument = ArgHandling()
+    args = ArgHandling()
     parser = ArgumentParser(prog=__app_name__,
                             description="BDD Test Framework for Hashicorp terraform")
     parser.add_argument("--features", "-f", dest="features", metavar='feature_directory', action=ReadableDir,
@@ -30,7 +30,7 @@ def cli():
                         required=True)
     parser.add_argument("--version", "-v", action="version", version=__version__)
 
-    _, radish_arguments = parser.parse_known_args(namespace=argument)
+    _, radish_arguments = parser.parse_known_args(namespace=args)
 
     print('{} v{} initiated'.format(__app_name__, __version__))
 
@@ -38,27 +38,27 @@ def cli():
     print('Steps    : {}'.format(steps_directory))
 
     # A remote repository used here
-    if argument.features.startswith('http'):
-        features_git_repo = argument.features
-        argument.features = mkdtemp()
-        Repo.clone_from(features_git_repo, argument.features)
-    features_directory = os.path.join(os.path.abspath(argument.features))
+    if args.features.startswith('http'):
+        features_git_repo = args.features
+        args.features = mkdtemp()
+        Repo.clone_from(features_git_repo, args.features)
+    features_directory = os.path.join(os.path.abspath(args.features))
     print('Features : {}{}'.format(features_directory, (' ({})'.format(features_git_repo) if 'features_git_repo' in locals() else '')))
 
     tf_tmp_dir = mkdtemp()
 
     # A remote repository is used here.
-    if argument.tf_dir.startswith('http'):
-        tf_git_repo = argument.tf_dir
+    if args.tf_dir.startswith('http'):
+        tf_git_repo = args.tf_dir
         Repo.clone_from(tf_git_repo, tf_tmp_dir)
 
     # A local directory is used here
     else:
         # Copy the given local directory to another place, since we may change some tf files for compatibility.
-        copy_tree(argument.tf_dir, tf_tmp_dir)
+        copy_tree(args.tf_dir, tf_tmp_dir)
 
     tf_directory = os.path.join(os.path.abspath(tf_tmp_dir))
-    print('TF Files : {} ({})'.format(tf_directory, argument.tf_dir))
+    print('TF Files : {} ({})'.format(tf_directory, args.tf_dir))
 
     commands = ['radish',
                 '--write-steps-once',
