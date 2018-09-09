@@ -10,7 +10,7 @@ from terraform_compliance.common.readable_dir import ReadableDir
 
 
 __app_name__ = "terraform-compliance"
-__version__ = "0.3.7"
+__version__ = "0.3.8"
 
 
 class ArgHandling(object):
@@ -26,7 +26,8 @@ def cli():
     parser.add_argument("--features", "-f", dest="features", metavar='feature_directory', action=ReadableDir,
                         help="Directory consists of BDD features", required=True)
     parser.add_argument("--tfdir", "-t", dest="tf_dir", metavar='terraform_directory', action=ReadableDir,
-                        help="Directory (or git repository with 'git:' prefix) consists of Terraform Files", required=True)
+                        help="Directory (or git repository with 'git:' prefix) consists of Terraform Files",
+                        required=True)
     parser.add_argument("--version", "-v", action="version", version=__version__)
 
     _, radish_arguments = parser.parse_known_args(namespace=argument)
@@ -60,6 +61,7 @@ def cli():
     print('TF Files : {} ({})'.format(tf_directory, argument.tf_dir))
 
     commands = ['radish',
+                '--write-steps-once',
                 features_directory,
                 '--basedir', steps_directory,
                 '--user-data=tf_dir={}'.format(tf_directory)]
