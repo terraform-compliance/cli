@@ -1,13 +1,16 @@
-import sys
 import os
-from argparse import ArgumentParser, Action
-from terraform_compliance import Validator
+from argparse import ArgumentParser
 from radish.main import main as call_radish
 from tempfile import mkdtemp
 from git import Repo
+from terraform_compliance.common.pyhcl_helper import load_tf_files
+from distutils.dir_util import copy_tree
+from shutil import rmtree
+from terraform_compliance.common.readable_dir import ReadableDir
+
 
 __app_name__ = "terraform-compliance"
-__version__ = "0.3.6"
+__version__ = "0.3.7"
 
 
 class ArgHandling(object):
@@ -15,30 +18,6 @@ class ArgHandling(object):
 
 #TODO: Handle all directory/protocol handling via a better class structure here.
 #TODO: Extend git: (on features or tf files argument) into native URLs instead of using a prefix here.
-
-class ReadableDir(Action):
-    def __call__(self, parser, namespace, values, option_string=None):
-        prospective_dir = values
-
-        # Check if the given directory is actually a git repo
-        if prospective_dir.startswith('git:'):
-            print('Using remote git repository: {}'.format(prospective_dir[4:]))
-            setattr(namespace, self.dest, prospective_dir[4:])
-            return True
-
-        # Check if the given path is a directory really
-        if not os.path.isdir(prospective_dir):
-            print('ERROR: {} is not a directory.'.format(prospective_dir))
-            sys.exit(1)
-
-        # Check if we have access to that directory
-        if os.access(prospective_dir, os.R_OK):
-            setattr(namespace, self.dest, prospective_dir)
-            return True
-
-        print('ERROR: Can not read {}'.format(prospective_dir))
-        sys.exit(1)
-
 
 def cli():
     argument = ArgHandling()
@@ -57,6 +36,7 @@ def cli():
     steps_directory = os.path.join(os.path.split(os.path.abspath(__file__))[0], 'steps')
     print('Steps    : {}'.format(steps_directory))
 
+    # A remote repository used here
     if argument.features.startswith('http'):
         features_git_repo = argument.features
         argument.features = mkdtemp()
@@ -64,12 +44,20 @@ def cli():
     features_directory = os.path.join(os.path.abspath(argument.features))
     print('Features : {}{}'.format(features_directory, (' ({})'.format(features_git_repo) if 'features_git_repo' in locals() else '')))
 
+    tf_tmp_dir = mkdtemp()
+
+    # A remote repository is used here.
     if argument.tf_dir.startswith('http'):
         tf_git_repo = argument.tf_dir
-        argument.tf_dir = mkdtemp()
-        Repo.clone_from(tf_git_repo, argument.tf_dir)
-    tf_directory = os.path.join(os.path.abspath(argument.tf_dir))
-    print('TF Files : {}{}'.format(tf_directory, (' ({})'.format(tf_git_repo) if 'tf_git_repo' in locals() else '')))
+        Repo.clone_from(tf_git_repo, tf_tmp_dir)
+
+    # A local directory is used here
+    else:
+        # Copy the given local directory to another place, since we may change some tf files for compatibility.
+        copy_tree(argument.tf_dir, tf_tmp_dir)
+
+    tf_directory = os.path.join(os.path.abspath(tf_tmp_dir))
+    print('TF Files : {} ({})'.format(tf_directory, argument.tf_dir))
 
     commands = ['radish',
                 features_directory,
@@ -77,22 +65,14 @@ def cli():
                 '--user-data=tf_dir={}'.format(tf_directory)]
     commands.extend(radish_arguments)
 
-    try:
-        print('Validating terraform files.')
-        Validator(tf_directory)
-        print('All HCL files look good.')
-
-    except ValueError:
-        print('Unable to validate Terraform Files.')
-        print('ERROR: {}'.format(sys.exc_info()[1]))
-        sys.exit(1)
-
+    load_tf_files(tf_directory)
     print('Running tests.')
-    return call_radish(args=commands[1:])
+    result = call_radish(args=commands[1:])
+
+    # Delete temporary directory we created
+    print('Cleaning up.')
+    rmtree(tf_directory)
 
 
 if __name__ == '__main__':
     cli()
-
-#TODO: Implement a cleanup for temporary directories since they are not deleted.
-#TODO: If .terraform directory exist in '.' the just exit with a different exit code.

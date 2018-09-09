@@ -1,3 +1,6 @@
+from terraform_validate.terraform_validate import TerraformSyntaxException
+from os.path import exists
+from os import remove, environ
 
 
 class MockedData(object):
@@ -233,3 +236,19 @@ class MockedData(object):
     sg_params_ssh_with_2_cidrs_any_proto = dict(protocol=['tcp', 'udp'], from_port=22, to_port=22, cidr_blocks=['213.86.221.35/32', '195.99.231.117/32'])
     sg_params_all_port_all_ip = dict(protocol=['tcp'], from_port=0, to_port=65535, cidr_blocks=['0.0.0.0/0'])
     sg_params_all_port_no_ip = dict(protocol=['tcp', 'udp'], from_port=0, to_port=65535, cidr_blocks=[])
+
+
+class MockedValidator(object):
+    def __init__(self, directory):
+        global state_file
+
+        if directory == 'valueerror':
+            raise ValueError('detailed message')
+        elif directory == 'syntaxexception':
+            state_key = 'MockedValidator.state'
+            state = environ.get(state_key, None)
+            if state:
+                pass
+            else:
+                environ[state_key] = '1'
+                raise TerraformSyntaxException('detailed message')
