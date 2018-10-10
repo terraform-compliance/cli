@@ -1,4 +1,4 @@
-import os
+9import os
 from argparse import ArgumentParser
 from radish.main import main as call_radish
 from tempfile import mkdtemp
@@ -10,7 +10,7 @@ from terraform_compliance.common.readable_dir import ReadableDir
 
 
 __app_name__ = "terraform-compliance"
-__version__ = "0.3.8"
+__version__ = "0.3.9"
 
 
 class ArgHandling(object):
