@@ -27,11 +27,11 @@ jobs:
         - coverage erase
         - coverage run --branch --source=terraform_compliance setup.py test
         - coverage xml -i
-        - sonar-scanner -Dsonar.projectKey=terraform-compliance -Dsonar.organization=eerkunt-github -Dsonar.sources=. -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_LOGIN -Dsonar.exclusions=tests/terraform_compliance/** -Dsonar.python.coverage.reportPath=coverage.xml
+        - sonar-scanner -Dsonar.projectKey=terraform-compliance -Dsonar.organization=eerkunt-github -Dsonar.sources=. -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_LOGIN -Dsonar.exclusions=tests/** -Dsonar.python.coverage.reportPath=coverage.xml
 
     - stage: Build & Deploy (PYPI)
       script: "echo 'PYPI Build & Deploy'"
-      if: branch = master
+      if: branch = master AND type != pull_request
       deploy:
           skip_cleanup: true
           provider: pypi
@@ -44,7 +44,7 @@ jobs:
 
     - stage: Build & Deploy (Docker)
       provider: script
-      if: branch = master
+      if: branch = master AND type != pull_request and fork = false
       script:
         - echo "Docker Build & Deploy"
         - echo "export RELEASE_VERSION=$(cat /home/travis/build/eerkunt/terraform-compliance/terraform_compliance/main.py | grep -e "__version__ = \".*\"" | cut -d " " -f3 | tr -d "\"")" > reqs.sh
@@ -63,7 +63,7 @@ jobs:
 
     - stage: Release (GitHub)
       script: "echo 'Releasing to GitHub'"
-      if: branch = master
+      if: branch = master AND type != pull_request and fork = false
       before_deploy:
           - git config --local user.name "Emre Erkunt" || travis_terminate 1
           - git config --local user.email "emre.erkunt@gmail.com" || travis_terminate 1
