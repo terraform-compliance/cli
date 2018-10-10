@@ -1,4 +1,4 @@
-9import os
+import os
 from argparse import ArgumentParser
 from radish.main import main as call_radish
 from tempfile import mkdtemp
