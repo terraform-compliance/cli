@@ -10,7 +10,7 @@ from terraform_compliance.common.readable_dir import ReadableDir
 
 
 __app_name__ = "terraform-compliance"
-__version__ = "0.3.8"
+__version__ = "0.3.9"
 
 
 class ArgHandling(object):
