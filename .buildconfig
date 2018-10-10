@@ -1,0 +1,10 @@
+[default]
+name=Default
+runtime=host
+config-opts=
+run-opts=
+prefix=/home/mikec/.cache/gnome-builder/install/terraform_compliance/host
+app-id=
+postbuild=
+prebuild=
+default=true
