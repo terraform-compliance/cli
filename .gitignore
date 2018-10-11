@@ -1,3 +1,5 @@
+.vscode
+*.code-workspace
 venv
 *,cover
 coverage.xml
