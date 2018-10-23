@@ -57,6 +57,8 @@ optional arguments:
                         Directory consists of BDD features
   --tfdir terraform_directory, -t terraform_directory
                         Directory consists of Terraform Files
+  --identity ssh_private_key, -i ssh_private_key
+                        SSH Private key file used for GIT authentication
 ```
 
 You can also push additional arguments that is specific for `radish`. Just to explain how it works ;
@@ -110,6 +112,16 @@ or if all of your features/terraform files are in a remote git repository, you c
                             -t git:https://some.git.repository/terraform-repo.git
 ```
 
+## Running terraform-compliance with private GIT repositories
+terraform-compliance 0.4.0 supports ssh authentication via git repositories. All you need to do is using `-i` flag and
+pointing your ssh private key for git authentication
+
+```
+~# terraform-compliance -f /path/to/features -t git:ssh://fqdn/path/go/repo.git -i /path/to/private.key
+```
+
+If you already configured your `~/.ssh/config` and pointing remote host, and private key file, you don't even need to
+use `-i` argument, it will be used automatically.
 
 ## Example
 ![Example Run](terraform-compliance-demo.gif)

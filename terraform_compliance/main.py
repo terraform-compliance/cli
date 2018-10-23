@@ -10,14 +10,11 @@ from terraform_compliance.common.readable_dir import ReadableDir
 
 
 __app_name__ = "terraform-compliance"
-__version__ = "0.3.10"
+__version__ = "0.4.0"
 
 
 class ArgHandling(object):
     pass
-
-#TODO: Handle all directory/protocol handling via a better class structure here.
-#TODO: Extend git: (on features or tf files argument) into native URLs instead of using a prefix here.
 
 def cli():
     args = ArgHandling()
@@ -28,6 +25,8 @@ def cli():
     parser.add_argument("--tfdir", "-t", dest="tf_dir", metavar='terraform_directory', action=ReadableDir,
                         help="Directory (or git repository with 'git:' prefix) consists of Terraform Files",
                         required=True)
+    parser.add_argument("--identity", "-i", dest="ssh_key", metavar='ssh_private_key', type=str, nargs='?',
+                        help="SSH Private key that will be use on git authentication.", required=False)
     parser.add_argument("--version", "-v", action="version", version=__version__)
 
     _, radish_arguments = parser.parse_known_args(namespace=args)
@@ -37,20 +36,26 @@ def cli():
     steps_directory = os.path.join(os.path.split(os.path.abspath(__file__))[0], 'steps')
     print('Steps    : {}'.format(steps_directory))
 
+    # SSH Key is given for git authentication
+    ssh_cmd = {}
+    if args.ssh_key:
+        ssh_cmd = {"GIT_SSH_COMMAND": "ssh -l {} -i {}".format('git', args.ssh_key)}
+
     # A remote repository used here
-    if args.features.startswith('http'):
+    if args.features.startswith(('http', 'https', 'ssh')):
         features_git_repo = args.features
         args.features = mkdtemp()
-        Repo.clone_from(features_git_repo, args.features)
+
+        Repo.clone_from(url=features_git_repo, to_path=args.features, env=ssh_cmd)
     features_directory = os.path.join(os.path.abspath(args.features))
     print('Features : {}{}'.format(features_directory, (' ({})'.format(features_git_repo) if 'features_git_repo' in locals() else '')))
 
     tf_tmp_dir = mkdtemp()
 
     # A remote repository is used here.
-    if args.tf_dir.startswith('http'):
+    if args.tf_dir.startswith(('http', 'https', 'ssh')):
         tf_git_repo = args.tf_dir
-        Repo.clone_from(tf_git_repo, tf_tmp_dir)
+        Repo.clone_from(url=tf_git_repo, to_path=tf_tmp_dir, env=ssh_cmd)
 
     # A local directory is used here
     else:
