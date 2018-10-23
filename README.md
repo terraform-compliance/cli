@@ -120,6 +120,9 @@ pointing your ssh private key for git authentication
 ~# terraform-compliance -f /path/to/features -t git:ssh://fqdn/path/go/repo.git -i /path/to/private.key
 ```
 
+If you already configured your `~/.ssh/config` and pointing remote host, and private key file, you don't even need to
+use `-i` argument, it will be used automatically.
+
 ## Example
 ![Example Run](terraform-compliance-demo.gif)
 ```bash
