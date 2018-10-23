@@ -39,7 +39,7 @@ def cli():
     # SSH Key is given for git authentication
     ssh_cmd = {}
     if args.ssh_key:
-        ssh_cmd = {"GIT_SSH_COMMAND": "ssh -i {}".format(args.ssh_key)}
+        ssh_cmd = {"GIT_SSH_COMMAND": "ssh -l {} -i {}".format('git', args.ssh_key)}
 
     # A remote repository used here
     if args.features.startswith(('http', 'https', 'ssh')):
