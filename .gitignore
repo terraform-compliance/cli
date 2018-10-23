@@ -13,3 +13,5 @@ build
 dist
 example/tf_files/*
 terraform_compliance.egg-info
+
+.DS_Store
