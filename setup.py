@@ -3,10 +3,11 @@ BDD test framework for terraform
 """
 from setuptools import find_packages, setup
 from terraform_compliance.main import __app_name__, __version__
+import radish
 
 dependencies = [
-    'radish-bdd',
     'radish',
+    'radish-bdd',
     'terraform-validate',
     'gitpython',
     'netaddr'

@@ -30,7 +30,8 @@ jobs:
         - sonar-scanner -Dsonar.projectKey=terraform-compliance -Dsonar.organization=eerkunt-github -Dsonar.sources=. -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_LOGIN -Dsonar.exclusions=tests/** -Dsonar.python.coverage.reportPath=coverage.xml
 
     - stage: Build & Deploy (PYPI)
-      script: "echo 'PYPI Build & Deploy'"
+      script:
+        - "echo 'PYPI Build & Deploy'"
       if: branch = master AND type != pull_request
       deploy:
           skip_cleanup: true
