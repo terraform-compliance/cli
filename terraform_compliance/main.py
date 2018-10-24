@@ -1,6 +1,25 @@
 import os
 from argparse import ArgumentParser
-from radish.main import main as call_radish
+
+try:
+    from radish.main import main as call_radish
+except ImportError as e:
+    import subprocess
+    import sys
+
+    def pip(action, package):
+        print '{}ing {}..'.format(action, package)
+        subprocess.call([sys.executable, "-m", "pip", action, package])
+
+    print "Fixing the problem on radish and radish-bdd"
+    pip('uninstall', '--yes radish-bdd')
+    pip('uninstall', '--yes radish')
+    pip('install', 'radish')
+    pip('install', 'radish-bdd')
+finally:
+    print "Importing radish again."
+    from radish.main import main as call_radish
+
 from tempfile import mkdtemp
 from git import Repo
 from terraform_compliance.common.pyhcl_helper import load_tf_files
@@ -10,7 +29,7 @@ from terraform_compliance.common.readable_dir import ReadableDir
 
 
 __app_name__ = "terraform-compliance"
-__version__ = "0.4.1"
+__version__ = "0.4.2"
 
 
 class ArgHandling(object):
