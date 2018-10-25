@@ -7,18 +7,27 @@ except ImportError as e:
     import subprocess
     import sys
 
-    def pip(action, package):
+
+    def pip(action, package, params=None):
         print '{}ing {}..'.format(action, package)
-        subprocess.call([sys.executable, "-m", "pip", action, package])
+
+        if action == 'uninstall':
+            cmds = [sys.executable, "-m", "pip", action, '--yes', package]
+        else:
+            cmds = [sys.executable, "-m", "pip", action, package]
+
+        subprocess.call(cmds)
 
     print "Fixing the problem on radish and radish-bdd"
-    pip('uninstall', '--yes radish-bdd')
-    pip('uninstall', '--yes radish')
-    pip('install', 'radish')
-    pip('install', 'radish-bdd')
-finally:
-    print "Importing radish again."
-    from radish.main import main as call_radish
+    pip('uninstall', 'radish-bdd')
+    pip('uninstall', 'radish')
+    pip('install', 'radish==0.1.10')
+    pip('install', 'radish-bdd==0.8.6')
+
+    print "~"*40
+    print " Please run terraform-compliance again."
+    print "~"*40
+    sys.exit(1)
 
 from tempfile import mkdtemp
 from git import Repo
@@ -29,7 +38,7 @@ from terraform_compliance.common.readable_dir import ReadableDir
 
 
 __app_name__ = "terraform-compliance"
-__version__ = "0.4.2"
+__version__ = "0.4.3"
 
 
 class ArgHandling(object):
