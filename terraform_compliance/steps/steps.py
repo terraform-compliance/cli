@@ -12,6 +12,29 @@ import re
 def arg_exp_for_secure_text(text):
     return text
 
+@custom_type("SECTION", r"[a-z]+")
+def arg_exp_for_secure_text(text):
+    if text in ['resource', 'provider', 'data', 'module', 'output', 'terraform', 'variable']:
+        return text
+
+@given(u'I have {name:ANY} {type:SECTION} configured')
+def define_a_resource(step, name, type):
+    step.context.type = type
+    step.context.name = name
+
+    if type == "resource":
+        if (name in resource_name.keys()):
+            name = resource_name[name]
+
+        step.context.resource_type = name
+        step.context.defined_resource = name
+        step.context.stash = world.config.terraform.resources(name)
+    else:
+        if name in world.config.terraform.terraform_config[type]:
+            step.context.stash = world.config.terraform.terraform_config[type][name]
+        else:
+            step.context.stash = world.config.terraform.terraform_config[type]
+
 @given(u'I have {resource:ANY} defined')
 def define_a_resource(step, resource):
     if (resource in resource_name.keys()):
@@ -80,6 +103,12 @@ def it_contain(step, condition, something):
         if condition == 'must':
             assert step.context.stash.properties, \
                 '{} doesnt have a property list.'.format(something)
+    elif step.context.stash.__class__ is dict:
+        if something in step.context.stash:
+            step.context.stash = step.context.stash[something]
+        else:
+            if condition == 'must':
+                assert '{} does not exist.'.format(something)
 
 
 @step(u'encryption is enabled')
@@ -92,27 +121,45 @@ def encryption_is_enabled(step):
     step.context.stash.property(prop).should_equal(True)
 
 
-@step(u'its value must match the "{search_regex}" regex')
-def func(step, search_regex):
+@step(u'its value {condition} match the "{search_regex}" regex')
+def func(step, condition, search_regex):
     if hasattr(step.context.stash, 'resource_list') and not step.context.stash.resource_list:
         return
 
-    normalise_tag_values(step.context.stash)
-    regex = r'/{}/'.format(search_regex)
+    regex = r'{}'.format(search_regex)
 
-    for property in step.context.stash.properties:
-        if type(property.property_value) in [str, unicode]:
-            property.property_value = [property.property_value]
-        elif type(property.property_value) is dict:
-            property.property_value = property.property_value.values()
+    if step.context.stash.__class__ in (str, unicode):
+        matches = re.match(regex, step.context.stash)
 
-        for value in property.property_value:
-            matches = re.match(regex, value)
+        if condition == 'must':
             assert matches is not None, \
-                '{} property in {} does not match with {} regex. It is set to {} instead.'.format(property.property_name,
-                                                                                                  property.resource_name,
-                                                                                                  search_regex,
-                                                                                                  value)
+                '{} {} tests failed on {} regex: {}'.format(step.context.name,
+                                                            step.context.type,
+                                                            regex,
+                                                            step.context.stash)
+        elif condition == "must not":
+            assert matches is None, \
+                '{} {} tests failed on {} regex: {}'.format(step.context.name,
+                                                            step.context.type,
+                                                            regex,
+                                                            step.context.stash)
+    else:
+        normalise_tag_values(step.context.stash)
+
+
+        for property in step.context.stash.properties:
+            if type(property.property_value) in [str, unicode]:
+                property.property_value = [property.property_value]
+            elif type(property.property_value) is dict:
+                property.property_value = property.property_value.values()
+
+            for value in property.property_value:
+                matches = re.match(regex, value)
+                assert matches is not None, \
+                    '{} property in {} does not match with {} regex. It is set to {} instead.'.format(property.property_name,
+                                                                                                      property.resource_name,
+                                                                                                      search_regex,
+                                                                                                      value)
 
 
 @step(u'its value must be set by a variable')
