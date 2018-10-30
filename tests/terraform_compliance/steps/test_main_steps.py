@@ -66,7 +66,7 @@ class Test_Step_Cases(TestCase):
         step = MockedStep()
         step.context.stash = 1
         with self.assertRaises(AssertionError) as err:
-            self.assertIsNone(i_expect_the_result_is_operator_than_number(step, 'more and equal', 2))
+            i_expect_the_result_is_operator_than_number(step, 'more and equal', 2)
         self.assertEqual(str(err.exception), '1 is not more and equal than 2')
 
     def test_i_expect_the_result_is_less_than_number_success(self):
@@ -78,7 +78,7 @@ class Test_Step_Cases(TestCase):
         step = MockedStep()
         step.context.stash = 1
         with self.assertRaises(AssertionError) as err:
-            self.assertIsNone(i_expect_the_result_is_operator_than_number(step, 'less', 1))
+            i_expect_the_result_is_operator_than_number(step, 'less', 1)
         self.assertEqual(str(err.exception), '1 is not less than 1')
 
     def test_i_expect_the_result_is_less_and_equal_than_number_success(self):
@@ -91,5 +91,10 @@ class Test_Step_Cases(TestCase):
         step = MockedStep()
         step.context.stash = 1
         with self.assertRaises(AssertionError) as err:
-            self.assertIsNone(i_expect_the_result_is_operator_than_number(step, 'less and equal', 0))
+            i_expect_the_result_is_operator_than_number(step, 'less and equal', 0)
         self.assertEqual(str(err.exception), '1 is not less and equal than 0')
+
+    def test_i_expect_the_result_is_invalid_operator_than_number_failure(self):
+        step = MockedStep()
+        step.context.stash = 1
+        self.assertIsNone(i_expect_the_result_is_operator_than_number(step, 'invalid_operator', 0))

@@ -80,7 +80,7 @@ def i_expect_the_result_is_operator_than_number(step, operator, number):
     elif operator == "less and equal":
         assert value <= number, "{} is not less and equal than {}".format(value, number)
     else:
-        AssertionError("Invalid operator: " + str(operator))
+        AssertionError('Invalid operator: {}'.format(operator))
 
 
 @step(u'it {condition:ANY} contain {something:ANY}')
