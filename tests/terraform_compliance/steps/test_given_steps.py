@@ -1,7 +1,6 @@
 from unittest import TestCase
 from terraform_compliance.steps.steps import i_have_name_section_configured, i_have_resource_defined
-from tests.mocks import MockedStep, MockedWorld, MockedWorldConfigTerraform, mocked_resource_name_list
-from mock import patch
+from tests.mocks import MockedStep, MockedWorld, MockedWorldConfigTerraform
 
 
 class Test_Given_Step_Cases(TestCase):
