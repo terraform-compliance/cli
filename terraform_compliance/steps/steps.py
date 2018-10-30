@@ -72,13 +72,13 @@ def i_expect_the_result_is_operator_than_number(step, operator, number):
     value = int(step.context.stash)
 
     if operator == "more":
-        assert value > number, str(value) + " is not more than " + str(number)
+        assert value > number, "{} is not more than {}".format(value, number)
     elif operator == "more and equal":
-        assert value >= number, str(value) + " is not more and equal than " + str(number)
+        assert value >= number, "{} is not more and equal than {}".format(value, number)
     elif operator == "less":
-        assert value < number, str(value) + " is not less than " + str(number)
+        assert value < number, "{} is not less than {}".format(value, number)
     elif operator == "less and equal":
-        assert value <= number, str(value) + " is not less and equal than " + str(number)
+        assert value <= number, "{} is not less and equal than {}".format(value, number)
     else:
         AssertionError("Invalid operator: " + str(operator))
 
