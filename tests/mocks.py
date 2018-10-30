@@ -255,11 +255,11 @@ class MockedValidator(object):
 
 class MockedStep(object):
     def __init__(self):
-        self.context = MockedStepContext
+        self.context = MockedStepContext()
 
 class MockedStepContext(object):
-    pass
-
+    def __init__(self):
+        self.stash = MockedWorldConfigTerraform()
 
 class MockedWorld(object):
     def __init__(self):
@@ -296,6 +296,3 @@ class MockedWorldConfigTerraform(object):
         }
     def resources(self, name):
         return self.terraform_config['resource'][name]
-
-
-mocked_resource_name_list = {"Resource Type": "resource_type"}
