@@ -1,7 +1,5 @@
 from unittest import TestCase
 from terraform_compliance.steps.steps import custom_type_any, custom_type_section
-from tests.mocks import MockedData
-from copy import deepcopy
 
 
 class Test_Steps_Custom_Type(TestCase):
