@@ -15,3 +15,4 @@ example/tf_files/*
 terraform_compliance.egg-info
 
 .DS_Store
+terraform-compliance.iml
