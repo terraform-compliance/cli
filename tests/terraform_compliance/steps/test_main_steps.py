@@ -98,3 +98,20 @@ class Test_Step_Cases(TestCase):
         step = MockedStep()
         step.context.stash = 1
         self.assertIsNone(i_expect_the_result_is_operator_than_number(step, 'invalid_operator', 0))
+
+    def test_it_condition_contain_something_resource_list(self):
+        step = MockedStep()
+        step.context.stash.resource_list = None
+        self.assertIsNone(it_condition_contain_something(step, 'condition', 'not_important'))
+
+    def test_it_condition_contain_something_property_can_not_be_found(self):
+        pass
+
+    def test_it_condition_must_something_property_can_not_be_found(self):
+        pass
+
+    def test_it_condition_must_something_property_is_found(self):
+        pass
+
+    def test_it_condition_should_something_property_is_found(self):
+        pass
