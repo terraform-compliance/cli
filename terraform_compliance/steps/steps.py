@@ -18,7 +18,10 @@ def custom_type_section(text):
         return text
 
 @given(u'I have {name:ANY} {type:SECTION} configured')
-def i_have_name_section_configured(step, name, type):
+def i_have_name_section_configured(step, name, type, radish_world=None):
+    if radish_world is None:
+        radish_world = world
+
     step.context.type = type
     step.context.name = name
 
@@ -28,21 +31,24 @@ def i_have_name_section_configured(step, name, type):
 
         step.context.resource_type = name
         step.context.defined_resource = name
-        step.context.stash = world.config.terraform.resources(name)
+        step.context.stash = radish_world.config.terraform.resources(name)
     else:
-        if name in world.config.terraform.terraform_config[type]:
-            step.context.stash = world.config.terraform.terraform_config[type][name]
+        if name in radish_world.config.terraform.terraform_config[type]:
+            step.context.stash = radish_world.config.terraform.terraform_config[type][name]
         else:
-            step.context.stash = world.config.terraform.terraform_config[type]
+            step.context.stash = radish_world.config.terraform.terraform_config[type]
 
 @given(u'I have {resource:ANY} defined')
-def i_have_resource_defined(step, resource):
+def i_have_resource_defined(step, resource, radish_world=None):
+    if radish_world is None:
+        radish_world = world
+
     if (resource in resource_name.keys()):
         resource = resource_name[resource]
 
     step.context.resource_type = resource
     step.context.defined_resource = resource
-    step.context.stash = world.config.terraform.resources(resource)
+    step.context.stash = radish_world.config.terraform.resources(resource)
 
 
 @step(u'I {action_type:ANY} them')
