@@ -84,11 +84,13 @@ def i_expect_the_result_is_operator_than_number(step, operator, number):
 
 
 @step(u'it {condition:ANY} contain {something:ANY}')
-def it_condition_contain_something(step, condition, something):
+def it_condition_contain_something(step, condition, something,
+                                   propertylist=TerraformPropertyList, resourcelist=TerraformResourceList):
+
     if hasattr(step.context.stash, 'resource_list') and not step.context.stash.resource_list:
         return
 
-    if step.context.stash.__class__ is TerraformPropertyList:
+    if step.context.stash.__class__ is propertylist:
         for property in step.context.stash.properties:
             assert property.property_value == something, \
                 '{} property in {} can not be found in {} ({}). It is set to {} instead'.format(something,
@@ -97,7 +99,7 @@ def it_condition_contain_something(step, condition, something):
                                                                                                 property.resource_type,
                                                                                                 property.property_value)
 
-    elif step.context.stash.__class__ is TerraformResourceList:
+    elif step.context.stash.__class__ is resourcelist:
         if condition == 'must':
             step.context.stash.should_have_properties(something)
 

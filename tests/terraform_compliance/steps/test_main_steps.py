@@ -8,7 +8,7 @@ from terraform_compliance.steps.steps import (
     its_value_must_be_set_by_a_variable,
     it_must_not_have_proto_protocol_and_port_port_for_cidr
 )
-from tests.mocks import MockedStep, MockedWorld
+from tests.mocks import MockedStep, MockedWorld, MockedTerraformPropertyList, MockedTerraformResourceList
 
 
 class Test_Step_Cases(TestCase):
@@ -101,16 +101,76 @@ class Test_Step_Cases(TestCase):
     def test_it_condition_contain_something_resource_list(self):
         step = MockedStep()
         step.context.stash.resource_list = None
-        self.assertIsNone(it_condition_contain_something(step, 'condition', 'not_important'))
+        self.assertIsNone(it_condition_contain_something(step, 'should', 'not_important'))
 
     def test_it_condition_contain_something_property_can_not_be_found(self):
-        pass
+        step = MockedStep()
+        step.context.stash = MockedTerraformPropertyList()
+        with self.assertRaises(AssertionError) as err:
+            it_condition_contain_something(step, 'should', 'non_existent_property_value', MockedTerraformPropertyList)
+        self.assertEqual(str(err.exception), 'non_existent_property_value property in test_name can not be found in ' 
+                                             'test_resource_name (test_resource_type). It is set to test_value instead')
 
     def test_it_condition_must_something_property_can_not_be_found(self):
-        pass
+        step = MockedStep()
+        step.context.stash = MockedTerraformResourceList()
+        with self.assertRaises(Exception) as err:
+            it_condition_contain_something(step=step, condition='must', something=None, resourcelist=MockedTerraformResourceList)
+        self.assertEqual(str(err.exception), 'should_have_properties hit')
 
     def test_it_condition_must_something_property_is_found(self):
-        pass
+        step = MockedStep()
+        step.context.stash = MockedTerraformResourceList()
+        it_condition_contain_something(step=step, condition='must', something='something', resourcelist=MockedTerraformResourceList)
+        self.assertEqual(step.context.stash.__class__, MockedTerraformPropertyList)
 
-    def test_it_condition_should_something_property_is_found(self):
-        pass
+    def test_it_condition_should_something_property_stash_is_dict_found(self):
+        step = MockedStep()
+        step.context.stash = {}
+        it_condition_contain_something(step=step, condition='must', something='something', resourcelist=MockedTerraformResourceList)
+        self.assertEqual(step.context.stash.__class_, MockedTerraformPropertyList)
+
+    def test_encryption_is_enabled_resource_list(self):
+        step = MockedStep()
+        step.context.stash.resource_list = None
+        self.assertIsNone(encryption_is_enabled(step))
+
+    def test_its_value_condition_match_the_search_regex_regex_resource_list(self):
+        step = MockedStep()
+        step.context.stash.resource_list = None
+        self.assertIsNone(its_value_condition_match_the_search_regex_regex(step, 'condition', 'some_regex'))
+
+    def test_its_value_must_match_the_search_regex_regex_string_unicode_success(self):
+        step = MockedStep()
+        step.context.stash = 'some string'
+        self.assertIsNone(its_value_condition_match_the_search_regex_regex(step, 'must', '^[sometring\s]+$'))
+
+    def test_its_value_must_match_the_search_regex_regex_string_unicode_failure(self):
+        step = MockedStep()
+        step.context.stash = 'some string'
+        step.context.name = 'test name'
+        step.context.type = 'test type'
+        with self.assertRaises(AssertionError) as err:
+            its_value_condition_match_the_search_regex_regex(step, 'must', 'non_match_regex')
+        self.assertEqual(str(err.exception), '{} {} tests failed on {} regex: {}'.format(step.context.name,
+                                                                                         step.context.type,
+                                                                                         'non_match_regex',
+                                                                                         step.context.stash))
+
+    def test_its_value_must_match_not_the_search_regex_regex_string_unicode_success(self):
+        step = MockedStep()
+        step.context.stash = 'some string'
+        self.assertIsNone(its_value_condition_match_the_search_regex_regex(step, 'must not', 'non_match_regex'))
+
+    def test_its_value_must_not_match_the_search_regex_regex_string_unicode_failure(self):
+        step = MockedStep()
+        step.context.stash = 'some stßring'
+        step.context.name = 'test name'
+        step.context.type = 'test type'
+        with self.assertRaises(AssertionError) as err:
+            its_value_condition_match_the_search_regex_regex(step, 'must not', '^[sometring\s]+$')
+        self.assertEqual(str(err.exception), '{} {} tests failed on {} regex: {}'.format(step.context.name,
+                                                                                         step.context.type,
+                                                                                         '^[sometring\s]+$',
+                                                                                         step.context.stash))
+

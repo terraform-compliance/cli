@@ -261,6 +261,7 @@ class MockedStepContext(object):
     def __init__(self):
         self.stash = MockedWorldConfigTerraform()
 
+
 class MockedWorld(object):
     def __init__(self):
         self.config = MockedWorldConfig()
@@ -296,3 +297,28 @@ class MockedWorldConfigTerraform(object):
         }
     def resources(self, name):
         return self.terraform_config['resource'][name]
+
+
+class MockedTerraformPropertyList(object):
+    def __init__(self):
+        self.properties = [MockedTerraformProperty()]
+
+
+class MockedTerraformProperty(object):
+    def __init__(self):
+        self.property_value = 'test_value'
+        self.resource_name = 'test_resource_name'
+        self.resource_type = 'test_resource_type'
+        self.property_name = 'test_name'
+
+
+class MockedTerraformResourceList(object):
+    def should_have_properties(self, key):
+        if key is None:
+            raise Exception('should_have_properties hit')
+
+    def property(self, key):
+        if key is None:
+            raise Exception('property hit')
+        self.properties = MockedTerraformPropertyList()
+        return self.properties
