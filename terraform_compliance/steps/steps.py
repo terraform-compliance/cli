@@ -116,7 +116,7 @@ def it_condition_contain_something(step, condition, something,
             step.context.stash = step.context.stash[something]
         else:
             if condition == 'must':
-                assert '{} does not exist.'.format(something)
+                assert False, '{} does not exist.'.format(something)
 
 
 @step(u'encryption is enabled')
