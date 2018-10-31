@@ -132,7 +132,8 @@ class Test_Step_Cases(TestCase):
     def test_it_condition_should_something_property_stash_is_dict_found(self):
         step = MockedStep()
         step.context.stash = {}
-        it_condition_contain_something(step=step, condition='must', something='something', resourcelist=MockedTerraformResourceList)
+        with self.assertRaises(AssertionError) as err:
+            it_condition_contain_something(step=step, condition='must', something='something', resourcelist=MockedTerraformResourceList)
         self.assertEqual(str(err.exception), 'something does not exist.')
 
     def test_encryption_is_enabled_resource_list(self):
@@ -178,4 +179,26 @@ class Test_Step_Cases(TestCase):
                                                                                          step.context.type,
                                                                                          '^[sometring\s]+$',
                                                                                          step.context.stash))
+
+    def test_its_value_must_match_the_search_regex_regex_success(self):
+        step = MockedStep()
+        step.context.stash = MockedTerraformPropertyList()
+        self.assertIsNone(its_value_condition_match_the_search_regex_regex(step, 'must', '^[tesvalu_\s]+$'))
+
+    def test_its_value_must_match_the_search_regex_regex_failure(self):
+        step = MockedStep()
+        step.context.stash = MockedTerraformPropertyList()
+        with self.assertRaises(AssertionError):
+            its_value_condition_match_the_search_regex_regex(step, 'must', 'non_match_regex')
+
+    def test_its_value_must_not_match_the_search_regex_regex_success(self):
+        step = MockedStep()
+        step.context.stash = MockedTerraformPropertyList()
+        self.assertIsNone(its_value_condition_match_the_search_regex_regex(step, 'must not', '^[tesvalu_\s]+$'))
+
+    def test_its_value_must_not_match_the_search_regex_regex_failure(self):
+        step = MockedStep()
+        step.context.stash = MockedTerraformPropertyList()
+        with self.assertRaises(AssertionError):
+            its_value_condition_match_the_search_regex_regex(step, 'must not', 'non_match_regex')
 
