@@ -163,12 +163,19 @@ def its_value_condition_match_the_search_regex_regex(step, condition, search_reg
 
             for value in property.property_value:
                 matches = re.match(regex, value)
-                assert matches is not None, \
-                    '{} property in {} does not match with {} regex. It is set to {} instead.'.format(property.property_name,
+
+                if condition == 'must':
+                    assert matches is not None, \
+                        '{} property in {} does not match with {} regex. It is set to {} instead.'.format(property.property_name,
                                                                                                       property.resource_name,
                                                                                                       search_regex,
                                                                                                       value)
-
+                elif condition == 'must not':
+                    assert matches is not None, \
+                        '{} property in {} does not match with {} regex. It is set to {} instead.'.format(property.property_name,
+                                                                                                          property.resource_name,
+                                                                                                          search_regex,
+                                                                                                          value)
 
 @step(u'its value must be set by a variable')
 def its_value_must_be_set_by_a_variable(step):
