@@ -4,8 +4,7 @@ from terraform_compliance.common.pyhcl_helper import (
     pad_invalid_tf_files,
     pad_tf_file
 )
-from tests.mocks import MockedData, MockedValidator
-from copy import deepcopy
+from tests.mocks import MockedValidator
 from os import remove, path, environ
 from mock import patch
 

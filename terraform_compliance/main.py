@@ -38,7 +38,7 @@ from terraform_compliance.common.readable_dir import ReadableDir
 
 
 __app_name__ = "terraform-compliance"
-__version__ = "0.4.4"
+__version__ = "0.4.5"
 
 
 class ArgHandling(object):

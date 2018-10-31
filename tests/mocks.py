@@ -1,6 +1,5 @@
 from terraform_validate.terraform_validate import TerraformSyntaxException
-from os.path import exists
-from os import remove, environ
+from os import environ
 
 
 class MockedData(object):
@@ -252,3 +251,74 @@ class MockedValidator(object):
             else:
                 environ[state_key] = '1'
                 raise TerraformSyntaxException('detailed message')
+
+
+class MockedStep(object):
+    def __init__(self):
+        self.context = MockedStepContext()
+
+class MockedStepContext(object):
+    def __init__(self):
+        self.stash = MockedWorldConfigTerraform()
+
+
+class MockedWorld(object):
+    def __init__(self):
+        self.config = MockedWorldConfig()
+
+
+class MockedWorldConfig(object):
+    def __init__(self):
+        self.terraform = MockedWorldConfigTerraform()
+
+
+class MockedWorldConfigTerraform(object):
+    def __init__(self):
+        self.terraform_config = {
+            u'resource': {
+                u'resource_type': {
+                    u'resource_name': {
+                        u'resource_property': u'resource_property_value',
+                        u'tags': u'${module.tags.tags}'
+                    }
+                },
+                u'aws_s3_bucket': {
+                    u'aws_s3_bucket_name': {
+                        u'resource_property': u'resource_property_value',
+                        u'tags': u'${module.tags.tags}'
+                    }
+                }
+            },
+
+            u'provider': {
+                u'aws': {}
+            },
+            u'something_else': {'something': 'else'}
+        }
+    def resources(self, name):
+        return self.terraform_config['resource'][name]
+
+
+class MockedTerraformPropertyList(object):
+    def __init__(self):
+        self.properties = [MockedTerraformProperty()]
+
+
+class MockedTerraformProperty(object):
+    def __init__(self):
+        self.property_value = 'test_value'
+        self.resource_name = 'test_resource_name'
+        self.resource_type = 'test_resource_type'
+        self.property_name = 'test_name'
+
+
+class MockedTerraformResourceList(object):
+    def should_have_properties(self, key):
+        if key is None:
+            raise Exception('should_have_properties hit')
+
+    def property(self, key):
+        if key is None:
+            raise Exception('property hit')
+        self.properties = MockedTerraformPropertyList()
+        return self.properties
