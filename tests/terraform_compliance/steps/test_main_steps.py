@@ -124,11 +124,16 @@ class Test_Step_Cases(TestCase):
         it_condition_contain_something(step=step, condition='must', something='something', resourcelist=MockedTerraformResourceList)
         self.assertEqual(step.context.stash.__class__, MockedTerraformPropertyList)
 
+    def test_it_condition_must_something_property_stash_is_dict_found(self):
+        step = MockedStep()
+        step.context.stash = {'something': 'something else'}
+        self.assertIsNone(it_condition_contain_something(step=step, condition='must', something='something', resourcelist=MockedTerraformResourceList))
+
     def test_it_condition_should_something_property_stash_is_dict_found(self):
         step = MockedStep()
         step.context.stash = {}
         it_condition_contain_something(step=step, condition='must', something='something', resourcelist=MockedTerraformResourceList)
-        self.assertEqual(step.context.stash.__class_, MockedTerraformPropertyList)
+        self.assertEqual(str(err.exception), 'something does not exist.')
 
     def test_encryption_is_enabled_resource_list(self):
         step = MockedStep()
@@ -164,7 +169,7 @@ class Test_Step_Cases(TestCase):
 
     def test_its_value_must_not_match_the_search_regex_regex_string_unicode_failure(self):
         step = MockedStep()
-        step.context.stash = 'some stßring'
+        step.context.stash = 'some string'
         step.context.name = 'test name'
         step.context.type = 'test type'
         with self.assertRaises(AssertionError) as err:
