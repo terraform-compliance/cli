@@ -44,10 +44,9 @@ __version__ = "0.4.6"
 class ArgHandling(object):
     pass
 
-def cli():
-    args = ArgHandling()
-    parser = ArgumentParser(prog=__app_name__,
-                            description="BDD Test Framework for Hashicorp terraform")
+def cli(arghandling, argparser):
+    args = arghandling
+    parser = argparser
     parser.add_argument("--features", "-f", dest="features", metavar='feature_directory', action=ReadableDir,
                         help="Directory consists of BDD features", required=True)
     parser.add_argument("--tfdir", "-t", dest="tf_dir", metavar='terraform_directory', action=ReadableDir,
@@ -108,6 +107,8 @@ def cli():
     print('Cleaning up.')
     rmtree(tf_directory)
 
+    return result
 
 if __name__ == '__main__':
-    cli()
+    cli(ArgHandling(), ArgumentParser(prog=__app_name__,
+                                      description="BDD Test Framework for Hashicorp terraform"))
