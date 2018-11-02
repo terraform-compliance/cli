@@ -322,3 +322,6 @@ class MockedTerraformResourceList(object):
             raise Exception('property hit')
         self.properties = MockedTerraformPropertyList()
         return self.properties
+
+    def should_match_regex(self, regex):
+        return True
