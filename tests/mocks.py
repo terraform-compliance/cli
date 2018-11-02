@@ -322,3 +322,28 @@ class MockedTerraformResourceList(object):
             raise Exception('property hit')
         self.properties = MockedTerraformPropertyList()
         return self.properties
+
+    def should_match_regex(self, regex):
+        return True
+
+
+class MockedArgumentParser(object):
+    def __init__(self, prog, description):
+        self.prog = prog
+        self.description = description
+
+    def add_argument(self, long_param, short_param, **kwargs):
+        self.long_param = long_param
+        self.short_param = short_param
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+
+    def parse_known_args(self, namespace):
+        return (None, '-v')
+
+
+class MockedArgHandling(object):
+    def __init__(self):
+        self.ssh_key = '~/.ssh/private.key'
+        self.features = '/path/to/features'
+        self.tf_dir = '/path/to/terraform/files'

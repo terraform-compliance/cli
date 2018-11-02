@@ -16,7 +16,7 @@
   </a>
   
   <!-- Coverage -->
-  <a href="https://hub.docker.com/r/eerkunt/terraform-compliance/">
+  <a href="https://coveralls.io/repos/github/eerkunt/terraform-compliance/">
     <img src="https://coveralls.io/repos/github/eerkunt/terraform-compliance/badge.svg?branch=master" alt="coverage report" />
   </a>
   

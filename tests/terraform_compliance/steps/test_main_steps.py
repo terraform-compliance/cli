@@ -9,6 +9,7 @@ from terraform_compliance.steps.steps import (
     it_must_not_have_proto_protocol_and_port_port_for_cidr
 )
 from tests.mocks import MockedStep, MockedWorld, MockedTerraformPropertyList, MockedTerraformResourceList
+from mock import patch
 
 
 class Test_Step_Cases(TestCase):
@@ -202,3 +203,14 @@ class Test_Step_Cases(TestCase):
         with self.assertRaises(AssertionError):
             its_value_condition_match_the_search_regex_regex(step, 'must not', 'non_match_regex')
 
+    def test_its_value_must_be_set_by_a_variable_resource_list(self):
+        step = MockedStep()
+        step.context.stash.resource_list = None
+        self.assertIsNone(its_value_must_be_set_by_a_variable(step))
+
+    @patch.object(MockedTerraformResourceList, 'property', return_value=MockedTerraformResourceList())
+    def test_its_value_must_be_set_by_a_variable(self, *args):
+        step = MockedStep()
+        step.context.stash = MockedTerraformResourceList()
+        step.context.search_value = MockedTerraformResourceList()
+        self.assertIsNone(its_value_must_be_set_by_a_variable(step))
