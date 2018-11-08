@@ -38,13 +38,14 @@ from terraform_compliance.common.readable_dir import ReadableDir
 
 
 __app_name__ = "terraform-compliance"
-__version__ = "0.4.6"
+__version__ = "0.4.7"
 
 
 class ArgHandling(object):
     pass
 
-def cli(arghandling, argparser):
+def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
+                                                            description="BDD Test Framework for Hashicorp terraform")):
     args = arghandling
     parser = argparser
     parser.add_argument("--features", "-f", dest="features", metavar='feature_directory', action=ReadableDir,
@@ -110,5 +111,4 @@ def cli(arghandling, argparser):
     return result
 
 if __name__ == '__main__':
-    cli(ArgHandling(), ArgumentParser(prog=__app_name__,
-                                      description="BDD Test Framework for Hashicorp terraform"))
+    cli()
