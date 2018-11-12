@@ -3,6 +3,7 @@
 untaggable_resources = [
     "aws_route_table",
     "aws_elastic_beanstalk",
+    "aws_elasticsearch_domain_policy",
     "aws_security_group_rule",
     "aws_eip",
     "aws_nat_gateway",
