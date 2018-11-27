@@ -1,20 +1,20 @@
 import os
 from argparse import ArgumentParser
+from sys import exc_info, exit, executable
 
 try:
     from radish.main import main as call_radish
 except ImportError as e:
     import subprocess
-    import sys
 
 
     def pip(action, package, params=None):
         print '{}ing {}..'.format(action, package)
 
         if action == 'uninstall':
-            cmds = [sys.executable, "-m", "pip", action, '--yes', package]
+            cmds = [executable, "-m", "pip", action, '--yes', package]
         else:
-            cmds = [sys.executable, "-m", "pip", action, package]
+            cmds = [executable, "-m", "pip", action, package]
 
         subprocess.call(cmds)
 
@@ -27,7 +27,7 @@ except ImportError as e:
     print "~"*40
     print " Please run terraform-compliance again."
     print "~"*40
-    sys.exit(1)
+    exit(1)
 
 from tempfile import mkdtemp
 from git import Repo
@@ -35,10 +35,11 @@ from terraform_compliance.common.pyhcl_helper import load_tf_files
 from distutils.dir_util import copy_tree
 from shutil import rmtree
 from terraform_compliance.common.readable_dir import ReadableDir
+from terraform_compliance.common.exceptions import TerraformComplianceInvalidConfig
 
 
 __app_name__ = "terraform-compliance"
-__version__ = "0.4.8"
+__version__ = "0.4.9"
 
 
 class ArgHandling(object):
@@ -100,7 +101,12 @@ def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
                 '--user-data=tf_dir={}'.format(tf_directory)]
     commands.extend(radish_arguments)
 
-    load_tf_files(tf_directory)
+    try:
+        load_tf_files(tf_directory)
+    except TerraformComplianceInvalidConfig:
+        print exc_info()[1]
+        exit(1)
+
     print('Running tests.')
     result = call_radish(args=commands[1:])
 
