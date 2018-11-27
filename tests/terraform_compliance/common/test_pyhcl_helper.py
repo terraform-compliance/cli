@@ -16,7 +16,7 @@ class TestPyHCLHelper(TestCase):
         pad_tf_file(tmpFile)
         contents = open(tmpFile, 'r').read()
         remove(tmpFile)
-        self.assertEqual(contents, 'variable {}')
+        self.assertEqual(contents, '\n\nvariable {}')
 
     @patch('terraform_compliance.common.pyhcl_helper.pad_tf_file', return_value=None)
     def test_pad_invalid_tf_files(self, *args):

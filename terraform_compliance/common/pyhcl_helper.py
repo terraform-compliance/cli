@@ -25,7 +25,7 @@ def load_tf_files(tf_directory):
             exit(1)
 
         except TerraformSyntaxException:
-            result = pad_invalid_tf_files(exc_info()[1]) is False
+            result = pad_invalid_tf_files(exc_info()[1]) is True
 
         except TerraformComplianceInvalidConfig:
             pass
@@ -48,4 +48,4 @@ def pad_invalid_tf_files(exception_message):
 
 def pad_tf_file(file):
     with open(file, 'a') as f:
-        f.write('variable {}')
+        f.write('\n\nvariable {}')
