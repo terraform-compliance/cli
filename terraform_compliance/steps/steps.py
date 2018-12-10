@@ -3,6 +3,7 @@
 from radish import step, world, custom_type, given
 from terraform_compliance.steps import resource_name, encryption_property
 from terraform_compliance.common.helper import check_sg_rules
+from terraform_compliance.common.pyhcl_helper import parse_hcl_value
 from terraform_compliance.extensions.terraform_validate import normalise_tag_values
 from terraform_validate.terraform_validate import TerraformPropertyList, TerraformResourceList
 import re
@@ -92,12 +93,14 @@ def it_condition_contain_something(step, condition, something,
 
     if step.context.stash.__class__ is propertylist:
         for property in step.context.stash.properties:
-            assert property.property_value == something, \
+            value = parse_hcl_value(property.property_value)
+
+            assert (value == something or something.lower() in value), \
                 '{} property in {} can not be found in {} ({}). It is set to {} instead'.format(something,
                                                                                                 property.property_name,
                                                                                                 property.resource_name,
                                                                                                 property.resource_type,
-                                                                                                property.property_value)
+                                                                                                value)
 
     elif step.context.stash.__class__ is resourcelist:
         if condition == 'must':

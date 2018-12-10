@@ -2,7 +2,8 @@ from unittest import TestCase
 from terraform_compliance.common.pyhcl_helper import (
     load_tf_files,
     pad_invalid_tf_files,
-    pad_tf_file
+    pad_tf_file,
+    parse_hcl_value
 )
 from tests.mocks import MockedValidator
 from os import remove, path, environ
@@ -48,3 +49,7 @@ class TestPyHCLHelper(TestCase):
     def test_load_tf_files_success(self, *args):
         self.assertTrue(load_tf_files('passed'))
         self.assertTrue(environ.get('MockedValidator.state', None) is None)
+
+
+    def test_parse_hcl_value_return_same(self):
+        self.assertEqual(parse_hcl_value('some_string'), 'some_string')
