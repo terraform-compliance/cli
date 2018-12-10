@@ -4,6 +4,7 @@ from terraform_compliance import Validator
 from terraform_validate.terraform_validate import TerraformSyntaxException
 from terraform_compliance.common.exceptions import TerraformComplianceInvalidConfig
 from shutil import rmtree
+from hcl import loads
 
 
 def load_tf_files(tf_directory):
@@ -49,3 +50,16 @@ def pad_invalid_tf_files(exception_message):
 def pad_tf_file(file):
     with open(file, 'a') as f:
         f.write('\n\nvariable {}')
+
+
+def parse_hcl_value(hcl_string):
+    if str(hcl_string).startswith(('${', '"${')):
+        hcl = "key = \"{}\"".format(str(hcl_string).replace("'", "\"").lower())
+
+        try:
+            hcl = loads(hcl)
+            return eval(hcl['key'].replace('${', '{'))
+        except ValueError:
+            return hcl_string
+
+    return hcl_string
