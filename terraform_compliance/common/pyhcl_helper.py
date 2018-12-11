@@ -62,4 +62,7 @@ def parse_hcl_value(hcl_string):
         except ValueError:
             return hcl_string
 
+    if type(hcl_string) is dict:
+        hcl_string = {k.lower(): v for k, v in hcl_string.items()}
+
     return hcl_string
