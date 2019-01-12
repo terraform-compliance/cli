@@ -93,14 +93,15 @@ def it_condition_contain_something(step, condition, something,
 
     if step.context.stash.__class__ is propertylist:
         for property in step.context.stash.properties:
-            value = parse_hcl_value(property.property_value)
+            value = parse_hcl_value(property.property_value, world.config.terraform.terraform_config)
 
-            assert (value == something or something.lower() in value), \
-                '{} property in {} can not be found in {} ({}). It is set to {} instead'.format(something,
-                                                                                                property.property_name,
-                                                                                                property.resource_name,
-                                                                                                property.resource_type,
-                                                                                                value)
+            if value is not None:
+                assert (value == something or something.lower() in value), \
+                    '{} property in {} can not be found in {} ({}). It is set to {} instead'.format(something,
+                                                                                                    property.property_name,
+                                                                                                    property.resource_name,
+                                                                                                    property.resource_type,
+                                                                                                    value)
 
     elif step.context.stash.__class__ is resourcelist:
         if condition == 'must':

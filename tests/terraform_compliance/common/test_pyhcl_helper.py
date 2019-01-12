@@ -52,4 +52,5 @@ class TestPyHCLHelper(TestCase):
 
 
     def test_parse_hcl_value_return_same(self):
-        self.assertEqual(parse_hcl_value('some_string'), 'some_string')
+        tf_conf = dict(variable=dict(key='value'))
+        self.assertEqual(parse_hcl_value('some_string', tf_conf), 'some_string')

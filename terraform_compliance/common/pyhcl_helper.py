@@ -3,6 +3,7 @@ from os.path import isdir
 from terraform_compliance import Validator
 from terraform_validate.terraform_validate import TerraformSyntaxException
 from terraform_compliance.common.exceptions import TerraformComplianceInvalidConfig
+from terraform_compliance.common.helper import expand_variable
 from shutil import rmtree
 from hcl import loads
 
@@ -52,12 +53,14 @@ def pad_tf_file(file):
         f.write('\n\nvariable {}')
 
 
-def parse_hcl_value(hcl_string):
+def parse_hcl_value(hcl_string, tf_config):
     if str(hcl_string).startswith(('${', '"${')):
         hcl = "key = \"{}\"".format(str(hcl_string).replace("'", "\"").lower())
 
         try:
             hcl = loads(hcl)
+            if "." in hcl['key']:
+                hcl['key'] = expand_variable(tf_conf=tf_config, value=hcl['key'])
             return eval(hcl['key'].replace('${', '{'))
         except ValueError:
             return hcl_string
