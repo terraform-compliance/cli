@@ -1,5 +1,6 @@
 import re
 from netaddr import IPNetwork
+from ast import literal_eval
 
 
 # A helper function that will be used to flatten a multi-dimensional multi-nested list
@@ -116,7 +117,7 @@ def change_value_in_dict(target_dictionary, path_to_change, value_to_change):
     path_to_adjust = '["{}"]'.format('"]["'.join(path_to_change))
 
     try:
-        target = eval('target_dictionary{}'.format(path_to_adjust))
+        target = literal_eval('target_dictionary{}'.format(path_to_adjust))
 
         for key, value in value_to_change.items():
             if 'type' in value:
