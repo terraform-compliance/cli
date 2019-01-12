@@ -16,7 +16,6 @@ class Test_Step_Cases(TestCase):
 
     def setUp(self):
         self.step = MockedStep()
-        self.radish_world = MockedWorld()
 
     def test_i_action_them_count(self):
         step = MockedStep()
@@ -104,7 +103,8 @@ class Test_Step_Cases(TestCase):
         step.context.stash.resource_list = None
         self.assertIsNone(it_condition_contain_something(step, 'should', 'not_important'))
 
-    def test_it_condition_contain_something_property_can_not_be_found(self):
+    @patch('terraform_compliance.steps.steps.world', side_effect=MockedWorld())
+    def test_it_condition_contain_something_property_can_not_be_found(self, *args):
         step = MockedStep()
         step.context.stash = MockedTerraformPropertyList()
         with self.assertRaises(AssertionError) as err:
