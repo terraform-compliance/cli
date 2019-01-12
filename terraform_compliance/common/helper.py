@@ -2,6 +2,8 @@ import re
 from netaddr import IPNetwork
 
 
+hcl_conditions = ["==", "!=", ">", "<", ">=", "<=", "&&", "||", "!"]
+
 # A helper function that will be used to flatten a multi-dimensional multi-nested list
 def flatten_list(input):
     new_list = []
@@ -113,6 +115,11 @@ def change_value_in_dict(target_dictionary, path_to_change, value_to_change):
     if type(path_to_change) is not list:
         return False
 
+    for x in xrange(0,len(path_to_change)):
+        for condition in hcl_conditions:
+            if condition in path_to_change[x]:
+                return False
+
     path_to_adjust = '["{}"]'.format('"]["'.join(path_to_change))
 
     try:
@@ -141,3 +148,12 @@ def change_value_in_dict(target_dictionary, path_to_change, value_to_change):
 
     except KeyError:
         pass
+
+def strip_conditions(string):
+    for condition in hcl_conditions:
+        string = string.replace(condition, "")
+
+
+    string = string.split(" ")
+
+    return string[0]
