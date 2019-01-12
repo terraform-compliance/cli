@@ -32,6 +32,9 @@ def expand_variable(tf_conf, value):
     matches = re.match(regex, value)
 
     if matches is None:
+        if 'module' in value:
+            return 'None'
+
         return value
 
     if matches.group(1) not in tf_conf['variable']:
