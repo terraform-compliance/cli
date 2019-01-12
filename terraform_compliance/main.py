@@ -39,7 +39,7 @@ from terraform_compliance.common.exceptions import TerraformComplianceInvalidCon
 
 
 __app_name__ = "terraform-compliance"
-__version__ = "0.4.12"
+__version__ = "0.4.13"
 
 
 
