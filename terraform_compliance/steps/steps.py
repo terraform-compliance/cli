@@ -6,7 +6,10 @@ from terraform_compliance.common.helper import check_sg_rules
 from terraform_compliance.common.pyhcl_helper import parse_hcl_value
 from terraform_compliance.extensions.terraform_validate import normalise_tag_values
 from terraform_validate.terraform_validate import TerraformPropertyList, TerraformResourceList
+from terraform_compliance.extensions.ext_radish_bdd import skip_step
 import re
+
+# world.config.debug_steps = True
 
 # New Arguments
 @custom_type("ANY", r"[\.\/_\-A-Za-z0-9\s]+")
@@ -30,14 +33,23 @@ def i_have_name_section_configured(step, name, type, radish_world=None):
         if (name in resource_name.keys()):
             name = resource_name[name]
 
-        step.context.resource_type = name
-        step.context.defined_resource = name
-        step.context.stash = radish_world.config.terraform.resources(name)
-    else:
-        if name in radish_world.config.terraform.terraform_config[type]:
-            step.context.stash = radish_world.config.terraform.terraform_config[type][name]
+        found_resource = radish_world.config.terraform.resources(name)
+
+        if hasattr(found_resource, 'resource_list') and found_resource.resource_list:
+            step.context.resource_type = name
+            step.context.defined_resource = name
+            step.context.stash = radish_world.config.terraform.resources(name)
         else:
-            step.context.stash = radish_world.config.terraform.terraform_config[type]
+            skip_step(step, name)
+    else:
+        if type in radish_world.config.terraform.terraform_config:
+            if name in radish_world.config.terraform.terraform_config[type]:
+                step.context.stash = radish_world.config.terraform.terraform_config[type][name]
+            else:
+                step.context.stash = radish_world.config.terraform.terraform_config[type]
+
+        else:
+            skip_step(step, type)
 
 @given(u'I have {resource:ANY} defined')
 def i_have_resource_defined(step, resource, radish_world=None):
@@ -47,14 +59,24 @@ def i_have_resource_defined(step, resource, radish_world=None):
     if (resource in resource_name.keys()):
         resource = resource_name[resource]
 
-    step.context.resource_type = resource
-    step.context.defined_resource = resource
-    step.context.stash = radish_world.config.terraform.resources(resource)
+    found_resource = radish_world.config.terraform.resources(resource)
 
+    if found_resource.resource_list:
+        step.context.resource_type = resource
+        step.context.defined_resource = resource
+        step.context.stash = radish_world.config.terraform.resources(resource)
+    else:
+        skip_step(step, '{} resource'.format(resource))
+
+# TODO: Remove should definition and make the step to when instead. If it is happened on When it will be skipped.
+# TODO: Documentation about should and must :( Given and When may lead to skip a scenario, where Then can not.
+# TODO: Handle AND condition somehow, try to chek the parent steps
+# TODO: Is it possible to write the error message after the step somehow ? - nice to have.
 
 @step(u'I {action_type:ANY} them')
 def i_action_them(step, action_type):
-    if hasattr(step.context.stash, 'resource_list') and not step.context.stash.resource_list:
+    if not hasattr(step.context, 'stash') or (hasattr(step.context.stash, 'resource_list') and not step.context.stash.resource_list):
+        step.skip()
         return
 
     if action_type == "count":
@@ -67,7 +89,8 @@ def i_action_them(step, action_type):
 
 @step(u'I expect the result is {operator:ANY} than {number:d}')
 def i_expect_the_result_is_operator_than_number(step, operator, number):
-    if hasattr(step.context.stash, 'resource_list') and not step.context.stash.resource_list:
+    if not hasattr(step.context, 'stash') or (hasattr(step.context.stash, 'resource_list') and not step.context.stash.resource_list):
+        step.skip()
         return
 
     value = int(step.context.stash)
@@ -88,7 +111,8 @@ def i_expect_the_result_is_operator_than_number(step, operator, number):
 def it_condition_contain_something(step, condition, something,
                                    propertylist=TerraformPropertyList, resourcelist=TerraformResourceList):
 
-    if hasattr(step.context.stash, 'resource_list') and not step.context.stash.resource_list:
+    if not hasattr(step.context, 'stash') or (hasattr(step.context.stash, 'resource_list') and not step.context.stash.resource_list):
+        step.skip()
         return
 
     if step.context.stash.__class__ is propertylist:
@@ -126,7 +150,8 @@ def it_condition_contain_something(step, condition, something,
 @step(u'encryption is enabled')
 @step(u'encryption must be enabled')
 def encryption_is_enabled(step):
-    if hasattr(step.context.stash, 'resource_list') and not step.context.stash.resource_list:
+    if not hasattr(step.context, 'stash') or (hasattr(step.context.stash, 'resource_list') and not step.context.stash.resource_list):
+        step.state = 'skipped'
         return
 
     prop = encryption_property[step.context.resource_type]
@@ -135,7 +160,8 @@ def encryption_is_enabled(step):
 
 @step(u'its value {condition} match the "{search_regex}" regex')
 def its_value_condition_match_the_search_regex_regex(step, condition, search_regex):
-    if hasattr(step.context.stash, 'resource_list') and not step.context.stash.resource_list:
+    if not hasattr(step.context, 'stash') or (hasattr(step.context.stash, 'resource_list') and not step.context.stash.resource_list):
+        step.skip()
         return
 
     regex = r'{}'.format(search_regex)
@@ -183,7 +209,8 @@ def its_value_condition_match_the_search_regex_regex(step, condition, search_reg
 
 @step(u'its value must be set by a variable')
 def its_value_must_be_set_by_a_variable(step):
-    if hasattr(step.context.stash, 'resource_list') and not step.context.stash.resource_list:
+    if not hasattr(step.context, 'stash') or (hasattr(step.context.stash, 'resource_list') and not step.context.stash.resource_list):
+        step.skip()
         return
 
     step.context.stash.property(step.context.search_value).should_match_regex(r'\${var.(.*)}')
@@ -191,6 +218,10 @@ def its_value_must_be_set_by_a_variable(step):
 
 @step(u'it must not have {proto} protocol and port {port:d} for {cidr:ANY}')
 def it_must_not_have_proto_protocol_and_port_port_for_cidr(step, proto, port, cidr):
+    if not hasattr(step.context, 'stash') or (hasattr(step.context.stash, 'resource_list') and not step.context.stash.resource_list):
+         step.skip()
+         return
+
     proto = str(proto)
     port = int(port)
     cidr = str(cidr)
