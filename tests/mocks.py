@@ -221,6 +221,8 @@ class MockedData(object):
         }
     }
 
+    mocked_tf_issue_52 = ""
+
     # security_groups
     sg_ssh_with_2_cidrs = {u'to_port': 22, u'cidr_blocks': [u'213.86.221.35/32', u'195.99.231.117/32'], u'from_port': 22, u'protocol': u'tcp'}
     sg_ssh_with_2_cidrs_any_proto = {u'to_port': 22, u'cidr_blocks': [u'213.86.221.35/32', u'195.99.231.117/32'], u'from_port': 22, u'protocol': u'-1'}
@@ -256,6 +258,9 @@ class MockedValidator(object):
 class MockedStep(object):
     def __init__(self):
         self.context = MockedStepContext()
+
+    def skip(self):
+        self.state = 'skipped'
 
 class MockedStepContext(object):
     def __init__(self):
