@@ -68,9 +68,7 @@ def i_have_resource_defined(step, resource, radish_world=None):
     else:
         skip_step(step, '{} resource'.format(resource))
 
-# TODO: Documentation about should and must :( Given and When may lead to skip a scenario, where Then can not.
-
-@step(u'I {action_type:ANY} them')
+@when(u'I {action_type:ANY} them')
 def i_action_them(step, action_type):
     if action_type == "count":
         step.context.stash = len(step.context.stash.resource_list)
@@ -80,7 +78,7 @@ def i_action_them(step, action_type):
         AssertionError("Invalid action_type in the scenario: {}".format(action_type))
 
 
-@step(u'I expect the result is {operator:ANY} than {number:d}')
+@then(u'I expect the result is {operator:ANY} than {number:d}')
 def i_expect_the_result_is_operator_than_number(step, operator, number):
     value = int(step.context.stash)
 
@@ -97,7 +95,7 @@ def i_expect_the_result_is_operator_than_number(step, operator, number):
 
 @when(u'it contain {something:ANY}')
 @when(u'it contains {something:ANY}')
-@step(u'it must contain {something:ANY}')
+@then(u'it must contain {something:ANY}')
 def it_condition_contain_something(step, something,
                                    propertylist=TerraformPropertyList, resourcelist=TerraformResourceList):
 
@@ -175,8 +173,8 @@ def it_condition_contain_something(step, something,
             else:
                 assert False, '{} does not exist.'.format(something)
 
-@step(u'encryption is enabled')
-@step(u'encryption must be enabled')
+@then(u'encryption is enabled')
+@then(u'encryption must be enabled')
 def encryption_is_enabled(step):
     prop = encryption_property[step.context.resource_type]
     step.context.stash.property(prop).should_equal(True)
@@ -232,7 +230,7 @@ def its_value_must_be_set_by_a_variable(step):
     step.context.stash.property(step.context.search_value).should_match_regex(r'\${var.(.*)}')
 
 
-@step(u'it must not have {proto} protocol and port {port:d} for {cidr:ANY}')
+@then(u'it must not have {proto} protocol and port {port:d} for {cidr:ANY}')
 def it_must_not_have_proto_protocol_and_port_port_for_cidr(step, proto, port, cidr):
     proto = str(proto)
     port = int(port)
