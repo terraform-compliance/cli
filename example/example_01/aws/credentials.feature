@@ -5,8 +5,8 @@ Feature:Credentials should not be within the code
     
 Scenario Outline: AWS Credentials should not be hardcoded
     Given I have aws provider configured
-    Then it should contain <key>
-    And its value must not match the "<regex>" regex
+    When it contains <key>
+    Then its value must not match the "<regex>" regex
 
     Examples:
     | key        | regex                                                      |

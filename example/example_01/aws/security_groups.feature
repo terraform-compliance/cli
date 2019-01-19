@@ -13,12 +13,12 @@ Feature: Security Groups should be used to protect services/instances
 
   Scenario Outline: Well-known insecure protocol exposure on Public Network for ingress traffic
     Given I have AWS Security Group defined
-  	And it should contain ingress
+  	When it contains ingress
     Then it must not have <proto> protocol and port <portNumber> for 0.0.0.0/0
 
   Examples:
     | ProtocolName | proto | portNumber |
-    | HTTP         | tcp   | 80         |
+    | HTTP         | tcp   | 443       |
     | Telnet       | tcp   | 23         |
     | SSH          | tcp   | 22         |
     | MySQL        | tcp   | 3306       |
