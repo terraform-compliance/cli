@@ -117,16 +117,35 @@ def it_condition_contain_something(step, something,
                                                                                                     property.resource_name,
                                                                                                     property.resource_type,
                                                                                                     value)
+            else:
+                write_stdout(level='WARNING',
+                             message='Can not get value of {} in {}/{}. '
+                                     'Might be set by an unknown source (module, etc. )\n'
+                                     'Value : {}'.format(something,
+                                                             property.property_name,
+                                                             property.resource_type,
+                                                             property.property_value))
+                step.state = 'skipped'
+
 
     elif step.context.stash.__class__ is resourcelist:
         if step_can_skip is False:
             step.context.stash.should_have_properties(something)
+            step.context.stash = step.context.stash.find_property(something)
             assert step.context.stash.properties, \
                 'No defined property/value found for {}.'.format(something)
-            step.context.stash = step.context.stash.property(something)
         else:
             try:
                 step.context.stash.should_have_properties(something)
+                number_of_resources = len(step.context.stash.resource_list)
+                step.context.stash = step.context.stash.find_property(something)
+                if step.context.stash:
+                    if number_of_resources > len(step.context.stash.properties):
+                        write_stdout(level='INFO',
+                                     message='Some of the resources does not have {} property defined within.\n'
+                                             'Removed {} resource from the test scope.\n\n'.format(something,
+                                                                    (number_of_resources-len(step.context.stash.properties)),
+                                                                    ))
             except Exception as e:
                 number_of_resources = len(step.context.stash.resource_list)
                 step.context.stash = step.context.stash.find_property(something)
