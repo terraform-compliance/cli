@@ -5,8 +5,8 @@ Feature: Resources should have a proper naming standard
 
   Scenario Outline: Naming Standard on all available resources
     Given I have <resource_name> defined
-    Then it should contain <name_key>
-    And its value must match the "\${var.project}-\${var.environment}-\${var.application}-.*" regex
+    When it contains <name_key>
+    Then its value must match the "\${var.project}-\${var.environment}-\${var.application}-.*" regex
 
     Examples:
     | resource_name           | name_key |

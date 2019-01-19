@@ -4,6 +4,7 @@ from netaddr import IPNetwork
 
 hcl_conditions = ["==", "!=", ">", "<", ">=", "<=", "&&", "||", "!"]
 
+
 # A helper function that will be used to flatten a multi-dimensional multi-nested list
 def flatten_list(input):
     new_list = []
@@ -55,8 +56,9 @@ def check_if_cidr( value ):
 
 def is_ip_in_cidr(ip_cidr, cidr):
     for ip_network in cidr:
-        if IPNetwork(ip_cidr) in IPNetwork(ip_network):
-            return True
+        if check_if_cidr(ip_cidr) and check_if_cidr(ip_network):
+            if IPNetwork(ip_cidr) in IPNetwork(ip_network):
+                return True
 
     return False
 
@@ -68,13 +70,20 @@ def check_sg_rules(tf_conf, security_group, proto, port, cidr):
         if type(security_group['cidr_blocks']) is list:
             for i in range(0,len(security_group['cidr_blocks'])):
                 if not check_if_cidr(security_group['cidr_blocks'][i]):
-                    security_group['cidr_blocks'][i] = expand_variable(tf_conf, security_group['cidr_blocks'][i])['default']
+                    security_group['cidr_blocks'][i] = expand_variable(tf_conf,
+                                                                       security_group['cidr_blocks'][i]
+                                                                       ).get('default',
+                                                                             security_group['cidr_blocks'][i])
         else:
             if not check_if_cidr(security_group['cidr_blocks']):
-                security_group['cidr_blocks'] = expand_variable(tf_conf, security_group['cidr_blocks'])['default']
+                security_group['cidr_blocks'] = expand_variable(tf_conf,
+                                                                security_group['cidr_blocks']
+                                                                ).get('default',
+                                                                      security_group['cidr_blocks'])
 
 
     validate_sg_rule(proto=proto, port=port, cidr=cidr, params=assign_sg_params(security_group))
+
 
 def assign_sg_params(rule):
     from_port = int(rule.get('from_port', 0))
@@ -110,6 +119,7 @@ def validate_sg_rule(proto, port, cidr, params):
     port = int(port)
     if port >= params['from_port'] and port <= params['to_port'] and proto in params['protocol'] and is_ip_in_cidr(cidr, params['cidr_blocks']):
         raise AssertionError('Found {}/{} in {}/{}-{} for {}'.format(proto, port, params['protocol'], params['from_port'], params['to_port'], params['cidr_blocks']))
+
 
 def change_value_in_dict(target_dictionary, path_to_change, value_to_change):
     if type(path_to_change) is str:
@@ -151,6 +161,7 @@ def change_value_in_dict(target_dictionary, path_to_change, value_to_change):
 
     except KeyError:
         pass
+
 
 def strip_conditions(string):
     for condition in hcl_conditions:
