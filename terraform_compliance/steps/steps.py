@@ -134,6 +134,7 @@ def it_condition_contain_something(step, something,
             step.context.stash = step.context.stash.find_property(something)
             assert step.context.stash.properties, \
                 'No defined property/value found for {}.'.format(something)
+            step.context.stash = step.context.stash.properties
         else:
             try:
                 step.context.stash.should_have_properties(something)
@@ -143,8 +144,9 @@ def it_condition_contain_something(step, something,
                     if number_of_resources > len(step.context.stash.properties):
                         write_stdout(level='INFO',
                                      message='Some of the resources does not have {} property defined within.\n'
-                                             'Removed {} resource from the test scope.\n\n'.format(something,
+                                             'Removed {} resource (out of {}) from the test scope.\n\n'.format(something,
                                                                     (number_of_resources-len(step.context.stash.properties)),
+                                                                                                               number_of_resources,
                                                                     ))
             except Exception as e:
                 number_of_resources = len(step.context.stash.resource_list)
@@ -152,9 +154,10 @@ def it_condition_contain_something(step, something,
                 if step.context.stash:
                     write_stdout(level='INFO',
                                  message='Some of the resources does not have {} property defined within.\n' 
-                                         'Removed {} resource from the test scope.\n\n'
+                                         'Removed {} resource (out of {}) from the test scope.\n\n'
                                          'Due to : \n{}'.format(something,
                                                     (number_of_resources-len(step.context.stash.properties)),
+                                                                number_of_resources,
                                                     str(e)))
                 else:
                     skip_step(step,

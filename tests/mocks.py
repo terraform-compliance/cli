@@ -319,6 +319,8 @@ class MockedTerraformPropertyList(object):
     def should_equal(self, bool):
         return bool
 
+    def should_match_regex(self, regex):
+        return True
 
 class MockedTerraformProperty(object):
     def __init__(self):
@@ -327,6 +329,8 @@ class MockedTerraformProperty(object):
         self.resource_type = 'test_resource_type'
         self.property_name = 'test_name'
 
+    def should_match_regex(self, regex):
+        return True
 
 class MockedTerraformResourceList(object):
     def __init__(self, type={}):
@@ -340,7 +344,7 @@ class MockedTerraformResourceList(object):
     def property(self, key):
         if key is None:
             raise Exception('property hit')
-        self.properties = [MockedTerraformPropertyList()]
+        self.properties = MockedTerraformPropertyList()
         return self.properties
 
     def should_match_regex(self, regex):
