@@ -68,10 +68,16 @@ def check_sg_rules(tf_conf, security_group, proto, port, cidr):
         if type(security_group['cidr_blocks']) is list:
             for i in range(0,len(security_group['cidr_blocks'])):
                 if not check_if_cidr(security_group['cidr_blocks'][i]):
-                    security_group['cidr_blocks'][i] = expand_variable(tf_conf, security_group['cidr_blocks'][i])['default']
+                    security_group['cidr_blocks'][i] = expand_variable(tf_conf,
+                                                                       security_group['cidr_blocks'][i]
+                                                                       ).get('default',
+                                                                             security_group['cidr_blocks'][i])
         else:
             if not check_if_cidr(security_group['cidr_blocks']):
-                security_group['cidr_blocks'] = expand_variable(tf_conf, security_group['cidr_blocks'])['default']
+                security_group['cidr_blocks'] = expand_variable(tf_conf,
+                                                                security_group['cidr_blocks']
+                                                                ).get('default',
+                                                                      security_group['cidr_blocks'])
 
 
     validate_sg_rule(proto=proto, port=port, cidr=cidr, params=assign_sg_params(security_group))
