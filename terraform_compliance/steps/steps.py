@@ -125,7 +125,6 @@ def it_condition_contain_something(step, something,
                                                              property.property_value))
                 step.state = 'skipped'
 
-
     elif step.context.stash.__class__ is resourcelist:
         if step_can_skip is False:
             step.context.stash.should_have_properties(something)

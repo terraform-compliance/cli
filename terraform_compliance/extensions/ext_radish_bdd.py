@@ -22,6 +22,7 @@ def skip_step(step, resource=None, message=None):
     for each in step.parent.all_steps:
         each.runable = False
 
+
 def step_condition(step):
     current_condition = step.sentence.lower().split(" ")[0]
 
@@ -37,6 +38,7 @@ def step_condition(step):
                         current_condition = parent_step.context_class
 
     return current_condition
+
 
 def write_stdout(level, message):
 
