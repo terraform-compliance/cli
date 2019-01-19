@@ -55,8 +55,9 @@ def check_if_cidr( value ):
 
 def is_ip_in_cidr(ip_cidr, cidr):
     for ip_network in cidr:
-        if IPNetwork(ip_cidr) in IPNetwork(ip_network):
-            return True
+        if check_if_cidr(ip_cidr) and check_if_cidr(ip_network):
+            if IPNetwork(ip_cidr) in IPNetwork(ip_network):
+                return True
 
     return False
 
