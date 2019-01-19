@@ -256,15 +256,24 @@ class MockedValidator(object):
 
 
 class MockedStep(object):
-    def __init__(self):
+    def __init__(self, no_init=None):
         self.context = MockedStepContext()
+        self.sentence = 'Given I am a step'
+
+        if no_init is None:
+            self.parent = MockedParentStep()
 
     def skip(self):
         self.state = 'skipped'
 
+class MockedParentStep(object):
+    def __init__(self):
+        self.all_steps = [MockedStep(no_init=True), MockedStep(no_init=True), MockedStep(no_init=True)]
+
 class MockedStepContext(object):
     def __init__(self):
         self.stash = MockedWorldConfigTerraform()
+        self.resource_type = 'aws_db_instance'
 
 
 class MockedWorld(object):
@@ -294,19 +303,21 @@ class MockedWorldConfigTerraform(object):
                     }
                 }
             },
-
             u'provider': {
                 u'aws': {}
             },
             u'something_else': {'something': 'else'}
         }
     def resources(self, name):
-        return self.terraform_config['resource'][name]
+        return MockedTerraformResourceList(self.terraform_config['resource'][name])
 
 
 class MockedTerraformPropertyList(object):
     def __init__(self):
         self.properties = [MockedTerraformProperty()]
+
+    def should_equal(self, bool):
+        return bool
 
 
 class MockedTerraformProperty(object):
@@ -318,6 +329,10 @@ class MockedTerraformProperty(object):
 
 
 class MockedTerraformResourceList(object):
+    def __init__(self, type={}):
+        self.resource_list = [type]
+        self.properties = [MockedTerraformPropertyList()]
+
     def should_have_properties(self, key):
         if key is None:
             raise Exception('should_have_properties hit')
@@ -325,11 +340,17 @@ class MockedTerraformResourceList(object):
     def property(self, key):
         if key is None:
             raise Exception('property hit')
-        self.properties = MockedTerraformPropertyList()
+        self.properties = [MockedTerraformPropertyList()]
         return self.properties
 
     def should_match_regex(self, regex):
         return True
+
+    def find_property(self, property):
+        if property is None:
+            return None
+
+        return MockedTerraformResourceList()
 
 
 class MockedArgumentParser(object):
