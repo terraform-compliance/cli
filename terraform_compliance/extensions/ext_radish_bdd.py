@@ -9,7 +9,7 @@ def skip_step(step, resource=None, message=None):
     if message is None:
         message = '{} {} {}'.format(colorful.orange('Can not find'),
                                     colorful.magenta(resource),
-                                    colorful.orange('resource defined in target terraform files.'))
+                                    colorful.orange('defined in target terraform files.'))
     else:
         message = colorful.orange(message)
 
@@ -42,11 +42,11 @@ def write_stdout(level, message):
 
     prefix = colorful.bold_yellow('INFO :')
     if level == 'WARNING':
-        prefix = colorful.bold_white_on_red('WARNING :')
+        prefix = colorful.bold_red('WARNING :')
         message = colorful.yellow(message)
 
 
     added_prefix = '\n\t\t{} '.format(' '*len(prefix))
     message = message.split('\n')
 
-    console_write('\n\t\t{} {}\n\n'.format(prefix, added_prefix.join(message)))
+    console_write('\n\t\t{} {}'.format(prefix, added_prefix.join(message)))
