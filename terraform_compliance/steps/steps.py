@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from radish import step, world, custom_type, given
+from radish import step, world, custom_type, given, when
 from terraform_compliance.steps import resource_name, encryption_property
 from terraform_compliance.common.helper import check_sg_rules
 from terraform_compliance.common.pyhcl_helper import parse_hcl_value
 from terraform_compliance.extensions.terraform_validate import normalise_tag_values
 from terraform_validate.terraform_validate import TerraformPropertyList, TerraformResourceList
-from terraform_compliance.extensions.ext_radish_bdd import skip_step
+from terraform_compliance.extensions.ext_radish_bdd import skip_step, step_condition
 import re
 
 # world.config.debug_steps = True
@@ -75,9 +75,9 @@ def i_have_resource_defined(step, resource, radish_world=None):
 
 @step(u'I {action_type:ANY} them')
 def i_action_them(step, action_type):
-    if not hasattr(step.context, 'stash') or (hasattr(step.context.stash, 'resource_list') and not step.context.stash.resource_list):
-        step.skip()
-        return
+    # if not hasattr(step.context, 'stash') or (hasattr(step.context.stash, 'resource_list') and not step.context.stash.resource_list):
+    #     step.skip()
+    #     return
 
     if action_type == "count":
         step.context.stash = len(step.context.stash.resource_list)
@@ -89,9 +89,9 @@ def i_action_them(step, action_type):
 
 @step(u'I expect the result is {operator:ANY} than {number:d}')
 def i_expect_the_result_is_operator_than_number(step, operator, number):
-    if not hasattr(step.context, 'stash') or (hasattr(step.context.stash, 'resource_list') and not step.context.stash.resource_list):
-        step.skip()
-        return
+    # if not hasattr(step.context, 'stash') or (hasattr(step.context.stash, 'resource_list') and not step.context.stash.resource_list):
+    #     step.skip()
+    #     return
 
     value = int(step.context.stash)
 
@@ -106,14 +106,17 @@ def i_expect_the_result_is_operator_than_number(step, operator, number):
     else:
         AssertionError('Invalid operator: {}'.format(operator))
 
-
-@step(u'it {condition:ANY} contain {something:ANY}')
-def it_condition_contain_something(step, condition, something,
+@when(u'it contain {something:ANY}')
+@when(u'it contains {something:ANY}')
+@step(u'it must contain {something:ANY}')
+def it_condition_contain_something(step, something,
                                    propertylist=TerraformPropertyList, resourcelist=TerraformResourceList):
 
-    if not hasattr(step.context, 'stash') or (hasattr(step.context.stash, 'resource_list') and not step.context.stash.resource_list):
-        step.skip()
-        return
+    step_can_skip = step_condition(step) in ["given", "when"]
+
+    # if not hasattr(step.context, 'stash') or (hasattr(step.context.stash, 'resource_list') and not step.context.stash.resource_list):
+    #     step.skip()
+    #     return
 
     if step.context.stash.__class__ is propertylist:
         for property in step.context.stash.properties:
@@ -128,7 +131,7 @@ def it_condition_contain_something(step, condition, something,
                                                                                                     value)
 
     elif step.context.stash.__class__ is resourcelist:
-        if condition == 'must':
+        if step_can_skip is False:
             step.context.stash.should_have_properties(something)
 
         if something in resource_name.keys():
@@ -136,23 +139,32 @@ def it_condition_contain_something(step, condition, something,
 
         step.context.stash = step.context.stash.property(something)
 
-        if condition == 'must':
+        if step_can_skip:
+            if not hasattr(step.context.stash, 'properties'):
+                skip_step(step,
+                          resource=something,
+                          message='Can not find any resource properties for {resource} in terraform files')
+        else:
             assert step.context.stash.properties, \
                 '{} doesnt have a property list.'.format(something)
+
     elif step.context.stash.__class__ is dict:
         if something in step.context.stash:
             step.context.stash = step.context.stash[something]
         else:
-            if condition == 'must':
+            if step_can_skip:
+                skip_step(step,
+                          resource=something,
+                          message='Can not find {resource} resource in terraform files.')
+            else:
                 assert False, '{} does not exist.'.format(something)
-
 
 @step(u'encryption is enabled')
 @step(u'encryption must be enabled')
 def encryption_is_enabled(step):
-    if not hasattr(step.context, 'stash') or (hasattr(step.context.stash, 'resource_list') and not step.context.stash.resource_list):
-        step.state = 'skipped'
-        return
+    # if not hasattr(step.context, 'stash') or (hasattr(step.context.stash, 'resource_list') and not step.context.stash.resource_list):
+    #     step.state = 'skipped'
+    #     return
 
     prop = encryption_property[step.context.resource_type]
     step.context.stash.property(prop).should_equal(True)
@@ -160,9 +172,9 @@ def encryption_is_enabled(step):
 
 @step(u'its value {condition} match the "{search_regex}" regex')
 def its_value_condition_match_the_search_regex_regex(step, condition, search_regex):
-    if not hasattr(step.context, 'stash') or (hasattr(step.context.stash, 'resource_list') and not step.context.stash.resource_list):
-        step.skip()
-        return
+    # if not hasattr(step.context, 'stash') or (hasattr(step.context.stash, 'resource_list') and not step.context.stash.resource_list):
+    #     step.skip()
+    #     return
 
     regex = r'{}'.format(search_regex)
 
@@ -209,18 +221,18 @@ def its_value_condition_match_the_search_regex_regex(step, condition, search_reg
 
 @step(u'its value must be set by a variable')
 def its_value_must_be_set_by_a_variable(step):
-    if not hasattr(step.context, 'stash') or (hasattr(step.context.stash, 'resource_list') and not step.context.stash.resource_list):
-        step.skip()
-        return
+    # if not hasattr(step.context, 'stash') or (hasattr(step.context.stash, 'resource_list') and not step.context.stash.resource_list):
+    #     step.skip()
+    #     return
 
     step.context.stash.property(step.context.search_value).should_match_regex(r'\${var.(.*)}')
 
 
 @step(u'it must not have {proto} protocol and port {port:d} for {cidr:ANY}')
 def it_must_not_have_proto_protocol_and_port_port_for_cidr(step, proto, port, cidr):
-    if not hasattr(step.context, 'stash') or (hasattr(step.context.stash, 'resource_list') and not step.context.stash.resource_list):
-         step.skip()
-         return
+    # if not hasattr(step.context, 'stash') or (hasattr(step.context.stash, 'resource_list') and not step.context.stash.resource_list):
+    #      step.skip()
+    #      return
 
     proto = str(proto)
     port = int(port)
