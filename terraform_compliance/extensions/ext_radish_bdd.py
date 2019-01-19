@@ -33,7 +33,20 @@ def step_condition(step):
             for parent_step in step.parent.all_steps.reverse():
                 # For the steps that has lower id than ours, so the steps on the above, not below
                 if parent_step.id < step_id:
-                    if parent_step.sentence.lower().split(" ")[0] in ["given", "when", "then"]:
-                        current_condition = parent_step.sentence.lower().split(" ")[0]
+                    if parent_step.context_class in ["given", "when", "then"]:
+                        current_condition = parent_step.context_class
 
     return current_condition
+
+def write_stdout(level, message):
+
+    prefix = colorful.bold_yellow('INFO :')
+    if level == 'WARNING':
+        prefix = colorful.bold_white_on_red('WARNING :')
+        message = colorful.yellow(message)
+
+
+    added_prefix = '\n\t\t{} '.format(' '*len(prefix))
+    message = message.split('\n')
+
+    console_write('\n\t\t{} {}\n\n'.format(prefix, added_prefix.join(message)))
