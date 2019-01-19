@@ -107,8 +107,9 @@ class Test_Step_Cases(TestCase):
     def test_it_must_contain_something_property_can_not_be_found(self, *args):
         step = MockedStep()
         step.context.stash = MockedTerraformPropertyList()
+        step.sentence = 'Then it must contain'
         with self.assertRaises(AssertionError) as err:
-            it_condition_contain_something(step, 'should', 'non_existent_property_value', MockedTerraformPropertyList)
+            it_condition_contain_something(step, 'non_existent_property_value', MockedTerraformPropertyList)
         self.assertEqual(str(err.exception), 'non_existent_property_value property in test_name can not be found in ' 
                                              'test_resource_name (test_resource_type). It is set to test_value instead')
 
@@ -129,7 +130,7 @@ class Test_Step_Cases(TestCase):
         step.context.stash = MockedTerraformResourceList()
         step.sentence = 'Then it must ..'
         it_condition_contain_something(step=step, something='something', resourcelist=MockedTerraformResourceList)
-        self.assertEqual(step.context.stash.__class__, MockedTerraformPropertyList)
+        self.assertEqual(step.context.stash.[0].__class__, MockedTerraformPropertyList)
 
     def test_it_condition_must_something_property_stash_is_dict_found(self):
         step = MockedStep()
@@ -139,9 +140,15 @@ class Test_Step_Cases(TestCase):
     def test_it_condition_should_something_property_stash_is_dict_found(self):
         step = MockedStep()
         step.context.stash = {}
+        step.sentence = 'Then it must contain'
         with self.assertRaises(AssertionError) as err:
             it_condition_contain_something(step=step, something='something', resourcelist=MockedTerraformResourceList)
         self.assertEqual(str(err.exception), 'something does not exist.')
+
+        step.sentence = 'When it contains'
+        step.context.stash = {}
+        it_condition_contain_something(step=step, something='something', resourcelist=MockedTerraformResourceList)
+        self.assertEqual(step.state, 'skipped')
 
     def test_encryption_is_enabled_resource_list(self):
         step = MockedStep()
@@ -150,7 +157,7 @@ class Test_Step_Cases(TestCase):
 
     def test_its_value_condition_match_the_search_regex_regex_resource_list(self):
         step = MockedStep()
-        step.context.stash.resource_list = None
+        step.context.stash = MockedTerraformPropertyList()
         self.assertIsNone(its_value_condition_match_the_search_regex_regex(step, 'condition', 'some_regex'))
 
     def test_its_value_must_match_the_search_regex_regex_string_unicode_success(self):
@@ -211,7 +218,8 @@ class Test_Step_Cases(TestCase):
 
     def test_its_value_must_be_set_by_a_variable_resource_list(self):
         step = MockedStep()
-        step.context.stash.resource_list = None
+        step.context.stash = MockedTerraformResourceList()
+        step.context.search_value = 'something'
         self.assertIsNone(its_value_must_be_set_by_a_variable(step))
 
     @patch.object(MockedTerraformResourceList, 'property', return_value=MockedTerraformResourceList())
