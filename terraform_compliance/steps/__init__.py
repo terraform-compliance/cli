@@ -27,6 +27,7 @@ untaggable_resources = [
     "aws_kms_alias",
     "aws_kinesis_firehose_delivery_stream",
     "aws_vpc_dhcp_options_association",
+    "random_string",
     "null_resource"
 ]
 
