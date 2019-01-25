@@ -356,6 +356,11 @@ class MockedTerraformResourceList(object):
 
         return MockedTerraformResourceList()
 
+    def with_property(self, property, key):
+        if (property is None) or (key is None):
+            return None
+
+        return MockedTerraformPropertyList()
 
 class MockedArgumentParser(object):
     def __init__(self, prog, description):

@@ -6,7 +6,8 @@ from terraform_compliance.steps.steps import (
     encryption_is_enabled,
     its_value_condition_match_the_search_regex_regex,
     its_value_must_be_set_by_a_variable,
-    it_must_not_have_proto_protocol_and_port_port_for_cidr
+    it_must_not_have_proto_protocol_and_port_port_for_cidr,
+    its_property_contains_key
 )
 from tests.mocks import MockedStep, MockedWorld, MockedTerraformPropertyList, MockedTerraformResourceList
 from mock import patch
@@ -228,3 +229,41 @@ class Test_Step_Cases(TestCase):
         step.context.stash = MockedTerraformResourceList()
         step.context.search_value = MockedTerraformResourceList()
         self.assertIsNone(its_value_must_be_set_by_a_variable(step))
+
+    def test_its_property_contains_key_resource_list(self):
+        step = MockedStep()
+        step.context.stash.resource_list = None
+        self.assertIsNone(its_property_contains_key(step, 'something', 'not_important'))
+
+    def test_its_property_contain_something_property_can_not_be_found(self):
+        step = MockedStep()
+        step.context.stash = MockedTerraformResourceList()
+        step.sentence = 'When its .. contains Name'
+        its_property_contains_key(step=step, property=None, key="Name", resourcelist=MockedTerraformResourceList)
+        self.assertEqual(step.state, 'skipped')
+
+    def test_its_property_contains_key_property_key_that_can_not_be_found(self):
+        step = MockedStep()
+        step.context.stash = MockedTerraformResourceList()
+        step.sentence = 'When its .. contains Name'
+        its_property_contains_key(step=step, property="tags", key=None, resourcelist=MockedTerraformResourceList)
+        self.assertEqual(step.state, 'skipped')
+
+    def test_its_property_contains_key_property_key_is_found(self):
+        step = MockedStep()
+        step.context.stash = MockedTerraformResourceList()
+        step.sentence = 'When its something contains key'
+        its_property_contains_key(step=step, property='something', key="key", resourcelist=MockedTerraformResourceList)
+        self.assertEqual(step.context.stash.__class__, MockedTerraformPropertyList)
+
+    def test_its_property_contains_key_property_is_dict_found(self):
+        step = MockedStep()
+        step.context.stash = {'something': 'something else'}
+        its_property_contains_key(step=step, property='something', key="key", resourcelist=MockedTerraformResourceList)
+        self.assertEqual(step.state, 'skipped')
+
+    def test_its_property_contains_key_property_is_property_list(self):
+        step = MockedStep()
+        step.context.stash = MockedTerraformPropertyList()
+        its_property_contains_key(step=step, property='something', key="key", resourcelist=MockedTerraformResourceList)
+        self.assertEqual(step.state, 'skipped')
