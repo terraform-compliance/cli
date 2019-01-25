@@ -177,38 +177,25 @@ def it_condition_contain_something(step, something,
 @when(u'its {property:ANY} contains {key:ANY}')
 def its_property_contains_key(step, property, key, resourcelist=TerraformResourceList):
     if step.context.stash.__class__ is resourcelist:
-        try:
-            step.context.stash.should_have_properties(property)
-            number_of_resources = len(step.context.stash.resource_list)
-            step.context.stash = step.context.stash.with_property(property, key)
-            if step.context.stash:
+        number_of_resources = len(step.context.stash.resource_list)
+        step.context.stash = step.context.stash.find_property(property).find_property(key)
+        if step.context.stash:
+            if len(step.context.stash.properties) > 0:
                 if number_of_resources > len(step.context.stash.properties):
                     write_stdout(level='INFO',
                                  message='Some of the resources does not have {} property defined within.\n'
                                          'Removed {} resource (out of {}) from the test scope.\n\n'.format(property,
                                                                                                            (
-                                                                                                            number_of_resources - len(
-                                                                                                            step.context.stash.properties)),
+                                                                                                            number_of_resources -
+                                                                                                            len(step.context.stash.properties)),
                                                                                                            number_of_resources,
                                                                                                            ))
             else:
-                skip_step(step, resource=property,
+                skip_step(step, resource=str(property) + " with key " + str(key),
                           message='Can not find {resource} property in any resource.')
-        except Exception as e:
-            number_of_resources = len(step.context.stash.resource_list)
-            step.context.stash = step.context.stash.with_property(property, key)
-            if step.context.stash:
-                write_stdout(level='INFO',
-                             message='Some of the resources does not have {} property defined within.\n'
-                                     'Removed {} resource (out of {}) from the test scope.\n\n'
-                                     'Due to : \n{}'.format(property,
-                                                            (number_of_resources - len(step.context.stash.properties)),
-                                                            number_of_resources,
-                                                            str(e)))
-            else:
-                skip_step(step,
-                          resource=property,
-                          message='Can not find {resource} property in any resource.')
+        else:
+            skip_step(step, resource=str(property) + " with key " + str(key),
+                      message='Can not find {resource} property in any resource.')
     else:
         skip_step(step)
 

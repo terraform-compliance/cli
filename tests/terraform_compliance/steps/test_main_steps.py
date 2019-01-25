@@ -239,7 +239,7 @@ class Test_Step_Cases(TestCase):
         step = MockedStep()
         step.context.stash = MockedTerraformResourceList()
         step.sentence = 'When its .. contains Name'
-        its_property_contains_key(step=step, property=None, key="Name", resourcelist=MockedTerraformResourceList)
+        its_property_contains_key(step=step, property="???", key="Name", resourcelist=MockedTerraformResourceList)
         self.assertEqual(step.state, 'skipped')
 
     def test_its_property_contains_key_property_key_that_can_not_be_found(self):
@@ -253,7 +253,7 @@ class Test_Step_Cases(TestCase):
         step = MockedStep()
         step.context.stash = MockedTerraformResourceList()
         step.sentence = 'When its something contains key'
-        its_property_contains_key(step=step, property='something', key="key", resourcelist=MockedTerraformResourceList)
+        its_property_contains_key(step=step, property='tags', key="key", resourcelist=MockedTerraformResourceList)
         self.assertEqual(step.context.stash.__class__, MockedTerraformPropertyList)
 
     def test_its_property_contains_key_property_is_dict_found(self):

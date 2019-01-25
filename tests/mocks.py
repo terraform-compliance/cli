@@ -322,6 +322,15 @@ class MockedTerraformPropertyList(object):
     def should_match_regex(self, regex):
         return True
 
+    def find_property(self, property):
+        if property is None:
+            return None
+
+        if property == "???":
+            self.properties = []
+
+        return self
+
 class MockedTerraformProperty(object):
     def __init__(self):
         self.property_value = 'test_value'
@@ -353,6 +362,12 @@ class MockedTerraformResourceList(object):
     def find_property(self, property):
         if property is None:
             return None
+        elif property == "tags":
+            return MockedTerraformPropertyList()
+        elif property == "???":
+            result = MockedTerraformPropertyList()
+            result.properties = []
+            return result
 
         return MockedTerraformResourceList()
 
