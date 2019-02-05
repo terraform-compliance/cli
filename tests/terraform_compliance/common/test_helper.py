@@ -10,7 +10,6 @@ from terraform_compliance.common.helper import (
     change_value_in_dict
 )
 from tests.mocks import MockedData
-from copy import deepcopy
 
 
 class TestHelperFunctions(TestCase):
@@ -93,8 +92,7 @@ class TestHelperFunctions(TestCase):
 
     def test_validate_sg_rule_port_found_in_cidr(self):
         with self.assertRaises(AssertionError) as context:
-            validate_sg_rule('tcp', '22', '0.0.0.0/0', MockedData.sg_params_all_port_all_ip)
-
+            validate_sg_rule('tcp', '22', '22', '0.0.0.0/0', MockedData.sg_params_all_port_all_ip)
             self.assertTrue('Found' in context.exception)
 
     def test_change_value_in_dict_with_str_path(self):
@@ -106,3 +104,25 @@ class TestHelperFunctions(TestCase):
         target_dict = dict(key=dict(another_key='value'))
         change_value_in_dict(target_dict, ['key'], dict(added_key='added_value'))
         self.assertEqual(target_dict, dict(key=dict(another_key='value', added_key='added_value')))
+
+    def test_validate_sg_rule_invalid_port_range_within_scenario(self):
+        with self.assertRaises(AssertionError) as context:
+            validate_sg_rule('tcp', '43', '42', None, None)
+
+            self.assertTrue('Port range is defined incorrectly within the Scenario.' in context.exception)
+
+    def test_validate_sg_rule_port_range_found_in_cidr_fail(self):
+        scenario_list = ['22-80', '21-22', '21-23', '70-72', '79-80', '79-81']
+        for scenario in scenario_list:
+            with self.assertRaises(AssertionError) as context:
+                from_port, to_port = scenario.split('-')
+                validate_sg_rule('tcp', from_port, to_port, '0.0.0.0/0', MockedData.sg_params_list_range_public)
+                self.assertTrue('Found' in context.exception)
+
+    def test_validate_sg_rule_port_range_found_in_cidr_success_due_to_cidr_mismatch(self):
+        scenario_list = ['22-80', '21-22', '21-23', '70-72', '79-80', '79-81']
+        for scenario in scenario_list:
+            from_port, to_port = scenario.split('-')
+            self.assertTrue(validate_sg_rule('tcp', from_port, to_port, '0.0.0.0/0',
+                                             MockedData.sg_params_list_range_private))
+

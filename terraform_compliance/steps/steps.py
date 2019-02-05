@@ -243,12 +243,17 @@ def its_value_must_be_set_by_a_variable(step_obj):
 @then(u'it must not have {proto} protocol and port {port:d} for {cidr:ANY}')
 def it_must_not_have_proto_protocol_and_port_port_for_cidr(step_obj, proto, port, cidr):
     proto = str(proto)
-    port = int(port)
     cidr = str(cidr)
+
+    # In case we have a range
+    if '-' in port:
+        from_port, to_port = port.split('-')
+    else:
+        from_port = to_port = port
 
     for item in step_obj.context.stash.properties:
         if type(item.property_value) is list:
             for security_group in item.property_value:
-                check_sg_rules(world.config.terraform.terraform_config, security_group, proto, port, cidr)
+                check_sg_rules(world.config.terraform.terraform_config, security_group, proto, from_port, to_port, cidr)
         else:
-            check_sg_rules(world.config.terraform.terraform_config, item.property_value, proto, port, cidr)
+            check_sg_rules(world.config.terraform.terraform_config, item.property_value, proto, from_port, to_port, cidr)
