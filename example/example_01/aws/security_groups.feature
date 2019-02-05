@@ -26,3 +26,10 @@ Feature: Security Groups should be used to protect services/instances
     | NetBIOS      | tcp   | 139        |
     | RDP          | tcp   | 3389       |
     | Jenkins Slave| tcp   | 50000      |
+
+
+  Scenario: No publicly open ports
+    Given I have AWS Security Group defined
+    When it contains ingress
+    Then it must not have tcp protocol and port 1024-65535 for 0.0.0.0/0
+

@@ -118,36 +118,36 @@ class Test_Step_Cases(TestCase):
         step.context.stash = MockedTerraformResourceList()
         step.sentence = 'Then it must ..'
         with self.assertRaises(Exception) as err:
-            it_condition_contain_something(step=step, something=None, resourcelist=MockedTerraformResourceList)
+            it_condition_contain_something(step_obj=step, something=None, resourcelist=MockedTerraformResourceList)
         self.assertEqual(str(err.exception), 'should_have_properties hit')
 
         step.sentence = 'When it contains'
-        it_condition_contain_something(step=step, something=None, resourcelist=MockedTerraformResourceList)
+        it_condition_contain_something(step_obj=step, something=None, resourcelist=MockedTerraformResourceList)
         self.assertEqual(step.state, 'skipped')
 
     def test_it_condition_must_something_property_is_found(self):
         step = MockedStep()
         step.context.stash = MockedTerraformResourceList()
         step.sentence = 'Then it must ..'
-        it_condition_contain_something(step=step, something='something', resourcelist=MockedTerraformResourceList)
+        it_condition_contain_something(step_obj=step, something='something', resourcelist=MockedTerraformResourceList)
         self.assertEqual(step.context.stash[0].__class__, MockedTerraformPropertyList)
 
     def test_it_condition_must_something_property_stash_is_dict_found(self):
         step = MockedStep()
         step.context.stash = {'something': 'something else'}
-        self.assertIsNone(it_condition_contain_something(step=step, something='something', resourcelist=MockedTerraformResourceList))
+        self.assertIsNone(it_condition_contain_something(step_obj=step, something='something', resourcelist=MockedTerraformResourceList))
 
     def test_it_condition_should_something_property_stash_is_dict_found(self):
         step = MockedStep()
         step.context.stash = {}
         step.sentence = 'Then it must contain'
         with self.assertRaises(AssertionError) as err:
-            it_condition_contain_something(step=step, something='something', resourcelist=MockedTerraformResourceList)
+            it_condition_contain_something(step_obj=step, something='something', resourcelist=MockedTerraformResourceList)
         self.assertEqual(str(err.exception), 'something does not exist.')
 
         step.sentence = 'When it contains'
         step.context.stash = {}
-        it_condition_contain_something(step=step, something='something', resourcelist=MockedTerraformResourceList)
+        it_condition_contain_something(step_obj=step, something='something', resourcelist=MockedTerraformResourceList)
         self.assertEqual(step.state, 'skipped')
 
     def test_encryption_is_enabled_resource_list(self):

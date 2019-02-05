@@ -64,7 +64,7 @@ def is_ip_in_cidr(ip_cidr, cidr):
 
 
 # A helper function that compares port related data with given dictionary
-def check_sg_rules(tf_conf, security_group, proto, port, cidr):
+def check_sg_rules(tf_conf, security_group, proto, from_port, to_port, cidr):
 
     if 'cidr_blocks' in security_group:
         if type(security_group['cidr_blocks']) is list:
@@ -82,7 +82,8 @@ def check_sg_rules(tf_conf, security_group, proto, port, cidr):
                                                                       security_group['cidr_blocks'])
 
 
-    validate_sg_rule(proto=proto, port=port, cidr=cidr, params=assign_sg_params(security_group))
+    return validate_sg_rule(proto=proto, from_port=from_port, to_port=to_port,
+                            cidr=cidr, params=assign_sg_params(security_group))
 
 
 def assign_sg_params(rule):
@@ -115,11 +116,29 @@ def assign_sg_params(rule):
     return dict(protocol=protocol, from_port=from_port, to_port=to_port, cidr_blocks=cidr_blocks)
 
 
-def validate_sg_rule(proto, port, cidr, params):
-    port = int(port)
-    if port >= params['from_port'] and port <= params['to_port'] and proto in params['protocol'] and is_ip_in_cidr(cidr, params['cidr_blocks']):
-        raise AssertionError('Found {}/{} in {}/{}-{} for {}'.format(proto, port, params['protocol'], params['from_port'], params['to_port'], params['cidr_blocks']))
+def validate_sg_rule(proto, from_port, to_port, cidr, params):
+    from_port = int(from_port)
+    to_port = int(to_port)
 
+    assert from_port <= to_port, 'Port range is defined incorrectly within the Scenario. ' \
+                                 'Define it {}-{} instead of {}-{}.'.format(from_port,
+                                                                            to_port,
+                                                                            to_port,
+                                                                            from_port)
+
+    given_range = set(range(from_port, to_port+1))
+    defined_range = set(range(params['from_port'], params['to_port']+1))
+    intersection = given_range & defined_range
+
+    if intersection and is_ip_in_cidr(cidr, params['cidr_blocks']):
+        raise AssertionError('Found {}/{} in {}/{}-{} for {}'.format(proto,
+                                                                     '{}-{}'.format(from_port, to_port),
+                                                                     params['protocol'],
+                                                                     params['from_port'],
+                                                                     params['to_port'],
+                                                                     params['cidr_blocks']))
+
+    return True
 
 def change_value_in_dict(target_dictionary, path_to_change, value_to_change):
     if type(path_to_change) is str:
