@@ -45,14 +45,14 @@ def i_have_name_section_configured(step_obj, name, type_name, radish_world=None)
         else:
             skip_step(step_obj, name)
     else:
-        if type in radish_world.config.terraform.terraform_config:
-            if name in radish_world.config.terraform.terraform_config[type]:
-                step_obj.context.stash = radish_world.config.terraform.terraform_config[type][name]
+        if type_name in radish_world.config.terraform.terraform_config:
+            if name in radish_world.config.terraform.terraform_config[type_name]:
+                step_obj.context.stash = radish_world.config.terraform.terraform_config[type_name][name]
             else:
-                step_obj.context.stash = radish_world.config.terraform.terraform_config[type]
+                step_obj.context.stash = radish_world.config.terraform.terraform_config[type_name]
 
         else:
-            skip_step(step_obj, type)
+            skip_step(step_obj, type_name)
 
 
 @given(u'I have {resource:ANY} defined')

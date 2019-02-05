@@ -3,7 +3,7 @@ from terraform_compliance.steps.steps import i_have_name_section_configured, i_h
 from tests.mocks import MockedStep, MockedWorld, MockedWorldConfigTerraform
 
 
-class Test_Given_Step_Cases(TestCase):
+class TestGivenStepCases(TestCase):
 
     def setUp(self):
         self.step = MockedStep()
