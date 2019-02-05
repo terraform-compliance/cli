@@ -24,7 +24,7 @@ def custom_type_section(text):
         return text
 
 
-@given(u'I have {name:ANY} {type:SECTION} configured')
+@given(u'I have {name:ANY} {type_name:SECTION} configured')
 def i_have_name_section_configured(step_obj, name, type_name, radish_world=None):
     if radish_world is None:
         radish_world = world
