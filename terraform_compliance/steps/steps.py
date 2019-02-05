@@ -240,7 +240,7 @@ def its_value_must_be_set_by_a_variable(step_obj):
     step_obj.context.stash.property(step_obj.context.search_value).should_match_regex(r'\${var.(.*)}')
 
 
-@then(u'it must not have {proto} protocol and port {port:d} for {cidr:ANY}')
+@then(u'it must not have {proto} protocol and port {port} for {cidr}')
 def it_must_not_have_proto_protocol_and_port_port_for_cidr(step_obj, proto, port, cidr):
     proto = str(proto)
     cidr = str(cidr)

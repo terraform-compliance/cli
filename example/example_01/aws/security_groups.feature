@@ -31,5 +31,5 @@ Feature: Security Groups should be used to protect services/instances
   Scenario: No publicly open ports
     Given I have AWS Security Group defined
     When it contains ingress
-    Then is must not have 1024-65535 protocol and port <portRange> for 0.0.0.0/0
+    Then it must not have tcp protocol and port 1024-65535 for 0.0.0.0/0
 
