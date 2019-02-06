@@ -188,7 +188,7 @@ def encryption_is_enabled(step_obj):
     step_obj.context.stash.property(prop).should_equal(True)
 
 
-@then(u'its value {condition} match the "{search_regex}" regex')
+@then(u'its value {condition:ANY} match the "{search_regex}" regex')
 def its_value_condition_match_the_search_regex_regex(step_obj, condition, search_regex):
     regex = r'{}'.format(search_regex)
 
@@ -240,7 +240,7 @@ def its_value_must_be_set_by_a_variable(step_obj):
     step_obj.context.stash.property(step_obj.context.search_value).should_match_regex(r'\${var.(.*)}')
 
 
-@then(u'it must not have {proto} protocol and port {port} for {cidr}')
+@then(u'it must not have {proto:ANY} protocol and port {port:ANY} for {cidr:ANY}')
 def it_must_not_have_proto_protocol_and_port_port_for_cidr(step_obj, proto, port, cidr):
     proto = str(proto)
     cidr = str(cidr)
