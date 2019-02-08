@@ -64,7 +64,7 @@ def is_ip_in_cidr(ip_cidr, cidr):
 
 
 # A helper function that compares port related data with given dictionary
-def check_sg_rules(tf_conf, security_group, proto, from_port, to_port, cidr):
+def check_sg_rules(tf_conf, security_group, condition, proto, from_port, to_port, ports, cidr):
 
     if 'cidr_blocks' in security_group:
         if type(security_group['cidr_blocks']) is list:
@@ -82,8 +82,7 @@ def check_sg_rules(tf_conf, security_group, proto, from_port, to_port, cidr):
                                                                       security_group['cidr_blocks'])
 
 
-    return validate_sg_rule(proto=proto, from_port=from_port, to_port=to_port,
-                            cidr=cidr, params=assign_sg_params(security_group))
+    return validate_sg_rule(should_present=condition, proto=proto, from_port=from_port, to_port=to_port, ports=ports, cidr=cidr, params=assign_sg_params(security_group))
 
 
 def assign_sg_params(rule):
@@ -116,27 +115,37 @@ def assign_sg_params(rule):
     return dict(protocol=protocol, from_port=from_port, to_port=to_port, cidr_blocks=cidr_blocks)
 
 
-def validate_sg_rule(proto, from_port, to_port, cidr, params):
-    from_port = int(from_port)
-    to_port = int(to_port)
+def validate_sg_rule(should_present, proto, from_port, to_port, ports, cidr, params):
 
-    assert from_port <= to_port, 'Port range is defined incorrectly within the Scenario. ' \
-                                 'Define it {}-{} instead of {}-{}.'.format(from_port,
-                                                                            to_port,
-                                                                            to_port,
-                                                                            from_port)
-
-    given_range = set(range(from_port, to_port+1))
     defined_range = set(range(params['from_port'], params['to_port']+1))
-    intersection = given_range & defined_range
 
-    if intersection and is_ip_in_cidr(cidr, params['cidr_blocks']):
-        raise AssertionError('Found {}/{} in {}/{}-{} for {}'.format(proto,
-                                                                     '{}-{}'.format(from_port, to_port),
-                                                                     params['protocol'],
-                                                                     params['from_port'],
-                                                                     params['to_port'],
-                                                                     params['cidr_blocks']))
+    if should_present:
+        in_string = 'not in'
+        given_range = set([int(port) for port in ports])
+        intersection = given_range & defined_range
+        from_to_port = ','.join(ports)
+    else:
+        from_port = int(from_port)
+        to_port = int(to_port)
+    
+        assert from_port <= to_port, 'Port range is defined incorrectly within the Scenario. ' \
+                                     'Define it {}-{} instead of {}-{}.'.format(from_port,
+                                                                                to_port,
+                                                                                to_port,
+                                                                                from_port)
+        in_string = 'in'
+        given_range = set(range(from_port, to_port+1))
+        intersection = not(given_range & defined_range)
+        from_to_port = str(from_port) + '-' + str(to_port)
+
+    if not intersection and is_ip_in_cidr(cidr, params['cidr_blocks']):
+        raise AssertionError("Port {}/{} {} {}/{} for {}".format(
+                proto,
+                '{}-{}'.format(params['from_port'], params['to_port']),
+                in_string,
+                '/'.join(params['protocol']),
+                from_to_port,
+                params['cidr_blocks']))
 
     return True
 
