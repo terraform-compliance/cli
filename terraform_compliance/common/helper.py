@@ -116,7 +116,14 @@ def assign_sg_params(rule):
 
 
 def validate_sg_rule(should_present, proto, from_port, to_port, ports, cidr, params):
+    from_port = int(from_port)
+    to_port = int(to_port)
 
+    assert from_port <= to_port, 'Port range is defined incorrectly within the Scenario. ' \
+                                 'Define it {}-{} instead of {}-{}.'.format(from_port,
+                                                                            to_port,
+                                                                            to_port,
+                                                                            from_port)
     defined_range = set(range(params['from_port'], params['to_port']+1))
 
     if should_present:
@@ -125,20 +132,12 @@ def validate_sg_rule(should_present, proto, from_port, to_port, ports, cidr, par
         intersection = given_range & defined_range
         from_to_port = ','.join(ports)
     else:
-        from_port = int(from_port)
-        to_port = int(to_port)
-    
-        assert from_port <= to_port, 'Port range is defined incorrectly within the Scenario. ' \
-                                     'Define it {}-{} instead of {}-{}.'.format(from_port,
-                                                                                to_port,
-                                                                                to_port,
-                                                                                from_port)
         in_string = 'in'
         given_range = set(range(from_port, to_port+1))
-        intersection = not(given_range & defined_range)
+        intersection = given_range & defined_range
         from_to_port = str(from_port) + '-' + str(to_port)
 
-    if not intersection and is_ip_in_cidr(cidr, params['cidr_blocks']):
+    if intersection and is_ip_in_cidr(cidr, params['cidr_blocks']):
         raise AssertionError("Port {}/{} {} {}/{} for {}".format(
                 proto,
                 '{}-{}'.format(params['from_port'], params['to_port']),

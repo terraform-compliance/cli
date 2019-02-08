@@ -6,7 +6,7 @@ from terraform_compliance.steps.steps import (
     encryption_is_enabled,
     its_value_condition_match_the_search_regex_regex,
     its_value_must_be_set_by_a_variable,
-    it_must_not_have_proto_protocol_and_port_port_for_cidr
+    it_condition_have_proto_protocol_and_port_port_for_cidr
 )
 from tests.mocks import MockedStep, MockedWorld, MockedTerraformPropertyList, MockedTerraformResourceList
 from mock import patch

@@ -246,23 +246,24 @@ def it_condition_have_proto_protocol_and_port_port_for_cidr(step_obj, condition,
     cidr = str(cidr)
     ports = port
 
+    # In case we have a range
+    if '-' in port:
+        from_port, to_port = port.split('-')
+    # In case we have comma delimited ports
+    elif ',' in port:
+        print condition
+        assert condition == 'must only', "Comma delimited ports only for must only condition"
+        from_port = to_port = '0'
+        ports = port.split(',')
+    else:
+        from_port = to_port = port
+
     if condition == 'must only':
         condition = True
     elif condition == 'must not':
         condition = False
     else:
         raise AssertionError("Condition should be 'must only' or 'must not'")
-
-    # In case we have a range
-    if '-' in port:
-        from_port, to_port = port.split('-')
-    # In case we have comma delimited ports
-    elif ',' in port:
-        assert condition == 'must only', "Comma delimited ports only for must only condition"
-        from_port = to_port = None
-        ports = port.split(',')
-    else:
-        from_port = to_port = port
 
     for item in step_obj.context.stash.properties:
         if type(item.property_value) is list:
