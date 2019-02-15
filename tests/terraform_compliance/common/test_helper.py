@@ -92,7 +92,7 @@ class TestHelperFunctions(TestCase):
 
     def test_validate_sg_rule_port_found_in_cidr(self):
         with self.assertRaises(AssertionError) as context:
-            validate_sg_rule('tcp', '22', '22', '0.0.0.0/0', MockedData.sg_params_all_port_all_ip)
+            validate_sg_rule(False, 'tcp', '22', '22', '', '0.0.0.0/0', MockedData.sg_params_all_port_all_ip)
             self.assertTrue('Found' in context.exception)
 
     def test_change_value_in_dict_with_str_path(self):
@@ -107,7 +107,7 @@ class TestHelperFunctions(TestCase):
 
     def test_validate_sg_rule_invalid_port_range_within_scenario(self):
         with self.assertRaises(AssertionError) as context:
-            validate_sg_rule('tcp', '43', '42', None, None)
+            validate_sg_rule(False, 'tcp', '43', '42', '', None, None)
 
             self.assertTrue('Port range is defined incorrectly within the Scenario.' in context.exception)
 
@@ -116,13 +116,23 @@ class TestHelperFunctions(TestCase):
         for scenario in scenario_list:
             with self.assertRaises(AssertionError) as context:
                 from_port, to_port = scenario.split('-')
-                validate_sg_rule('tcp', from_port, to_port, '0.0.0.0/0', MockedData.sg_params_list_range_public)
+                validate_sg_rule(False, 'tcp', from_port, to_port, '', '0.0.0.0/0', MockedData.sg_params_list_range_public)
                 self.assertTrue('Found' in context.exception)
 
     def test_validate_sg_rule_port_range_found_in_cidr_success_due_to_cidr_mismatch(self):
         scenario_list = ['22-80', '21-22', '21-23', '70-72', '79-80', '79-81']
         for scenario in scenario_list:
             from_port, to_port = scenario.split('-')
-            self.assertTrue(validate_sg_rule('tcp', from_port, to_port, '0.0.0.0/0',
+            self.assertTrue(validate_sg_rule(False, 'tcp', from_port, to_port, '', '0.0.0.0/0',
                                              MockedData.sg_params_list_range_private))
 
+    def test_validate_sg_rule_port_not_found_in_comma_delimited_scenario(self):
+        with self.assertRaises(AssertionError) as context:
+            ports = '22,443'.split(',')
+            self.assertFalse(validate_sg_rule(True, 'tcp', '0', '0', ports, '0.0.0.0/0', MockedData.sg_params_list_range_public))
+
+    def test_validate_sg_rule_port_found_in_comma_delimited_scenario(self):
+        with self.assertRaises(AssertionError) as context:
+            ports = range(22,80)
+            ports = [str(i) for i in ports]
+            self.assertFalse(validate_sg_rule(True, 'tcp', '0', '0', ports, '0.0.0.0/0', MockedData.sg_params_list_range_public))

@@ -16,6 +16,7 @@ Feature: Security Groups should be used to protect services/instances
   	When it contains ingress
     Then it must not have <proto> protocol and port <portNumber> for 0.0.0.0/0
 
+
   Examples:
     | ProtocolName | proto | portNumber |
     | HTTP         | tcp   | 443       |
@@ -27,9 +28,12 @@ Feature: Security Groups should be used to protect services/instances
     | RDP          | tcp   | 3389       |
     | Jenkins Slave| tcp   | 50000      |
 
-
   Scenario: No publicly open ports
     Given I have AWS Security Group defined
     When it contains ingress
     Then it must not have tcp protocol and port 1024-65535 for 0.0.0.0/0
 
+  Scenario: Only selected ports should be publicly open
+    Given I have AWS Security Group defined
+    When it contains ingress
+    Then it must only have tcp protocol and port 22,443 for 0.0.0.0/0

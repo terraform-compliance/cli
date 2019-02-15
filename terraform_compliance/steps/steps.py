@@ -23,6 +23,10 @@ def custom_type_section(text):
     if text in ['resource', 'provider', 'data', 'module', 'output', 'terraform', 'variable']:
         return text
 
+@custom_type("CONDITION", r"[a-z]+")
+def custom_type_condition(text):
+    if text in ['only', 'not']:
+        return text
 
 @given(u'I have {name:ANY} {type_name:SECTION} configured')
 def i_have_name_section_configured(step_obj, name, type_name, radish_world=None):
@@ -240,20 +244,27 @@ def its_value_must_be_set_by_a_variable(step_obj):
     step_obj.context.stash.property(step_obj.context.search_value).should_match_regex(r'\${var.(.*)}')
 
 
-@then(u'it must not have {proto:ANY} protocol and port {port:ANY} for {cidr:ANY}')
-def it_must_not_have_proto_protocol_and_port_port_for_cidr(step_obj, proto, port, cidr):
+@then(u'it must {condition:ANY} have {proto:ANY} protocol and port {port} for {cidr:ANY}')
+def it_condition_have_proto_protocol_and_port_port_for_cidr(step_obj, condition, proto, port, cidr):
     proto = str(proto)
     cidr = str(cidr)
+    ports = port
 
     # In case we have a range
     if '-' in port:
         from_port, to_port = port.split('-')
+    # In case we have comma delimited ports
+    elif ',' in port:
+        from_port = to_port = '0'
+        ports = port.split(',')
     else:
         from_port = to_port = port
+
+    condition = condition == 'only'
 
     for item in step_obj.context.stash.properties:
         if type(item.property_value) is list:
             for security_group in item.property_value:
-                check_sg_rules(world.config.terraform.terraform_config, security_group, proto, from_port, to_port, cidr)
+                check_sg_rules(world.config.terraform.terraform_config, security_group, condition, proto, from_port, to_port, ports, cidr)
         else:
-            check_sg_rules(world.config.terraform.terraform_config, item.property_value, proto, from_port, to_port, cidr)
+            check_sg_rules(world.config.terraform.terraform_config, item.property_value, proto, condition, from_port, to_port, ports, cidr)
