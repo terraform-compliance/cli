@@ -129,7 +129,7 @@ def validate_sg_rule(should_present, proto, from_port, to_port, ports, cidr, par
     if should_present:
         in_string = 'not in'
         given_range = set([int(port) for port in ports])
-        intersection = given_range & defined_range
+        intersection = not(given_range & defined_range)
         from_to_port = ','.join(ports)
     else:
         in_string = 'in'

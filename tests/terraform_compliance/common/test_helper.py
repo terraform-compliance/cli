@@ -129,7 +129,7 @@ class TestHelperFunctions(TestCase):
     def test_validate_sg_rule_port_not_found_in_comma_delimited_scenario(self):
         with self.assertRaises(AssertionError) as context:
             ports = '22,443'.split(',')
-            self.assertTrue(validate_sg_rule(True, 'tcp', '0', '0', ports, '0.0.0.0/0', MockedData.sg_params_list_range_public))
+            self.assertFalse(validate_sg_rule(True, 'tcp', '0', '0', ports, '0.0.0.0/0', MockedData.sg_params_list_range_public))
 
     def test_validate_sg_rule_port_found_in_comma_delimited_scenario(self):
         with self.assertRaises(AssertionError) as context:
