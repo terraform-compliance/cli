@@ -379,3 +379,4 @@ class MockedArgHandling(object):
         self.ssh_key = '~/.ssh/private.key'
         self.features = '/path/to/features'
         self.tf_dir = '/path/to/terraform/files'
+        self.enable_modules = False
