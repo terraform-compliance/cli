@@ -33,8 +33,7 @@ def step_condition(step):
         if step_id > 0:
             for parent_step in step.parent.all_steps.reverse():
                 # For the steps that has lower id than ours, so the steps on the above, not below
-                if parent_step.id < step_id:
-                    if parent_step.context_class in ["given", "when", "then"]:
+                if parent_step.id < step_id and parent_step.context_class in ["given", "when", "then"]:
                         current_condition = parent_step.context_class
 
     return current_condition
@@ -51,4 +50,4 @@ def write_stdout(level, message):
     added_prefix = u'\n\t\t{}\t{} '.format(colorful.gray(u'\u2502'),' '*len(prefix))
     message = message.split('\n')
 
-    console_write(u'\t\t\u251c\u2501\t{} {}'.format(prefix, added_prefix.join(message)))
+    console_write('\t\t{}\t{} {}'.format(u'\u251c\u2501', prefix, added_prefix.join(message)))
