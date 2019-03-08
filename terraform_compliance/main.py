@@ -2,6 +2,12 @@ import os
 from argparse import ArgumentParser
 from sys import exc_info, exit, executable
 
+# Temporary Python 2 unicode compatibility
+import sys
+
+reload(sys)
+sys.setdefaultencoding('utf8')
+
 try:
     from radish.main import main as call_radish
 except ImportError as e:
