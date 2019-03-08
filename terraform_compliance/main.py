@@ -2,6 +2,12 @@ import os
 from argparse import ArgumentParser
 from sys import exc_info, exit, executable
 
+# Temporary Python 2 unicode compatibility
+import sys
+
+reload(sys)
+sys.setdefaultencoding('utf8')
+
 try:
     from radish.main import main as call_radish
 except ImportError as e:
@@ -39,7 +45,7 @@ from terraform_compliance.common.exceptions import TerraformComplianceInvalidCon
 
 
 __app_name__ = "terraform-compliance"
-__version__ = "0.5.5"
+__version__ = "0.5.6"
 
 
 
