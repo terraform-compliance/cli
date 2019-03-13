@@ -2,12 +2,6 @@ import os
 from argparse import ArgumentParser
 from sys import exc_info, exit, executable
 
-# Temporary Python 2 unicode compatibility
-import sys
-
-reload(sys)
-sys.setdefaultencoding('utf8')
-
 try:
     from radish.main import main as call_radish
 except ImportError as e:
@@ -15,7 +9,7 @@ except ImportError as e:
 
 
     def pip(action, package, params=None):
-        print '{}ing {}..'.format(action, package)
+        print('{}ing {}..'.format(action, package))
 
         if action == 'uninstall':
             cmds = [executable, "-m", "pip", action, '--yes', package]
@@ -24,15 +18,15 @@ except ImportError as e:
 
         subprocess.call(cmds)
 
-    print "Fixing the problem on radish and radish-bdd"
+    print("Fixing the problem on radish and radish-bdd")
     pip('uninstall', 'radish-bdd')
     pip('uninstall', 'radish')
     pip('install', 'radish==0.1.10')
     pip('install', 'radish-bdd==0.8.6')
 
-    print "~"*40
-    print " Please run terraform-compliance again."
-    print "~"*40
+    print("~"*40)
+    print(" Please run terraform-compliance again.")
+    print("~"*40)
     exit(1)
 
 from tempfile import mkdtemp
@@ -111,7 +105,7 @@ def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
     try:
         load_tf_files(tf_directory)
     except TerraformComplianceInvalidConfig:
-        print exc_info()[1]
+        print(exc_info()[1])
         exit(1)
 
     print('Running tests.')

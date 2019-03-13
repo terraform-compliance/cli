@@ -23,7 +23,7 @@ def enable_resource_mounting(tf_conf, processing_resource=None, resource=None):
     source = resource.strip()
     source = (source[:-3] if source.endswith('.id') else source)
 
-    for sub_resource, sub_value in processing_resource.items():
+    for sub_resource, sub_value in list(processing_resource.items()):
 
         if type(sub_value) is dict:
             enable_resource_mounting(tf_conf, sub_value, sub_resource)

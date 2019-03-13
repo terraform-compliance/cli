@@ -1,4 +1,4 @@
-FROM python:2.7.15-slim
+FROM python:3.6.8-slim
 
 LABEL terraform_compliance.version="__VERSION__"
 LABEL author="Emre Erkunt <emre.erkunt@gmail.com>"

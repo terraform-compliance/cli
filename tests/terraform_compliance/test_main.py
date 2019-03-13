@@ -1,7 +1,7 @@
 from unittest import TestCase
 from terraform_compliance.main import ReadableDir, cli
 from tests.mocks import MockedArgumentParser, MockedArgHandling
-from mock import patch
+from unittest.mock import patch
 import os
 
 

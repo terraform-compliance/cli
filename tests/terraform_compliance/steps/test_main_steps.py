@@ -9,7 +9,7 @@ from terraform_compliance.steps.steps import (
     it_condition_have_proto_protocol_and_port_port_for_cidr
 )
 from tests.mocks import MockedStep, MockedWorld, MockedTerraformPropertyList, MockedTerraformResourceList
-from mock import patch
+from unittest.mock import patch
 
 
 class Test_Step_Cases(TestCase):

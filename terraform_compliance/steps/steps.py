@@ -196,7 +196,7 @@ def encryption_is_enabled(step_obj):
 def its_value_condition_match_the_search_regex_regex(step_obj, condition, search_regex):
     regex = r'{}'.format(search_regex)
 
-    if step_obj.context.stash.__class__ in (str, unicode):
+    if step_obj.context.stash.__class__ is str:
         matches = re.match(regex, step_obj.context.stash)
 
         if condition == 'must':
@@ -215,7 +215,7 @@ def its_value_condition_match_the_search_regex_regex(step_obj, condition, search
         normalise_tag_values(step_obj.context.stash)
 
         for prop in step_obj.context.stash.properties:
-            if type(prop.property_value) in [str, unicode]:
+            if type(prop.property_value) is str:
                 prop.property_value = [prop.property_value]
             elif type(prop.property_value) is dict:
                 prop.property_value = prop.property_value.values()
