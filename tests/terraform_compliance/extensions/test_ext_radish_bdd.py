@@ -3,9 +3,6 @@ from terraform_compliance.extensions.ext_radish_bdd import skip_step, write_stdo
 from tests.mocks import MockedStep
 import sys
 
-reload(sys)
-sys.setdefaultencoding('utf8')
-
 class TestRadishBddExtension(TestCase):
     def test_step_condition(self):
         step = MockedStep()

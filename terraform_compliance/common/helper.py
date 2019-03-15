@@ -155,7 +155,7 @@ def change_value_in_dict(target_dictionary, path_to_change, value_to_change):
     if type(path_to_change) is not list:
         return False
 
-    for x in xrange(0,len(path_to_change)):
+    for x in range(0,len(path_to_change)):
         for condition in hcl_conditions:
             if condition in path_to_change[x]:
                 return False

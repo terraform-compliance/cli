@@ -7,7 +7,7 @@ from terraform_compliance.common.pyhcl_helper import (
 )
 from tests.mocks import MockedValidator
 from os import remove, path, environ
-from mock import patch
+from unittest.mock import patch
 
 
 class TestPyHCLHelper(TestCase):
@@ -15,9 +15,10 @@ class TestPyHCLHelper(TestCase):
     def test_pad_tf_file(self):
         tmpFile = '.terraform_compliance_unit_tests.tf'
         pad_tf_file(tmpFile)
-        contents = open(tmpFile, 'r').read()
-        remove(tmpFile)
-        self.assertEqual(contents, '\n\nvariable {}')
+        with open(tmpFile, 'r') as file:
+            contents = file.read()
+            remove(tmpFile)
+            self.assertEqual(contents, '\n\nvariable {}')
 
     @patch('terraform_compliance.common.pyhcl_helper.pad_tf_file', return_value=None)
     def test_pad_invalid_tf_files(self, *args):
