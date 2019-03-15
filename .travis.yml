@@ -10,7 +10,7 @@ after_success: coveralls
 script: nosetests
 jobs:
   include:
-    - python: '3.2'
+    - python: '3.3'
     - python: '3.4'
     - python: '3.5'
     - python: '3.6'
