@@ -1,10 +1,4 @@
 language: python
-python:
-  - '3.3'
-  - '3.4'
-  - '3.5'
-  - '3.6'
-  - '3.7-dev'
 services:
   - docker
 cache:
@@ -13,8 +7,14 @@ install:
   - pip install coveralls
   - pip install -r requirements.txt
 after_success: coveralls
+script: nosetests
 jobs:
   include:
+    - python: '3.2'
+    - python: '3.4'
+    - python: '3.5'
+    - python: '3.6'
+    - python: '3.7-dev'
     - stage: Tests
       provider: script
       script:
