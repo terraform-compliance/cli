@@ -318,7 +318,7 @@ class MockedTerraformPropertyList(object):
     def __init__(self):
         self.properties = [MockedTerraformProperty()]
 
-    def should_equal(self, bool):
+    def should_equal(self, boolMockedTerraformResourceList):
         return bool
 
     def should_match_regex(self, regex):
@@ -380,3 +380,7 @@ class MockedArgHandling(object):
         self.features = '/path/to/features'
         self.tf_dir = '/path/to/terraform/files'
         self.enable_modules = False
+
+class MockedTerraformResource(object):
+    def __init__(self):
+        self.config = {"count": 2}

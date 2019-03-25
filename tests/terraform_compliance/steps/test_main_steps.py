@@ -8,8 +8,8 @@ from terraform_compliance.steps.steps import (
     its_value_must_be_set_by_a_variable,
     it_condition_have_proto_protocol_and_port_port_for_cidr
 )
-from tests.mocks import MockedStep, MockedWorld, MockedTerraformPropertyList, MockedTerraformResourceList
-from unittest.mock import patch
+from tests.mocks import MockedStep, MockedWorld, MockedTerraformPropertyList, MockedTerraformResourceList, MockedTerraformResource
+from mock import patch
 
 
 class Test_Step_Cases(TestCase):
@@ -25,7 +25,7 @@ class Test_Step_Cases(TestCase):
 
     def test_i_action_them_sum(self):
         step = MockedStep()
-        step.context.stash.resource_list = [1,2,3]
+        step.context.stash.resource_list = [MockedTerraformResource(), MockedTerraformResource(), MockedTerraformResource()]
         i_action_them(step, 'sum')
         self.assertEqual(step.context.stash, 6)
 
