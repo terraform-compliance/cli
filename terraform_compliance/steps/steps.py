@@ -82,7 +82,8 @@ def i_action_them(step_obj, action_type):
     if action_type == "count":
         step_obj.context.stash = len(step_obj.context.stash.resource_list)
     elif action_type == "sum":
-        step_obj.context.stash = sum(step_obj.context.stash.resource_list)
+        # WARNING: Variable expansion & Interpolation might effect this result.
+        step_obj.context.stash = sum([1 if type(b) is str else b for b in [resource.config.get('count', 1) for resource in step_obj.context.stash.resource_list]])
     else:
         AssertionError("Invalid action_type in the scenario: {}".format(action_type))
 
