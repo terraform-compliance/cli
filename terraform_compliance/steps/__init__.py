@@ -57,7 +57,3 @@ resource_name = {
     "AWS Subnet": "aws_subnet",
     "resource that supports tags": "(?!{0}).*".format("|".join(untaggable_resources))
 }
-
-regex = {
-    "Name": "^\${var.platform}_\${var.environment}_.*"
-}
