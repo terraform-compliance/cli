@@ -28,7 +28,8 @@ untaggable_resources = [
     "aws_kinesis_firehose_delivery_stream",
     "aws_vpc_dhcp_options_association",
     "null_resource",
-    "random_string"
+    "random_string",
+    "aws_lb_listener"
 ]
 
 encryption_property = {
