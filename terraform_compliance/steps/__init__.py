@@ -29,7 +29,8 @@ untaggable_resources = [
     "aws_vpc_dhcp_options_association",
     "null_resource",
     "random_string",
-    "aws_lb_listener"
+    "aws_lb_listener",
+    "aws_s3_bucket_policy"
 ]
 
 encryption_property = {
