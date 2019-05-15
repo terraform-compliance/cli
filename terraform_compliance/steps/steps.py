@@ -268,4 +268,4 @@ def it_condition_have_proto_protocol_and_port_port_for_cidr(step_obj, condition,
             for security_group in item.property_value:
                 check_sg_rules(world.config.terraform.terraform_config, security_group, condition, proto, from_port, to_port, ports, cidr)
         else:
-            check_sg_rules(world.config.terraform.terraform_config, item.property_value, proto, condition, from_port, to_port, ports, cidr)
+            check_sg_rules(world.config.terraform.terraform_config, item.property_value, condition, proto,from_port, to_port, ports, cidr)
