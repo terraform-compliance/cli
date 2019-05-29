@@ -1,7 +1,7 @@
-terraform_validate==2.8.0
 radish==0.1.10
 radish-bdd==0.12.1
 gitpython==2.1.10
 mock==2.0.0
 netaddr==0.7.19
 colorful==0.4.4
+filetype==1.0.5
