@@ -8,3 +8,6 @@ class TerraformComplianceInvalidConfigurationType(Exception):
 
 class Failure(Exception):
     pass
+
+class TerraformComplianceNotImplemented(Exception):
+    pass

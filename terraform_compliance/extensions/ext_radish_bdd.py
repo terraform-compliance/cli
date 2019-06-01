@@ -10,7 +10,7 @@ def skip_step(step, resource=None, message=None):
     if message is None:
         message = '{} {} {}'.format(colorful.orange('Can not find'),
                                     colorful.magenta(resource),
-                                    colorful.orange('defined in target terraform files.'))
+                                    colorful.orange('defined in target terraform plan.'))
     else:
         message = colorful.orange(message)
 

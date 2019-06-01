@@ -2,7 +2,7 @@ import re
 from netaddr import IPNetwork
 from terraform_compliance.steps import resource_name
 from terraform_compliance.common.exceptions import Failure
-from collections import Iterable
+from collections.abc import Iterable
 
 
 def flatten_list(input):
@@ -206,10 +206,35 @@ def seek_key_in_dict(haystack, needle):
                 found.append({key: value})
             else:
                 found.extend(seek_key_in_dict(value, needle))
+
     elif type(haystack) is list:
         for value in haystack:
             found.extend(seek_key_in_dict(value, needle))
+
     else:
         return []
 
     return found
+
+
+def find_root_by_key(haystack, needle, return_key=None, inherited_key=None, depth=0, return_value=None):
+    found = list()
+    if type(haystack) is dict:
+        for key, value in haystack.items():
+            if not depth:
+                inherited_key = key
+                return_value = key if not return_key else haystack[inherited_key].get(return_key, inherited_key)
+
+            if key.lower() == needle.lower():
+                found.append(return_value)
+            else:
+                found.extend(find_root_by_key(value, needle, return_key, inherited_key, depth+1, return_value))
+
+    elif type(haystack) is list and inherited_key is not None:
+        for value in haystack:
+            found.extend(find_root_by_key(value, needle, return_key, inherited_key, depth+1, return_value))
+
+    else:
+        return []
+
+    return list(set(found))
