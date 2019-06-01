@@ -7,7 +7,8 @@ from terraform_compliance.common.helper import (
     is_ip_in_cidr,
     assign_sg_params,
     validate_sg_rule,
-    change_value_in_dict
+    change_value_in_dict,
+    seek_key_in_dict
 )
 from tests.mocks import MockedData
 
@@ -136,3 +137,38 @@ class TestHelperFunctions(TestCase):
             ports = range(22,80)
             ports = [str(i) for i in ports]
             self.assertFalse(validate_sg_rule(True, 'tcp', '0', '0', ports, '0.0.0.0/0', MockedData.sg_params_list_range_public))
+
+    def test_seek_in_dict_finding_a_key_in_root(self):
+        dictionary = dict(search_key=dict(something=[]))
+        search_key = 'search_key'
+        expected = [{'search_key': {'something': []}}]
+
+        self.assertEqual(seek_key_in_dict(dictionary, search_key), expected)
+
+    def test_seek_in_dict_finding_a_key_in_nested_dict(self):
+        dictionary = dict(search_key=dict(something=dict(something_else=None)))
+        search_key = 'something'
+        expected = [{'something': {'something_else': None}}]
+
+        self.assertEqual(seek_key_in_dict(dictionary, search_key), expected)
+
+    def test_seek_in_dict_finding_multiple_keys_in_nested_dict(self):
+        dictionary = dict(search_key=dict(something=dict(something_else=None, something=['something_else'])), something=[])
+        search_key = 'something'
+        expected = [{'something': {'something_else': None, 'something': ['something_else']}}, {'something': []}]
+
+        self.assertEqual(seek_key_in_dict(dictionary, search_key), expected)
+
+    def test_seek_in_dict_finding_values_in_non_dicts(self):
+        dictionary = dict(search_key=dict(something=[]))
+        search_key = 'something_else'
+        expected = []
+
+        self.assertEqual(seek_key_in_dict(dictionary, search_key), expected)
+
+    def test_seek_in_dict_finding_values_in_non_dicts_on_root(self):
+        dictionary = 'something_else'
+        search_key = 'something_else'
+        expected = []
+
+        self.assertEqual(seek_key_in_dict(dictionary, search_key), expected)

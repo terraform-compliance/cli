@@ -1,4 +1,5 @@
 import json
+from terraform_compliance.common.helper import seek_key_in_dict, flatten_list
 
 
 class TerraformParser(object):
@@ -43,8 +44,12 @@ class TerraformParser(object):
 
         :return: none
         '''
-        for resource_name in self.data['planned_values']['root_module'].get('resources',dict()):
-            self.resources[resource_name['address']] = resource_name
+
+        #TODO: Consider about using 'resource_changes' instead of 'resources'
+
+        for findings in seek_key_in_dict(self.data['planned_values']['root_module'], 'resources'):
+            for resource in findings.get('resources', []):
+                self.resources[resource['address']] = resource
 
     def _parse_configurations(self):
         '''
@@ -53,10 +58,15 @@ class TerraformParser(object):
 
         :return: none
         '''
-        for configuration_name in self.data['configuration']['root_module'].get('resources', dict()):
-            self.configuration['resources'][configuration_name['address']] = configuration_name
 
-        self.configuration['variagbles'] = self.data['configuration']['root_module'].get('variables', dict())
+        self.configuration['resources'] = dict()
+        for findings in seek_key_in_dict(self.data['configuration']['root_module'], 'resources'):
+            for resource in findings.get('resources', []):
+                self.configuration['resources'][resource['address']] = resource
+
+        self.configuration['variables'] = dict()
+        for findings in seek_key_in_dict(self.data['configuration']['root_module'], 'variables'):
+            self.configuration['variables'] = findings.get('variables', {})
 
     def _mount_resources(self, source, target, ref_type):
         '''
@@ -70,11 +80,9 @@ class TerraformParser(object):
         for source_resource in source:
             for target_resource in target:
                 if ref_type not in self.resources[target_resource]['values']:
-                    print('New ref_type added to {} : {}'.format(target_resource, ref_type))
                     self.resources[target_resource]['values'][ref_type] = list()
                     self.resources[target_resource]['values'][ref_type].append(self.resources[source_resource]['values'])
                 else:
-                    print('Extended ref_type to {} : {}'.format(target_resource, ref_type))
                     self.resources[target_resource]['values'][ref_type].append(self.resources[source_resource]['values'])
 
     def _find_resource_from_name(self, resource_name):
@@ -89,8 +97,9 @@ class TerraformParser(object):
 
         resource_list = list()
 
+        resource_type, resource_id = resource_name.split('.')
         for key, value in self.resources.items():
-            if key.startswith(resource_name):
+            if value['type'] == resource_type and value['name'] == resource_id:
                 resource_list.append(key)
 
         return resource_list
@@ -106,12 +115,13 @@ class TerraformParser(object):
                 ref_list = list()
                 for key, value in self.configuration['resources'][resource]['expressions'].items():
                     if 'references' in value:
-                        ref_list.extend([ref for ref in value['references'] if not ref.startswith(invalid_references)])
+                        ref_list.extend([self._find_resource_from_name(ref) for ref in value['references']
+                                         if not ref.startswith(invalid_references)])
 
                 ref_type = self.configuration['resources'][resource]['expressions']['type']['constant_value']
 
                 source_resources = self._find_resource_from_name(self.configuration['resources'][resource]['address'])
-                self._mount_resources(source_resources, ref_list, ref_type)
+                self._mount_resources(source_resources, flatten_list(ref_list), ref_type)
 
     def parse(self):
         '''
@@ -123,3 +133,18 @@ class TerraformParser(object):
         self._parse_resources()
         self._parse_configurations()
         self._mount_references()
+
+    def find_resources_by_type(self, resource_type):
+        '''
+        Finds all resources matching with the resource_type
+
+        :param resource_type: String of resource type defined in terraform
+        :return: list of dict including resources
+        '''
+        resource_list = list()
+
+        for _, resource_data in self.resources.items():
+            if resource_data['type'] == resource_type.lower():
+                resource_list.append(resource_data)
+
+        return resource_list
