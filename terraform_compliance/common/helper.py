@@ -1,21 +1,21 @@
 import re
 from netaddr import IPNetwork
+from terraform_compliance.steps import resource_name
+from terraform_compliance.common.exceptions import Failure
+from collections import Iterable
 
 
-hcl_conditions = ["==", "!=", ">", "<", ">=", "<=", "&&", "||", "!"]
-
-
-# A helper function that will be used to flatten a multi-dimensional multi-nested list
 def flatten_list(input):
-    new_list = []
-    for i in input:
-        if type(i) is list:
-            i = flatten_list(i)
-            for j in i:
-                new_list.extend(j)
+    return list(flatten(input))
+
+
+def flatten(items):
+    for x in items:
+        if isinstance(x, Iterable) and not isinstance(x, (str, bytes)):
+            for sub_x in flatten(x):
+                yield sub_x
         else:
-            new_list.extend(i)
-    return new_list
+            yield x
 
 
 def generate_target_resource( target_string ):
@@ -56,33 +56,17 @@ def check_if_cidr( value ):
 
 def is_ip_in_cidr(ip_cidr, cidr):
     for ip_network in cidr:
-        if check_if_cidr(ip_cidr) and check_if_cidr(ip_network):
-            if IPNetwork(ip_cidr) in IPNetwork(ip_network):
-                return True
+        if check_if_cidr(ip_cidr) and check_if_cidr(ip_network) and IPNetwork(ip_cidr) in IPNetwork(ip_network):
+            return True
 
     return False
 
 
 # A helper function that compares port related data with given dictionary
-def check_sg_rules(tf_conf, security_group, condition, proto, from_port, to_port, ports, cidr):
-
-    if 'cidr_blocks' in security_group:
-        if type(security_group['cidr_blocks']) is list:
-            for i in range(0,len(security_group['cidr_blocks'])):
-                if not check_if_cidr(security_group['cidr_blocks'][i]):
-                    security_group['cidr_blocks'][i] = expand_variable(tf_conf,
-                                                                       security_group['cidr_blocks'][i]
-                                                                       ).get('default',
-                                                                             security_group['cidr_blocks'][i])
-        else:
-            if not check_if_cidr(security_group['cidr_blocks']):
-                security_group['cidr_blocks'] = expand_variable(tf_conf,
-                                                                security_group['cidr_blocks']
-                                                                ).get('default',
-                                                                      security_group['cidr_blocks'])
-
-
-    return validate_sg_rule(should_present=condition, proto=proto, from_port=from_port, to_port=to_port, ports=ports, cidr=cidr, params=assign_sg_params(security_group))
+def check_sg_rules(security_group, condition, plan_data):
+    return validate_sg_rule(should_present=condition,
+                            plan_data=plan_data,
+                            params=assign_sg_params(security_group))
 
 
 def assign_sg_params(rule):
@@ -107,17 +91,18 @@ def assign_sg_params(rule):
         to_port = 65535
 
     if from_port > to_port:
-        raise AssertionError('Invalid configuration from_port can not be bigger than to_port. {} > {} {} in {}'.format(from_port,
-                                                                                                                 to_port,
-                                                                                                                 protocol,
-                                                                                                                 cidr_blocks))
+        raise Failure('Invalid configuration from_port can not be bigger than to_port. '
+                                         '{} > {} {} in {}'.format(from_port,
+                                                                   to_port,
+                                                                   protocol,
+                                                                   cidr_blocks))
 
     return dict(protocol=protocol, from_port=from_port, to_port=to_port, cidr_blocks=cidr_blocks)
 
 
-def validate_sg_rule(should_present, proto, from_port, to_port, ports, cidr, params):
-    from_port = int(from_port)
-    to_port = int(to_port)
+def validate_sg_rule(should_present, plan_data, params):
+    from_port = int(plan_data['from_port'])
+    to_port = int(plan_data['from_port'])
 
     assert from_port <= to_port, 'Port range is defined incorrectly within the Scenario. ' \
                                  'Define it {}-{} instead of {}-{}.'.format(from_port,
@@ -128,18 +113,18 @@ def validate_sg_rule(should_present, proto, from_port, to_port, ports, cidr, par
 
     if should_present:
         in_string = 'not in'
-        given_range = set([int(port) for port in ports])
+        given_range = set([int(port) for port in plan_data['ports']])
         intersection = not(given_range & defined_range)
-        from_to_port = ','.join(ports)
+        from_to_port = ','.join(plan_data['ports'])
     else:
         in_string = 'in'
         given_range = set(range(from_port, to_port+1))
         intersection = given_range & defined_range
         from_to_port = str(from_port) + '-' + str(to_port)
 
-    if intersection and is_ip_in_cidr(cidr, params['cidr_blocks']):
-        raise AssertionError("Port {}/{} {} {}/{} for {}".format(
-                proto,
+    if intersection and is_ip_in_cidr(plan_data.get('cidr', None), params['cidr_blocks']):
+        raise Failure("Port {}/{} {} {}/{} for {}".format(
+                plan_data['proto'],
                 '{}-{}'.format(params['from_port'], params['to_port']),
                 in_string,
                 '/'.join(params['protocol']),
@@ -198,3 +183,33 @@ def strip_conditions(string):
     string = string.split(" ")
 
     return string[0]
+
+
+def convert_resource_type(resource_type):
+    '''
+    Searchs given resource_type within resource_name array and returns the value if it is found
+
+    :param resource_type: String of resource_type
+    :return: converted or original resource_type
+    '''
+    if resource_type in resource_name.keys():
+        resource_type = resource_name[resource_type]
+
+    return resource_type
+
+
+def seek_key_in_dict(haystack, needle):
+    found = list()
+    if type(haystack) is dict:
+        for key, value in haystack.items():
+            if key.lower() == needle.lower():
+                found.append({key: value})
+            else:
+                found.extend(seek_key_in_dict(value, needle))
+    elif type(haystack) is list:
+        for value in haystack:
+            found.extend(seek_key_in_dict(value, needle))
+    else:
+        return []
+
+    return found
