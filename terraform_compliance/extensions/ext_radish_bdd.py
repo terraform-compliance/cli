@@ -1,5 +1,6 @@
 import colorful
 from radish.utils import console_write
+from radish import custom_type
 
 
 def skip_step(step, resource=None, message=None):
@@ -51,3 +52,18 @@ def write_stdout(level, message):
     message = message.split('\n')
 
     print(u'\t\t\u251c\u2501\t{} {}'.format(prefix, added_prefix.join(message)).encode('utf-8'))
+
+@custom_type("ANY", r"[\.\/_\-A-Za-z0-9\s]+")
+def custom_type_any(text):
+    return text
+
+
+@custom_type("SECTION", r"[a-z]+")
+def custom_type_section(text):
+    if text in ['resource', 'provider', 'data', 'module', 'output', 'terraform', 'variable']:
+        return text
+
+@custom_type("CONDITION", r"[a-z]+")
+def custom_type_condition(text):
+    if text in ['only', 'not']:
+        return text
