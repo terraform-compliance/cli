@@ -8,7 +8,8 @@ from terraform_compliance.common.helper import (
     assign_sg_params,
     validate_sg_rule,
     change_value_in_dict,
-    seek_key_in_dict
+    seek_key_in_dict,
+    find_root_by_key
 )
 from tests.mocks import MockedData
 
@@ -172,3 +173,26 @@ class TestHelperFunctions(TestCase):
         expected = []
 
         self.assertEqual(seek_key_in_dict(dictionary, search_key), expected)
+
+    def test_find_root_by_key_single_return(self):
+        haystack = dict(some_key=dict(values=dict(tags=[], something_else='something')))
+        search_key = 'tags'
+        expected = ['some_key']
+
+        self.assertEqual(find_root_by_key(haystack, search_key), expected)
+
+    def test_find_root_by_key_multiple_return(self):
+        haystack = dict(some_key=dict(values=dict(tags=[], something_else='something')), other_key=dict(values=dict(tags=[], something_else='something')))
+        search_key = 'tags'
+        expected = ['some_key', 'other_key']
+
+        self.assertEqual(find_root_by_key(haystack, search_key), expected)
+
+    def test_find_root_by_key_multiple_return(self):
+        haystack = dict(some_key=dict(values=dict(tags=[], something_else='loki'), find_me='bingo'),
+                        other_key=dict(values=dict(tags=[], something_else='thor'), find_me='b i n g o'))
+        search_key = 'tags'
+        return_key = 'find_me'
+        expected = ['bingo', 'b i n g o']
+
+        self.assertEqual(find_root_by_key(haystack, search_key, return_key), expected)
