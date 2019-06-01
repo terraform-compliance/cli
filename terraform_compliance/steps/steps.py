@@ -2,7 +2,7 @@
 
 from radish import step, world, given, when, then
 from terraform_compliance.steps import encryption_property
-from terraform_compliance.common.helper import check_sg_rules, convert_resource_type
+from terraform_compliance.common.helper import check_sg_rules, convert_resource_type, find_root_by_key, seek_key_in_dict
 from terraform_compliance.extensions.ext_radish_bdd import (
     skip_step,
     step_condition,
@@ -12,6 +12,7 @@ from terraform_compliance.extensions.ext_radish_bdd import (
     custom_type_condition
 )
 import re
+from terraform_compliance.common.exceptions import Failure, TerraformComplianceNotImplemented
 
 # world.config.debug_steps = True
 
@@ -29,16 +30,30 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
     :param _terraform_config: Internal, terraform configuration.
     :return:
     '''
-    print('Step> {}'.format(_step_obj.context_sensitive_sentence))
-
-    assert (type_name in ['resource', 'resources', 'variable', 'variables']), \
+    assert (type_name in ['resource', 'resources',
+                          'variable', 'variables',
+                          'provider', 'providers']), \
         '{} configuration type does not exist or not implemented yet. ' \
         'Use resource(s) or variable(s) instead.'.format(type_name)
 
     if type_name.endswith('s'):
         type_name = type_name[:-1]
 
-    if type_name == 'resource':
+    if name == 'resource that supports tags':
+        resource_types_supports_tags = find_root_by_key(_terraform_config.config.terraform.resources,
+                                                        'tags',
+                                                        return_key='type')
+        resource_list = []
+        for resource_type in resource_types_supports_tags:
+            resource_list.extend(_terraform_config.config.terraform.find_resources_by_type(resource_type))
+
+        if resource_list:
+            _step_obj.context.type = type_name
+            _step_obj.context.name = name
+            _step_obj.context.stash = resource_list
+            return
+
+    elif type_name == 'resource':
         name = convert_resource_type(name)
         resource_list = _terraform_config.config.terraform.find_resources_by_type(name)
 
@@ -49,12 +64,21 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
             return
 
     elif type_name == 'variable':
-        found_variable = _terraform_config.config.terraform['variables'].get(name, None)
+        found_variable = _terraform_config.config.terraform.variables.get(name, None)
 
         if found_variable:
             _step_obj.context.type = type_name
             _step_obj.context.name = name
             _step_obj.context.stash = found_variable
+            return
+
+    elif type_name == 'provider':
+        found_provider = _terraform_config.config.terraform.configuration.get('providers', {}).get(name, None)
+
+        if found_provider:
+            _step_obj.context.type = type_name
+            _step_obj.context.name = name
+            _step_obj.context.stash = found_provider
             return
 
     skip_step(_step_obj, name)
@@ -69,35 +93,59 @@ def i_expect_the_result_is_operator_than_number(_step_obj, operator, number):
     print('Step> {}'.format(_step_obj.context_sensitive_sentence))
 
 @when(u'it contain {something:ANY}')
+@when(u'they have {something:ANY}')
+@when(u'it has {something:ANY}')
 @when(u'it contains {something:ANY}')
 @then(u'it must contain {something:ANY}')
 def it_condition_contain_something(_step_obj, something):
-    print('Step> {}'.format(_step_obj.context_sensitive_sentence))
-    property_list = []
+    prop_list = []
 
     if _step_obj.context.type == 'resource':
-        for property in _step_obj.context.stash:
-            if property.get('values', {}).get(something, None):
-                property_list.extend(property['values'][something])
+        for resource in _step_obj.context.stash:
+            values = resource.get('values', {})
+            found_value = values.get(something, None)
 
-        if property_list:
-            _step_obj.context.stash = property_list
+            if found_value:
+                prop_list.append({'address': resource['address'], 'values': found_value})
+
+            elif 'must' in _step_obj.context_sensitive_sentence:
+                raise Failure('{} does not have {} property.'.format(resource['address'], something))
+
+        if prop_list:
+            _step_obj.context.stash = prop_list
             return
 
         skip_step(_step_obj,
                   resource=_step_obj.context.name,
                   message='Can not find any {} property for {} resource in '
-                          'terraform files.'.format(something, _step_obj.context.name))
+                          'terraform plan.'.format(something, _step_obj.context.name))
+
+    elif _step_obj.context.type == 'provider':
+        values = seek_key_in_dict(_step_obj.context.stash, something)
+
+        if values:
+            _step_obj.context.stash = values
+            return
 
     skip_step(_step_obj,
               resource=_step_obj.context.name,
-              message='Skipping the step since {} type does not have any property.'.format(_step_obj.context.type))
+              message='Skipping the step since {} type does not have {} property.'.format(_step_obj.context.type,
+                                                                                          something))
 
 
 @then(u'encryption is enabled')
 @then(u'encryption must be enabled')
 def encryption_is_enabled(_step_obj):
-    print('Step> {}'.format(_step_obj.context_sensitive_sentence))
+    for resource in _step_obj.context.stash:
+        if type(resource) is dict:
+            prop = encryption_property.get(resource['type'], None)
+
+            if not prop:
+                raise TerraformComplianceNotImplemented('Encryption property for {} '
+                                                        'is not implemented yet.'.format(resource['type']))
+
+            if not resource.get('values', {}).get(encryption_property[resource['type']], None):
+                raise Failure('Resource {} does not have encryption enabled ({}).'.format(resource['address'], prop))
 
 @then(u'its value {condition:ANY} match the "{search_regex}" regex')
 def its_value_condition_match_the_search_regex_regex(_step_obj, condition, search_regex):
@@ -109,7 +157,6 @@ def its_value_must_be_set_by_a_variable(_step_obj):
 
 @then(u'it must {condition:ANY} have {proto:ANY} protocol and port {port} for {cidr:ANY}')
 def it_condition_have_proto_protocol_and_port_port_for_cidr(_step_obj, condition, proto, port, cidr):
-    print('Step> {}'.format(_step_obj.context_sensitive_sentence))
     proto = str(proto)
     cidr = str(cidr)
     ports = port
@@ -133,7 +180,7 @@ def it_condition_have_proto_protocol_and_port_port_for_cidr(_step_obj, condition
                      cidr=cidr)
 
     for security_group in _step_obj.context.stash:
-        check_sg_rules(security_group, condition, plan_data)
+        check_sg_rules(security_group['values'][0], condition, plan_data)
 
 
 # @when(u'I {action_type:ANY} them')
@@ -302,3 +349,4 @@ def it_condition_have_proto_protocol_and_port_port_for_cidr(_step_obj, condition
 # @step(u'its value must be set by a variable')
 # def its_value_must_be_set_by_a_variable(step_obj):
 #     step_obj.context.stash.property(step_obj.context.search_value).should_match_regex(r'\${var.(.*)}')
+
