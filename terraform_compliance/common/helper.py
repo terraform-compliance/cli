@@ -17,33 +17,6 @@ def flatten(items):
         else:
             yield x
 
-
-def generate_target_resource( target_string ):
-    target = target_string.strip()
-    target = 'resource.{}'.format(target).split('.')
-
-    if target[-1] in ['id', 'name']:
-        target.pop(-1)
-
-    return target
-
-
-def expand_variable(tf_conf, value):
-    regex = r'\${var.(.*)\}'
-    matches = re.match(regex, value)
-
-    if matches is None:
-        if 'module' in value:
-            return 'None'
-
-        return value
-
-    if matches.group(1) not in tf_conf['variable']:
-        return value
-
-    return tf_conf['variable'][matches.group(1)]
-
-
 def check_if_cidr( value ):
     regex = r'(1[0-9][0-9]|2[0-4][0-9]|25[0-5]|[0-9][0-9]|[0-9])\.(1[0-9][0-9]|2[0-4][0-9]|25[0-5]|[0-9][0-9]|[0-9])\.(1[0-9][0-9]|2[0-4][0-9]|25[0-5]|[0-9][0-9]|[0-9])\.(1[0-9][0-9]|2[0-4][0-9]|25[0-5]|[0-9][0-9]|[0-9])\/(3[0-2]|2[0-9]|1[0-9]|[0-9])'
     matches = re.match(regex, value)
@@ -133,58 +106,6 @@ def validate_sg_rule(should_present, plan_data, params):
 
     return True
 
-def change_value_in_dict(target_dictionary, path_to_change, value_to_change):
-    if type(path_to_change) is str:
-        path_to_change = path_to_change.split('.')
-
-    if type(path_to_change) is not list:
-        return False
-
-    for x in range(0,len(path_to_change)):
-        for condition in hcl_conditions:
-            if condition in path_to_change[x]:
-                return False
-
-    path_to_adjust = '["{}"]'.format('"]["'.join(path_to_change))
-
-    try:
-        target = eval('target_dictionary{}'.format(path_to_adjust))
-
-        for key, value in value_to_change.items():
-            if 'type' in value:
-                type_key = value['type']
-                source = value
-                source['referenced_name'] = key
-
-                if type_key not in target:
-                    target[type_key] = list()
-                elif type_key in target and type(target[type_key]) is not list:
-                        target[type_key] = [target[type_key]]
-
-                target[type_key].append(source)
-
-        target.update(value_to_change)
-
-        try:
-            exec('target_dictionary{}.update({})'.format(path_to_adjust, target))
-        except:
-            # Yes I know, this is against PEP8.
-            pass
-
-    except KeyError:
-        pass
-
-
-def strip_conditions(string):
-    for condition in hcl_conditions:
-        string = string.replace(condition, "")
-
-
-    string = string.split(" ")
-
-    return string[0]
-
-
 def convert_resource_type(resource_type):
     '''
     Searchs given resource_type within resource_name array and returns the value if it is found
@@ -199,6 +120,14 @@ def convert_resource_type(resource_type):
 
 
 def seek_key_in_dict(haystack, needle):
+    '''
+    Searches needle in haystack ( could be dict, list, list of dicts, nested dicts, etc. ) and returns all findings
+    as a list
+
+    :param haystack: dict, list
+    :param needle: search key
+    :return: list of found keys & values
+    '''
     found = list()
     if type(haystack) is dict:
         for key, value in haystack.items():
@@ -216,23 +145,78 @@ def seek_key_in_dict(haystack, needle):
 
     return found
 
+def seek_regex_key_in_dict_values(haystack, key_name, needle, key_matched=None):
+    '''
+    Searches needle in haystack ( could be dict, list, list of dicts, nested dicts, etc. ) and returns all findings
+    as a list. The only difference from seek_key_in_dict is, we are assuming needle is in regex format here and we
+    are searching for values instead.
 
-def find_root_by_key(haystack, needle, return_key=None, inherited_key=None, depth=0, return_value=None):
+    :param haystack: dict, list
+    :param key_name: string of the key
+    :param needle: regex search for the value
+    :return: list of found keys & values
+    '''
+    regex = r'{}'.format(needle)
     found = list()
     if type(haystack) is dict:
         for key, value in haystack.items():
-            if not depth:
-                inherited_key = key
-                return_value = key if not return_key else haystack[inherited_key].get(return_key, inherited_key)
+                if key.lower() == key_name.lower() or key_matched is not None:
+                    if type(value) is str:
+                        matches = re.match(regex, value)
+
+                        if matches is not None:
+                            found.append(matches.group(0))
+                        else:
+                            found.extend(seek_regex_key_in_dict_values(value, key_name, needle, True))
+
+                    elif type(value) is dict:
+                        found.extend(seek_regex_key_in_dict_values(value, key_name, needle, True))
+
+                    elif type(value) is list:
+                        for value in haystack:
+                            found.extend(seek_regex_key_in_dict_values(value, key_name, needle, True))
+
+                else:
+                    found.extend(seek_regex_key_in_dict_values(value, key_name, needle, key_matched))
+
+    elif type(haystack) is list:
+        for value in haystack:
+            found.extend(seek_regex_key_in_dict_values(value, key_name, needle, key_matched))
+
+    else:
+        return []
+
+    return found
+
+
+def find_root_by_key(haystack, needle, return_key=None, _inherited_key=None, _depth=0, _return_value=None):
+    '''
+    Searches needle in haystack ( could be dict, list, list of dicts, nested dicts, etc. ) and returns the root key
+    that has this needle somewhere within it's children.
+
+    :param haystack: dict, list
+    :param needle: search key
+    :param return_key: if this is given, then the result will be the root_key[return_key] instead of root_key
+    :param _inherited_key: internal usage, do not pass this.
+    :param _depth: internal usage, do not pass this.
+    :param _return_value: internal usage, do not pass this.
+    :return:
+    '''
+    found = list()
+    if type(haystack) is dict:
+        for key, value in haystack.items():
+            if not _depth:
+                _inherited_key = key
+                _return_value = key if not return_key else haystack[_inherited_key].get(return_key, _inherited_key)
 
             if key.lower() == needle.lower():
-                found.append(return_value)
+                found.append(_return_value)
             else:
-                found.extend(find_root_by_key(value, needle, return_key, inherited_key, depth+1, return_value))
+                found.extend(find_root_by_key(value, needle, return_key, _inherited_key, _depth+1, _return_value))
 
-    elif type(haystack) is list and inherited_key is not None:
+    elif type(haystack) is list and _inherited_key is not None:
         for value in haystack:
-            found.extend(find_root_by_key(value, needle, return_key, inherited_key, depth+1, return_value))
+            found.extend(find_root_by_key(value, needle, return_key, _inherited_key, _depth+1, _return_value))
 
     else:
         return []
