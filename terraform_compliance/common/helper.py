@@ -34,12 +34,19 @@ def is_ip_in_cidr(ip_cidr, cidr):
 
     return False
 
+def are_networks_same(first_network, network_list):
+    for second_network in network_list:
+        if check_if_cidr(first_network) and check_if_cidr(second_network) and \
+                IPNetwork(first_network) == IPNetwork(second_network):
+            return True
+
+    return False
 
 # A helper function that compares port related data with given dictionary
-def check_sg_rules(security_group, condition, plan_data):
-    return validate_sg_rule(should_present=condition,
-                            plan_data=plan_data,
-                            params=assign_sg_params(security_group))
+def check_sg_rules(plan_data, security_group, condition):
+    return validate_sg_rule(plan_data=assign_sg_params(plan_data),
+                            params=security_group,
+                            condition=condition)
 
 
 def assign_sg_params(rule):
@@ -73,36 +80,57 @@ def assign_sg_params(rule):
     return dict(protocol=protocol, from_port=from_port, to_port=to_port, cidr_blocks=cidr_blocks)
 
 
-def validate_sg_rule(should_present, plan_data, params):
-    from_port = int(plan_data['from_port'])
-    to_port = int(plan_data['from_port'])
+def validate_sg_rule(plan_data, params, condition):
+    from_port = int(params['from_port'])
+    to_port = int(params['to_port'])
 
     assert from_port <= to_port, 'Port range is defined incorrectly within the Scenario. ' \
                                  'Define it {}-{} instead of {}-{}.'.format(from_port,
                                                                             to_port,
                                                                             to_port,
                                                                             from_port)
-    defined_range = set(range(params['from_port'], params['to_port']+1))
 
-    if should_present:
-        in_string = 'not in'
-        given_range = set([int(port) for port in plan_data['ports']])
-        intersection = not(given_range & defined_range)
-        from_to_port = ','.join(plan_data['ports'])
+    defined_range = set(range(plan_data['from_port'], plan_data['to_port']+1))
+    defined_network_list = plan_data['cidr_blocks']
+    given_network = params.get('cidr', None)
+    failure = False
+
+    # Condition: must only have
+    # Fail only if ;
+    # * the ports does not match and defined network is a subset of given network.
+    if condition:
+        given_range = set([int(port) for port in params['ports']])
+        from_to_port = ','.join(params['ports'])
+
+        # Set to True if ports are exactly same.
+        port_intersection = given_range == defined_range
+
+        # Set to True if one of the given networks is a subset.
+        network_check = is_ip_in_cidr(given_network, defined_network_list)
+
+        if not port_intersection and network_check:
+            raise Failure('{}/{} ports are defined for {} network. '
+                          'Must be limited to {}/{}'.format('/'.join(plan_data['protocol']),
+                                                            '{}-{}'.format(plan_data['from_port'],
+                                                                           plan_data['to_port']),
+                                                            plan_data['cidr_blocks'],
+                                                            '/'.join(plan_data['protocol']),
+                                                            from_to_port))
+
+    # Condition: must not have
+    # Fail only if ;
+    # * the ports match and networks match
     else:
-        in_string = 'in'
         given_range = set(range(from_port, to_port+1))
-        intersection = given_range & defined_range
+        port_intersection = given_range & defined_range
         from_to_port = str(from_port) + '-' + str(to_port)
+        network_intersection = is_ip_in_cidr(given_network, defined_network_list)
 
-    if intersection and is_ip_in_cidr(plan_data.get('cidr', None), params['cidr_blocks']):
-        raise Failure("Port {}/{} {} {}/{} for {}".format(
-                plan_data['proto'],
-                '{}-{}'.format(params['from_port'], params['to_port']),
-                in_string,
-                '/'.join(params['protocol']),
-                from_to_port,
-                params['cidr_blocks']))
+        if port_intersection and network_intersection:
+            raise Failure('{}/{} ports are defined for {} network.'.format('/'.join(plan_data['protocol']),
+                                                                           '{}-{}'.format(plan_data['from_port'],
+                                                                                          plan_data['to_port']),
+                                                                           plan_data['cidr_blocks']))
 
     return True
 

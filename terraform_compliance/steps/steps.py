@@ -149,38 +149,57 @@ def encryption_is_enabled(_step_obj):
 def it_condition_have_proto_protocol_and_port_port_for_cidr(_step_obj, condition, proto, port, cidr):
     proto = str(proto)
     cidr = str(cidr)
-    ports = port
+
+    # Set to True only if the condition is 'only'
+    condition = condition == 'only'
 
     # In case we have a range
     if '-' in port:
+        if condition:
+            raise Failure('"must only" scenario cases must be used either with individual port '
+                          'or multiple ports separated with comma.')
+
         from_port, to_port = port.split('-')
+        ports = [from_port, to_port]
+
     # In case we have comma delimited ports
     elif ',' in port:
-        from_port = to_port = '0'
-        ports = port.split(',')
+        ports = [port for port in port.split(',')]
+        from_port = min(ports)
+        to_port = max(ports)
+
     else:
-        from_port = to_port = port
+        from_port = to_port = int(port)
+        ports = list(set([str(from_port), str(to_port)]))
 
-    condition = condition == 'only'
+    from_port = int(from_port) if int(from_port) > 0 else 1
+    to_port = int(to_port) if int(to_port) > 0 else 1
+    ports[0] = ports[0] if int(ports[0]) > 0 else '1'
 
-    plan_data = dict(proto=proto,
-                     from_port=from_port,
-                     to_port=to_port,
-                     ports=ports,
-                     cidr=cidr)
+    looking_for = dict(proto=proto,
+                       from_port=int(from_port),
+                       to_port=int(to_port),
+                       ports=ports,
+                       cidr=cidr)
 
     for security_group in _step_obj.context.stash:
-        check_sg_rules(security_group['values'][0], condition, plan_data)
+        check_sg_rules(plan_data=security_group['values'][0],
+                       security_group=looking_for,
+                       condition=condition)
+
 
 @when(u'I {action_type:ANY} them')
 def i_action_them(_step_obj, action_type):
     if action_type == "count":
-        _step_obj.context.stash = [{"values": len(_step_obj.context.stash)}]
+
+        # WARNING: Only case where we set stash as a dictionary, instead of a list.
+        _step_obj.context.stash = {"values": len(_step_obj.context.stash)}
     else:
         TerraformComplianceNotImplemented("Invalid action_type in the scenario: {}".format(action_type))
 
 @then(u'I expect the result is {operator:ANY} than {number:d}')
 def i_expect_the_result_is_operator_than_number(_step_obj, operator, number):
+    # TODO: Maybe iterate over the stash if it is a list and do the execution per each member ?
     value = int(_step_obj.context.stash.get('values', 0))
 
     if operator == "more":
@@ -213,9 +232,7 @@ def its_value_condition_match_the_search_regex_regex(_step_obj, condition, searc
     if type(values) is str or type(values) is int:
         matches = re.match(regex, values)
 
-        if condition == 'must' and matches is None:
-            fail(condition)
-        elif condition == "must not" and matches is not None:
+        if (condition == 'must' and matches is None) or (condition == "must not" and matches is not None):
             fail(condition)
 
     elif type(values) is list:
@@ -225,7 +242,5 @@ def its_value_condition_match_the_search_regex_regex(_step_obj, condition, searc
     elif type(values) is dict:
         values = seek_regex_key_in_dict_values(values, _step_obj.context.property_name, search_regex)
 
-        if condition == 'must' and values is None:
-            fail(condition)
-        elif condition == "must not" and values is not None:
+        if (condition == 'must' and values is None) or (condition == "must not" and values is not None):
             fail(condition)
