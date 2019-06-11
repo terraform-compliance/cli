@@ -20,6 +20,9 @@ from terraform_compliance.extensions.ext_radish_bdd import (
 import re
 from terraform_compliance.common.exceptions import Failure, TerraformComplianceNotImplemented
 
+#TODO: Figure out how the IAM policies/statements shown in the plan.out
+#TODO: Implement an IAM Compliance via https://github.com/Netflix-Skunkworks/policyuniverse
+
 
 @given(u'I have {name:ANY} defined')
 @given(u'I have {name:ANY} {type_name:SECTION} configured')
@@ -106,7 +109,9 @@ def it_condition_contain_something(_step_obj, something):
                 prop_list.append({'address': resource['address'], 'values': found_value})
 
             elif 'must' in _step_obj.context_sensitive_sentence:
-                raise Failure('{} does not have {} property.'.format(resource['address'], something))
+                raise Failure('{} ({}) does not have {} property.'.format(resource['address'],
+                                                                          resource.get('type', ''),
+                                                                          something))
 
         if prop_list:
             _step_obj.context.stash = prop_list
