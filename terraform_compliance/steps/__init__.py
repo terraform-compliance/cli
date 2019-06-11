@@ -1,38 +1,3 @@
-
-
-untaggable_resources = [
-    'aws_route_table',
-    'aws_route',
-    'aws_main_route_table_association',
-    'aws_elastic_beanstalk',
-    'aws_elasticsearch_domain_policy',
-    'aws_security_group_rule',
-    'aws_eip',
-    'aws_nat_gateway',
-    'aws_egress_only_internet_gateway',
-    'aws_key_pair',
-    'aws_lambda',
-    'aws_iam',
-    'aws_s3_bucket_notification',
-    'aws_api_gateway',
-    'aws_cloudfront_origin_access_identity',
-    'aws_cloudwatch',
-    'aws_server_certificate',
-    'aws_route53_record',
-    'aws_directory_service_directory',
-    'azurerm_resource_group',
-    'aws_efs_mount_target',
-    'aws_ecs_cluster',
-    'aws_launch_configuration',
-    'aws_kms_alias',
-    'aws_kinesis_firehose_delivery_stream',
-    'aws_vpc_dhcp_options_association',
-    'null_resource',
-    'random_string',
-    'aws_lb_listener',
-    'aws_s3_bucket_policy'
-]
-
 encryption_property = {
     'aws_db_instance': 'storage_encrypted',
     'ebs_block_device': 'encrypted',
@@ -57,6 +22,5 @@ resource_name = {
     'AWS VPC': 'aws_vpc',
     'Azure SQL Database': 'azurerm_sql_database',
     'Azure Storage Account': 'azurerm_storage_account',
-    'AWS Subnet': 'aws_subnet',
-    'resource that supports tags': '(?!{0}).*'.format('|'.join(untaggable_resources))
+    'AWS Subnet': 'aws_subnet'
 }

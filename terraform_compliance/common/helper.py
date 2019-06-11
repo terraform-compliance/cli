@@ -55,8 +55,6 @@ def assign_sg_params(rule):
 
     protocol = [proto for proto in [rule.get('protocol', '-1')]]
 
-    # TODO: Make IANA Protocol numbers matching here.
-    # http://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml
     if protocol[0] == '-1' or type(protocol[0]) is int:
         protocol = ['tcp', 'udp']
 
