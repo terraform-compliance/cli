@@ -12,27 +12,37 @@ class TerraformParser(object):
 
         :param filename: terraform plan filename in json format.
         '''
-        self.supported_terraform_versions = ['0.12.0']
+        self.supported_terraform_versions = [
+            '0.12.0',
+            '0.12.1'
+        ]
         self.supported_format_versions = ['0.1']
 
-        self.data = self._read_file(filename)
+        self.raw = self._read_file(filename)
         self.variables = None
         self.resources = dict()
+        self.data = dict()
+        self.providers = dict()
         self.configuration = dict(resources=dict(), variables=dict())
+        self.file_type = "plan"
         self.parse()
 
     def _version_check(self):
-        if self.data['format_version'] not in self.supported_format_versions:
+        if self.raw['format_version'] not in self.supported_format_versions:
             print('\nFATAL ERROR: Unsupported terraform plan output format version '
-                  '({}).\n'.format(self.data['format_version']))
+                  '({}).\n'.format(self.raw['format_version']))
             sys.exit(1)
 
-        if self.data['terraform_version'] not in self.supported_terraform_versions:
+        if self.raw['terraform_version'] not in self.supported_terraform_versions:
             print('\nFATAL ERROR: Unsupported terraform version '
-                  '({}).\n'.format(self.data['terraform_version']))
+                  '({}).\n'.format(self.raw['terraform_version']))
             sys.exit(1)
 
         return True
+
+    def _identify_data_file(self):
+        if 'values' in self.raw:
+            self.file_type = 'state'
 
     def _read_file(self, filename):
         '''
@@ -53,7 +63,7 @@ class TerraformParser(object):
 
         :return: none
         '''
-        self.variables = self.data.get('variables', {})
+        self.variables = self.raw.get('variables', {})
 
     def _parse_resources(self):
         '''
@@ -64,9 +74,29 @@ class TerraformParser(object):
 
         #TODO: Consider about using 'resource_changes' instead of 'resources'
 
-        for findings in seek_key_in_dict(self.data['planned_values']['root_module'], 'resources'):
+        # Resources ( exists in Plan )
+        for findings in seek_key_in_dict(self.raw.get('planned_values', {}).get('root_module', {}), 'resources'):
             for resource in findings.get('resources', []):
-                self.resources[resource['address']] = resource
+                if resource['address'].startswith('data'):
+                    self.data[resource['address']] = resource
+                else:
+                    self.resources[resource['address']] = resource
+
+        # Resources ( exists in State )
+        for findings in seek_key_in_dict(self.raw.get('values', {}).get('root_module', {}), 'resources'):
+            for resource in findings.get('resources', []):
+                if resource['address'].startswith('data'):
+                    self.data[resource['address']] = resource
+                else:
+                    self.resources[resource['address']] = resource
+
+        # Child Modules Resources ( exists in State )
+        for findings in seek_key_in_dict(self.raw.get('values', {}).get('root_module', {}), 'child_modules'):
+            for resource in findings.get('resources', []):
+                if resource['address'].startswith('data'):
+                    self.data[resource['address']] = resource
+                else:
+                    self.resources[resource['address']] = resource
 
     def _parse_configurations(self):
         '''
@@ -78,18 +108,18 @@ class TerraformParser(object):
 
         # Resources
         self.configuration['resources'] = dict()
-        for findings in seek_key_in_dict(self.data['configuration']['root_module'], 'resources'):
+        for findings in seek_key_in_dict(self.raw['configuration']['root_module'], 'resources'):
             for resource in findings.get('resources', []):
                 self.configuration['resources'][resource['address']] = resource
 
         # Variables
         self.configuration['variables'] = dict()
-        for findings in seek_key_in_dict(self.data['configuration']['root_module'], 'variables'):
+        for findings in seek_key_in_dict(self.raw['configuration']['root_module'], 'variables'):
             self.configuration['variables'] = findings.get('variables', {})
 
         # Providers
         self.configuration['providers'] = dict()
-        for findings in seek_key_in_dict(self.data['configuration'], 'provider_config'):
+        for findings in seek_key_in_dict(self.raw['configuration'], 'provider_config'):
             self.configuration['providers'] = findings.get('provider_config', {})
 
     def _mount_resources(self, source, target, ref_type):
@@ -121,7 +151,7 @@ class TerraformParser(object):
 
         resource_list = list()
 
-        resource_type, resource_id = resource_name.split('.')
+        resource_type, resource_id = resource_name.split('.')[0:2]
         for key, value in self.resources.items():
             if value['type'] == resource_type and value['name'] == resource_id:
                 resource_list.append(key)
@@ -146,12 +176,21 @@ class TerraformParser(object):
                 if ref_list:
                     ref_type = self.configuration['resources'][resource]['expressions'].get('type', {}).get('constant_value', {})
 
-                    if not ref_type:
-                        resource_type, resource_id = resource.split('.')
-                        ref_type = resource_type
+                    if not ref_type and not resource.startswith(('data')):
+                            resource_type, resource_id = resource.split('.')
+                            ref_type = resource_type
 
                     source_resources = self._find_resource_from_name(self.configuration['resources'][resource]['address'])
                     self._mount_resources(source_resources, flatten_list(ref_list), ref_type)
+
+    def _distribute_providers(self):
+        for resource_name, resource_data in self.resources.items():
+            resource_provider = resource_name.split('_')[0]
+
+            if resource_provider not in self.providers:
+                self.providers[resource_provider] = dict()
+
+            self.providers[resource_provider][resource_name] = resource_data
 
     def parse(self):
         '''
@@ -160,10 +199,17 @@ class TerraformParser(object):
         :return: nothing
         '''
         self._version_check()
-        self._parse_variables()
+        self._identify_data_file()
         self._parse_resources()
-        self._parse_configurations()
+
+        if self.file_type == 'plan':
+            self._parse_variables()
+            self._parse_configurations()
+
         self._mount_references()
+        self._distribute_providers()
+        return
+
 
     def find_resources_by_type(self, resource_type):
         '''

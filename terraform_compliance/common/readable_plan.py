@@ -51,8 +51,16 @@ class ReadablePlan(Action):
         try:
             assert data['format_version']
             assert data['terraform_version']
-            assert data['planned_values']
-            assert data['configuration']
+
+            # Check if this is a state file
+            if 'values' in data:
+                assert data['values']['root_module']['resources']
+
+            # Then it must be a terraform plan file
+            else:
+                assert data['planned_values']
+                assert data['configuration']
+
         except KeyError:
             print('ERROR: {} is not a valid terraform plan json output.'.format(values))
             sys.exit(1)
