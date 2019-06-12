@@ -4,7 +4,8 @@ encryption_property = {
     'aws_ebs_volume': 'encrypted',
     'azurerm_storage_account': 'enable_blob_encryption',
     'azurerm_sql_database': 'encryption',
-    'aws_s3_bucket': 'server_side_encryption_configuration'
+    'aws_s3_bucket': 'server_side_encryption_configuration',
+    'aws_elasticache_replication_group': 'at_rest_encryption_enabled'
 }
 
 resource_name = {
