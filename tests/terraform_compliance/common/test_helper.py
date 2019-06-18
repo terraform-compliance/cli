@@ -1,16 +1,17 @@
 from unittest import TestCase
 from terraform_compliance.common.helper import (
     flatten_list,
-    generate_target_resource,
-    expand_variable,
     check_if_cidr,
     is_ip_in_cidr,
     assign_sg_params,
     validate_sg_rule,
-    change_value_in_dict,
     seek_key_in_dict,
-    find_root_by_key
+    find_root_by_key,
+    are_networks_same,
+    convert_resource_type,
+    seek_regex_key_in_dict_values
 )
+from terraform_compliance.common.exceptions import Failure
 from tests.mocks import MockedData
 
 
@@ -33,22 +34,6 @@ class TestHelperFunctions(TestCase):
         b = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k']
 
         self.assertEqual(flatten_list(a), b)
-
-    def test_generate_target_resource(self):
-        self.assertEqual(['resource', 'target', 'test'], generate_target_resource('target.test'))
-
-    def test_generate_target_resource_has_id_and_name_in_it(self):
-        self.assertEqual(['resource', 'target', 'test'], generate_target_resource('target.test.id'))
-        self.assertEqual(['resource', 'target', 'test'], generate_target_resource('target.test.name'))
-
-    def test_expand_variable_found(self):
-        tf_conf = dict(variable=dict(key='value'))
-        self.assertEqual('value', expand_variable(tf_conf, '${var.key}'))
-
-    def test_expand_variable_not_found(self):
-        tf_conf = dict(variable=dict(key='value'))
-        self.assertEqual('${var.invalid_key}', expand_variable(tf_conf, '${var.invalid_key}'))
-        self.assertEqual('${invalid.invalid_key}', expand_variable(tf_conf, '${invalid.invalid_key}'))
 
     def test_check_if_cidr_success(self):
         self.assertTrue(check_if_cidr('10.0.0.0/8'))
@@ -87,57 +72,52 @@ class TestHelperFunctions(TestCase):
         self.assertEqual(MockedData.sg_params_all_port_no_ip, assign_sg_params(MockedData.sg_all_port_no_ip))
 
     def test_assign_sg_params_from_port_bigger_than_to_port(self):
-        with self.assertRaises(AssertionError) as context:
+        with self.assertRaises(Failure) as context:
             assign_sg_params(MockedData.sg_invalid)
 
             self.assertTrue('Invalid configuration from_port can not be bigger than to_port.' in context.exception)
 
     def test_validate_sg_rule_port_found_in_cidr(self):
-        with self.assertRaises(AssertionError) as context:
-            validate_sg_rule(False, 'tcp', '22', '22', '', '0.0.0.0/0', MockedData.sg_params_all_port_all_ip)
+        with self.assertRaises(Failure) as context:
+            params = dict(from_port=22, to_port=22, cidr='0.0.0.0/0', ports='', proto='tcp')
+            validate_sg_rule(MockedData.sg_params_all_port_all_ip, params, False)
             self.assertTrue('Found' in context.exception)
-
-    def test_change_value_in_dict_with_str_path(self):
-        target_dict = dict(key=dict(another_key='value'))
-        change_value_in_dict(target_dict, 'key', dict(added_key='added_value'))
-        self.assertEqual(target_dict, dict(key=dict(another_key='value', added_key='added_value')))
-
-    def test_change_value_in_dict_with_dict_path(self):
-        target_dict = dict(key=dict(another_key='value'))
-        change_value_in_dict(target_dict, ['key'], dict(added_key='added_value'))
-        self.assertEqual(target_dict, dict(key=dict(another_key='value', added_key='added_value')))
 
     def test_validate_sg_rule_invalid_port_range_within_scenario(self):
         with self.assertRaises(AssertionError) as context:
-            validate_sg_rule(False, 'tcp', '43', '42', '', None, None)
+            params = dict(from_port=43, to_port=42, cidr=None, ports='', proto='tcp')
+            validate_sg_rule(None, params, False)
 
             self.assertTrue('Port range is defined incorrectly within the Scenario.' in context.exception)
 
     def test_validate_sg_rule_port_range_found_in_cidr_fail(self):
         scenario_list = ['22-80', '21-22', '21-23', '70-72', '79-80', '79-81']
         for scenario in scenario_list:
-            with self.assertRaises(AssertionError) as context:
+            with self.assertRaises(Failure) as context:
                 from_port, to_port = scenario.split('-')
-                validate_sg_rule(False, 'tcp', from_port, to_port, '', '0.0.0.0/0', MockedData.sg_params_list_range_public)
+                params = dict(proto='tcp', from_port=from_port, to_port=to_port, cidr='0.0.0.0/0', ports='')
+                validate_sg_rule(MockedData.sg_params_list_range_public, params, False)
                 self.assertTrue('Found' in context.exception)
 
     def test_validate_sg_rule_port_range_found_in_cidr_success_due_to_cidr_mismatch(self):
         scenario_list = ['22-80', '21-22', '21-23', '70-72', '79-80', '79-81']
         for scenario in scenario_list:
             from_port, to_port = scenario.split('-')
-            self.assertTrue(validate_sg_rule(False, 'tcp', from_port, to_port, '', '0.0.0.0/0',
-                                             MockedData.sg_params_list_range_private))
+            params = dict(proto='tcp', from_port=from_port, to_port=to_port, ports='', cidr='0.0.0.0/0')
+            self.assertTrue(validate_sg_rule(MockedData.sg_params_list_range_private, params, False))
 
     def test_validate_sg_rule_port_not_found_in_comma_delimited_scenario(self):
-        with self.assertRaises(AssertionError) as context:
+        with self.assertRaises(Failure) as context:
             ports = '22,443'.split(',')
-            self.assertFalse(validate_sg_rule(True, 'tcp', '0', '0', ports, '0.0.0.0/0', MockedData.sg_params_list_range_public))
+            params = dict(proto='tcp', from_port=0, to_port=0, ports=ports, cidr='0.0.0.0/0')
+            self.assertFalse(validate_sg_rule(MockedData.sg_params_list_range_public, params, True))
 
     def test_validate_sg_rule_port_found_in_comma_delimited_scenario(self):
-        with self.assertRaises(AssertionError) as context:
+        with self.assertRaises(Failure) as context:
             ports = range(22,80)
             ports = [str(i) for i in ports]
-            self.assertFalse(validate_sg_rule(True, 'tcp', '0', '0', ports, '0.0.0.0/0', MockedData.sg_params_list_range_public))
+            params = dict(proto='tcp', from_port=0, to_port=0, ports=ports, cidr='0.0.0.0/0')
+            self.assertFalse(validate_sg_rule(MockedData.sg_params_list_range_public, params, True))
 
     def test_seek_in_dict_finding_a_key_in_root(self):
         dictionary = dict(search_key=dict(something=[]))
@@ -184,15 +164,39 @@ class TestHelperFunctions(TestCase):
     def test_find_root_by_key_multiple_return(self):
         haystack = dict(some_key=dict(values=dict(tags=[], something_else='something')), other_key=dict(values=dict(tags=[], something_else='something')))
         search_key = 'tags'
-        expected = ['some_key', 'other_key']
+        expected = ['other_key', 'some_key']
 
-        self.assertEqual(find_root_by_key(haystack, search_key), expected)
+        self.assertEqual(sorted(find_root_by_key(haystack, search_key)), sorted(expected))
 
-    def test_find_root_by_key_multiple_return(self):
+    def test_find_root_by_key_multiple_return_02(self):
         haystack = dict(some_key=dict(values=dict(tags=[], something_else='loki'), find_me='bingo'),
                         other_key=dict(values=dict(tags=[], something_else='thor'), find_me='b i n g o'))
         search_key = 'tags'
         return_key = 'find_me'
         expected = ['bingo', 'b i n g o']
 
-        self.assertEqual(find_root_by_key(haystack, search_key, return_key), expected)
+        self.assertEqual(sorted(find_root_by_key(haystack, search_key, return_key)), sorted(expected))
+
+    def test_are_networks_same_success(self):
+        network_a = '192.168.0.0/24'
+        networks = ['192.168.0.0/24']
+        self.assertTrue(are_networks_same(network_a, networks))
+
+    def test_are_networks_same_false(self):
+        network_a = '192.168.0.0/24'
+        networks = ['192.168.0.0/23']
+        self.assertFalse(are_networks_same(network_a, networks))
+
+    def test_convert_resource_type_success(self):
+        self.assertEqual(convert_resource_type('AWS Security Group'), 'aws_security_group')
+
+    def test_convert_resource_type_failure(self):
+        self.assertEqual(convert_resource_type('test_resource'), 'test_resource')
+
+    def test_seek_regex_in_dict_value_nested_dict(self):
+        haystack = dict(search_key=dict(something='value'))
+        key_name = 'something'
+        needle = 'val.*'
+        expected = ['value']
+
+        self.assertEqual(seek_regex_key_in_dict_values(haystack, key_name, needle), expected)

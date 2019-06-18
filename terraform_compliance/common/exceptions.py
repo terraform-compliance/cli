@@ -11,3 +11,6 @@ class Failure(Exception):
 
 class TerraformComplianceNotImplemented(Exception):
     pass
+
+class TerraformComplianceInternalFailure(Exception):
+    pass

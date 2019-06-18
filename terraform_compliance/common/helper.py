@@ -83,15 +83,14 @@ def validate_sg_rule(plan_data, params, condition):
     to_port = int(params['to_port'])
 
     assert from_port <= to_port, 'Port range is defined incorrectly within the Scenario. ' \
-                                 'Define it {}-{} instead of {}-{}.'.format(from_port,
-                                                                            to_port,
-                                                                            to_port,
-                                                                            from_port)
+                                'Define it {}-{} instead of {}-{}.'.format(from_port,
+                                                                           to_port,
+                                                                           to_port,
+                                                                           from_port)
 
     defined_range = set(range(plan_data['from_port'], plan_data['to_port']+1))
     defined_network_list = plan_data['cidr_blocks']
     given_network = params.get('cidr', None)
-    failure = False
 
     # Condition: must only have
     # Fail only if ;
@@ -186,24 +185,24 @@ def seek_regex_key_in_dict_values(haystack, key_name, needle, key_matched=None):
     found = list()
     if type(haystack) is dict:
         for key, value in haystack.items():
-                if key.lower() == key_name.lower() or key_matched is not None:
-                    if type(value) is str:
-                        matches = re.match(regex, value)
+            if key.lower() == key_name.lower() or key_matched is not None:
+                if type(value) is str:
+                    matches = re.match(regex, value)
 
-                        if matches is not None:
-                            found.append(matches.group(0))
-                        else:
-                            found.extend(seek_regex_key_in_dict_values(value, key_name, needle, True))
-
-                    elif type(value) is dict:
+                    if matches is not None:
+                        found.append(matches.group(0))
+                    else:
                         found.extend(seek_regex_key_in_dict_values(value, key_name, needle, True))
 
-                    elif type(value) is list:
-                        for value in haystack:
-                            found.extend(seek_regex_key_in_dict_values(value, key_name, needle, True))
+                elif type(value) is dict:
+                    found.extend(seek_regex_key_in_dict_values(value, key_name, needle, True))
 
-                else:
-                    found.extend(seek_regex_key_in_dict_values(value, key_name, needle, key_matched))
+                elif type(value) is list:
+                    for value in haystack:
+                        found.extend(seek_regex_key_in_dict_values(value, key_name, needle, True))
+
+            else:
+                found.extend(seek_regex_key_in_dict_values(value, key_name, needle, key_matched))
 
     elif type(haystack) is list:
         for value in haystack:

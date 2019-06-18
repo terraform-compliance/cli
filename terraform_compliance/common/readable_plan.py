@@ -4,6 +4,7 @@ from argparse import Action
 import json
 import filetype
 from terraform_compliance.common.terraform_files import convert_terraform_plan_to_json
+from terraform_compliance.common.exceptions import TerraformComplianceInternalFailure
 
 
 class ReadablePlan(Action):
@@ -46,6 +47,8 @@ class ReadablePlan(Action):
             print('       Did you try to convert the binary plan file to json with '
                   '"terraform show -json {} > {}.json" ?'.format(values, values))
             sys.exit(1)
+        except:
+            raise TerraformComplianceInternalFailure('Invalid file type.')
 
         # Check if this is a correct terraform plan file
         try:
