@@ -108,18 +108,18 @@ class TerraformParser(object):
 
         # Resources
         self.configuration['resources'] = dict()
-        for findings in seek_key_in_dict(self.raw['configuration']['root_module'], 'resources'):
+        for findings in seek_key_in_dict(self.raw.get('configuration', {}).get('root_module', {}), 'resources'):
             for resource in findings.get('resources', []):
                 self.configuration['resources'][resource['address']] = resource
 
         # Variables
         self.configuration['variables'] = dict()
-        for findings in seek_key_in_dict(self.raw['configuration']['root_module'], 'variables'):
+        for findings in seek_key_in_dict(self.raw.get('configuration', {}).get('root_module', {}), 'variables'):
             self.configuration['variables'] = findings.get('variables', {})
 
         # Providers
         self.configuration['providers'] = dict()
-        for findings in seek_key_in_dict(self.raw['configuration'], 'provider_config'):
+        for findings in seek_key_in_dict(self.raw.get('configuration', {}), 'provider_config'):
             self.configuration['providers'] = findings.get('provider_config', {})
 
     def _mount_resources(self, source, target, ref_type):
