@@ -4,7 +4,7 @@ import sys
 
 
 class TerraformParser(object):
-    def __init__(self, filename):
+    def __init__(self, filename, parse_it=True):
         '''
         This class reads the given terraform plan filename ( in json format ) and assigns required variables for
         further steps in terraform-compliance. If the file is not a json or terraform plan file, then it will be
@@ -25,7 +25,9 @@ class TerraformParser(object):
         self.providers = dict()
         self.configuration = dict(resources=dict(), variables=dict())
         self.file_type = "plan"
-        self.parse()
+
+        if parse_it:
+            self.parse()
 
     def _version_check(self):
         if self.raw['format_version'] not in self.supported_format_versions:
