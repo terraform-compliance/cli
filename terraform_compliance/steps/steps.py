@@ -200,7 +200,7 @@ def i_action_them(_step_obj, action_type):
         # WARNING: Only case where we set stash as a dictionary, instead of a list.
         _step_obj.context.stash = {"values": len(_step_obj.context.stash)}
     else:
-        TerraformComplianceNotImplemented("Invalid action_type in the scenario: {}".format(action_type))
+        raise TerraformComplianceNotImplemented("Invalid action_type in the scenario: {}".format(action_type))
 
 @then(u'I expect the result is {operator:ANY} than {number:d}')
 def i_expect_the_result_is_operator_than_number(_step_obj, operator, number):
@@ -216,7 +216,7 @@ def i_expect_the_result_is_operator_than_number(_step_obj, operator, number):
     elif operator == "less and equal":
         assert value <= number, "{} is not less and equal than {}".format(value, number)
     else:
-        TerraformComplianceNotImplemented('Invalid operator: {}'.format(operator))
+        raise TerraformComplianceNotImplemented('Invalid operator: {}'.format(operator))
 
 @then(u'its value {condition:ANY} match the "{search_regex}" regex')
 def its_value_condition_match_the_search_regex_regex(_step_obj, condition, search_regex, _stash=None):

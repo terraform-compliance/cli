@@ -5,9 +5,9 @@ from terraform_compliance.steps.steps import (
     it_condition_contain_something,
     encryption_is_enabled,
     its_value_condition_match_the_search_regex_regex,
-    its_value_must_be_set_by_a_variable,
     it_condition_have_proto_protocol_and_port_port_for_cidr
 )
+from terraform_compliance.common.exceptions import TerraformComplianceNotImplemented
 from tests.mocks import MockedStep, MockedWorld, MockedTerraformPropertyList, MockedTerraformResourceList, MockedTerraformResource
 from mock import patch
 
@@ -19,84 +19,55 @@ class Test_Step_Cases(TestCase):
 
     def test_i_action_them_count(self):
         step = MockedStep()
-        step.context.stash.resource_list = [1,2,3]
+        step.context.stash = [1,2,3]
         i_action_them(step, 'count')
-        self.assertEqual(step.context.stash, 3)
+        self.assertEqual(step.context.stash, {'values': 3})
 
     def test_i_action_them_sum(self):
         step = MockedStep()
-        step.context.stash.resource_list = [MockedTerraformResource(), MockedTerraformResource(), MockedTerraformResource()]
-        i_action_them(step, 'sum')
-        self.assertEqual(step.context.stash, 6)
+        with self.assertRaises(TerraformComplianceNotImplemented):
+            i_action_them(step, 'something_else')
 
-    def test_i_action_them_undefined(self):
-        # with self.assertRaises():
-        self.assertIsNone(i_action_them(self.step, 'undefined action'))
-
-    def test_i_action_them_resource_list_as_dict(self):
+    def test_i_expect_the_result_is_operator_than_number_more(self):
         step = MockedStep()
-        step.context.stash.resource_list = None
-        self.assertIsNone(i_action_them(step, 'something that is not important'))
+        step.context.stash = {'values': 42}
+        self.assertIsNone(i_expect_the_result_is_operator_than_number(step, 'more', 41))
+        with self.assertRaises(AssertionError) as err:
+            i_expect_the_result_is_operator_than_number(step, 'more', 43)
+        self.assertEqual(str(err.exception), '42 is not more than 43')
 
-    def test_i_expect_the_result_is_operator_than_number_resource_list_as_dict(self):
+    def test_i_expect_the_result_is_operator_than_number_more_and_equal(self):
         step = MockedStep()
-        step.context.stash = 42
-        self.assertIsNone(i_expect_the_result_is_operator_than_number(step, 'operator', 'not_important'))
+        step.context.stash = {'values': 42}
+        self.assertIsNone(i_expect_the_result_is_operator_than_number(step, 'more and equal', 42))
+        self.assertIsNone(i_expect_the_result_is_operator_than_number(step, 'more and equal', 41))
+        with self.assertRaises(AssertionError) as err:
+            i_expect_the_result_is_operator_than_number(step, 'more and equal', 43)
+        self.assertEqual(str(err.exception), '42 is not more and equal than 43')
 
-    def test_i_expect_the_result_is_more_than_number_success(self):
+    def test_i_expect_the_result_is_operator_than_number_less(self):
         step = MockedStep()
-        step.context.stash = 1
-        self.assertIsNone(i_expect_the_result_is_operator_than_number(step, 'more', 0))
+        step.context.stash = {'values': 42}
+        self.assertIsNone(i_expect_the_result_is_operator_than_number(step, 'less', 43))
+        with self.assertRaises(AssertionError) as err:
+            i_expect_the_result_is_operator_than_number(step, 'less', 41)
+        self.assertEqual(str(err.exception), '42 is not less than 41')
+
+    def test_i_expect_the_result_is_operator_than_number_less_and_equal(self):
+        step = MockedStep()
+        step.context.stash = {'values': 42}
+        self.assertIsNone(i_expect_the_result_is_operator_than_number(step, 'less and equal', 43))
+        self.assertIsNone(i_expect_the_result_is_operator_than_number(step, 'less and equal', 42))
+        with self.assertRaises(AssertionError) as err:
+            i_expect_the_result_is_operator_than_number(step, 'less and equal', 41)
+        self.assertEqual(str(err.exception), '42 is not less and equal than 41')
 
     def test_i_expect_the_result_is_more_than_number_failure(self):
         step = MockedStep()
-        step.context.stash = 1
-        with self.assertRaises(AssertionError) as err:
-            self.assertIsNone(i_expect_the_result_is_operator_than_number(step, 'more', 1))
-        self.assertEqual(str(err.exception), '1 is not more than 1')
-
-    def test_i_expect_the_result_is_more_and_equal_than_number_success(self):
-        step = MockedStep()
-        step.context.stash = 1
-        self.assertIsNone(i_expect_the_result_is_operator_than_number(step, 'more and equal', 0))
-        self.assertIsNone(i_expect_the_result_is_operator_than_number(step, 'more and equal', 1))
-
-    def test_i_expect_the_result_is_more_and_equal_than_number_failure(self):
-        step = MockedStep()
-        step.context.stash = 1
-        with self.assertRaises(AssertionError) as err:
-            i_expect_the_result_is_operator_than_number(step, 'more and equal', 2)
-        self.assertEqual(str(err.exception), '1 is not more and equal than 2')
-
-    def test_i_expect_the_result_is_less_than_number_success(self):
-        step = MockedStep()
-        step.context.stash = 1
-        self.assertIsNone(i_expect_the_result_is_operator_than_number(step, 'less', 2))
-
-    def test_i_expect_the_result_is_less_than_number_failure(self):
-        step = MockedStep()
-        step.context.stash = 1
-        with self.assertRaises(AssertionError) as err:
-            i_expect_the_result_is_operator_than_number(step, 'less', 1)
-        self.assertEqual(str(err.exception), '1 is not less than 1')
-
-    def test_i_expect_the_result_is_less_and_equal_than_number_success(self):
-        step = MockedStep()
-        step.context.stash = 1
-        self.assertIsNone(i_expect_the_result_is_operator_than_number(step, 'less and equal', 1))
-        self.assertIsNone(i_expect_the_result_is_operator_than_number(step, 'less and equal', 2))
-
-    def test_i_expect_the_result_is_less_and_equal_than_number_failure(self):
-        step = MockedStep()
-        step.context.stash = 1
-        with self.assertRaises(AssertionError) as err:
-            i_expect_the_result_is_operator_than_number(step, 'less and equal', 0)
-        self.assertEqual(str(err.exception), '1 is not less and equal than 0')
-
-    def test_i_expect_the_result_is_invalid_operator_than_number_failure(self):
-        step = MockedStep()
-        step.context.stash = 1
-        self.assertIsNone(i_expect_the_result_is_operator_than_number(step, 'invalid_operator', 0))
+        step.context.stash = dict()
+        with self.assertRaises(TerraformComplianceNotImplemented) as err:
+            self.assertIsNone(i_expect_the_result_is_operator_than_number(step, 'invalid operator', 1))
+        self.assertEqual(str(err.exception), 'Invalid operator: invalid operator')
 
     def test_it_condition_contain_something_resource_list(self):
         step = MockedStep()
@@ -216,15 +187,3 @@ class Test_Step_Cases(TestCase):
         with self.assertRaises(AssertionError):
             its_value_condition_match_the_search_regex_regex(step, 'must not', 'non_match_regex')
 
-    def test_its_value_must_be_set_by_a_variable_resource_list(self):
-        step = MockedStep()
-        step.context.stash = MockedTerraformResourceList()
-        step.context.search_value = 'something'
-        self.assertIsNone(its_value_must_be_set_by_a_variable(step))
-
-    @patch.object(MockedTerraformResourceList, 'property', return_value=MockedTerraformResourceList())
-    def test_its_value_must_be_set_by_a_variable(self, *args):
-        step = MockedStep()
-        step.context.stash = MockedTerraformResourceList()
-        step.context.search_value = MockedTerraformResourceList()
-        self.assertIsNone(its_value_must_be_set_by_a_variable(step))
