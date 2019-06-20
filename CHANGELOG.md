@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.0.0 (Release Date here.)
+## 1.0.0 (2019-06-20)
 **_BREAKING BACKWARD COMPATIBILITY_** for `terraform-compliance` since the parameters has changed. This is a MAJOR upgrade and a re-design of the tool.
 * This version only supports `terraform` 0.12.0 and 0.12.1.
 * Removed `-t` parameter.
