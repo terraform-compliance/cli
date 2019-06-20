@@ -8,7 +8,6 @@ import radish
 dependencies = [
     'radish',
     'radish-bdd',
-    'terraform-validate',
     'gitpython',
     'netaddr'
 ]

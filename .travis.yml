@@ -5,6 +5,13 @@ services:
   - docker
 cache:
   pip: true
+
+addons:
+  sonarcloud:
+    organization: "eerkunt-github"
+    token:
+      secure: $SONAR_TOKEN
+
 install:
   - pip install coveralls
   - pip install -r requirements.txt
@@ -18,10 +25,6 @@ jobs:
         - coverage run --source terraform_compliance setup.py test
 
     - stage: Code Quality
-      addons:
-        sonarcloud:
-          organization: "eerkunt-github"
-          token: $SONAR_LOGIN
       script:
         - "echo 'Scanning source code with SonarCloud'"
         - coverage erase

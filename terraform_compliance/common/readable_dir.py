@@ -4,19 +4,18 @@ from argparse import Action
 
 
 class ReadableDir(Action):
-    def __init__(self, option_strings, dest, nargs=None, const=None, default=None, type=None, choices=None,
-                       required=False, help=None, metavar=None):
-        # super(ReadableDir, self).__init__(**kwargs) # dest, required, help, option_strings, metavar)
+    def __init__(self, option_strings, dest, **kwargs):
+        super(ReadableDir, self).__init__(option_strings, dest, **kwargs)
         self.option_strings = option_strings
         self.dest = dest
-        self.nargs = nargs
-        self.const = const
-        self.default = default
-        self.type = type
-        self.choices = choices
-        self.required = required
-        self.help = help
-        self.metavar = metavar
+        self.nargs = kwargs.get('nargs', None)
+        self.const = kwargs.get('const', None)
+        self.default = kwargs.get('default', None)
+        self.type = kwargs.get('type', None)
+        self.choices = kwargs.get('choices', None)
+        self.required = kwargs.get('required', None)
+        self.help = kwargs.get('help', None)
+        self.metavar = kwargs.get('metavar', None)
 
     def __call__(self, parser, namespace, values, option_string=None):
         prospective_dir = values
