@@ -40,7 +40,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
                           'variable', 'variables',
                           'provider', 'providers']), \
         '{} configuration type does not exist or not implemented yet. ' \
-        'Use resource(s) or variable(s) instead.'.format(type_name)
+        'Use resource(s), provider(s) or variable(s) instead.'.format(type_name)
 
     if type_name.endswith('s'):
         type_name = type_name[:-1]
@@ -57,7 +57,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
             _step_obj.context.type = type_name
             _step_obj.context.name = name
             _step_obj.context.stash = resource_list
-            return
+            return True
 
     elif type_name == 'resource':
         name = convert_resource_type(name)
@@ -67,7 +67,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
             _step_obj.context.type = type_name
             _step_obj.context.name = name
             _step_obj.context.stash = resource_list
-            return
+            return True
 
     elif type_name == 'variable':
         found_variable = _terraform_config.config.terraform.variables.get(name, None)
@@ -76,7 +76,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
             _step_obj.context.type = type_name
             _step_obj.context.name = name
             _step_obj.context.stash = found_variable
-            return
+            return True
 
     elif type_name == 'provider':
         found_provider = _terraform_config.config.terraform.configuration.get('providers', {}).get(name, None)
@@ -85,7 +85,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
             _step_obj.context.type = type_name
             _step_obj.context.name = name
             _step_obj.context.stash = found_provider
-            return
+            return True
 
     skip_step(_step_obj, name)
 
@@ -100,10 +100,13 @@ def it_condition_contain_something(_step_obj, something):
     if _step_obj.context.type == 'resource':
         for resource in _step_obj.context.stash:
             if type(resource) is not dict:
-                resource = {'values': resource}
+                resource = {'values': resource, 'address': resource}
 
             values = resource.get('values', {})
-            found_value = values.get(something, None)
+
+            found_value = None
+            if type(values) is dict:
+                found_value = values.get(something, None)
 
             if found_value:
                 prop_list.append({'address': resource['address'], 'values': found_value})
@@ -116,7 +119,7 @@ def it_condition_contain_something(_step_obj, something):
         if prop_list:
             _step_obj.context.stash = prop_list
             _step_obj.context.property_name = something
-            return
+            return True
 
         skip_step(_step_obj,
                   resource=_step_obj.context.name,
@@ -129,7 +132,7 @@ def it_condition_contain_something(_step_obj, something):
         if values:
             _step_obj.context.stash = values
             _step_obj.context.property_name = something
-            return
+            return True
 
     skip_step(_step_obj,
               resource=_step_obj.context.name,
@@ -149,6 +152,8 @@ def encryption_is_enabled(_step_obj):
 
             if not resource.get('values', {}).get(encryption_property[resource['type']], None):
                 raise Failure('Resource {} does not have encryption enabled ({}).'.format(resource['address'], prop))
+
+    return True
 
 @then(u'it must {condition:ANY} have {proto:ANY} protocol and port {port} for {cidr:ANY}')
 def it_condition_have_proto_protocol_and_port_port_for_cidr(_step_obj, condition, proto, port, cidr):
@@ -191,6 +196,8 @@ def it_condition_have_proto_protocol_and_port_port_for_cidr(_step_obj, condition
         check_sg_rules(plan_data=security_group['values'][0],
                        security_group=looking_for,
                        condition=condition)
+
+    return True
 
 
 @when(u'I {action_type:ANY} them')

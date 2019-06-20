@@ -280,6 +280,7 @@ class MockedStepContext(object):
     def __init__(self):
         self.stash = MockedWorldConfigTerraform()
         self.resource_type = 'aws_db_instance'
+        self.name = ''
 
 
 class MockedWorld(object):
@@ -294,28 +295,38 @@ class MockedWorldConfig(object):
 
 class MockedWorldConfigTerraform(object):
     def __init__(self):
-        self.terraform_config = {
-            u'resource': {
-                u'resource_type': {
-                    u'resource_name': {
-                        u'resource_property': u'resource_property_value',
-                        u'tags': u'${module.tags.tags}'
-                    }
-                },
-                u'aws_s3_bucket': {
-                    u'aws_s3_bucket_name': {
-                        u'resource_property': u'resource_property_value',
-                        u'tags': u'${module.tags.tags}'
-                    }
+        self.resources = {
+            'provider_type_id': {
+                'type': 'resource_type_supports_tags',
+                'address': 'provider_type_id',
+                'values': {
+                    'tags': {
+                        'some': 'tags',
+                        'some_other': 'other_tags'
+                    },
+                    'some_key': 'some_value'
                 }
             },
-            u'provider': {
-                u'aws': {}
-            },
-            u'something_else': {'something': 'else'}
+            'provider_type_id_without_tags': {
+                'type': 'resource_type_without_tags',
+                'address': 'provider_type_id_without_tags',
+                'values': {}
+            }
         }
-    def resources(self, name):
-        return MockedTerraformResourceList(self.terraform_config['resource'][name])
+        self.variables = {
+            'some_variable': 'some_value',
+            'some_other_variable': 'some_other_value'
+        }
+        self.configuration = {
+            'providers' : {
+                'some_provider': 'some_provider_value'
+            }
+        }
+
+    def find_resources_by_type(self, resource_type):
+        for key, value in self.resources.items():
+            if value['type'] == resource_type:
+                return [value]
 
 
 class MockedTerraformPropertyList(object):
