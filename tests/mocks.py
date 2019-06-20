@@ -1,4 +1,3 @@
-from terraform_validate.terraform_validate import TerraformSyntaxException
 from os import environ
 
 
@@ -243,23 +242,6 @@ class MockedData(object):
     sg_params_all_port_no_ip = dict(protocol=['tcp', 'udp'], from_port=0, to_port=65535, cidr_blocks=[])
     sg_params_list_range_public = dict(protocol=['tcp'], from_port=22, to_port=80, cidr_blocks=['0.0.0.0/0'])
     sg_params_list_range_private = dict(protocol=['tcp'], from_port=22, to_port=80, cidr_blocks=['192.168.0.0/23'])
-
-
-class MockedValidator(object):
-    def __init__(self, directory):
-        global state_file
-
-        if directory == 'valueerror':
-            raise ValueError('detailed message')
-        elif directory == 'syntaxexception':
-            state_key = 'MockedValidator.state'
-            state = environ.get(state_key, None)
-            if state:
-                pass
-            else:
-                environ[state_key] = '1'
-                raise TerraformSyntaxException('detailed message')
-
 
 class MockedStep(object):
     def __init__(self, no_init=None):
