@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.0.1 (2019-06-21)
+* Fixed an issue where `filetype` module could not be found. (#97)
+* Upgraded python in Docker image from 3.6.8 to 3.7.3
+
 ## 1.0.0 (2019-06-20)
 **_BREAKING BACKWARD COMPATIBILITY_** for `terraform-compliance` since the parameters has changed. This is a MAJOR upgrade and a re-design of the tool.
 * This version only supports `terraform` 0.12.0 and 0.12.1.

@@ -9,7 +9,9 @@ dependencies = [
     'radish',
     'radish-bdd',
     'gitpython',
-    'netaddr'
+    'netaddr',
+    'colorful',
+    'filetype'
 ]
 
 setup(
