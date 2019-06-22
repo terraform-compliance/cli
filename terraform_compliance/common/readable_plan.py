@@ -20,6 +20,7 @@ class ReadablePlan(Action):
         self.required = kwargs.get('required', None)
         self.help = kwargs.get('help', None)
         self.metavar = kwargs.get('metavar', None)
+        self.parser = kwargs.get('parser', None)
 
     def __call__(self, parser, namespace, values, option_string=None):
         # Check if the given path is a file

@@ -1,6 +1,9 @@
 # CHANGELOG
 
-## 1.0.2 (2019-06-23)
+## 1.0.4 (2019-06-23)
+* Added exception handlings for terraform executable and converting plan. ([#99](https://github.com/eerkunt/terraform-compliance/issues/99))
+
+## 1.0.3 (2019-06-23)
 * Added S3 Public Block Access example to examples ([#71](https://github.com/eerkunt/terraform-compliance/issues/71))
 
 ## 1.0.2 (2019-06-22)
