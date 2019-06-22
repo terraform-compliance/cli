@@ -1,6 +1,9 @@
 # CHANGELOG
 
-## 1.0.2 (2019-06-21)
+## 1.0.2 (2019-06-23)
+* Added S3 Public Block Access example to examples ([#71](https://github.com/eerkunt/terraform-compliance/issues/71))
+
+## 1.0.2 (2019-06-22)
 * Fixed an issue where terraform executable does not exist in PATH env variable. ([#99](https://github.com/eerkunt/terraform-compliance/issues/99))
 * Added "-t" argument for passing terraform executable if one doesn't want to keep it in PATH env variable.
 

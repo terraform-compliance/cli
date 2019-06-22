@@ -1,22 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from radish import step, world, given, when, then
+from radish import world, given, when, then, step
 from terraform_compliance.steps import encryption_property
-from terraform_compliance.common.helper import (
-    check_sg_rules,
-    convert_resource_type,
-    find_root_by_key,
-    seek_key_in_dict,
-    seek_regex_key_in_dict_values
-)
-from terraform_compliance.extensions.ext_radish_bdd import (
-    skip_step,
-    step_condition,
-    write_stdout,
-    custom_type_section,
-    custom_type_any,
-    custom_type_condition
-)
+from terraform_compliance.common.helper import check_sg_rules, convert_resource_type, find_root_by_key, seek_key_in_dict
+from terraform_compliance.common.helper import seek_regex_key_in_dict_values
+from terraform_compliance.extensions.ext_radish_bdd import skip_step
+from terraform_compliance.extensions.ext_radish_bdd import custom_type_any, custom_type_condition, custom_type_section
 import re
 from terraform_compliance.common.exceptions import Failure, TerraformComplianceNotImplemented
 
@@ -225,7 +214,7 @@ def i_expect_the_result_is_operator_than_number(_step_obj, operator, number):
     else:
         raise TerraformComplianceNotImplemented('Invalid operator: {}'.format(operator))
 
-@then(u'its value {condition:ANY} match the "{search_regex}" regex')
+@step(u'its value {condition:ANY} match the "{search_regex}" regex')
 def its_value_condition_match_the_search_regex_regex(_step_obj, condition, search_regex, _stash=None):
 
     def fail(condition):
