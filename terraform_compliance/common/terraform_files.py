@@ -2,7 +2,6 @@ import os
 import sys
 import subprocess
 
-
 def which(program):
     def is_exe(fpath):
         return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
@@ -23,6 +22,13 @@ def convert_terraform_plan_to_json(terraform_plan_file, terraform_executable=Non
     print('. Converting terraform plan file.')
     if terraform_executable is None:
         terraform_executable = which('terraform')
+    else:
+        print('Using {} as terraform executable.'.format(terraform_executable))
+
+    if terraform_executable is None:
+        print('ERROR: Could not find "terraform" executable in PATH. Please either use "-t" parameter or add terraform '
+              'executable to your PATH.')
+        sys.exit(1)
 
     path = os.path.dirname(terraform_plan_file)
 

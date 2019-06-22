@@ -1,7 +1,11 @@
 # CHANGELOG
 
+## 1.0.2 (2019-06-21)
+* Fixed an issue where terraform executable does not exist in PATH env variable. ([#99](https://github.com/eerkunt/terraform-compliance/issues/99))
+* Added "-t" argument for passing terraform executable if one doesn't want to keep it in PATH env variable.
+
 ## 1.0.1 (2019-06-21)
-* Fixed an issue where `filetype` module could not be found. (#97)
+* Fixed an issue where `filetype` module could not be found. ([#97](https://github.com/eerkunt/terraform-compliance/issues/97))
 * Upgraded python in Docker image from 3.6.8 to 3.7.3
 
 ## 1.0.0 (2019-06-20)
@@ -12,7 +16,7 @@
 	* `terraform plan -out=<file>.out` output file *or*
 	* `terraform show -json <file.out> > file.json` output for checking the plan (changes)
 	* `terraform show -json` output for checking the whole state
-* Instead of parsing `HCL`, `terraform-compliance` is not parsing/processing against `terraform show` output.
+* Instead of parsing `HCL`, `terraform-compliance` is **now** parsing/processing against `terraform show` output.
 * Conversion from `terraform` internal plan format to json.
 * Full support for `terraform` interpolations and modules.
 * Minor upgrades on dependencies

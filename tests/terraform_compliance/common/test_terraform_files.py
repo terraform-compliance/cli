@@ -13,4 +13,7 @@ class TestTerraformFiles(TestCase):
     def test_which_failure(self):
         self.assertIsNone(which('/something/that/doesnt/exist/hopefully'))
 
-    # TODO: Write also unit tests for convert_terraform_plan_to_json
+    @patch('terraform_compliance.common.terraform_files.which', return_value=None)
+    def test_convert_terraform_plan_to_json(self, *args):
+        with self.assertRaises(SystemExit):
+            convert_terraform_plan_to_json('some_file')
