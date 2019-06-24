@@ -1,16 +1,20 @@
 # CHANGELOG
 
-## 1.0.4 (2019-06-23)
+### 1.0.5 (2019-06-24)
+* Added basic heredoc support for json strings. ([#90](https://github.com/eerkunt/terraform-compliance/issues/90))
+* Added encryption property for (at rest) aws_emr_security_configuration
+
+### 1.0.4 (2019-06-23)
 * Added exception handlings for terraform executable and converting plan. ([#99](https://github.com/eerkunt/terraform-compliance/issues/99))
 
-## 1.0.3 (2019-06-23)
+### 1.0.3 (2019-06-23)
 * Added S3 Public Block Access example to examples ([#71](https://github.com/eerkunt/terraform-compliance/issues/71))
 
-## 1.0.2 (2019-06-22)
+### 1.0.2 (2019-06-22)
 * Fixed an issue where terraform executable does not exist in PATH env variable. ([#99](https://github.com/eerkunt/terraform-compliance/issues/99))
 * Added "-t" argument for passing terraform executable if one doesn't want to keep it in PATH env variable.
 
-## 1.0.1 (2019-06-21)
+### 1.0.1 (2019-06-21)
 * Fixed an issue where `filetype` module could not be found. ([#97](https://github.com/eerkunt/terraform-compliance/issues/97))
 * Upgraded python in Docker image from 3.6.8 to 3.7.3
 
