@@ -3,7 +3,7 @@
 from radish import world, given, when, then, step
 from terraform_compliance.steps import encryption_property
 from terraform_compliance.common.helper import check_sg_rules, convert_resource_type, find_root_by_key, seek_key_in_dict
-from terraform_compliance.common.helper import seek_regex_key_in_dict_values
+from terraform_compliance.common.helper import seek_regex_key_in_dict_values, jsonify
 from terraform_compliance.extensions.ext_radish_bdd import skip_step
 from terraform_compliance.extensions.ext_radish_bdd import custom_type_any, custom_type_condition, custom_type_section
 import re
@@ -89,16 +89,20 @@ def it_condition_contain_something(_step_obj, something):
     if _step_obj.context.type == 'resource':
         for resource in _step_obj.context.stash:
             if type(resource) is not dict:
-                resource = {'values': resource, 'address': resource}
+                resource = {'values': resource,
+                            'address': resource,
+                            'type': _step_obj.context.name}
 
             values = resource.get('values', {})
 
             found_value = None
             if type(values) is dict:
-                found_value = values.get(something, None)
+                found_value = jsonify(values.get(something, None))
 
             if found_value:
-                prop_list.append({'address': resource['address'], 'values': found_value})
+                prop_list.append({'address': resource['address'],
+                                  'values': found_value,
+                                  'type': _step_obj.context.name})
 
             elif 'must' in _step_obj.context_sensitive_sentence:
                 raise Failure('{} ({}) does not have {} property.'.format(resource['address'],
@@ -139,8 +143,18 @@ def encryption_is_enabled(_step_obj):
                 raise TerraformComplianceNotImplemented('Encryption property for {} '
                                                         'is not implemented yet.'.format(resource['type']))
 
-            if not resource.get('values', {}).get(encryption_property[resource['type']], None):
-                raise Failure('Resource {} does not have encryption enabled ({}).'.format(resource['address'], prop))
+            encryption_value = seek_key_in_dict(resource.get('values', {}), encryption_property[resource['type']])
+
+            if len(encryption_value):
+                encryption_value = encryption_value[0]
+
+                if type(encryption_value) is dict:
+                    encryption_value = encryption_value[encryption_property[resource['type']]]
+
+            if not encryption_value:
+                raise Failure('Resource {} does not have encryption enabled ({}={}).'.format(resource['address'],
+                                                                                             prop,
+                                                                                             encryption_value))
 
     return True
 

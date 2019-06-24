@@ -9,7 +9,8 @@ from terraform_compliance.common.helper import (
     find_root_by_key,
     are_networks_same,
     convert_resource_type,
-    seek_regex_key_in_dict_values
+    seek_regex_key_in_dict_values,
+    jsonify
 )
 from terraform_compliance.common.exceptions import Failure
 from tests.mocks import MockedData
@@ -200,3 +201,10 @@ class TestHelperFunctions(TestCase):
         expected = ['value']
 
         self.assertEqual(seek_regex_key_in_dict_values(haystack, key_name, needle), expected)
+
+    def test_jsonify(self):
+        self.assertEqual(jsonify({}), {})
+        self.assertEqual(jsonify([]), [])
+        self.assertEqual(jsonify(12), 12)
+        self.assertEqual(jsonify('something'), 'something')
+        self.assertEqual(jsonify('{"test": "test_value"}'), {'test': 'test_value'})
