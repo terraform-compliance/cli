@@ -3,7 +3,7 @@ from netaddr import IPNetwork
 from terraform_compliance.steps import resource_name
 from terraform_compliance.common.exceptions import Failure
 from collections.abc import Iterable
-
+import json
 
 def flatten_list(input):
     return list(flatten(input))
@@ -247,3 +247,12 @@ def find_root_by_key(haystack, needle, return_key=None, _inherited_key=None, _de
         return []
 
     return list(set(found))
+
+def jsonify(string):
+    if type(string) is not str:
+        return string
+
+    try:
+        return json.loads(string)
+    except json.decoder.JSONDecodeError:
+        return string

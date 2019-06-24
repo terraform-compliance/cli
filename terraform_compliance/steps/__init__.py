@@ -5,7 +5,8 @@ encryption_property = {
     'azurerm_storage_account': 'enable_blob_encryption',
     'azurerm_sql_database': 'encryption',
     'aws_s3_bucket': 'server_side_encryption_configuration',
-    'aws_elasticache_replication_group': 'at_rest_encryption_enabled'
+    'aws_elasticache_replication_group': 'at_rest_encryption_enabled',
+    'aws_emr_security_configuration': 'EnableAtRestEncryption'
 }
 
 resource_name = {
@@ -14,6 +15,7 @@ resource_name = {
     'AWS EC2 instance': 'aws_instance',
     'AWS EFS file system': 'aws_efs_file_system',
     'AWS ELB resource': 'aws_elb',
+    'AWS EMR Security Configuration': 'aws_emr_security_configuration',
     'AWS Internet Gateway': 'aws_internet_gateway',
     'AWS Launch Configuration': 'aws_launch_configuration',
     'AWS RDS instance': 'aws_db_instance',

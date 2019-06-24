@@ -11,7 +11,7 @@ except ImportError as e:
     reinstall_radish()
 
 __app_name__ = "terraform-compliance"
-__version__ = "1.0.4"
+__version__ = "1.0.5"
 
 print('{} v{} initiated\n'.format(__app_name__, __version__))
 
@@ -25,6 +25,8 @@ def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
     parser.add_argument("--terraform", "-t", dest="terraform_file", metavar='terraform_file', type=str, nargs='?',
                         help="The absolute path to the terraform executable.", required=False)
     _, radish_arguments = parser.parse_known_args(namespace=args)
+
+    # TODO: Create a custom usage() since it just shows -t right now
 
     parser.add_argument("--features", "-f", dest="features", metavar='feature directory', action=ReadableDir,
                         help="Directory (or git repository with 'git:' prefix) consists of BDD features", required=True)

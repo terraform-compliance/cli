@@ -93,6 +93,8 @@ and use it wherever you want that has docker installed.
     --identity [ssh private key], -i [ssh private key]
                           SSH Private key that will be use on git
                           authentication.
+    --terraform [terraform_file], -t [terraform_file]
+                            The absolute path to the terraform executable.
     --version, -v         show program's version number and exit
 ```
 
