@@ -1,6 +1,9 @@
 # CHANGELOG
 
-### 1.6.0 (2019-06-25)
+### 1.0.7 (2019-06-25)
+* Tested and added support for `terraform` 0.12.2 and 0.12.3
+
+### 1.0.6 (2019-06-25)
 * Improved 'contains' and 'regex' matching steps.
 
 ### 1.0.5 (2019-06-24)
