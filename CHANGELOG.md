@@ -1,5 +1,8 @@
 # CHANGELOG
 
+### 1.6.0 (2019-06-25)
+* Improved 'contains' and 'regex' matching steps.
+
 ### 1.0.5 (2019-06-24)
 * Added basic heredoc support for json strings. ([#90](https://github.com/eerkunt/terraform-compliance/issues/90))
 * Added encryption property for (at rest) aws_emr_security_configuration
@@ -18,7 +21,7 @@
 * Fixed an issue where `filetype` module could not be found. ([#97](https://github.com/eerkunt/terraform-compliance/issues/97))
 * Upgraded python in Docker image from 3.6.8 to 3.7.3
 
-## 1.0.0 (2019-06-20)
+# 1.0.0 (2019-06-20)
 **_BREAKING BACKWARD COMPATIBILITY_** for `terraform-compliance` since the parameters has changed. This is a MAJOR upgrade and a re-design of the tool.
 * This version only supports `terraform` 0.12.0 and 0.12.1.
 * Removed `-t` parameter.

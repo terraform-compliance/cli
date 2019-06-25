@@ -13,7 +13,7 @@ Feature: Resources should have a proper naming standard
     | AWS EC2 instance        | name     |
     | AWS ELB resource        | name     |
     | AWS RDS instance        | name     |
-    | AWS S3 Bucket           | name     |
+    | AWS S3 Bucket           | bucket   |
     | AWS EBS volume          | name     |
     | AWS Auto-Scaling Group  | name     |
     | aws_key_pair            | key_name |
