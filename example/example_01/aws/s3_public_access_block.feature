@@ -4,7 +4,7 @@ Feature: All AWS environments that has S3 Bucket Public Access Block
   Scenario Outline: AWS Credentials should not be hardcoded
     Given I have aws_s3_bucket_public_access_block resource configured
     Then it must contain <key>
-    And its value must not match the "true" regex
+    And its value must match the "true" regex
 
     Examples:
     | key                      |
