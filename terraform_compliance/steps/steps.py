@@ -9,8 +9,9 @@ from terraform_compliance.extensions.ext_radish_bdd import custom_type_any, cust
 import re
 from terraform_compliance.common.exceptions import Failure, TerraformComplianceNotImplemented
 
-#TODO: Figure out how the IAM policies/statements shown in the plan.out
-#TODO: Implement an IAM Compliance via https://github.com/Netflix-Skunkworks/policyuniverse
+
+# TODO: Figure out how the IAM policies/statements shown in the plan.out
+# TODO: Implement an IAM Compliance via https://github.com/Netflix-Skunkworks/policyuniverse
 
 
 @given(u'I have {name:ANY} defined')
@@ -78,6 +79,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
 
     skip_step(_step_obj, name)
 
+
 @when(u'it contain {something:ANY}')
 @when(u'they have {something:ANY}')
 @when(u'it has {something:ANY}')
@@ -96,10 +98,16 @@ def it_condition_contain_something(_step_obj, something):
             values = resource.get('values', {})
 
             found_value = None
+            found_key = None
             if type(values) is dict:
-                found_value = jsonify(values.get(something, None))
+                found_key = seek_key_in_dict(values, something)
+                if len(found_key):
+                    found_key = found_key[0]
 
-            if found_value:
+                    if type(found_key) is dict:
+                        found_value = jsonify(found_key[something])
+
+            if found_key:
                 prop_list.append({'address': resource['address'],
                                   'values': found_value,
                                   'type': _step_obj.context.name})
@@ -132,6 +140,7 @@ def it_condition_contain_something(_step_obj, something):
               message='Skipping the step since {} type does not have {} property.'.format(_step_obj.context.type,
                                                                                           something))
 
+
 @then(u'encryption is enabled')
 @then(u'encryption must be enabled')
 def encryption_is_enabled(_step_obj):
@@ -157,6 +166,7 @@ def encryption_is_enabled(_step_obj):
                                                                                              encryption_value))
 
     return True
+
 
 @then(u'it must {condition:ANY} have {proto:ANY} protocol and port {port} for {cidr:ANY}')
 def it_condition_have_proto_protocol_and_port_port_for_cidr(_step_obj, condition, proto, port, cidr):
@@ -212,6 +222,7 @@ def i_action_them(_step_obj, action_type):
     else:
         raise TerraformComplianceNotImplemented("Invalid action_type in the scenario: {}".format(action_type))
 
+
 @then(u'I expect the result is {operator:ANY} than {number:d}')
 def i_expect_the_result_is_operator_than_number(_step_obj, operator, number):
     # TODO: Maybe iterate over the stash if it is a list and do the execution per each member ?
@@ -228,24 +239,24 @@ def i_expect_the_result_is_operator_than_number(_step_obj, operator, number):
     else:
         raise TerraformComplianceNotImplemented('Invalid operator: {}'.format(operator))
 
+
 @step(u'its value {condition:ANY} match the "{search_regex}" regex')
 def its_value_condition_match_the_search_regex_regex(_step_obj, condition, search_regex, _stash=None):
-
     def fail(condition):
         text = 'matches' if condition == 'must not' else 'does not match'
         raise Failure('{} property in {} {} {} with {} regex. '
                       'It is set to {}.'.format(_step_obj.context.property_name,
-                                                        _step_obj.context.name,
-                                                        _step_obj.context.type,
-                                                        text,
-                                                        regex,
-                                                        values))
+                                                _step_obj.context.name,
+                                                _step_obj.context.type,
+                                                text,
+                                                regex,
+                                                values))
 
     regex = r'{}'.format(search_regex)
     values = _step_obj.context.stash if _stash is None else _stash
 
-    if type(values) is str or type(values) is int:
-        matches = re.match(regex, values)
+    if type(values) is str or type(values) is int or type(values) is bool:
+        matches = re.match(regex, str(values), flags=re.IGNORECASE)
 
         if (condition == 'must' and matches is None) or (condition == "must not" and matches is not None):
             fail(condition)
@@ -255,7 +266,13 @@ def its_value_condition_match_the_search_regex_regex(_step_obj, condition, searc
             its_value_condition_match_the_search_regex_regex(_step_obj, condition, search_regex, value)
 
     elif type(values) is dict:
-        values = seek_regex_key_in_dict_values(values, _step_obj.context.property_name, search_regex)
+        if values.get('values') is not None:
+            values = its_value_condition_match_the_search_regex_regex(_step_obj,
+                                                                      condition,
+                                                                      search_regex,
+                                                                      values['values'])
+        else:
+            values = seek_regex_key_in_dict_values(values, _step_obj.context.property_name, search_regex)
 
-        if (condition == 'must' and values is None) or (condition == "must not" and values is not None):
+        if (condition == 'must' and values == []) or (condition == "must not" and values != []):
             fail(condition)
