@@ -295,6 +295,7 @@ class MockedWorldConfigTerraform(object):
                 'values': {}
             }
         }
+        self.resources_raw = self.resources
         self.variables = {
             'some_variable': 'some_value',
             'some_other_variable': 'some_other_value'
