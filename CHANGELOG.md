@@ -1,5 +1,8 @@
 # CHANGELOG
 
+### 1.0.8 (2019-06-26)
+* Fixed a problem where mounted resources creating problem on identifying resources that doesn't have `tags` capability. ([#107](https://github.com/eerkunt/terraform-compliance/issues/107))
+
 ### 1.0.7 (2019-06-25)
 * Tested and added support for `terraform` 0.12.2 and 0.12.3
 
