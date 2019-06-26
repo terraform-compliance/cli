@@ -36,7 +36,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
         type_name = type_name[:-1]
 
     if name == 'resource that supports tags':
-        resource_types_supports_tags = find_root_by_key(_terraform_config.config.terraform.resources,
+        resource_types_supports_tags = find_root_by_key(_terraform_config.config.terraform.resources_raw,
                                                         'tags',
                                                         return_key='type')
         resource_list = []

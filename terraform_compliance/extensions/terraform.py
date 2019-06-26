@@ -1,6 +1,7 @@
 import json
 from terraform_compliance.common.helper import seek_key_in_dict, flatten_list
 import sys
+from copy import deepcopy
 
 
 class TerraformParser(object):
@@ -27,6 +28,7 @@ class TerraformParser(object):
         self.providers = dict()
         self.configuration = dict(resources=dict(), variables=dict())
         self.file_type = "plan"
+        self.resources_raw = dict()
 
         if parse_it:
             self.parse()
@@ -167,6 +169,7 @@ class TerraformParser(object):
         Find the references that is defined in self.configuration
         :return:
         '''
+        self.resources_raw = deepcopy(self.resources)
         invalid_references = ('var')
         for resource in self.configuration['resources']:
             if 'expressions' in self.configuration['resources'][resource]:
