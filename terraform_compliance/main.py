@@ -11,12 +11,14 @@ except ImportError as e:
     reinstall_radish()
 
 __app_name__ = "terraform-compliance"
-__version__ = "1.0.7"
+__version__ = "1.0.8"
 
 print('{} v{} initiated\n'.format(__app_name__, __version__))
 
+
 class ArgHandling(object):
     pass
+
 
 def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
                                                             description="BDD Test Framework for Hashicorp terraform")):
@@ -37,8 +39,6 @@ def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
     parser.add_argument("--version", "-v", action="version", version=__version__)
 
     _, radish_arguments = parser.parse_known_args(namespace=args)
-
-
 
     steps_directory = os.path.join(os.path.split(os.path.abspath(__file__))[0], 'steps')
 
@@ -70,6 +70,7 @@ def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
     result = call_radish(args=commands[1:])
 
     return result
+
 
 if __name__ == '__main__':
     cli()
