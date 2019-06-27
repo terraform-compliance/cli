@@ -1,5 +1,8 @@
 # CHANGELOG
 
+### 1.0.10 (2019-06-27)
+* Added a new step : [it_fails](https://github.com/eerkunt/terraform-compliance/blob/master/example/example_01/aws/restrict_resource_creation.feature) [#105](https://github.com/eerkunt/terraform-compliance/issues/105)
+ 
 ### 1.0.9 (2019-06-27)
 * Improved `contains` steps where in some cases 'key' and 'value' dict keys exist, instead of value of key as a key.
 

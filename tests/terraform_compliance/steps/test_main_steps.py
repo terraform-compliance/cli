@@ -6,9 +6,10 @@ from terraform_compliance.steps.steps import (
     it_condition_contain_something,
     encryption_is_enabled,
     its_value_condition_match_the_search_regex_regex,
-    it_condition_have_proto_protocol_and_port_port_for_cidr
+    it_condition_have_proto_protocol_and_port_port_for_cidr,
+    it_fails
 )
-from terraform_compliance.common.exceptions import TerraformComplianceNotImplemented, Failure
+from terraform_compliance.common.exceptions import TerraformComplianceNotImplemented, Failure, TerraformComplianceInternalFailure
 from tests.mocks import MockedStep, MockedWorld, MockedTerraformPropertyList, MockedTerraformResourceList, MockedTerraformResource
 from mock import patch
 
@@ -154,6 +155,42 @@ class Test_Step_Cases(TestCase):
 
         self.assertTrue(it_condition_contain_something(step, 'something'))
 
+    def test_it_condition_contain_something_resource_value_is_list(self):
+        step = MockedStep()
+        step.context_sensitive_sentence = 'it contains something'
+        step.context.type = 'resource'
+        step.context.stash = [
+            {
+                'address': 'some_address',
+                'type': 'resource',
+                'values': [
+                    {
+                        'key': 'something',
+                        'value': 'some_value'
+                    }
+                ]
+            }
+        ]
+
+        self.assertTrue(it_condition_contain_something(step, 'something'))
+
+    def test_it_condition_contain_something_resource_value_is_list_but_invalid(self):
+        step = MockedStep()
+        step.context_sensitive_sentence = 'it contains something'
+        step.context.type = 'resource'
+        step.context.stash = [
+            {
+                'address': 'some_address',
+                'type': 'resource',
+                'values': [
+                    'something'
+                ]
+            }
+        ]
+
+        with self.assertRaises(TerraformComplianceInternalFailure):
+            it_condition_contain_something(step, 'something')
+
     @patch('terraform_compliance.steps.steps.seek_key_in_dict', return_value=None)
     def test_it_condition_contain_something_provider_not_found(self, *args):
         step = MockedStep()
@@ -293,3 +330,10 @@ class Test_Step_Cases(TestCase):
         with self.assertRaises(TerraformComplianceNotImplemented) as err:
             self.assertIsNone(i_expect_the_result_is_operator_than_number(step, 'invalid operator', 1))
         self.assertEqual(str(err.exception), 'Invalid operator: invalid operator')
+
+    def test_it_fails(self):
+        step = MockedStep()
+        step.context.type = 'some_type'
+        step.context.name = 'some_name'
+        with self.assertRaises(Failure):
+            it_fails(step)
