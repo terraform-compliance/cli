@@ -295,11 +295,11 @@ def its_value_condition_match_the_search_regex_regex(_step_obj, condition, searc
         if (condition == 'must' and values == []) or (condition == "must not" and values != []):
             fail(condition)
 
-@step(u'the scenario fails')
-@step(u'the scenario should fail')
-@step(u'it fails')
-@step(u'it should fail')
-@step(u'it must fail')
+@then(u'the scenario fails')
+@then(u'the scenario should fail')
+@then(u'it fails')
+@then(u'it should fail')
+@then(u'it must fail')
 def it_fails(_step_obj):
     raise Failure('Forcefully failing the scenario on {} {}'.format(_step_obj.context.name,
                                                                     _step_obj.context.type))
