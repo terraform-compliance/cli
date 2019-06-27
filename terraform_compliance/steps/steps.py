@@ -7,7 +7,7 @@ from terraform_compliance.common.helper import seek_regex_key_in_dict_values, js
 from terraform_compliance.extensions.ext_radish_bdd import skip_step
 from terraform_compliance.extensions.ext_radish_bdd import custom_type_any, custom_type_condition, custom_type_section
 import re
-from terraform_compliance.common.exceptions import Failure, TerraformComplianceNotImplemented
+from terraform_compliance.common.exceptions import Failure, TerraformComplianceNotImplemented, TerraformComplianceInternalFailure
 
 
 # TODO: Figure out how the IAM policies/statements shown in the plan.out
@@ -106,6 +106,24 @@ def it_condition_contain_something(_step_obj, something):
 
                     if type(found_key) is dict:
                         found_value = jsonify(found_key[something])
+            elif type(values) is list:
+                for value in values:
+
+                    if type(value) is dict:
+                        # First search in the keys
+                        found_key = seek_key_in_dict(value, something)
+
+                        # Then search in the values with 'key'
+                        if not found_key:
+                            found_key = seek_regex_key_in_dict_values(value, 'key', something)
+
+                            if found_key:
+                                found_key = found_key[0]
+                                found_value = value.get('value')
+                                break
+                    else:
+                        raise TerraformComplianceInternalFailure('Unexpected value type {}. {}'.format(type(value),
+                                                                                                       value))
 
             if found_key:
                 prop_list.append({'address': resource['address'],
