@@ -1,5 +1,8 @@
 # CHANGELOG
 
+### 1.0.9 (2019-06-27)
+* Improved `contains` steps where in some cases 'key' and 'value' dict keys exist, instead of value of key as a key.
+
 ### 1.0.8 (2019-06-26)
 * Fixed a problem where mounted resources creating problem on identifying resources that doesn't have `tags` capability. ([#107](https://github.com/eerkunt/terraform-compliance/issues/107))
 
