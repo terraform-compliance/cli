@@ -1,14 +1,17 @@
 # CHANGELOG
 
+### 1.0.13 (2019-06-28)
+* Upgraded `radish-bdd` to `0.13.1` which includes fix for using escaped PIPE (`|`) characters within the features. ([Example](https://github.com/eerkunt/terraform-compliance/blob/master/example/example_01/aws/tags.feature)) ([#110](https://github.com/eerkunt/terraform-compliance/issues/110))
+
 ### 1.0.12 (2019-06-28)
-* Include the Terraform binary in the Docker container for use on non-Linux host operating systems [#102](https://github.com/eerkunt/terraform-compliance/issues/102)
+* Include the Terraform binary in the Docker container for use on non-Linux host operating systems ([#102](https://github.com/eerkunt/terraform-compliance/issues/102))
 
 ### 1.0.11 (2019-06-28)
-* Added a new step: _its value must/must not be null_ [#106](https://github.com/eerkunt/terraform-compliance/blob/master/example/example_01/aws/restrict_resource_creation.feature) [#105](https://github.com/eerkunt/terraform-compliance/issues/106)
-* Added support for `data` definitions. [#111](https://github.com/eerkunt/terraform-compliance/blob/master/example/example_01/aws/restrict_resource_creation.feature) [#105](https://github.com/eerkunt/terraform-compliance/issues/111)
+* Added a new step: _its value must/must not be null_ ([Example](https://github.com/eerkunt/terraform-compliance/blob/master/example/example_01/aws/restrict_resource_creation.feature)) ([#106](https://github.com/eerkunt/terraform-compliance/issues/106)))
+* Added support for `data` definitions. ([#105](https://github.com/eerkunt/terraform-compliance/issues/111))
 
 ### 1.0.10 (2019-06-27)
-* Added a new step : [it_fails](https://github.com/eerkunt/terraform-compliance/blob/master/example/example_01/aws/restrict_resource_creation.feature) [#105](https://github.com/eerkunt/terraform-compliance/issues/105)
+* Added a new step : [it_fails](https://github.com/eerkunt/terraform-compliance/blob/master/example/example_01/aws/restrict_resource_creation.feature) ([#105](https://github.com/eerkunt/terraform-compliance/issues/105))
  
 ### 1.0.9 (2019-06-27)
 * Improved `contains` steps where in some cases 'key' and 'value' dict keys exist, instead of value of key as a key.
