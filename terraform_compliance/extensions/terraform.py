@@ -96,6 +96,15 @@ class TerraformParser(object):
                 else:
                     self.resources[resource['address']] = resource
 
+        # Resources ( exists in Prior State )
+        for findings in seek_key_in_dict(self.raw.get('prior_state', {}).get('values', {}).get('root_module', {}),
+                                         'resources'):
+            for resource in findings.get('resources', []):
+                if resource['address'].startswith('data'):
+                    self.data[resource['address']] = resource
+                else:
+                    self.resources[resource['address']] = resource
+
         # Child Modules Resources ( exists in State )
         for findings in seek_key_in_dict(self.raw.get('values', {}).get('root_module', {}), 'child_modules'):
             for resource in findings.get('resources', []):
@@ -228,6 +237,21 @@ class TerraformParser(object):
         resource_list = list()
 
         for _, resource_data in self.resources.items():
+            if resource_data['type'] == resource_type.lower():
+                resource_list.append(resource_data)
+
+        return resource_list
+
+    def find_data_by_type(self, resource_type):
+        '''
+        Finds all data matching with the resource_type
+
+        :param resource_type: String of resource type defined in terraform
+        :return: list of dict including resources
+        '''
+        resource_list = list()
+
+        for _, resource_data in self.data.items():
             if resource_data['type'] == resource_type.lower():
                 resource_list.append(resource_data)
 
