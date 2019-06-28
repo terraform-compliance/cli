@@ -20,7 +20,7 @@ from terraform_compliance.common.exceptions import Failure, TerraformComplianceN
 
 @given(u'I have {name:ANY} defined')
 @given(u'I have {name:ANY} {type_name:SECTION} configured')
-def i_have_name_section_configured(_step_obj, name, type_name, _terraform_config=world):
+def i_have_name_section_configured(_step_obj, name, type_name='resource', _terraform_config=world):
     '''
     Finds given resource or variable by name and returns it. Skips the step (and further steps) if it is not found.
 
