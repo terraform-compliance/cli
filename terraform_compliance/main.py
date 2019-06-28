@@ -13,6 +13,7 @@ except ImportError as e:
 __app_name__ = "terraform-compliance"
 __version__ = "1.0.13"
 
+
 print('{} v{} initiated\n'.format(__app_name__, __version__))
 
 
