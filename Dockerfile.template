@@ -4,8 +4,12 @@ LABEL terraform_compliance.version="__VERSION__"
 LABEL author="Emre Erkunt <emre.erkunt@gmail.com>"
 LABEL source="https://github.com/eerkunt/terraform-compliance"
 
+ENV TERRAFORM_VERSION=0.12.3
+
 RUN  apt-get update && \
-     apt-get install -y git && \
+     apt-get install -y git curl unzip && \
+     curl https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip --output terraform_linux_amd64.zip && \
+     unzip terraform_linux_amd64.zip -d /usr/bin && \
      pip install 'terraform-compliance==__VERSION__' && \
      pip uninstall -y radish radish-bdd && \
      pip install radish radish-bdd && \
