@@ -13,10 +13,12 @@ Feature: Resources should be properly tagged
     Given I have resource that supports tags defined
     When it contains tags
     Then it must contain <tags>
+    And its value must match the "<value>" regex
 
   Examples:
-  | tags        |
-  | Name        |
-  | application |
-  | role        |
-  | environment |
+  | tags        | value               |
+  | Name        | .+                  |
+  | application | .+                  |
+  | role        | .+                  |
+  | environment | ^(prod\|uat\|dev)$  |
+
