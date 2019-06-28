@@ -214,6 +214,7 @@ Steps are the functional tests that is actually executing necessary task to vali
 | WHEN<br>THEN   | its value must be set by a variable | |
 | THEN           | it must `{condition}` have `{proto}` protocol and port `{port}` for `{cidr}` | `{condition}`: only,not<br>`proto`: tcp, udp<br>`port`: integer port number (or a port range by using `-` delimeter between port ranges [e.g. 80-84])<br>`cidr`: IP/Cidr |
 | THEN           | the scenario fails<br>the scenario should fail<br>it fails<br>it should fail<br>it must fail | None |
+| THEN           | its value '{condition}' be null | 'condition': 'must' or 'must not' |
 
 Every condition can also be used to drill down more in the terraform code by utilising `AND` directive.
 

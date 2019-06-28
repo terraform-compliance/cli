@@ -1,5 +1,9 @@
 # CHANGELOG
 
+### 1.0.11 (2019-06-28)
+* Added a new step: _its value must/must not be null_ [#106](https://github.com/eerkunt/terraform-compliance/blob/master/example/example_01/aws/restrict_resource_creation.feature) [#105](https://github.com/eerkunt/terraform-compliance/issues/106)
+
+
 ### 1.0.10 (2019-06-27)
 * Added a new step : [it_fails](https://github.com/eerkunt/terraform-compliance/blob/master/example/example_01/aws/restrict_resource_creation.feature) [#105](https://github.com/eerkunt/terraform-compliance/issues/105)
  

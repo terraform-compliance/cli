@@ -260,16 +260,17 @@ def i_expect_the_result_is_operator_than_number(_step_obj, operator, number):
 
 @step(u'its value {condition:ANY} match the "{search_regex}" regex')
 def its_value_condition_match_the_search_regex_regex(_step_obj, condition, search_regex, _stash=None):
-    def fail(condition):
+    def fail(condition, name=None):
         text = 'matches' if condition == 'must not' else 'does not match'
+        name = name if name is not None else _step_obj.context.name
+        pattern = 'Null/None' if regex == '\x00' else regex
         raise Failure('{} property in {} {} {} with {} regex. '
                       'It is set to {}.'.format(_step_obj.context.property_name,
-                                                _step_obj.context.name,
+                                                name,
                                                 _step_obj.context.type,
                                                 text,
-                                                regex,
+                                                pattern,
                                                 values))
-
     regex = r'{}'.format(search_regex)
     values = _step_obj.context.stash if _stash is None else _stash
 
@@ -293,7 +294,8 @@ def its_value_condition_match_the_search_regex_regex(_step_obj, condition, searc
             values = seek_regex_key_in_dict_values(values, _step_obj.context.property_name, search_regex)
 
         if (condition == 'must' and values == []) or (condition == "must not" and values != []):
-            fail(condition)
+            _stash = {} if _stash is None else _stash
+            fail(condition, name=_stash.get('address'))
 
 @then(u'the scenario fails')
 @then(u'the scenario should fail')
@@ -303,3 +305,8 @@ def its_value_condition_match_the_search_regex_regex(_step_obj, condition, searc
 def it_fails(_step_obj):
     raise Failure('Forcefully failing the scenario on {} {}'.format(_step_obj.context.name,
                                                                     _step_obj.context.type))
+
+
+@then(u'its value {condition:ANY} be null')
+def its_value_condition_be_null(_step_obj, condition):
+    its_value_condition_match_the_search_regex_regex(_step_obj, condition, u'\x00')
