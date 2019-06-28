@@ -204,7 +204,7 @@ Steps are the functional tests that is actually executing necessary task to vali
 
 | BDD Conditions | Step Sentence | Parameters | 
 | ---------------| --------------| ---------- |
-| GIVEN          | I have `{name}` `{type}` configured | `name`: name of the key in terraform (e.g. `aws_security_group`, `aws` ) <br>`type`: The type of the key (e.g. `resource`, `provider` etc.) |
+| GIVEN          | I have `{name}` `{type}` configured | `name`: name of the key in terraform (e.g. `aws_security_group`, `aws` ) <br>`type`: The type of the key (e.g. `resource(s)`, `provider(s)`, `data(s)` or `variable(s)`) |
 | GIVEN          | I have `{resource_name}` defined | `name`: name of the resource ( e.g. `aws_security_group` ) |
 | WHEN           | I `{math_formula}` them | `math_formula`: `count` |
 | THEN           | I expect the result is `{operator}` than `{number}` | `operator`: `more`, `more and equal`, `less`, `less and equal`<br>`number`: an integer |
@@ -214,6 +214,7 @@ Steps are the functional tests that is actually executing necessary task to vali
 | WHEN<br>THEN   | its value must be set by a variable | |
 | THEN           | it must `{condition}` have `{proto}` protocol and port `{port}` for `{cidr}` | `{condition}`: only,not<br>`proto`: tcp, udp<br>`port`: integer port number (or a port range by using `-` delimeter between port ranges [e.g. 80-84])<br>`cidr`: IP/Cidr |
 | THEN           | the scenario fails<br>the scenario should fail<br>it fails<br>it should fail<br>it must fail | None |
+| THEN           | its value '{condition}' be null | 'condition': 'must' or 'must not' |
 
 Every condition can also be used to drill down more in the terraform code by utilising `AND` directive.
 
