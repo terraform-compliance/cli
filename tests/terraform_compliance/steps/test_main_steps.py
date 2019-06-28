@@ -22,7 +22,7 @@ class Test_Step_Cases(TestCase):
             i_have_name_section_configured(step, 'some_name', 'some_invalid_type', 'some_world')
 
         self.assertEqual(str(err.exception), 'some_invalid_type configuration type does not exist or not implemented '
-                                             'yet. Use resource(s), provider(s) or variable(s) instead.')
+                                             'yet. Use resource(s), provider(s), variable(s) or data(s) instead.')
 
     def test_i_have_name_section_configured_resource_that_supports_tags_found(self):
         step = MockedStep()

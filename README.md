@@ -204,7 +204,7 @@ Steps are the functional tests that is actually executing necessary task to vali
 
 | BDD Conditions | Step Sentence | Parameters | 
 | ---------------| --------------| ---------- |
-| GIVEN          | I have `{name}` `{type}` configured | `name`: name of the key in terraform (e.g. `aws_security_group`, `aws` ) <br>`type`: The type of the key (e.g. `resource`, `provider` etc.) |
+| GIVEN          | I have `{name}` `{type}` configured | `name`: name of the key in terraform (e.g. `aws_security_group`, `aws` ) <br>`type`: The type of the key (e.g. `resource(s)`, `provider(s)`, `data(s)` or `variable(s)`) |
 | GIVEN          | I have `{resource_name}` defined | `name`: name of the resource ( e.g. `aws_security_group` ) |
 | WHEN           | I `{math_formula}` them | `math_formula`: `count` |
 | THEN           | I expect the result is `{operator}` than `{number}` | `operator`: `more`, `more and equal`, `less`, `less and equal`<br>`number`: an integer |

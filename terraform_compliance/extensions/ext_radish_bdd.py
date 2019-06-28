@@ -60,7 +60,8 @@ def custom_type_any(text):
 
 @custom_type("SECTION", r"[a-z]+")
 def custom_type_section(text):
-    if text in ['resource', 'provider', 'data', 'module', 'output', 'terraform', 'variable']:
+    if text in ['resource', 'provider', 'data', 'variable',
+                'resources', 'providers', 'datas', 'variables']:
         return text
 
 @custom_type("CONDITION", r"[a-z]+")

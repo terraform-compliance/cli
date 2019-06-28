@@ -14,9 +14,13 @@ from terraform_compliance.common.exceptions import Failure, TerraformComplianceN
 # TODO: Implement an IAM Compliance via https://github.com/Netflix-Skunkworks/policyuniverse
 
 
+
+# def i have_name_defined(_step_obj, name, _terraform_config=world):
+#     pass
+
 @given(u'I have {name:ANY} defined')
 @given(u'I have {name:ANY} {type_name:SECTION} configured')
-def i_have_name_section_configured(_step_obj, name, type_name='resource', _terraform_config=world):
+def i_have_name_section_configured(_step_obj, name, type_name, _terraform_config=world):
     '''
     Finds given resource or variable by name and returns it. Skips the step (and further steps) if it is not found.
 
@@ -28,9 +32,10 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
     '''
     assert (type_name in ['resource', 'resources',
                           'variable', 'variables',
-                          'provider', 'providers']), \
+                          'provider', 'providers',
+                          'data', 'datas']), \
         '{} configuration type does not exist or not implemented yet. ' \
-        'Use resource(s), provider(s) or variable(s) instead.'.format(type_name)
+        'Use resource(s), provider(s), variable(s) or data(s) instead.'.format(type_name)
 
     if type_name.endswith('s'):
         type_name = type_name[:-1]
@@ -77,6 +82,16 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
             _step_obj.context.stash = found_provider
             return True
 
+    elif type_name == 'data':
+        name = convert_resource_type(name)
+        data_list = _terraform_config.config.terraform.find_data_by_type(name)
+
+        if data_list:
+            _step_obj.context.type = type_name
+            _step_obj.context.name = name
+            _step_obj.context.stash = data_list
+            return True
+
     skip_step(_step_obj, name)
 
 
@@ -88,7 +103,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
 def it_condition_contain_something(_step_obj, something):
     prop_list = []
 
-    if _step_obj.context.type == 'resource':
+    if _step_obj.context.type in ('resource', 'data'):
         for resource in _step_obj.context.stash:
             if type(resource) is not dict:
                 resource = {'values': resource,
@@ -236,7 +251,17 @@ def i_action_them(_step_obj, action_type):
     if action_type == "count":
 
         # WARNING: Only case where we set stash as a dictionary, instead of a list.
-        _step_obj.context.stash = {"values": len(_step_obj.context.stash)}
+        if type(_step_obj.context.stash) is list:
+            if type(_step_obj.context.stash[0]) is dict():
+                if _step_obj.context.stash.get('values'):
+                    _step_obj.context.stash = seek_key_in_dict(_step_obj.context.stash, 'values')
+                    count = 0
+                    for result in _step_obj.context.stash:
+                        count += len(result.get('values', {})) if result.get('values') else 1
+
+                    _step_obj.context.stash = {'values': count}
+            else:
+                _step_obj.context.stash = {'values': len(_step_obj.context.stash)}
     else:
         raise TerraformComplianceNotImplemented("Invalid action_type in the scenario: {}".format(action_type))
 
@@ -246,13 +271,13 @@ def i_expect_the_result_is_operator_than_number(_step_obj, operator, number):
     # TODO: Maybe iterate over the stash if it is a list and do the execution per each member ?
     value = int(_step_obj.context.stash.get('values', 0))
 
-    if operator == "more":
+    if operator in ("more", "greater", "bigger"):
         assert value > number, "{} is not more than {}".format(value, number)
-    elif operator == "more and equal":
+    elif operator in ("more and equal", "greater and equal", "bigger and equal"):
         assert value >= number, "{} is not more and equal than {}".format(value, number)
-    elif operator == "less":
+    elif operator in ("less", "lesser", "smaller"):
         assert value < number, "{} is not less than {}".format(value, number)
-    elif operator == "less and equal":
+    elif operator in ("less and equal", "lesser and equal", "smaller and equal"):
         assert value <= number, "{} is not less and equal than {}".format(value, number)
     else:
         raise TerraformComplianceNotImplemented('Invalid operator: {}'.format(operator))
