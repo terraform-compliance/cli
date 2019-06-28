@@ -1,5 +1,8 @@
 # CHANGELOG
 
+### 1.0.12 (2019-06-28)
+* Include the Terraform binary in the Docker container for use on non-Linux host operating systems [#102](https://github.com/eerkunt/terraform-compliance/issues/102)
+
 ### 1.0.11 (2019-06-28)
 * Added a new step: _its value must/must not be null_ [#106](https://github.com/eerkunt/terraform-compliance/blob/master/example/example_01/aws/restrict_resource_creation.feature) [#105](https://github.com/eerkunt/terraform-compliance/issues/106)
 * Added support for `data` definitions. [#111](https://github.com/eerkunt/terraform-compliance/blob/master/example/example_01/aws/restrict_resource_creation.feature) [#105](https://github.com/eerkunt/terraform-compliance/issues/111)
