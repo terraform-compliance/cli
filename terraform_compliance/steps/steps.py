@@ -110,7 +110,7 @@ def it_condition_contain_something(_step_obj, something):
                             'address': resource,
                             'type': _step_obj.context.name}
 
-            values = resource.get('values', {})
+            values = resource.get('values', resource.get('expressions', {}))
 
             found_value = None
             found_key = None
@@ -139,6 +139,10 @@ def it_condition_contain_something(_step_obj, something):
                     else:
                         raise TerraformComplianceInternalFailure('Unexpected value type {}. {}'.format(type(value),
                                                                                                        value))
+
+            if type(found_value) is dict:
+                if 'constant_value' in found_value:
+                    found_value = found_value['constant_value']
 
             if found_key:
                 prop_list.append({'address': resource['address'],
