@@ -303,24 +303,24 @@ def its_value_condition_match_the_search_regex_regex(_step_obj, condition, searc
         matches = re.match(regex, str(values), flags=re.IGNORECASE)
 
         if (condition == 'must' and matches is None) or (condition == "must not" and matches is not None):
-            fail(condition)
+            _stash = { 'address': '{} named {}'.format(values, _step_obj.context.name) } if type(_stash) is str else _stash
+            fail(condition, name=_stash.get('address'))
 
     elif type(values) is list:
         for value in values:
             its_value_condition_match_the_search_regex_regex(_step_obj, condition, search_regex, value)
 
     elif type(values) is dict:
-        if values.get('values') is not None:
-            values = its_value_condition_match_the_search_regex_regex(_step_obj,
-                                                                      condition,
-                                                                      search_regex,
-                                                                      values['values'])
-        else:
-            values = seek_regex_key_in_dict_values(values, _step_obj.context.property_name, search_regex)
+        if 'values' in values:
+            if values['values'] is None and regex == '\x00' and condition == 'must not':
+                values = values['values']
+                fail(condition, name=_stash.get('address'))
+            else:
+                its_value_condition_match_the_search_regex_regex(_step_obj, condition, search_regex, values.get('values'))
 
-        if (condition == 'must' and values == []) or (condition == "must not" and values != []):
-            _stash = {} if _stash is None else _stash
-            fail(condition, name=_stash.get('address'))
+        else:
+            for key, value in values.items():
+                its_value_condition_match_the_search_regex_regex(_step_obj, condition, search_regex, value)
 
 @then(u'the scenario fails')
 @then(u'the scenario should fail')
