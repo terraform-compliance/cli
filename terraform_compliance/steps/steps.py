@@ -3,7 +3,7 @@
 from radish import world, given, when, then, step
 from terraform_compliance.steps import encryption_property
 from terraform_compliance.common.helper import check_sg_rules, convert_resource_type, find_root_by_key, seek_key_in_dict
-from terraform_compliance.common.helper import seek_regex_key_in_dict_values, jsonify
+from terraform_compliance.common.helper import seek_regex_key_in_dict_values, jsonify, Null, EmptyStash
 from terraform_compliance.extensions.ext_radish_bdd import skip_step
 from terraform_compliance.extensions.ext_radish_bdd import custom_type_any, custom_type_condition, custom_type_section
 import re
@@ -112,8 +112,8 @@ def it_condition_contain_something(_step_obj, something):
 
             values = resource.get('values', resource.get('expressions', {}))
 
-            found_value = None
-            found_key = None
+            found_value = Null
+            found_key = Null
             if type(values) is dict:
                 found_key = seek_key_in_dict(values, something)
                 if len(found_key):
@@ -144,7 +144,7 @@ def it_condition_contain_something(_step_obj, something):
                 if 'constant_value' in found_value:
                     found_value = found_value['constant_value']
 
-            if found_key:
+            if found_key is not Null and found_key != []:
                 prop_list.append({'address': resource['address'],
                                   'values': found_value,
                                   'type': _step_obj.context.name})
@@ -288,7 +288,7 @@ def i_expect_the_result_is_operator_than_number(_step_obj, operator, number):
 
 
 @step(u'its value {condition:ANY} match the "{search_regex}" regex')
-def its_value_condition_match_the_search_regex_regex(_step_obj, condition, search_regex, _stash=None):
+def its_value_condition_match_the_search_regex_regex(_step_obj, condition, search_regex, _stash=EmptyStash):
     def fail(condition, name=None):
         text = 'matches' if condition == 'must not' else 'does not match'
         name = name if name is not None else _step_obj.context.name
@@ -301,13 +301,13 @@ def its_value_condition_match_the_search_regex_regex(_step_obj, condition, searc
                                                 pattern,
                                                 values))
     regex = r'{}'.format(search_regex)
-    values = _step_obj.context.stash if _stash is None else _stash
+    values = _step_obj.context.stash if _stash is EmptyStash else _stash
 
     if type(values) is str or type(values) is int or type(values) is bool:
         matches = re.match(regex, str(values), flags=re.IGNORECASE)
 
         if (condition == 'must' and matches is None) or (condition == "must not" and matches is not None):
-            _stash = { 'address': '{} named {}'.format(values, _step_obj.context.name) } if type(_stash) is str else _stash
+            _stash = { 'address': '{} named {}'.format(values, _step_obj.context.name) } if (type(_stash) is str or type(_stash) is bool) else _stash
             fail(condition, name=_stash.get('address'))
 
     elif type(values) is list:
