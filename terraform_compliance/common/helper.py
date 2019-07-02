@@ -256,3 +256,10 @@ def jsonify(string):
         return json.loads(string)
     except json.decoder.JSONDecodeError:
         return string
+
+
+class EmptyStash(object):
+    pass
+
+class Null(object):
+    pass
