@@ -144,7 +144,7 @@ def it_condition_contain_something(_step_obj, something):
                 if 'constant_value' in found_value:
                     found_value = found_value['constant_value']
 
-            if found_key is not Null:
+            if found_key is not Null and found_key != []:
                 prop_list.append({'address': resource['address'],
                                   'values': found_value,
                                   'type': _step_obj.context.name})
