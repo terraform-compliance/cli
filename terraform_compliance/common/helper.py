@@ -5,6 +5,15 @@ from terraform_compliance.common.exceptions import Failure
 from collections.abc import Iterable
 import json
 
+
+class EmptyStash(object):
+    pass
+
+
+class Null(object):
+    pass
+
+
 def flatten_list(input):
     return list(flatten(input))
 
@@ -16,6 +25,7 @@ def flatten(items):
                 yield sub_x
         else:
             yield x
+
 
 def check_if_cidr( value ):
     regex = r'(1[0-9][0-9]|2[0-4][0-9]|25[0-5]|[0-9][0-9]|[0-9])\.(1[0-9][0-9]|2[0-4][0-9]|25[0-5]|[0-9][0-9]|[0-9])\.(1[0-9][0-9]|2[0-4][0-9]|25[0-5]|[0-9][0-9]|[0-9])\.(1[0-9][0-9]|2[0-4][0-9]|25[0-5]|[0-9][0-9]|[0-9])\/(3[0-2]|2[0-9]|1[0-9]|[0-9])'
@@ -34,6 +44,7 @@ def is_ip_in_cidr(ip_cidr, cidr):
 
     return False
 
+
 def are_networks_same(first_network, network_list):
     for second_network in network_list:
         if check_if_cidr(first_network) and check_if_cidr(second_network) and \
@@ -41,6 +52,7 @@ def are_networks_same(first_network, network_list):
             return True
 
     return False
+
 
 # A helper function that compares port related data with given dictionary
 def check_sg_rules(plan_data, security_group, condition):
@@ -131,6 +143,7 @@ def validate_sg_rule(plan_data, params, condition):
 
     return True
 
+
 def convert_resource_type(resource_type):
     '''
     Searchs given resource_type within resource_name array and returns the value if it is found
@@ -169,6 +182,7 @@ def seek_key_in_dict(haystack, needle):
         return []
 
     return found
+
 
 def seek_regex_key_in_dict_values(haystack, key_name, needle, key_matched=None):
     '''
@@ -248,6 +262,7 @@ def find_root_by_key(haystack, needle, return_key=None, _inherited_key=None, _de
 
     return list(set(found))
 
+
 def jsonify(string):
     if type(string) is not str:
         return string
@@ -258,8 +273,18 @@ def jsonify(string):
         return string
 
 
-class EmptyStash(object):
-    pass
+def get_resource_name_from_stash(stash, alternative_stash=None):
+    if type(alternative_stash) is str or type(alternative_stash) is bool:
+        if type(stash) is list:
 
-class Null(object):
-    pass
+            # Get the first number, since this is usually due to `count` usage in terraform
+            if 'address' in stash[0]:
+                return {'address': stash[0]['address'].replace('[0]','')}
+            else:
+                return {'address': stash[0]}
+
+        else:
+            if 'address' in alternative_stash:
+                return alternative_stash
+            else:
+                return {'address': alternative_stash}

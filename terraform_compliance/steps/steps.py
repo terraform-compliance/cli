@@ -4,10 +4,12 @@ from radish import world, given, when, then, step
 from terraform_compliance.steps import encryption_property
 from terraform_compliance.common.helper import check_sg_rules, convert_resource_type, find_root_by_key, seek_key_in_dict
 from terraform_compliance.common.helper import seek_regex_key_in_dict_values, jsonify, Null, EmptyStash
+from terraform_compliance.common.helper import get_resource_name_from_stash
 from terraform_compliance.extensions.ext_radish_bdd import skip_step
 from terraform_compliance.extensions.ext_radish_bdd import custom_type_any, custom_type_condition, custom_type_section
 import re
-from terraform_compliance.common.exceptions import Failure, TerraformComplianceNotImplemented, TerraformComplianceInternalFailure
+from terraform_compliance.common.exceptions import Failure, TerraformComplianceNotImplemented
+from terraform_compliance.common.exceptions import TerraformComplianceInternalFailure
 
 
 # TODO: Figure out how the IAM policies/statements shown in the plan.out
@@ -136,6 +138,12 @@ def it_condition_contain_something(_step_obj, something):
                                 found_key = found_key[0]
                                 found_value = value.get('value')
                                 break
+
+                    if len(found_key):
+                        found_key = found_key[0]
+
+                        if type(found_key) is dict:
+                            found_value = jsonify(found_key[something])
                     else:
                         raise TerraformComplianceInternalFailure('Unexpected value type {}. {}'.format(type(value),
                                                                                                        value))
@@ -249,8 +257,12 @@ def it_condition_have_proto_protocol_and_port_port_for_cidr(_step_obj, condition
 
     return True
 
-
+@when(u'I {action_type:ANY} it')
 @when(u'I {action_type:ANY} them')
+@when(u'I {action_type:ANY} the value')
+@then(u'I {action_type:ANY} it')
+@then(u'I {action_type:ANY} them')
+@then(u'I {action_type:ANY} the value')
 def i_action_them(_step_obj, action_type):
     if action_type == "count":
 
@@ -266,8 +278,21 @@ def i_action_them(_step_obj, action_type):
                     _step_obj.context.stash = {'values': count}
             else:
                 _step_obj.context.stash = {'values': len(_step_obj.context.stash)}
+    elif action_type == "read":
+        if type(_step_obj.context.stash) is list:
+            if type(_step_obj.context.stash[0]) is dict():
+                if _step_obj.context.stash.get('values'):
+                    _step_obj.context.stash = seek_key_in_dict(_step_obj.context.stash, 'values')
+                    values_list = []
+                    for result in _step_obj.context.stash:
+                        values_list.append(result.get('values', Null))
+
+                    _step_obj.context.stash = {'values': values_list}
+            else:
+                raise TerraformComplianceNotImplemented('Expecting a dict but received {} on {} action'.format(type(_step_obj.context.stash[0]), action_type))
+
     else:
-        raise TerraformComplianceNotImplemented("Invalid action_type in the scenario: {}".format(action_type))
+        raise TerraformComplianceNotImplemented('Invalid action_type in the scenario: {}'.format(action_type))
 
 
 @then(u'I expect the result is {operator:ANY} than {number:d}')
@@ -291,7 +316,7 @@ def i_expect_the_result_is_operator_than_number(_step_obj, operator, number):
 def its_value_condition_match_the_search_regex_regex(_step_obj, condition, search_regex, _stash=EmptyStash):
     def fail(condition, name=None):
         text = 'matches' if condition == 'must not' else 'does not match'
-        name = name if name is not None else _step_obj.context.name
+        name = name if (name is not None or name is not False) else _step_obj.context.name
         pattern = 'Null/None' if regex == '\x00' else regex
         raise Failure('{} property in {} {} {} with {} regex. '
                       'It is set to {}.'.format(_step_obj.context.property_name,
@@ -307,7 +332,7 @@ def its_value_condition_match_the_search_regex_regex(_step_obj, condition, searc
         matches = re.match(regex, str(values), flags=re.IGNORECASE)
 
         if (condition == 'must' and matches is None) or (condition == "must not" and matches is not None):
-            _stash = { 'address': '{} named {}'.format(values, _step_obj.context.name) } if (type(_stash) is str or type(_stash) is bool) else _stash
+            _stash = get_resource_name_from_stash(_step_obj.context.stash, _stash)
             fail(condition, name=_stash.get('address'))
 
     elif type(values) is list:
