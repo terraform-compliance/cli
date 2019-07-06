@@ -326,7 +326,7 @@ class Test_Step_Cases(TestCase):
 
     def test_i_expect_the_result_is_more_than_number_failure(self):
         step = MockedStep()
-        step.context.stash = dict()
+        step.context.stash = dict(values=3)
         with self.assertRaises(TerraformComplianceNotImplemented) as err:
             self.assertIsNone(i_expect_the_result_is_operator_than_number(step, 'invalid operator', 1))
         self.assertEqual(str(err.exception), 'Invalid operator: invalid operator')

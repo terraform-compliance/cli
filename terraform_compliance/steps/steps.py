@@ -139,7 +139,7 @@ def it_condition_contain_something(_step_obj, something):
                                 found_value = value.get('value')
                                 break
 
-                    if len(found_key):
+                    if found_key is not Null and len(found_key):
                         found_key = found_key[0]
 
                         if type(found_key) is dict:
