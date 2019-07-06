@@ -1,5 +1,18 @@
 # CHANGELOG
 
+### 1.0.17 ()
+* Fixed a problem where test are passing directly if one of the drilled down values is a list. ([#121](https://github.com/eerkunt/terraform-compliance/issues/121))
+* Improved `I expect the result is {operator} than {number}/Its value must be {operator} than {number}` step where the values can also be read and compared mathematically. ([#120](https://github.com/eerkunt/terraform-compliance/issues/120))
+
+### 1.0.16 ()
+* Fixed a problem where terraform values including []/None/False was failing due to being negative.
+
+### 1.0.15 ()
+* Fixed a problem where some of the data resources defined in configuration section was not distinguished.
+
+### 1.0.14 ()
+* Fixed a problem where 'its value must not be null' was not working properly
+
 ### 1.0.13 (2019-06-28)
 * Upgraded `radish-bdd` to `0.13.1` which includes fix for using escaped PIPE (`|`) characters within the features. ([Example](https://github.com/eerkunt/terraform-compliance/blob/master/example/example_01/aws/tags.feature)) ([#110](https://github.com/eerkunt/terraform-compliance/issues/110))
 
