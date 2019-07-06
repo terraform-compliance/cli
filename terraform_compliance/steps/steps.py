@@ -265,7 +265,6 @@ def it_condition_have_proto_protocol_and_port_port_for_cidr(_step_obj, condition
 @then(u'I {action_type:ANY} the value')
 def i_action_them(_step_obj, action_type):
     if action_type == "count":
-
         # WARNING: Only case where we set stash as a dictionary, instead of a list.
         if type(_step_obj.context.stash) is list:
             if type(_step_obj.context.stash[0]) is dict():
@@ -278,39 +277,37 @@ def i_action_them(_step_obj, action_type):
                     _step_obj.context.stash = {'values': count}
             else:
                 _step_obj.context.stash = {'values': len(_step_obj.context.stash)}
-    elif action_type == "read":
-        if type(_step_obj.context.stash) is list:
-            if type(_step_obj.context.stash[0]) is dict():
-                if _step_obj.context.stash.get('values'):
-                    _step_obj.context.stash = seek_key_in_dict(_step_obj.context.stash, 'values')
-                    values_list = []
-                    for result in _step_obj.context.stash:
-                        values_list.append(result.get('values', Null))
-
-                    _step_obj.context.stash = {'values': values_list}
-            else:
-                raise TerraformComplianceNotImplemented('Expecting a dict but received {} on {} action'.format(type(_step_obj.context.stash[0]), action_type))
-
     else:
         raise TerraformComplianceNotImplemented('Invalid action_type in the scenario: {}'.format(action_type))
 
 
+@then(u'Its value must be {operator:ANY} than {number:d}')
 @then(u'I expect the result is {operator:ANY} than {number:d}')
-def i_expect_the_result_is_operator_than_number(_step_obj, operator, number):
-    # TODO: Maybe iterate over the stash if it is a list and do the execution per each member ?
-    value = int(_step_obj.context.stash.get('values', 0))
+def i_expect_the_result_is_operator_than_number(_step_obj, operator, number, _stash=EmptyStash):
+    values = _step_obj.context.stash if _stash is EmptyStash else _stash
 
-    if operator in ("more", "greater", "bigger"):
-        assert value > number, "{} is not more than {}".format(value, number)
-    elif operator in ("more and equal", "greater and equal", "bigger and equal"):
-        assert value >= number, "{} is not more and equal than {}".format(value, number)
-    elif operator in ("less", "lesser", "smaller"):
-        assert value < number, "{} is not less than {}".format(value, number)
-    elif operator in ("less and equal", "lesser and equal", "smaller and equal"):
-        assert value <= number, "{} is not less and equal than {}".format(value, number)
-    else:
-        raise TerraformComplianceNotImplemented('Invalid operator: {}'.format(operator))
+    if type(values) is list:
+        for value_set in values:
+            i_expect_the_result_is_operator_than_number(_step_obj, operator, number, _stash=value_set)
 
+    elif type(values) is dict:
+        i_expect_the_result_is_operator_than_number(_step_obj, operator, number, values.get('values', Null))
+
+    elif type(values) is int or type(values) is str:
+        values = int(values)
+        if operator in ("more", "greater", "bigger"):
+            assert values > number, "{} is not more than {}".format(values, number)
+        elif operator in ("more and equal", "greater and equal", "bigger and equal"):
+            assert values >= number, "{} is not more and equal than {}".format(values, number)
+        elif operator in ("less", "lesser", "smaller"):
+            assert values < number, "{} is not less than {}".format(values, number)
+        elif operator in ("less and equal", "lesser and equal", "smaller and equal"):
+            assert values <= number, "{} is not less and equal than {}".format(values, number)
+        else:
+            raise TerraformComplianceNotImplemented('Invalid operator: {}'.format(operator))
+
+    elif type(values) is Null:
+        raise TerraformComplianceNotImplemented('Null/Empty value found on {}'.format(_step_obj.context.type))
 
 @step(u'its value {condition:ANY} match the "{search_regex}" regex')
 def its_value_condition_match_the_search_regex_regex(_step_obj, condition, search_regex, _stash=EmptyStash):
