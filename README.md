@@ -206,8 +206,8 @@ Steps are the functional tests that is actually executing necessary task to vali
 | ---------------| --------------| ---------- |
 | GIVEN          | I have `{name}` `{type}` configured | `name`: name of the key in terraform (e.g. `aws_security_group`, `aws` ) <br>`type`: The type of the key (e.g. `resource(s)`, `provider(s)`, `data(s)` or `variable(s)`) |
 | GIVEN          | I have `{resource_name}` defined | `name`: name of the resource ( e.g. `aws_security_group` ) |
-| WHEN           | I `{action}` them<br>I `{action}` the value<br>I `{action}` it{| `action`: `count`, `read` |
-| THEN           | I expect the result is `{operator}` than `{number}` | `operator`: `more`, `more and equal`, `less`, `less and equal`<br>`number`: an integer |
+| WHEN           | I `{math_formula}` them | `action`: `math_formula` |
+| THEN           | I expect the result is `{operator}` than `{number}`<br>Its value must be `{operator}` than `{number}` | `operator`: `more`, `more and equal`, `less`, `less and equal`<br>`number`: an integer |
 | WHEN<br>THEN   | it contain `{something}`<br>it contains `{something}`<br>it must contain `{something}` | `something`: any property within terraform resoruce/provider/etc. (e.g. `access_key`, `ingress` ) |
 | THEN           | encryption is enabled<br>encryption must be enabled | |
 | THEN           | its value `{condition}` match the "`{search_regex}`" regex | `condition`: `must` or `must not`<br>`search_regex`: the regular expression of the searching value |
