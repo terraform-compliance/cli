@@ -1,16 +1,19 @@
 # CHANGELOG
 
-### 1.0.17 ()
+### 1.0.18 (2019-07-08)
+* Fixed a problem where searched key exists with a different purpose in the root and some of the child elements. E.g. `tags` in aws_s3_bucket and `tags` in `lifecycle_rules` within that bucket.
+
+### 1.0.17 (2019-07-06)
 * Fixed a problem where test are passing directly if one of the drilled down values is a list. ([#121](https://github.com/eerkunt/terraform-compliance/issues/121))
 * Improved `I expect the result is {operator} than {number}/Its value must be {operator} than {number}` step where the values can also be read and compared mathematically. ([#120](https://github.com/eerkunt/terraform-compliance/issues/120))
 
-### 1.0.16 ()
+### 1.0.16 (2019-07-02)
 * Fixed a problem where terraform values including []/None/False was failing due to being negative.
 
-### 1.0.15 ()
+### 1.0.15 (2019-07-01)
 * Fixed a problem where some of the data resources defined in configuration section was not distinguished.
 
-### 1.0.14 ()
+### 1.0.14 (2019-07-01)
 * Fixed a problem where 'its value must not be null' was not working properly
 
 ### 1.0.13 (2019-06-28)

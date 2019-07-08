@@ -117,7 +117,10 @@ def it_condition_contain_something(_step_obj, something):
             found_value = Null
             found_key = Null
             if type(values) is dict:
-                found_key = seek_key_in_dict(values, something)
+                found_key = values.get(something, seek_key_in_dict(values, something))
+                if type(found_key) is not list:
+                    found_key = [{something: found_key}]
+
                 if len(found_key):
                     found_key = found_key[0]
 
@@ -148,9 +151,8 @@ def it_condition_contain_something(_step_obj, something):
                         raise TerraformComplianceInternalFailure('Unexpected value type {}. {}'.format(type(value),
                                                                                                        value))
 
-            if type(found_value) is dict:
-                if 'constant_value' in found_value:
-                    found_value = found_value['constant_value']
+            if type(found_value) is dict and 'constant_value' in found_value:
+                found_value = found_value['constant_value']
 
             if found_key is not Null and found_key != []:
                 prop_list.append({'address': resource['address'],
