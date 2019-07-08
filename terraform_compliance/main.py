@@ -11,8 +11,7 @@ except ImportError as e:
     reinstall_radish()
 
 __app_name__ = "terraform-compliance"
-__version__ = "1.0.18"
-
+__version__ = "1.0.19"
 
 print('{} v{} initiated\n'.format(__app_name__, __version__))
 

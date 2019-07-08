@@ -1,5 +1,8 @@
 # CHANGELOG
 
+### 1.0.19 (2019-07-08)
+* Added filtering capability that will help to filter any resource type by a specific property. ([#122](https://github.com/eerkunt/terraform-compliance/issues/122))
+
 ### 1.0.18 (2019-07-08)
 * Fixed a problem where searched key exists with a different purpose in the root and some of the child elements. E.g. `tags` in aws_s3_bucket and `tags` in `lifecycle_rules` within that bucket.
 

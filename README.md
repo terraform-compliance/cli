@@ -207,6 +207,7 @@ Steps are the functional tests that is actually executing necessary task to vali
 | GIVEN          | I have `{name}` `{type}` configured | `name`: name of the key in terraform (e.g. `aws_security_group`, `aws` ) <br>`type`: The type of the key (e.g. `resource(s)`, `provider(s)`, `data(s)` or `variable(s)`) |
 | GIVEN          | I have `{resource_name}` defined | `name`: name of the resource ( e.g. `aws_security_group` ) |
 | WHEN           | I `{math_formula}` them | `action`: `math_formula` |
+| WHEN           | its `{key}` is `{value}` | `key`: any property that resource have (e.g. name, address, etc. ) `address` will give the terraform object name<br>`value`: any string or numeric value that the property has.<br>_Found resources from previous step will be filtered based on these values._ |
 | THEN           | I expect the result is `{operator}` than `{number}`<br>Its value must be `{operator}` than `{number}` | `operator`: `more`, `more and equal`, `less`, `less and equal`<br>`number`: an integer |
 | WHEN<br>THEN   | it contain `{something}`<br>it contains `{something}`<br>it must contain `{something}` | `something`: any property within terraform resoruce/provider/etc. (e.g. `access_key`, `ingress` ) |
 | THEN           | encryption is enabled<br>encryption must be enabled | |
@@ -304,6 +305,9 @@ These sample tests include ;
 * Checks if there are number of subnets defined in the terraform code for a multi-layered architecture
 * Checks if there are some specific ports are not allowed for specific subnets in Security Groups
 * Checks if API Keys/Credentials are not used within the code.
+* Checks/Filters for a specific resource rather than a resource type.
+* Checks if specific resource types should not be created.
+* Checks if S3 Public Block access is enforces.
 
 The tests can be easily extended with the current capabilities. For any new capability please raise [a new Issue](https://github.com/eerkunt/terraform-compliance/issues/new) and it will be implemented as soon as possible.
 

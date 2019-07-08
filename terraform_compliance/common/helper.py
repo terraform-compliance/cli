@@ -193,6 +193,7 @@ def seek_regex_key_in_dict_values(haystack, key_name, needle, key_matched=None):
     :param haystack: dict, list
     :param key_name: string of the key
     :param needle: regex search for the value
+    :param key_matched: Internal use
     :return: list of found keys & values
     '''
     regex = r'{}'.format(needle)

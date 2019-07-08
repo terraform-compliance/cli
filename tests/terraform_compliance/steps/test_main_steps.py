@@ -7,7 +7,8 @@ from terraform_compliance.steps.steps import (
     encryption_is_enabled,
     its_value_condition_match_the_search_regex_regex,
     it_condition_have_proto_protocol_and_port_port_for_cidr,
-    it_fails
+    it_fails,
+    its_key_is_value
 )
 from terraform_compliance.common.exceptions import TerraformComplianceNotImplemented, Failure, TerraformComplianceInternalFailure
 from tests.mocks import MockedStep, MockedWorld, MockedTerraformPropertyList, MockedTerraformResourceList, MockedTerraformResource
@@ -337,3 +338,70 @@ class Test_Step_Cases(TestCase):
         step.context.name = 'some_name'
         with self.assertRaises(Failure):
             it_fails(step)
+
+    def test_its_key_is_value_not_existent(self):
+        step = MockedStep()
+        step.context.stash = [
+            {
+                'type': 'aws_db_instance',
+                'some_key': 'some_value',
+                'values': {
+                    'storage_encrypted': True
+                }
+            },
+            {
+                'type': 'aws_db_instance',
+                'some_key': 'some_other_value',
+                'values': {
+                    'storage_encrypted': False
+                }
+            }
+        ]
+        its_key_is_value(step, 'something_else', 'some_value')
+        self.assertTrue(type(step.context.stash) is list)
+        self.assertEqual(step.context.stash, [])
+
+    def test_its_key_is_value_success(self):
+        step = MockedStep()
+        step.context.stash = [
+            {
+                'type': 'aws_db_instance',
+                'some_key': 'some_value',
+                'values': {
+                    'storage_encrypted': True
+                }
+            },
+            {
+                'type': 'aws_db_instance',
+                'some_key': 'some_other_value',
+                'values': {
+                    'storage_encrypted': False
+                }
+            }
+        ]
+        its_key_is_value(step, 'some_key', 'some_value')
+        self.assertTrue(type(step.context.stash) is list)
+        self.assertEqual(step.context.stash[0]['some_key'], 'some_value')
+
+    def test_its_key_is_value_exist_as_a_list(self):
+        step = MockedStep()
+        step = MockedStep()
+        step.context.stash = [
+            {
+                'type': 'aws_db_instance',
+                'some_key': 'some_value[0]',
+                'values': {
+                    'storage_encrypted': True
+                }
+            },
+            {
+                'type': 'aws_db_instance',
+                'some_key': 'some_other_value',
+                'values': {
+                    'storage_encrypted': False
+                }
+            }
+        ]
+        its_key_is_value(step, 'some_key', 'some_value')
+        self.assertTrue(type(step.context.stash) is list)
+        self.assertEqual(step.context.stash[0]['some_key'], 'some_value[0]')

@@ -97,6 +97,25 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
     skip_step(_step_obj, name)
 
 
+@when(u'its {key:ANY} is {value:ANY}')
+def its_key_is_value(_step_obj, key, value):
+    search_key = str(key).lower()
+    found_list = []
+    for obj in _step_obj.context.stash:
+        object_key = obj.get(key, Null)
+
+        if object_key is not Null:
+            object_key = object_key.split('[')[0]
+
+        if object_key == value:
+            found_list.append(obj)
+
+    if found_list is not []:
+        _step_obj.context.stash = found_list
+    else:
+        skip_step(_step_obj, value)
+
+
 @when(u'it contain {something:ANY}')
 @when(u'they have {something:ANY}')
 @when(u'it has {something:ANY}')
