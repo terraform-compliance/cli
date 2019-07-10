@@ -1,5 +1,8 @@
 # CHANGELOG
 
+### 1.0.20 (2019-07-10)
+* Set static versions fo dependencies within the setup.py and disabled re-install function completely.
+
 ### 1.0.19 (2019-07-08)
 * Added filtering capability that will help to filter any resource type by a specific property. ([#122](https://github.com/eerkunt/terraform-compliance/issues/122))
 

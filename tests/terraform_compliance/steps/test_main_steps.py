@@ -385,7 +385,6 @@ class Test_Step_Cases(TestCase):
 
     def test_its_key_is_value_exist_as_a_list(self):
         step = MockedStep()
-        step = MockedStep()
         step.context.stash = [
             {
                 'type': 'aws_db_instance',

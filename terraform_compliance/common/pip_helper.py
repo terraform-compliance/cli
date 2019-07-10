@@ -16,8 +16,8 @@ def reinstall_radish():
     print("Fixing the problem on radish and radish-bdd")
     pip('uninstall', 'radish-bdd')
     pip('uninstall', 'radish')
-    pip('install', 'radish==0.1.10')
-    pip('install', 'radish-bdd==0.8.6')
+    pip('install', 'radish')
+    pip('install', 'radish-bdd')
 
     print("~"*40)
     print(" Please run terraform-compliance again.")

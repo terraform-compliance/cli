@@ -6,12 +6,12 @@ from terraform_compliance.main import __app_name__, __version__
 import radish
 
 dependencies = [
-    'radish',
-    'radish-bdd',
-    'gitpython',
-    'netaddr',
-    'colorful',
-    'filetype'
+    'radish>=0.1.10',
+    'radish-bdd>=0.13.1',
+    'gitpython>=2.1.11',
+    'netaddr>=0.7.19',
+    'colorful>=0.5.0',
+    'filetype>=1.0.5'
 ]
 
 setup(
