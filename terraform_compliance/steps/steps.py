@@ -144,7 +144,7 @@ def it_condition_contain_something(_step_obj, something):
                     found_key = found_key[0]
 
                     if type(found_key) is dict:
-                        found_value = jsonify(found_key[something])
+                        found_value = jsonify(found_key.get(something, {}))
             elif type(values) is list:
                 for value in values:
 
@@ -165,7 +165,7 @@ def it_condition_contain_something(_step_obj, something):
                         found_key = found_key[0]
 
                         if type(found_key) is dict:
-                            found_value = jsonify(found_key[something])
+                            found_value = jsonify(found_key.get(something, {}))
                     else:
                         raise TerraformComplianceInternalFailure('Unexpected value type {}. {}'.format(type(value),
                                                                                                        value))
