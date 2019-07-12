@@ -1,5 +1,9 @@
 # CHANGELOG
 
+### 1.0.21 (2019-07-12)
+* Fixed a bug where 'it must contain <something>' fails because of a KeyError.
+* Fixed a bug where a test might fail while changing a resource that already exists in the remote/local terraform state.
+
 ### 1.0.20 (2019-07-10)
 * Set static versions fo dependencies within the setup.py and disabled re-install function completely.
 
