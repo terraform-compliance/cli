@@ -12,7 +12,7 @@ from terraform_compliance.common.readable_plan import ReadablePlan
 from radish.main import main as call_radish
 
 __app_name__ = "terraform-compliance"
-__version__ = "1.0.20"
+__version__ = "1.0.21"
 
 print('{} v{} initiated\n'.format(__app_name__, __version__))
 
