@@ -207,29 +207,61 @@ def it_condition_contain_something(_step_obj, something):
                                                                                           something))
 
 
-@then(u'encryption is enabled')
-@then(u'encryption must be enabled')
-def encryption_is_enabled(_step_obj):
+#@then(u'encryption is enabled')
+#@then(u'encryption must be enabled')
+#def encryption_is_enabled(_step_obj):
+#    for resource in _step_obj.context.stash:
+#        if type(resource) is dict:
+#           prop = encryption_property.get(resource['type'], None)
+#
+#           if not prop:
+#                raise TerraformComplianceNotImplemented('Encryption property for {} '
+#                                                        'is not implemented yet.'.format(resource['type']))
+#
+#            encryption_value = seek_key_in_dict(resource.get('values', {}), encryption_property[resource['type']])
+#
+#            if len(encryption_value):
+#                encryption_value = encryption_value[0]
+#
+#                if type(encryption_value) is dict:
+#                    encryption_value = encryption_value[encryption_property[resource['type']]]
+#
+#            if not encryption_value:
+#                raise Failure('Resource {} does not have encryption enabled ({}={}).'.format(resource['address'],
+#                                                                                             prop,
+#                                                                                             encryption_value))
+#
+#   return True
+@then(u'{something:ANY} is be enabled')
+@then(u'{something:ANY} must be enabled')
+def property_is_enabled(_step_obj, something):
+    prop = None
     for resource in _step_obj.context.stash:
         if type(resource) is dict:
-            prop = encryption_property.get(resource['type'], None)
-
+            print('something : {}'.format(something))
+            if something == 'encryption_at_rest':
+                prop = encryption_at_rest_property.get(resource['type'], None)
+            elif something == 'encryption_in_flight':
+                prop = encryption_in_flight_property.get(resource['type'], None)
             if not prop:
-                raise TerraformComplianceNotImplemented('Encryption property for {} '
-                                                        'is not implemented yet.'.format(resource['type']))
+                #raise TerraformComplianceNotImplemented('property {} for {} ''is not implemented yet.'.format(resource['type'],prop))
+                prop = something
 
-            encryption_value = seek_key_in_dict(resource.get('values', {}), encryption_property[resource['type']])
+           
+            property_value = seek_key_in_dict(resource.get('values', {}), prop)
+            if len(property_value):
+                property_value = property_value[0]
 
-            if len(encryption_value):
-                encryption_value = encryption_value[0]
+                if type(property_value) is dict:
+                    print('property_value type is dict')
+                    property_value = property_value[prop]
 
-                if type(encryption_value) is dict:
-                    encryption_value = encryption_value[encryption_property[resource['type']]]
-
-            if not encryption_value:
-                raise Failure('Resource {} does not have encryption enabled ({}={}).'.format(resource['address'],
+            if not property_value:
+                raise Failure('Resource {} does not have {} property enabled ({}={}).'.format(resource['address'],
                                                                                              prop,
-                                                                                             encryption_value))
+                                                                                             prop,
+                                                                                             property_value))
+
 
     return True
 
