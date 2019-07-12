@@ -97,8 +97,7 @@ class TerraformParser(object):
                     self.resources[resource['address']] = resource
 
         # Resources ( exists in Prior State )
-        for findings in seek_key_in_dict(self.raw.get('prior_state', {}).get('values', {}).get('root_module', {}),
-                                         'resources'):
+        for findings in seek_key_in_dict(self.raw.get('prior_state', {}).get('values', {}).get('root_module', {}).get('resources', {}), 'resource'):
             for resource in findings.get('resources', []):
                 if resource['address'].startswith('data'):
                     self.data[resource['address']] = resource
