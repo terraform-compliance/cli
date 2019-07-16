@@ -4,7 +4,7 @@ from terraform_compliance.steps.steps import (
     i_action_them,
     i_expect_the_result_is_operator_than_number,
     it_condition_contain_something,
-    encryption_is_enabled,
+    property_is_enabled,
     its_value_condition_match_the_search_regex_regex,
     it_condition_have_proto_protocol_and_port_port_for_cidr,
     it_fails,
@@ -191,17 +191,17 @@ class Test_Step_Cases(TestCase):
 
         self.assertTrue(it_condition_contain_something(step, 'something'))
 
-    def test_encryption_is_enabled_not_implemented(self):
+    def test_property_is_enabled_not_implemented(self):
         step = MockedStep()
         step.context.stash = [
             {
                 'type': 'something'
             }
         ]
-        with self.assertRaises(TerraformComplianceNotImplemented):
-            encryption_is_enabled(step)
+        with self.assertRaises(Failure):
+            property_is_enabled(step, 'something')
 
-    def test_encryption_is_enabled_success(self):
+    def test_property_is_enabled_success(self):
         step = MockedStep()
         step.context.stash = [
             {
@@ -211,18 +211,21 @@ class Test_Step_Cases(TestCase):
                 }
             }
         ]
-        self.assertTrue(encryption_is_enabled(step))
+        self.assertTrue(property_is_enabled(step, 'storage_encrypted'))
 
-    def test_encryption_is_enabled_failure(self):
+    def test_property_is_enabled_failure(self):
         step = MockedStep()
         step.context.stash = [
             {
                 'type': 'aws_db_instance',
-                'address': 'resource'
+                'address': 'resource',
+                'values': {
+                    'storage_encrypted': False
+                }
             }
         ]
         with self.assertRaises(Failure):
-            encryption_is_enabled(step)
+            property_is_enabled(step, 'storage_encrypted')
 
     def test_it_condition_have_proto_protocol_and_port_port_for_cidr_ports_must_only_fail(self):
         step = MockedStep()
