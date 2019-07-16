@@ -1,5 +1,9 @@
 # CHANGELOG
 
+### 1.0.22 (2019-07-16)
+* Fixed a bug where terraform-compliance crashes while reading the terraform file on terraform resources that does not have `values` key ([#124](https://github.com/eerkunt/terraform-compliance/issues/124))
+* Fixed a bug where some resources with key/value pair property causes a problem as reported in ([#127](https://github.com/eerkunt/terraform-compliance/issues/127))
+
 ### 1.0.21 (2019-07-12)
 * Fixed a bug where 'it must contain <something>' fails because of a KeyError.
 * Fixed a bug where a test might fail while changing a resource that already exists in the remote/local terraform state.

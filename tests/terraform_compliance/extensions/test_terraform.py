@@ -240,6 +240,22 @@ class TestTerraformParser(TestCase):
         obj._mount_resources([source], [target], ref_type)
         self.assertEqual([{'some_key': 'some_value'}], obj.resources[target]['values'][ref_type])
 
+    @patch.object(TerraformParser, '_read_file', return_value={})
+    def test_mount_resources_failure_if_source_resource_does_not_have_values(self, *args):
+        obj = TerraformParser('somefile', parse_it=False)
+        target = 'target_ref'
+        source = 'source_ref'
+        ref_type = 'some_ref'
+        obj.resources = {
+            target: {
+                'values': {}
+            },
+            source: {
+            }
+        }
+        obj._mount_resources([source], [target], ref_type)
+        self.assertEqual({}, obj.resources[target]['values'])
+
 
     @patch.object(TerraformParser, '_read_file', return_value={})
     def test_find_resource_from_name_resource_name_in_resources(self, *args):

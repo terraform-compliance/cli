@@ -175,23 +175,6 @@ class Test_Step_Cases(TestCase):
 
         self.assertTrue(it_condition_contain_something(step, 'something'))
 
-    def test_it_condition_contain_something_resource_value_is_list_but_invalid(self):
-        step = MockedStep()
-        step.context_sensitive_sentence = 'it contains something'
-        step.context.type = 'resource'
-        step.context.stash = [
-            {
-                'address': 'some_address',
-                'type': 'resource',
-                'values': [
-                    'something'
-                ]
-            }
-        ]
-
-        with self.assertRaises(TerraformComplianceInternalFailure):
-            it_condition_contain_something(step, 'something')
-
     @patch('terraform_compliance.steps.steps.seek_key_in_dict', return_value=None)
     def test_it_condition_contain_something_provider_not_found(self, *args):
         step = MockedStep()
@@ -404,3 +387,29 @@ class Test_Step_Cases(TestCase):
         its_key_is_value(step, 'some_key', 'some_value')
         self.assertTrue(type(step.context.stash) is list)
         self.assertEqual(step.context.stash[0]['some_key'], 'some_value[0]')
+
+    def test_find_keys_that_has_kv_structure(self):
+        step = MockedStep()
+        step.context.stash = [
+            {
+                'address': 'some_resource.id',
+                'type': 'some_resource_type',
+                'name': 'some_name',
+                'values': [
+                    {
+                        'key': 'some_other_key',
+                        'value': 'some_other_value'
+                    },
+                    {
+                        'key': 'some_key',
+                        'value': 'some_value'
+                    }
+                ]
+            }
+        ]
+        step.context.type = 'resource'
+        step.context.name = 'some_name'
+        step.context.property_name = 'tags'
+        step.context_sensitive_sentence = 'must'
+        it_condition_contain_something(step, 'some_key')
+        self.assertEqual(step.context.stash[0]['values'], 'some_value')
