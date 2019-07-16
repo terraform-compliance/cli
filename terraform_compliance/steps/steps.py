@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from radish import world, given, when, then, step
-from terraform_compliance.steps import encryption_property
+from terraform_compliance.steps import encryption_at_rest_property, encryption_in_flight_property
 from terraform_compliance.common.helper import check_sg_rules, convert_resource_type, find_root_by_key, seek_key_in_dict
 from terraform_compliance.common.helper import seek_regex_key_in_dict_values, jsonify, Null, EmptyStash
 from terraform_compliance.common.helper import get_resource_name_from_stash
@@ -206,44 +206,20 @@ def it_condition_contain_something(_step_obj, something):
                                                                                           something))
 
 
-#@then(u'encryption is enabled')
-#@then(u'encryption must be enabled')
-#def encryption_is_enabled(_step_obj):
-#    for resource in _step_obj.context.stash:
-#        if type(resource) is dict:
-#           prop = encryption_property.get(resource['type'], None)
-#
-#           if not prop:
-#                raise TerraformComplianceNotImplemented('Encryption property for {} '
-#                                                        'is not implemented yet.'.format(resource['type']))
-#
-#            encryption_value = seek_key_in_dict(resource.get('values', {}), encryption_property[resource['type']])
-#
-#            if len(encryption_value):
-#                encryption_value = encryption_value[0]
-#
-#                if type(encryption_value) is dict:
-#                    encryption_value = encryption_value[encryption_property[resource['type']]]
-#
-#            if not encryption_value:
-#                raise Failure('Resource {} does not have encryption enabled ({}={}).'.format(resource['address'],
-#                                                                                             prop,
-#                                                                                             encryption_value))
-#
-#   return True
+
 @then(u'{something:ANY} is be enabled')
 @then(u'{something:ANY} must be enabled')
 def property_is_enabled(_step_obj, something):
     prop = None
     for resource in _step_obj.context.stash:
         if type(resource) is dict:
-            print('something : {}'.format(something))
+            
             if something == 'encryption_at_rest':
                 prop = encryption_at_rest_property.get(resource['type'], None)
             elif something == 'encryption_in_flight':
                 prop = encryption_in_flight_property.get(resource['type'], None)
             if not prop:
-                #raise TerraformComplianceNotImplemented('property {} for {} ''is not implemented yet.'.format(resource['type'],prop))
+                
                 prop = something
 
            
@@ -252,11 +228,11 @@ def property_is_enabled(_step_obj, something):
                 property_value = property_value[0]
 
                 if type(property_value) is dict:
-                    print('property_value type is dict')
-                    property_value = property_value[prop]
+                    
+                    property_value = property_value.get(prop, Null)
 
             if not property_value:
-                raise Failure('Resource {} does not have {} property enabled ({}={}).'.format(resource['address'],
+                raise Failure('Resource {} does not have {} property enabled ({}={}).'.format(resource.get('address', "resource"),
                                                                                              prop,
                                                                                              prop,
                                                                                              property_value))
