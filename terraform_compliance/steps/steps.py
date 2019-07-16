@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from radish import world, given, when, then, step
-from terraform_compliance.steps import encryption_property
+from terraform_compliance.steps import property_match_list
 from terraform_compliance.common.helper import check_sg_rules, convert_resource_type, find_root_by_key, seek_key_in_dict
 from terraform_compliance.common.helper import seek_regex_key_in_dict_values, jsonify, Null, EmptyStash
 from terraform_compliance.common.helper import get_resource_name_from_stash
@@ -208,30 +208,28 @@ def it_condition_contain_something(_step_obj, something):
                                                                                           something))
 
 
-@then(u'encryption is enabled')
-@then(u'encryption must be enabled')
-def encryption_is_enabled(_step_obj):
+
+@then(u'{something:ANY} is be enabled')
+@then(u'{something:ANY} must be enabled')
+def property_is_enabled(_step_obj, something):
     for resource in _step_obj.context.stash:
         if type(resource) is dict:
-            prop = encryption_property.get(resource['type'], None)
+            if something in property_match_list:
+                something = property_match_list[something].get(resource['type'], something)
 
-            if not prop:
-                raise TerraformComplianceNotImplemented('Encryption property for {} '
-                                                        'is not implemented yet.'.format(resource['type']))
+            property_value = seek_key_in_dict(resource.get('values', {}), something)
 
-            encryption_value = seek_key_in_dict(resource.get('values', {}), encryption_property[resource['type']])
+            if len(property_value):
+                property_value = property_value[0]
 
-            if len(encryption_value):
-                encryption_value = encryption_value[0]
+                if type(property_value) is dict:
+                    property_value = property_value.get(something, Null)
 
-                if type(encryption_value) is dict:
-                    encryption_value = encryption_value[encryption_property[resource['type']]]
-
-            if not encryption_value:
-                raise Failure('Resource {} does not have encryption enabled ({}={}).'.format(resource['address'],
-                                                                                             prop,
-                                                                                             encryption_value))
-
+            if not property_value:
+                raise Failure('Resource {} does not have {} property enabled ({}={}).'.format(resource.get('address', "resource"),
+                                                                                              something,
+                                                                                              something,
+                                                                                              property_value))
     return True
 
 
