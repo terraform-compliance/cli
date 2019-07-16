@@ -4,15 +4,10 @@ from tempfile import mkdtemp
 from git import Repo
 from terraform_compliance.common.readable_dir import ReadableDir
 from terraform_compliance.common.readable_plan import ReadablePlan
-# try:
-#     from radish.main import main as call_radish
-# except ImportError as e:
-#     from terraform_compliance.common.pip_helper import reinstall_radish
-#     reinstall_radish()
 from radish.main import main as call_radish
 
 __app_name__ = "terraform-compliance"
-__version__ = "1.0.22"
+__version__ = "1.0.23"
 
 print('{} v{} initiated\n'.format(__app_name__, __version__))
 
