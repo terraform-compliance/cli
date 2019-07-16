@@ -119,12 +119,13 @@ def validate_sg_rule(plan_data, params, condition):
 
         if not port_intersection and network_check:
             raise Failure('{}/{} ports are defined for {} network. '
-                          'Must be limited to {}/{}'.format('/'.join(plan_data['protocol']),
+                          'Must be limited to {}/{} and {}'.format('/'.join(plan_data['protocol']),
                                                             '{}-{}'.format(plan_data['from_port'],
                                                                            plan_data['to_port']),
                                                             plan_data['cidr_blocks'],
                                                             '/'.join(plan_data['protocol']),
-                                                            from_to_port))
+                                                            from_to_port,
+                                                            given_network))
 
     # Condition: must not have
     # Fail only if ;

@@ -1,7 +1,10 @@
 # CHANGELOG
 
+### 1.0.24 (2019-07-16)
+* Fixed a failure message where it was misleading. (follow up on [#127](https://github.com/eerkunt/terraform-compliance/issues/127#issuecomment-511990432)) 
+ 
 ### 1.0.23 (2019-07-16)
-* Fixed a bug where a resource might have multiple values (with same key). (follow up on [#1261](https://github.com/eerkunt/terraform-compliance/issues/126))
+* Fixed a bug where a resource might have multiple values (with same key). (follow up on [#126](https://github.com/eerkunt/terraform-compliance/issues/126))
 * Improved `its value must not be null` step that is also checking if the value is set to `''`.
 
 ### 1.0.22 (2019-07-16)
