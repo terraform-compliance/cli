@@ -144,7 +144,7 @@ def it_condition_contain_something(_step_obj, something):
                     found_key = found_key[0] if len(found_key) == 1 else found_key
 
                     if type(found_key) is dict:
-                        found_value = jsonify(found_key.get(something, {}))
+                        found_value = jsonify(found_key.get(something, found_key))
                     else:
                         found_value = found_key
             elif type(values) is list:
@@ -164,15 +164,15 @@ def it_condition_contain_something(_step_obj, something):
                                 break
 
                     if found_key is not Null and len(found_key):
-                        found_key = found_key[0]
+                        found_key = found_key[0] if len(found_key) == 1 else found_key
 
                         if type(found_key) is dict:
-                            found_value = jsonify(found_key.get(something, {}))
+                            found_value = jsonify(found_key.get(something, found_key))
 
             if type(found_value) is dict and 'constant_value' in found_value:
                 found_value = found_value['constant_value']
 
-            if found_key is not Null and found_key != []:
+            if found_value is not Null and found_value != [] and found_value != '' and found_value != {}:
                 prop_list.append({'address': resource['address'],
                                   'values': found_value,
                                   'type': _step_obj.context.name})
@@ -271,7 +271,9 @@ def it_condition_have_proto_protocol_and_port_port_for_cidr(_step_obj, condition
                        cidr=cidr)
 
     for security_group in _step_obj.context.stash:
-        check_sg_rules(plan_data=security_group['values'][0],
+        sg = security_group['values'][0] if type(security_group['values']) is list \
+                                         else security_group.get('values', {})
+        check_sg_rules(plan_data=sg,
                        security_group=looking_for,
                        condition=condition)
 
