@@ -1,5 +1,8 @@
 # CHANGELOG
 
+### 1.0.25 (2019-07-16)
+* Changed `encryption is enabled` step to `{property} is enabled` where `{property}` could be generic and templated. ([#123](https://github.com/eerkunt/terraform-compliance/issues/123))
+
 ### 1.0.24 (2019-07-16)
 * Fixed a failure message where it was misleading. (follow up on [#127](https://github.com/eerkunt/terraform-compliance/issues/127#issuecomment-511990432)) 
  
