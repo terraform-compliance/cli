@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from radish import world, given, when, then, step
-from terraform_compliance.steps import encryption_at_rest_property, encryption_in_flight_property
+from terraform_compliance.steps import property_match_list
 from terraform_compliance.common.helper import check_sg_rules, convert_resource_type, find_root_by_key, seek_key_in_dict
 from terraform_compliance.common.helper import seek_regex_key_in_dict_values, jsonify, Null, EmptyStash
 from terraform_compliance.common.helper import get_resource_name_from_stash
@@ -212,34 +212,24 @@ def it_condition_contain_something(_step_obj, something):
 @then(u'{something:ANY} is be enabled')
 @then(u'{something:ANY} must be enabled')
 def property_is_enabled(_step_obj, something):
-    prop = None
     for resource in _step_obj.context.stash:
         if type(resource) is dict:
-            
-            if something == 'encryption_at_rest':
-                prop = encryption_at_rest_property.get(resource['type'], None)
-            elif something == 'encryption_in_flight':
-                prop = encryption_in_flight_property.get(resource['type'], None)
-            if not prop:
-                
-                prop = something
+            if something in property_match_list:
+                something = property_match_list[something].get(resource['type'], something)
 
-           
-            property_value = seek_key_in_dict(resource.get('values', {}), prop)
+            property_value = seek_key_in_dict(resource.get('values', {}), something)
+
             if len(property_value):
                 property_value = property_value[0]
 
                 if type(property_value) is dict:
-                    
-                    property_value = property_value.get(prop, Null)
+                    property_value = property_value.get(something, Null)
 
             if not property_value:
                 raise Failure('Resource {} does not have {} property enabled ({}={}).'.format(resource.get('address', "resource"),
-                                                                                             prop,
-                                                                                             prop,
-                                                                                             property_value))
-
-
+                                                                                              something,
+                                                                                              something,
+                                                                                              property_value))
     return True
 
 
