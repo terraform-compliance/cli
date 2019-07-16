@@ -148,6 +148,8 @@ def it_condition_contain_something(_step_obj, something):
                     else:
                         found_value = found_key
             elif type(values) is list:
+                found_value = []
+
                 for value in values:
 
                     if type(value) is dict:
@@ -167,7 +169,7 @@ def it_condition_contain_something(_step_obj, something):
                         found_key = found_key[0] if len(found_key) == 1 else found_key
 
                         if type(found_key) is dict:
-                            found_value = jsonify(found_key.get(something, found_key))
+                            found_value.append(jsonify(found_key.get(something, found_key)))
 
             if type(found_value) is dict and 'constant_value' in found_value:
                 found_value = found_value['constant_value']
@@ -279,12 +281,16 @@ def it_condition_have_proto_protocol_and_port_port_for_cidr(_step_obj, condition
                        cidr=cidr)
 
     for security_group in _step_obj.context.stash:
-        sg = security_group['values'][0] if type(security_group['values']) is list \
-                                         else security_group.get('values', {})
-        check_sg_rules(plan_data=sg,
-                       security_group=looking_for,
-                       condition=condition)
+        if type(security_group['values']) is list:
+            for sg in security_group['values']:
+                check_sg_rules(plan_data=sg, security_group=looking_for, condition=condition)
 
+        elif type(security_group['values']) is dict:
+            check_sg_rules(plan_data=security_group['values'], security_group=looking_for, condition=condition)
+        else:
+            raise TerraformComplianceInternalFailure('Unexpected Security Group, '
+                                                     'must be either list or a dict: '
+                                                     '{}'.format(security_group['values']))
     return True
 
 @when(u'I {action_type:ANY} it')
@@ -391,3 +397,4 @@ def it_fails(_step_obj):
 @then(u'its value {condition:ANY} be null')
 def its_value_condition_be_null(_step_obj, condition):
     its_value_condition_match_the_search_regex_regex(_step_obj, condition, u'\x00')
+    its_value_condition_match_the_search_regex_regex(_step_obj, condition, u'^$')
