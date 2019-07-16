@@ -141,10 +141,12 @@ def it_condition_contain_something(_step_obj, something):
                     found_key = [{something: found_key}]
 
                 if len(found_key):
-                    found_key = found_key[0]
+                    found_key = found_key[0] if len(found_key) == 1 else found_key
 
                     if type(found_key) is dict:
                         found_value = jsonify(found_key.get(something, {}))
+                    else:
+                        found_value = found_key
             elif type(values) is list:
                 for value in values:
 
@@ -166,9 +168,6 @@ def it_condition_contain_something(_step_obj, something):
 
                         if type(found_key) is dict:
                             found_value = jsonify(found_key.get(something, {}))
-                    else:
-                        raise TerraformComplianceInternalFailure('Unexpected value type {}. {}'.format(type(value),
-                                                                                                       value))
 
             if type(found_value) is dict and 'constant_value' in found_value:
                 found_value = found_value['constant_value']
