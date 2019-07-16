@@ -273,12 +273,16 @@ def it_condition_have_proto_protocol_and_port_port_for_cidr(_step_obj, condition
                        cidr=cidr)
 
     for security_group in _step_obj.context.stash:
-        sg = security_group['values'][0] if type(security_group['values']) is list \
-                                         else security_group.get('values', {})
-        check_sg_rules(plan_data=sg,
-                       security_group=looking_for,
-                       condition=condition)
+        if type(security_group['values']) is list:
+            for sg in security_group['values']:
+                check_sg_rules(plan_data=sg, security_group=looking_for, condition=condition)
 
+        elif type(security_group['values']) is dict:
+            check_sg_rules(plan_data=security_group['values'], security_group=looking_for, condition=condition)
+        else:
+            raise TerraformComplianceInternalFailure('Unexpected Security Group, '
+                                                     'must be either list or a dict: '
+                                                     '{}'.format(security_group['values']))
     return True
 
 @when(u'I {action_type:ANY} it')
