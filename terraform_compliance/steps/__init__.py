@@ -1,16 +1,18 @@
-encryption_at_rest_property = {
-    'aws_db_instance': 'storage_encrypted',
-    'ebs_block_device': 'encrypted',
-    'aws_ebs_volume': 'encrypted',
-    'azurerm_storage_account': 'enable_blob_encryption',
-    'azurerm_sql_database': 'encryption',
-    'aws_s3_bucket': 'server_side_encryption_configuration',
-    'aws_elasticache_replication_group': 'at_rest_encryption_enabled',
-    'aws_emr_security_configuration': 'EnableAtRestEncryption'
-}
-encryption_in_flight_property = {
-    'aws_elasticache_replication_group': 'transit_encryption_enabled',
-    'aws_emr_security_configuration': 'EnableInTransitEncryption'
+property_match_list = {
+    'encryption at rest': {
+        'aws_db_instance': 'storage_encrypted',
+        'ebs_block_device': 'encrypted',
+        'aws_ebs_volume': 'encrypted',
+        'azurerm_storage_account': 'enable_blob_encryption',
+        'azurerm_sql_database': 'encryption',
+        'aws_s3_bucket': 'server_side_encryption_configuration',
+        'aws_elasticache_replication_group': 'at_rest_encryption_enabled',
+        'aws_emr_security_configuration': 'EnableAtRestEncryption'
+    },
+    'encryption in flight': {
+        'aws_elasticache_replication_group': 'transit_encryption_enabled',
+        'aws_emr_security_configuration': 'EnableInTransitEncryption'
+    }
 }
 
 resource_name = {
@@ -30,5 +32,6 @@ resource_name = {
     'Azure SQL Database': 'azurerm_sql_database',
     'Azure Storage Account': 'azurerm_storage_account',
     'AWS Subnet': 'aws_subnet',
-    'AWS ElastiCache Replication Group': 'aws_elasticache_replication_group'
+    'AWS ElastiCache Replication Group': 'aws_elasticache_replication_group',
+    'AWS Elastic Cache Replication Group': 'aws_elasticache_replication_group'
 }
