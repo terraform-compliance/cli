@@ -148,6 +148,8 @@ def it_condition_contain_something(_step_obj, something):
                     else:
                         found_value = found_key
             elif type(values) is list:
+                found_value = []
+
                 for value in values:
 
                     if type(value) is dict:
@@ -167,7 +169,7 @@ def it_condition_contain_something(_step_obj, something):
                         found_key = found_key[0] if len(found_key) == 1 else found_key
 
                         if type(found_key) is dict:
-                            found_value = jsonify(found_key.get(something, found_key))
+                            found_value.append(jsonify(found_key.get(something, found_key)))
 
             if type(found_value) is dict and 'constant_value' in found_value:
                 found_value = found_value['constant_value']
@@ -383,3 +385,4 @@ def it_fails(_step_obj):
 @then(u'its value {condition:ANY} be null')
 def its_value_condition_be_null(_step_obj, condition):
     its_value_condition_match_the_search_regex_regex(_step_obj, condition, u'\x00')
+    its_value_condition_match_the_search_regex_regex(_step_obj, condition, u'^$')
