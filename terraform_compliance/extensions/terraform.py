@@ -149,7 +149,15 @@ class TerraformParser(object):
         :return: none
         '''
         for source_resource in source:
+
+            if 'values' not in self.resources[source_resource]:
+                continue
+
             for target_resource in target:
+
+                if 'values' not in self.resources[target_resource]:
+                    continue
+
                 if ref_type not in self.resources[target_resource]['values']:
                     self.resources[target_resource]['values'][ref_type] = list()
                     self.resources[target_resource]['values'][ref_type].append(self.resources[source_resource]['values'])
