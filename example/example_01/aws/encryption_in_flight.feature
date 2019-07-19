@@ -10,8 +10,8 @@ Feature: Resources that exposes to external networks should have encryption in f
   
   Scenario: AWS EMR Sceurity Configuration Encryption in Flight must be enabled
     Given I have AWS EMR Security Configuration defined
-    Then encryption_in_flight must be enabled
+    Then encryption in flight must be enabled
 
   Scenario: AWS ElastiCache Replication Group Encryption in Flight must be enabled
     Given I have AWS ElastiCache Replication Group defined
-    Then encryption_in_flight must be enabled
+    Then encryption in flight must be enabled
