@@ -210,7 +210,7 @@ Steps are the functional tests that is actually executing necessary task to vali
 | WHEN           | its `{key}` is `{value}` | `key`: any property that resource have (e.g. name, address, etc. ) `address` will give the terraform object name<br>`value`: any string or numeric value that the property has.<br>_Found resources from previous step will be filtered based on these values._ |
 | THEN           | I expect the result is `{operator}` than `{number}`<br>Its value must be `{operator}` than `{number}` | `operator`: `more`, `more and equal`, `less`, `less and equal`<br>`number`: an integer |
 | WHEN<br>THEN   | it contain `{something}`<br>it contains `{something}`<br>it must contain `{something}` | `something`: any property within terraform resoruce/provider/etc. (e.g. `access_key`, `ingress` ) |
-| THEN           | encryption is enabled<br>encryption must be enabled | |
+| THEN           | `{property}` is enabled<br>`{property}` must be enabled | `property`: can be either a generic property from your terraform configuration or templated ones like below for some resources;<br>* `encryption at rest`<br>* `encrytion in flight`|
 | THEN           | its value `{condition}` match the "`{search_regex}`" regex | `condition`: `must` or `must not`<br>`search_regex`: the regular expression of the searching value |
 | WHEN<br>THEN   | its value must be set by a variable | |
 | THEN           | it must `{condition}` have `{proto}` protocol and port `{port}` for `{cidr}` | `{condition}`: only,not<br>`proto`: tcp, udp<br>`port`: integer port number (or a port range by using `-` delimeter between port ranges [e.g. 80-84])<br>`cidr`: IP/Cidr |
