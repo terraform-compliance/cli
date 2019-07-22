@@ -364,7 +364,7 @@ def its_value_condition_match_the_search_regex_regex(_step_obj, condition, searc
 
     elif type(values) is dict:
         if 'values' in values:
-            if values['values'] is None and regex == 'null' and condition == 'must not':
+            if values['values'] is None and regex == '\x00' and condition == 'must not':
                 values = values['values']
                 fail(condition, name=_stash.get('address'))
             else:
