@@ -1,5 +1,13 @@
 # CHANGELOG
 
+### 1.0.27 (2019-07-23)
+* `its value must not be null` step is also checking for string `null`.
+* terraform version checks are more dynamic.
+* Fixed some of the examples.
+
+### 1.0.26 (2019-07-23)
+* Fixed some of the examples.
+
 ### 1.0.25 (2019-07-16)
 * Changed `encryption is enabled` step to `{property} is enabled` where `{property}` could be generic and templated. ([#123](https://github.com/eerkunt/terraform-compliance/issues/123))
 
