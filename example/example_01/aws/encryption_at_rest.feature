@@ -15,6 +15,6 @@ Feature: Resources should use encryption at rest while they are created
     Given I have AWS S3 Bucket defined
     Then it must contain server_side_encryption_configuration
 
-  Scenario: S3 Buckets
+  Scenario: S3 Buckets in a different way
     Given I have AWS S3 Bucket defined
     Then encryption at rest must be enabled
