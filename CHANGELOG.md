@@ -1,5 +1,8 @@
 # CHANGELOG
 
+### 1.0.28 (2019-07-23)
+* Upgraded `terraform` executable within the docker file from `0.12.3` to `0.12.5`
+
 ### 1.0.27 (2019-07-23)
 * `its value must not be null` step is also checking for string `null`.
 * terraform version checks are more dynamic.
