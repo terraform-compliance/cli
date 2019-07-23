@@ -13,12 +13,10 @@ class TerraformParser(object):
 
         :param filename: terraform plan filename in json format.
         '''
-        self.supported_terraform_versions = [
-            '0.12.0',
-            '0.12.1',
-            '0.12.2',
-            '0.12.3'
-        ]
+        self.supported_terraform_versions = (
+            '0.12', # This is here because this tuple must have multiple values.
+            '0.12.'
+        )
         self.supported_format_versions = ['0.1']
 
         self.raw = self._read_file(filename)
@@ -39,7 +37,7 @@ class TerraformParser(object):
                   '({}).\n'.format(self.raw['format_version']))
             sys.exit(1)
 
-        if self.raw['terraform_version'] not in self.supported_terraform_versions:
+        if not self.raw['terraform_version'].startswith(self.supported_terraform_versions):
             print('\nFATAL ERROR: Unsupported terraform version '
                   '({}).\n'.format(self.raw['terraform_version']))
             sys.exit(1)

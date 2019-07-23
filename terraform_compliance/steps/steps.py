@@ -388,3 +388,4 @@ def it_fails(_step_obj):
 def its_value_condition_be_null(_step_obj, condition):
     its_value_condition_match_the_search_regex_regex(_step_obj, condition, u'\x00')
     its_value_condition_match_the_search_regex_regex(_step_obj, condition, u'^$')
+    its_value_condition_match_the_search_regex_regex(_step_obj, condition, u'^null$')
