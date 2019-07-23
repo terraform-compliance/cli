@@ -9,7 +9,7 @@ Feature: Resources should use encryption at rest while they are created
 
   Scenario: EBS volumes
     Given I have AWS EBS volume defined
-    Then encryption_at_rest_property must be enabled
+    Then encryption at rest must be enabled
 
   Scenario: S3 Buckets
     Given I have AWS S3 Bucket defined
