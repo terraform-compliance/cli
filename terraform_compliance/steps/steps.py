@@ -351,7 +351,7 @@ def its_value_condition_match_the_search_regex_regex(_step_obj, condition, searc
     regex = r'{}'.format(search_regex)
     values = _step_obj.context.stash if _stash is EmptyStash else _stash
 
-    if type(values) is str or type(values) is int or type(values) is bool:
+    if type(values) in (str, int, bool) or values is None:
         matches = re.match(regex, str(values), flags=re.IGNORECASE)
 
         if (condition == 'must' and matches is None) or (condition == "must not" and matches is not None):
