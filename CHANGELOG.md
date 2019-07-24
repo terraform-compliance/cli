@@ -1,5 +1,8 @@
 # CHANGELOG
 
+### 1.0.29 (2019-07-24)
+* Fixed a problem where some `Null/None` values can not be parsed by regex steps. ([#132](https://github.com/eerkunt/terraform-compliance/issues/132)) 
+
 ### 1.0.28 (2019-07-23)
 * Upgraded `terraform` executable within the docker file from `0.12.3` to `0.12.5`
 
