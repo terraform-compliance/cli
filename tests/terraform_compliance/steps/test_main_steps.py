@@ -416,3 +416,51 @@ class Test_Step_Cases(TestCase):
         step.context_sensitive_sentence = 'must'
         it_condition_contain_something(step, 'some_key')
         self.assertEqual(step.context.stash[0]['values'], 'some_value')
+
+    def test_its_value_condition_match_the_search_regex_regex_null_value_is_parsed(self):
+        step = MockedStep()
+        step.context.stash = [
+            {
+                'address': 'some_resource.id',
+                'type': 'some_resource_type',
+                'name': 'some_name',
+                'values': None
+            }
+        ]
+        step.context.type = 'resource'
+        step.context.name = 'some_name'
+        step.context.property_name = 'tags'
+        step.context_sensitive_sentence = 'must'
+
+        with self.assertRaises(Failure):
+            its_value_condition_match_the_search_regex_regex(step, 'must', 'something')
+
+    def test_its_value_condition_match_the_search_regex_regex_success(self):
+        step = MockedStep()
+        step.context.stash = [
+            {
+                'address': 'some_resource.id',
+                'type': 'some_resource_type',
+                'name': 'some_name',
+                'values': [
+                    {
+                        'key': 'some_other_key',
+                        'value': 'some_other_value'
+                    },
+                    {
+                        'key': 'some_key',
+                        'value': 'some_value'
+                    }
+                ]
+            }
+        ]
+        step.context.type = 'resource'
+        step.context.name = 'some_name'
+        step.context.property_name = 'tags'
+        step.context_sensitive_sentence = 'must'
+
+        self.assertEqual(its_value_condition_match_the_search_regex_regex(step, 'must', 'some_.*'), None)
+
+        with self.assertRaises(Failure):
+            self.assertEqual(its_value_condition_match_the_search_regex_regex(step, 'must not', 'some_.*'), None)
+            self.assertEqual(its_value_condition_match_the_search_regex_regex(step, 'must not', 'some_other.*'), None)
