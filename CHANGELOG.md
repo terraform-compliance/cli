@@ -1,5 +1,8 @@
 # CHANGELOG
 
+### 1.0.30 (2019-07-29)
+* `its {key} is {value}` filtering step now filters also properties defined within a resource.
+
 ### 1.0.29 (2019-07-24)
 * Fixed a problem where some `Null/None` values can not be parsed by regex steps. ([#132](https://github.com/eerkunt/terraform-compliance/issues/132)) 
 
