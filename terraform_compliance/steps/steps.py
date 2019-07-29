@@ -104,8 +104,12 @@ def its_key_is_value(_step_obj, key, value):
     for obj in _step_obj.context.stash:
         object_key = obj.get(key, Null)
 
+        if object_key is Null:
+            object_key = obj.get('values', {}).get(key, Null)
+
         if object_key is not Null:
             object_key = object_key.split('[')[0]
+
 
         if object_key == value:
             found_list.append(obj)
