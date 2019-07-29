@@ -53,7 +53,7 @@ def write_stdout(level, message):
 
     print(u'\t\t\u251c\u2501\t{} {}'.format(prefix, added_prefix.join(message)).encode('utf-8'))
 
-@custom_type("ANY", r"[\.\/_\-A-Za-z0-9\s]+")
+@custom_type("ANY", r"[\.\/_\-A-Za-z0-9\s:]+")
 def custom_type_any(text):
     return text
 
