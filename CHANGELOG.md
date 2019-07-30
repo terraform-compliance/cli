@@ -1,5 +1,8 @@
 # CHANGELOG
 
+### 1.0.31 (2019-07-30)
+* Upgraded colourful that fixes unexpected colour coding in non-interactive terminals even when `--no-ansi` is used. ([#359](https://github.com/radish-bdd/radish/issues/359) [#128](https://github.com/eerkunt/terraform-compliance/issues/128) [#78](https://github.com/eerkunt/terraform-compliance/issues/78))
+
 ### 1.0.30 (2019-07-29)
 * `its {key} is {value}` filtering step now filters also properties defined within a resource.
 
