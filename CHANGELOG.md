@@ -1,5 +1,8 @@
 # CHANGELOG
 
+### 1.0.33 (2019-07-31)
+* Same like 1.0.32, but addressed another situation.
+
 ### 1.0.32 (2019-07-31)
 * Fixed a problem where filtering via `its {key} is {value}` was failing if the filtering object consists list or dict.
 

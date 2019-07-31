@@ -108,7 +108,15 @@ def its_key_is_value(_step_obj, key, value):
         object_key = obj.get(key, Null)
 
         if object_key is Null:
-            object_key = obj.get('values', {}).get(key, Null)
+            object_key = obj.get('values', {})
+            if type(object_key) is list:
+                object_keys = []
+                for object_key_element in object_key:
+                    object_keys.append(object_key_element.get(key, Null))
+
+                object_key = [keys for keys in object_keys if keys is not Null]
+            else:
+                object_key = object_key.get(key, Null)
 
         if type(object_key) is str:
             if "[" in object_key:
