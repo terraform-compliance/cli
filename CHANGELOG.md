@@ -1,5 +1,8 @@
 # CHANGELOG
 
+### 1.0.32 (2019-07-31)
+* Fixed a problem where filtering via `its {key} is {value}` was failing if the filtering object consists list or dict.
+
 ### 1.0.31 (2019-07-30)
 * Upgraded colourful that fixes unexpected colour coding in non-interactive terminals even when `--no-ansi` is used. ([#359](https://github.com/radish-bdd/radish/issues/359) [#128](https://github.com/eerkunt/terraform-compliance/issues/128) [#78](https://github.com/eerkunt/terraform-compliance/issues/78))
 

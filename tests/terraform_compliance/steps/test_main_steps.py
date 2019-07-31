@@ -391,6 +391,50 @@ class Test_Step_Cases(TestCase):
         self.assertTrue(type(step.context.stash) is list)
         self.assertEqual(step.context.stash[0]['some_key'], 'some_value[0]')
 
+    def test_its_key_is_value_exist_in_values_int(self):
+        step = MockedStep()
+        step.context.stash = [
+            {
+                'type': 'aws_db_instance',
+                'some_key': 'some_value[0]',
+                'values': {
+                    'storage_encrypted': 1
+                }
+            },
+            {
+                'type': 'aws_db_instance',
+                'some_key': 'some_other_value',
+                'values': {
+                    'storage_encrypted': 2
+                }
+            }
+        ]
+        its_key_is_value(step, 'storage_encrypted', 1)
+        self.assertTrue(type(step.context.stash) is list)
+        self.assertEqual(step.context.stash[0]['some_key'], 'some_value[0]')
+
+    def test_its_key_is_value_exist_in_values_bool(self):
+        step = MockedStep()
+        step.context.stash = [
+            {
+                'type': 'aws_db_instance',
+                'some_key': 'some_value[0]',
+                'values': {
+                    'storage_encrypted': True
+                }
+            },
+            {
+                'type': 'aws_db_instance',
+                'some_key': 'some_other_value',
+                'values': {
+                    'storage_encrypted': False
+                }
+            }
+        ]
+        its_key_is_value(step, 'storage_encrypted', True)
+        self.assertTrue(type(step.context.stash) is list)
+        self.assertEqual(step.context.stash[0]['some_key'], 'some_value[0]')
+
     def test_find_keys_that_has_kv_structure(self):
         step = MockedStep()
         step.context.stash = [

@@ -98,6 +98,9 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
 
 
 @when(u'its {key:ANY} is {value:ANY}')
+@when(u'its {key:ANY} has {value:ANY}')
+@when(u'its {key:ANY} includes {value:ANY}')
+@when(u'its {key:ANY} consists {value:ANY}')
 def its_key_is_value(_step_obj, key, value):
     search_key = str(key).lower()
     found_list = []
@@ -107,11 +110,20 @@ def its_key_is_value(_step_obj, key, value):
         if object_key is Null:
             object_key = obj.get('values', {}).get(key, Null)
 
-        if object_key is not Null:
-            object_key = object_key.split('[')[0]
+        if type(object_key) is str:
+            if "[" in object_key:
+                object_key = object_key.split('[')[0]
 
+            if object_key == value:
+                found_list.append(obj)
 
-        if object_key == value:
+        elif type(object_key) in (int, bool) and object_key == value:
+            found_list.append(obj)
+
+        elif type(object_key) is list and value in object_key:
+            found_list.append(obj)
+
+        elif type(object_key) is dict and (value in object_key.keys()):
             found_list.append(obj)
 
     if found_list is not []:
