@@ -1,5 +1,8 @@
 # CHANGELOG
 
+### 1.0.34 (2019-08-01)
+* Now terraform-compliance has a logo!
+
 ### 1.0.33 (2019-07-31)
 * Same like 1.0.32, but addressed another situation.
 
