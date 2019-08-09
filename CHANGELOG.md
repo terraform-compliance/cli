@@ -1,5 +1,10 @@
 # CHANGELOG
 
+### 1.0.35 (2019-08-09)
+* Upgraded colorful package to official version of 0.5.1 which solves the problem described in `1.0.31`
+* Fixed naming conventions in the file. A new documentation with a website instead of just README is required though.
+* 
+
 ### 1.0.34 (2019-08-01)
 * Now terraform-compliance has a logo!
 

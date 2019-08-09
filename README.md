@@ -208,6 +208,7 @@ Steps are the functional tests that is actually executing necessary task to vali
 | GIVEN          | I have `{resource_name}` defined | `name`: name of the resource ( e.g. `aws_security_group` ) |
 | WHEN           | I `{math_formula}` them | `action`: `math_formula` |
 | WHEN           | its `{key}` is `{value}`<br>its `{key}` has `{value}`<br>its `{key}` contains `{value}`<br>its `{key}` includes `{value}`  | `key`: any property that resource have (e.g. name, address, etc. ) `address` will give the terraform object name<br>`value`: any string or numeric value that the property has.<br>_Found resources from previous step will be filtered based on these values._ |
+| WHEN           | its `{key}` is not `{value}`<br>its `{key}` has not `{value}`<br>its `{key}` does not contain `{value}`<br>its `{key}` does not include `{value}`  | `key`: any property that resource have (e.g. name, address, etc. ) `address` will give the terraform object name<br>`value`: any string, bool or numeric value that the property has.<br>_Found resources from previous step will be filtered based on these values._ |
 | THEN           | I expect the result is `{operator}` than `{number}`<br>Its value must be `{operator}` than `{number}` | `operator`: `more`, `more and equal`, `less`, `less and equal`<br>`number`: an integer |
 | WHEN<br>THEN   | it contain `{something}`<br>it contains `{something}`<br>it must contain `{something}` | `something`: any property within terraform resoruce/provider/etc. (e.g. `access_key`, `ingress` ) |
 | THEN           | `{property}` is enabled<br>`{property}` must be enabled | `property`: can be either a generic property from your terraform configuration or templated ones like below for some resources;<br>* `encryption at rest`<br>* `encrytion in flight`|
@@ -252,7 +253,7 @@ The test steps will first run ;
 ```cucumber
 Given I have AWS ELB resource defined
 ```
-which will locate the resorce named `aws_elb` among all other resources ( please have a look [Naming Conventions](Naming Conventions) if you are not sure how `AWS ELB` transformed into `aws_elb` ) and then push the data to the step below ;
+which will locate the resorce named `aws_elb` among all other resources ( please have a look [Naming Conventions](https://github.com/eerkunt/terraform-compliance/blob/c59c5014a703640dfbf161b5119907036610ffef/terraform_compliance/steps/__init__.py#L18) if you are not sure how `AWS ELB` transformed into `aws_elb` ) and then push the data to the step below ;
 
 ```cucumber
 When it contains listener

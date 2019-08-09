@@ -100,7 +100,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
 @when(u'its {key:ANY} is {value:ANY}')
 @when(u'its {key:ANY} has {value:ANY}')
 @when(u'its {key:ANY} includes {value:ANY}')
-@when(u'its {key:ANY} consists {value:ANY}')
+@when(u'its {key:ANY} contains {value:ANY}')
 def its_key_is_value(_step_obj, key, value):
     search_key = str(key).lower()
     found_list = []
@@ -139,6 +139,49 @@ def its_key_is_value(_step_obj, key, value):
     else:
         skip_step(_step_obj, value)
 
+@when(u'its {key:ANY} is not {value:ANY}')
+@when(u'its {key:ANY} has not {value:ANY}')
+@when(u'its {key:ANY} does not include {value:ANY}')
+@when(u'its {key:ANY} does not contain {value:ANY}')
+def its_key_is_not_value(_step_obj, key, value):
+    search_key = str(key).lower()
+    found_list = []
+    for obj in _step_obj.context.stash:
+        object_key = obj.get(key, Null)
+
+        if object_key is Null:
+            object_key = obj.get('values', {})
+            if type(object_key) is list:
+                object_keys = []
+                for object_key_element in object_key:
+                    if object_key_element.get(key, Null) != value:
+                        object_keys.append(object_key_element.get(key, Null))
+
+                object_key = [keys for keys in object_keys if keys is not Null]
+            else:
+                if object_key.get(key, Null) != value:
+                    object_key = object_key.get(key, Null)
+
+        if type(object_key) is str:
+            if "[" in object_key:
+                object_key = object_key.split('[')[0]
+
+            if object_key != value:
+                found_list.append(obj)
+
+        elif type(object_key) in (int, bool) and object_key != value:
+            found_list.append(obj)
+
+        elif type(object_key) is list and value not in object_key:
+            found_list.append(obj)
+
+        elif type(object_key) is dict and (value in object_key.keys()):
+            found_list.append(obj)
+
+    if found_list is not []:
+        _step_obj.context.stash = found_list
+    else:
+        skip_step(_step_obj, value)
 
 @when(u'it contain {something:ANY}')
 @when(u'they have {something:ANY}')
