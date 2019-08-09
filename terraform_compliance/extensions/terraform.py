@@ -245,7 +245,9 @@ class TerraformParser(object):
         resource_list = list()
 
         for _, resource_data in self.resources.items():
-            if resource_data['type'] == resource_type.lower():
+            if resource_type == 'any':
+                resource_list.append(resource_data)
+            elif resource_data['type'] == resource_type.lower():
                 resource_list.append(resource_data)
 
         return resource_list
