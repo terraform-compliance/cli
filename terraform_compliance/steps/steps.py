@@ -6,7 +6,10 @@ from terraform_compliance.common.helper import check_sg_rules, convert_resource_
 from terraform_compliance.common.helper import seek_regex_key_in_dict_values, jsonify, Null, EmptyStash
 from terraform_compliance.common.helper import get_resource_name_from_stash
 from terraform_compliance.extensions.ext_radish_bdd import skip_step
-from terraform_compliance.extensions.ext_radish_bdd import custom_type_any, custom_type_condition, custom_type_section
+from terraform_compliance.extensions.ext_radish_bdd import custom_type_any
+from terraform_compliance.extensions.ext_radish_bdd import custom_type_condition
+from terraform_compliance.extensions.ext_radish_bdd import custom_type_section
+from terraform_compliance.extensions.ext_radish_bdd import custom_type_prop
 import re
 from terraform_compliance.common.exceptions import Failure, TerraformComplianceNotImplemented
 from terraform_compliance.common.exceptions import TerraformComplianceInternalFailure
@@ -97,10 +100,10 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
     skip_step(_step_obj, name)
 
 
-@when(u'its {key:ANY} is {value:ANY}')
-@when(u'its {key:ANY} has {value:ANY}')
-@when(u'its {key:ANY} includes {value:ANY}')
-@when(u'its {key:ANY} contains {value:ANY}')
+@when(u'its {key:PROPERTY} is {value:PROPERTY}')
+@when(u'its {key:PROPERTY} has {value:PROPERTY}')
+@when(u'its {key:PROPERTY} includes {value:PROPERTY}')
+@when(u'its {key:PROPERTY} contains {value:PROPERTY}')
 def its_key_is_value(_step_obj, key, value):
     search_key = str(key).lower()
     found_list = []
@@ -139,10 +142,10 @@ def its_key_is_value(_step_obj, key, value):
     else:
         skip_step(_step_obj, value)
 
-@when(u'its {key:ANY} is not {value:ANY}')
-@when(u'its {key:ANY} has not {value:ANY}')
-@when(u'its {key:ANY} does not include {value:ANY}')
-@when(u'its {key:ANY} does not contain {value:ANY}')
+@when(u'its {key:PROPERTY} is not {value:PROPERTY}')
+@when(u'its {key:PROPERTY} has not {value:PROPERTY}')
+@when(u'its {key:PROPERTY} does not include {value:PROPERTY}')
+@when(u'its {key:PROPERTY} does not contain {value:PROPERTY}')
 def its_key_is_not_value(_step_obj, key, value):
     search_key = str(key).lower()
     found_list = []
