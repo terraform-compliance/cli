@@ -376,6 +376,8 @@ def i_action_them(_step_obj, action_type):
 
 @then(u'Its value must be {operator:ANY} than {number:d}')
 @then(u'I expect the result is {operator:ANY} than {number:d}')
+@then(u'Its value must be {operator:ANY} to {number:d}')
+@then(u'I expect the result is {operator:ANY} to {number:d}')
 def i_expect_the_result_is_operator_than_number(_step_obj, operator, number, _stash=EmptyStash):
     values = _step_obj.context.stash if _stash is EmptyStash else _stash
 
@@ -396,6 +398,8 @@ def i_expect_the_result_is_operator_than_number(_step_obj, operator, number, _st
             assert values < number, "{} is not less than {}".format(values, number)
         elif operator in ("less and equal", "lesser and equal", "smaller and equal"):
             assert values <= number, "{} is not less and equal than {}".format(values, number)
+        elif operator in ("equal",):
+            assert values == number, "{} is not equal to {}".format(values, number)
         else:
             raise TerraformComplianceNotImplemented('Invalid operator: {}'.format(operator))
 

@@ -311,6 +311,14 @@ class Test_Step_Cases(TestCase):
             i_expect_the_result_is_operator_than_number(step, 'less and equal', 41)
         self.assertEqual(str(err.exception), '42 is not less and equal than 41')
 
+    def test_i_expect_the_result_is_operator_than_number_equal(self):
+        step = MockedStep()
+        step.context.stash = {'values': 42}
+        self.assertIsNone(i_expect_the_result_is_operator_than_number(step, 'equal', 42))
+        with self.assertRaises(AssertionError) as err:
+            i_expect_the_result_is_operator_than_number(step, 'equal', 41)
+        self.assertEqual(str(err.exception), '42 is not equal to 41')
+
     def test_i_expect_the_result_is_more_than_number_failure(self):
         step = MockedStep()
         step.context.stash = dict(values=3)
