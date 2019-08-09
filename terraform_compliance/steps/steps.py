@@ -455,6 +455,39 @@ def its_value_condition_equal(_step_obj, condition, match, _stash=EmptyStash):
     its_value_condition_match_the_search_regex_regex(_step_obj, condition, "^" + re.escape(match) + "$", _stash)
 
 
+@then(u'its value {condition:ANY} contain {value:ANY}')
+def its_value_condition_contain(_step_obj, condition, value, _stash=EmptyStash):
+    values = _step_obj.context.stash if _stash is EmptyStash else _stash
+    if isinstance(values, list):
+        for value_set in values:
+            its_value_condition_contain(_step_obj, condition, value, value_set)
+    elif isinstance(values, dict):
+        _its_value_condition_contain(_step_obj, condition, value, values.get('values', Null))
+    elif type(values) is Null:
+        raise TerraformComplianceNotImplemented('Null/Empty value found on {}'.format(_step_obj.context.type))
+
+
+def _its_value_condition_contain(_step_obj, condition, value, values):
+    assert condition in ('must', 'must not'), 'Condition should be one of: `must`, `must not`'
+
+    if isinstance(values, list):
+        values = [str(v) for v in values]
+        _fail_text = 'did not contain' if condition == 'must' else 'contains'
+        fail_message = '{} property in {} {} {}, it is set to {}'.format(
+            _step_obj.context.property_name,
+            _step_obj.context.name,
+            _fail_text,
+            value,
+            values,
+        )
+        if condition == 'must':
+            assert value in values, fail_message
+        else:
+            assert value not in values, fail_message
+    else:
+        raise Failure('Can only check that if list contains value')
+
+
 @then(u'the scenario fails')
 @then(u'the scenario should fail')
 @then(u'it fails')

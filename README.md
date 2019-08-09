@@ -216,6 +216,7 @@ Steps are the functional tests that is actually executing necessary task to vali
 | THEN           | its value `{condition}` be `{value}` | `condition`: `must` or `must not`<br>`value`: the matching value |
 | WHEN<br>THEN   | its value must be set by a variable | |
 | THEN           | it must `{condition}` have `{proto}` protocol and port `{port}` for `{cidr}` | `{condition}`: only,not<br>`proto`: tcp, udp<br>`port`: integer port number (or a port range by using `-` delimeter between port ranges [e.g. 80-84])<br>`cidr`: IP/Cidr |
+| THEN           | its value `{condition}` contain `{value}` | `{condition}`: `must` or `must not`, `value`: the item to look for in the list |
 | THEN           | the scenario fails<br>the scenario should fail<br>it fails<br>it should fail<br>it must fail | None |
 | THEN           | its value '{condition}' be null | 'condition': 'must' or 'must not' |
 
