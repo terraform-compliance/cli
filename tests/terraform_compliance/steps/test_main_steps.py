@@ -8,7 +8,8 @@ from terraform_compliance.steps.steps import (
     its_value_condition_match_the_search_regex_regex,
     it_condition_have_proto_protocol_and_port_port_for_cidr,
     it_fails,
-    its_key_is_value, its_key_is_not_value
+    its_key_is_value, its_key_is_not_value,
+    its_value_condition_equal
 )
 from terraform_compliance.common.exceptions import TerraformComplianceNotImplemented, Failure, TerraformComplianceInternalFailure
 from tests.mocks import MockedStep, MockedWorld, MockedTerraformPropertyList, MockedTerraformResourceList, MockedTerraformResource
@@ -311,6 +312,14 @@ class Test_Step_Cases(TestCase):
             i_expect_the_result_is_operator_than_number(step, 'less and equal', 41)
         self.assertEqual(str(err.exception), '42 is not less and equal than 41')
 
+    def test_i_expect_the_result_is_operator_than_number_equal(self):
+        step = MockedStep()
+        step.context.stash = {'values': 42}
+        self.assertIsNone(i_expect_the_result_is_operator_than_number(step, 'equal', 42))
+        with self.assertRaises(AssertionError) as err:
+            i_expect_the_result_is_operator_than_number(step, 'equal', 41)
+        self.assertEqual(str(err.exception), '42 is not equal to 41')
+
     def test_i_expect_the_result_is_more_than_number_failure(self):
         step = MockedStep()
         step.context.stash = dict(values=3)
@@ -478,6 +487,8 @@ class Test_Step_Cases(TestCase):
 
         with self.assertRaises(Failure):
             its_value_condition_match_the_search_regex_regex(step, 'must', 'something')
+        with self.assertRaises(Failure):
+            its_value_condition_equal(step, 'must', 'something')
 
     def test_its_value_condition_match_the_search_regex_regex_success(self):
         step = MockedStep()
@@ -508,6 +519,31 @@ class Test_Step_Cases(TestCase):
         with self.assertRaises(Failure):
             self.assertEqual(its_value_condition_match_the_search_regex_regex(step, 'must not', 'some_.*'), None)
             self.assertEqual(its_value_condition_match_the_search_regex_regex(step, 'must not', 'some_other.*'), None)
+
+    def test_its_value_condition_equals(self):
+        step = MockedStep()
+        expected_value = r"https://www.stackoverflow.com[as](.*)\s\t+$"
+        step.context.stash = [
+            {
+                'address': 'some_resource.id',
+                'type': 'some_resource_type',
+                'name': 'some_name',
+                'values': {
+                    'some_key': expected_value
+                }
+            }
+        ]
+        step.context.type = 'resource'
+        step.context.name = 'some_name'
+        step.context.property_name = 'tags'
+        step.context_sensitive_sentence = 'must'
+
+        self.assertEqual(its_value_condition_equal(step, 'must', expected_value), None)
+        self.assertEqual(its_value_condition_equal(step, 'must not', expected_value * 2), None)
+
+        with self.assertRaises(Failure):
+            self.assertEqual(its_value_condition_equal(step, 'must', expected_value + ' '), None)
+            self.assertEqual(its_value_condition_equal(step, 'must not', expected_value), None)
 
     def test_its_key_is_not_value_exist_in_values_bool(self):
         step = MockedStep()

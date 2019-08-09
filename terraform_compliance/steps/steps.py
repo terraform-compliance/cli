@@ -379,6 +379,8 @@ def i_action_them(_step_obj, action_type):
 
 @then(u'Its value must be {operator:ANY} than {number:d}')
 @then(u'I expect the result is {operator:ANY} than {number:d}')
+@then(u'Its value must be {operator:ANY} to {number:d}')
+@then(u'I expect the result is {operator:ANY} to {number:d}')
 def i_expect_the_result_is_operator_than_number(_step_obj, operator, number, _stash=EmptyStash):
     values = _step_obj.context.stash if _stash is EmptyStash else _stash
 
@@ -399,11 +401,14 @@ def i_expect_the_result_is_operator_than_number(_step_obj, operator, number, _st
             assert values < number, "{} is not less than {}".format(values, number)
         elif operator in ("less and equal", "lesser and equal", "smaller and equal"):
             assert values <= number, "{} is not less and equal than {}".format(values, number)
+        elif operator in ("equal",):
+            assert values == number, "{} is not equal to {}".format(values, number)
         else:
             raise TerraformComplianceNotImplemented('Invalid operator: {}'.format(operator))
 
     elif type(values) is Null:
         raise TerraformComplianceNotImplemented('Null/Empty value found on {}'.format(_step_obj.context.type))
+
 
 @step(u'its value {condition:ANY} match the "{search_regex}" regex')
 def its_value_condition_match_the_search_regex_regex(_step_obj, condition, search_regex, _stash=EmptyStash):
@@ -443,6 +448,12 @@ def its_value_condition_match_the_search_regex_regex(_step_obj, condition, searc
         else:
             for key, value in values.items():
                 its_value_condition_match_the_search_regex_regex(_step_obj, condition, search_regex, value)
+
+
+@step(u'its value {condition:ANY} be {match:ANY}')
+def its_value_condition_equal(_step_obj, condition, match, _stash=EmptyStash):
+    its_value_condition_match_the_search_regex_regex(_step_obj, condition, "^" + re.escape(match) + "$", _stash)
+
 
 @then(u'the scenario fails')
 @then(u'the scenario should fail')
