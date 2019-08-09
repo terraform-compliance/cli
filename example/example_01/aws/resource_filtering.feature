@@ -5,10 +5,9 @@ Feature: Resource Filtering example
     When its address is aws_s3_bucket.s3_bucket_prod
     And it contains tags
     Then it must contain <tag_keys>
-    And its value must match the "<pattern>" regex
+    And its value must be <string>
 
     Examples:
-      | tag_keys            | pattern                   |
-      | Data Classification | ^PRIVATE$                 |
-      | Data Residency      | ^EU$                      |
-    
+      | tag_keys            | string |
+      | Data Classification | PRIVATE                 |
+      | Data Residency      | EU                      |

@@ -406,6 +406,7 @@ def i_expect_the_result_is_operator_than_number(_step_obj, operator, number, _st
     elif type(values) is Null:
         raise TerraformComplianceNotImplemented('Null/Empty value found on {}'.format(_step_obj.context.type))
 
+
 @step(u'its value {condition:ANY} match the "{search_regex}" regex')
 def its_value_condition_match_the_search_regex_regex(_step_obj, condition, search_regex, _stash=EmptyStash):
     def fail(condition, name=None):
@@ -444,6 +445,12 @@ def its_value_condition_match_the_search_regex_regex(_step_obj, condition, searc
         else:
             for key, value in values.items():
                 its_value_condition_match_the_search_regex_regex(_step_obj, condition, search_regex, value)
+
+
+@step(u'its value {condition:ANY} be {match:ANY}')
+def its_value_condition_equal(_step_obj, condition, match, _stash=EmptyStash):
+    its_value_condition_match_the_search_regex_regex(_step_obj, condition, "^" + re.escape(match) + "$", _stash)
+
 
 @then(u'the scenario fails')
 @then(u'the scenario should fail')

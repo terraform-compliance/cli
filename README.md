@@ -213,6 +213,7 @@ Steps are the functional tests that is actually executing necessary task to vali
 | WHEN<br>THEN   | it contain `{something}`<br>it contains `{something}`<br>it must contain `{something}` | `something`: any property within terraform resoruce/provider/etc. (e.g. `access_key`, `ingress` ) |
 | THEN           | `{property}` is enabled<br>`{property}` must be enabled | `property`: can be either a generic property from your terraform configuration or templated ones like below for some resources;<br>* `encryption at rest`<br>* `encrytion in flight`|
 | THEN           | its value `{condition}` match the "`{search_regex}`" regex | `condition`: `must` or `must not`<br>`search_regex`: the regular expression of the searching value |
+| THEN           | its value `{condition}` be `{value}` | `condition`: `must` or `must not`<br>`value`: the matching value |
 | WHEN<br>THEN   | its value must be set by a variable | |
 | THEN           | it must `{condition}` have `{proto}` protocol and port `{port}` for `{cidr}` | `{condition}`: only,not<br>`proto`: tcp, udp<br>`port`: integer port number (or a port range by using `-` delimeter between port ranges [e.g. 80-84])<br>`cidr`: IP/Cidr |
 | THEN           | the scenario fails<br>the scenario should fail<br>it fails<br>it should fail<br>it must fail | None |
