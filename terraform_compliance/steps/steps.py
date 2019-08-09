@@ -469,6 +469,8 @@ def its_value_condition_contain(_step_obj, condition, value, _stash=EmptyStash):
 
 def _its_value_condition_contain(_step_obj, condition, value, values):
     assert condition in ('must', 'must not'), 'Condition should be one of: `must`, `must not`'
+    if isinstance(values, (int, bool, str, float)):
+        values = [values]
 
     if isinstance(values, list):
         values = [str(v) for v in values]
