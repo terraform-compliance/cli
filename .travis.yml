@@ -71,7 +71,7 @@ jobs:
       before_deploy:
           - git config --local user.name "Emre Erkunt" || travis_terminate 1
           - git config --local user.email "emre.erkunt@gmail.com" || travis_terminate 1
-          - echo "export RELEASE_VERSION=$(cat /home/travis/build/eerkunt/terraform-compliance/terraform_compliance/main.py | grep -e "__version__ = \".*\"" | cut -d " " -f3 | tr -d "\"")" > reqs.sh
+          - echo "export RELEASE_VERSION=$(cat /home/travis/build/eerkunt/terraform-compliance/terraform_compliance/__init__.py | grep -e "__version__ = \".*\"" | cut -d " " -f3 | tr -d "\"")" > reqs.sh
           - source reqs.sh
           - echo "Release version identified as <$RELEASE_VERSION>"
           - if [ -z "$RELEASE_VERSION" ]; then echo "Can not identify the version!"; travis_terminate 1; fi

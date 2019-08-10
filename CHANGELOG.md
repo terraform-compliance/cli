@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.0.40 (2019-08-10)
+* Fixed a problem on CI/CD pipeline
+
 ## 1.0.39 (2019-08-09)
 * Fix installing from source (https://github.com/eerkunt/terraform-compliance/issues/143)
 
