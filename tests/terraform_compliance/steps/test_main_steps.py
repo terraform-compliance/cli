@@ -9,7 +9,8 @@ from terraform_compliance.steps.steps import (
     it_condition_have_proto_protocol_and_port_port_for_cidr,
     it_fails,
     its_key_is_value, its_key_is_not_value,
-    its_value_condition_equal
+    its_value_condition_equal,
+    its_value_condition_contain
 )
 from terraform_compliance.common.exceptions import TerraformComplianceNotImplemented, Failure, TerraformComplianceInternalFailure
 from tests.mocks import MockedStep, MockedWorld, MockedTerraformPropertyList, MockedTerraformResourceList, MockedTerraformResource
@@ -654,3 +655,18 @@ class Test_Step_Cases(TestCase):
         its_key_is_not_value(step, 'storage_encrypted', 1)
         self.assertTrue(type(step.context.stash) is list)
         self.assertEqual(step.context.stash[0]['some_key'], 'some_other_value')
+
+    def test_its_value_condition_contain(self):
+        step = MockedStep()
+        step.context.stash = [
+            {
+                'values': ['foo', 'bar']
+            }
+        ]
+        step.context.property_name = 'some_thing'
+        its_value_condition_contain(step, 'must', 'foo')
+        its_value_condition_contain(step, 'must not', 'baz')
+        with self.assertRaises(AssertionError):
+            its_value_condition_contain(step, 'must', 'baz')
+        with self.assertRaises(AssertionError):
+            its_value_condition_contain(step, 'must not', 'foo')
