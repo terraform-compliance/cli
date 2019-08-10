@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.0.39 (2019-08-09)
+* Fix installing from source (https://github.com/eerkunt/terraform-compliance/issues/143)
+
 ## 1.0.38 (2019-08-09)
 * Support for `its value {condition} contain {value}`
 

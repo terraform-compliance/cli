@@ -2,12 +2,10 @@ import os
 from argparse import ArgumentParser
 from tempfile import mkdtemp
 from git import Repo
+from terraform_compliance import __app_name__, __version__
 from terraform_compliance.common.readable_dir import ReadableDir
 from terraform_compliance.common.readable_plan import ReadablePlan
 from radish.main import main as call_radish
-
-__app_name__ = "terraform-compliance"
-__version__ = "1.0.38"
 
 
 print('{} v{} initiated\n'.format(__app_name__, __version__))

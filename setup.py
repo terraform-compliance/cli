@@ -2,8 +2,8 @@
 BDD test framework for terraform
 """
 from setuptools import find_packages, setup
-from terraform_compliance.main import __app_name__, __version__
-import radish
+from terraform_compliance import __app_name__, __version__
+
 
 dependencies = [
     'radish>=0.1.10',
