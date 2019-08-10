@@ -51,7 +51,7 @@ jobs:
       if: branch = master AND type != pull_request and fork = false
       script:
         - echo "Docker Build & Deploy"
-        - echo "export RELEASE_VERSION=$(cat /home/travis/build/eerkunt/terraform-compliance/terraform_compliance/main.py | grep -e "__version__ = \".*\"" | cut -d " " -f3 | tr -d "\"")" > reqs.sh
+        - echo "export RELEASE_VERSION=$(cat /home/travis/build/eerkunt/terraform-compliance/terraform_compliance/_init_.py | grep -e "__version__ = \".*\"" | cut -d " " -f3 | tr -d "\"")" > reqs.sh
         - source reqs.sh
         - echo "Release version identified as <$RELEASE_VERSION>"
         - cat /home/travis/build/eerkunt/terraform-compliance/terraform_compliance/main.py | grep -e "__version__ = \".*\"" | cut -d " " -f3 | tr -d "\""
