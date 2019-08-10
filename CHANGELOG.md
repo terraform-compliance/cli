@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 1.0.38 (2019-08-09)
+* Support for `its value {condition} contain {value}`
+
+## 1.0.37 (2019-08-09)
+* Support for `equal` operator in `I expect the result is {operator} than/to {number}`
+* Support for `its value {condition} be {value}`
+
 ### 1.0.36 (2019-08-09)
 * Support for `any` resource in `I have {name} {type} configured`.
 * Fixed some internals where `its {key} is {value}` and `its {key} is not {value}` might be mismatched unintentionally.
