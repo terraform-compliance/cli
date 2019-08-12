@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.0.43 (2019-08-12)
+* Fixed a problem where some of the filtering values were failing due to some characters.
+
 ## 1.0.42 (2019-08-10)
 * Fixed a problem on CI/CD pipeline
 

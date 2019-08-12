@@ -57,7 +57,7 @@ def write_stdout(level, message):
 def custom_type_any(text):
     return text
 
-@custom_type("PROPERTY", r"[\.\/_\-A-Za-z0-9]+")
+@custom_type("PROPERTY", r"[\.\/_\-A-Za-z0-9:\(\)\[\]]+")
 def custom_type_prop(text):
     return text
 
