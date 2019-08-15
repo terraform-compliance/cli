@@ -1,6 +1,6 @@
 radish==0.1.10
 radish-bdd==0.13.1
-gitpython==2.1.13
+gitpython==3.0.1
 mock==3.0.5
 netaddr==0.7.19
 colorful==0.5.1
