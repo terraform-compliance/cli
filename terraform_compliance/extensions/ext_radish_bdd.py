@@ -53,21 +53,21 @@ def write_stdout(level, message):
 
     print(u'\t\t\u251c\u2501\t{} {}'.format(prefix, added_prefix.join(message)).encode('utf-8'))
 
-@custom_type("ANY", r"[\.\/_\-A-Za-z0-9\s:]+")
+@custom_type("ANY", r"[\"'\.\/_\-A-Za-z0-9\s:]+")
 def custom_type_any(text):
-    return text
+    return text.replace('"', '').replace('\'', '')
 
-@custom_type("PROPERTY", r"[\.\/_\-A-Za-z0-9:\(\)\[\]]+")
+@custom_type("PROPERTY", r"[\"'\.\/_\-A-Za-z0-9:\(\)\[\]]+")
 def custom_type_prop(text):
-    return text
+    return text.replace('"', '').replace('\'', '')
 
-@custom_type("SECTION", r"[a-z]+")
+@custom_type("SECTION", r"[\"'a-z]+")
 def custom_type_section(text):
     if text in ['resource', 'provider', 'data', 'variable',
                 'resources', 'providers', 'datas', 'variables']:
-        return text
+        return text.replace('"', '').replace('\'', '')
 
-@custom_type("CONDITION", r"[a-z]+")
+@custom_type("CONDITION", r"[\"'a-z]+")
 def custom_type_condition(text):
     if text in ['only', 'not']:
-        return text
+        return text.replace('"', '').replace('\'', '')

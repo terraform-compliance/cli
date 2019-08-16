@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.0.44 (2019-08-16)
+* Fixed a problem where using "" or '' was causing a problem on property definitions within the steps.
+
 ## 1.0.43 (2019-08-12)
 * Fixed a problem where some of the filtering values were failing due to some characters.
 
