@@ -6,7 +6,6 @@ from terraform_compliance import __app_name__, __version__
 
 
 dependencies = [
-    'radish>=0.1.10',
     'radish-bdd>=0.13.1',
     'gitpython>=3.0.1',
     'netaddr>=0.7.19',

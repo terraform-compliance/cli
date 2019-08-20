@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.0.45 (2019-08-20)
+* Fixed intermittent `ImportError: cannot import name '__VERSION__' from 'radish'` problem.
+
 ## 1.0.44 (2019-08-16)
 * Fixed a problem where using "" or '' was causing a problem on property definitions within the steps.
 
