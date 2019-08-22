@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.0.46 (2019-08-22)
+* Fixed a problem where `gitphyton` was causing problems about installing `gitdb` python dependency.
+
 ## 1.0.45 (2019-08-20)
 * Fixed intermittent `ImportError: cannot import name '__VERSION__' from 'radish'` problem.
 
