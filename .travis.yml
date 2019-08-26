@@ -27,7 +27,7 @@ jobs:
       script:
         - py.test -v
         - coverage run --source terraform_compliance setup.py test
-        - "echo \"Current tag is RAVIS_TAG$T\""
+        - "echo \"Current tag is $TRAVIS_TAG\""
 
     - stage: Code Quality
       script:
