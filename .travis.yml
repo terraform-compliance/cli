@@ -55,7 +55,7 @@ jobs:
           password: $PYPI_PASS
           distributions: "sdist bdist_wheel"
           on:
-            branch: master
+            tags: true
             fork: false
 
     - stage: Build & Deploy (Docker)
