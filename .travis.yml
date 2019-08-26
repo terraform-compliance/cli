@@ -27,11 +27,11 @@ jobs:
       script:
         - py.test -v
         - coverage run --source terraform_compliance setup.py test
-        - "echo \"Current tag is $TRAVIS_TAG\""
+        - echo \"Current tag is $TRAVIS_TAG\"
 
     - stage: Code Quality
       script:
-        - "echo 'Scanning source code with SonarCloud'"
+        - echo 'Scanning source code with SonarCloud'
         - coverage erase
         - coverage run --branch --source=terraform_compliance setup.py test
         - coverage xml -i
@@ -39,8 +39,8 @@ jobs:
 
     - stage: Build & Deploy (PYPI)
       script:
-        - "echo 'PYPI Build & Deploy'"
-        - "echo \"Current tag is $TRAVIS_TAG\""
+        - echo 'PYPI Build & Deploy'
+        - echo \"Current tag is $TRAVIS_TAG\"
         - jinja2 -D VERSION=$TRAVIS_TAG terraform_compliance/__init__.py -o terraform_compliance/__init__.py.templated
         - cat terraform_compliance/__init__.py.templated
         - cp terraform_compliance/__init__.py.templated terraform_compliance/__init__.py
@@ -64,10 +64,13 @@ jobs:
       script:
         - echo "Docker Build & Deploy"
         - echo "Validating the version with the tag"
+        - echo \"Current tag is $TRAVIS_TAG\"
+        - jinja2 -D VERSION=$TRAVIS_TAG terraform_compliance/__init__.py -o terraform_compliance/__init__.py.templated
+        - cat terraform_compliance/__init__.py.templated
+        - cp terraform_compliance/__init__.py.templated terraform_compliance/__init__.py
         - echo "export RELEASE_VERSION=$(cat /home/travis/build/eerkunt/terraform-compliance/terraform_compliance/__init__.py | grep __version__ | cut -d "'" -f2)" > reqs.sh
         - source reqs.sh
         - if [[ "$TRAVIS_TAG" != "$RELEASE_VERSION" ]]; then echo "TRAVIS_TAG ($TRAVIS_TAG) does not match with RELEASE_VERSION ($RELEASE_VERSION)"; travis_terminate 1; fi
-  
         - if [ -z "$RELEASE_VERSION" ]; then echo "Can not identify the version!"; travis_terminate 1; fi
         - echo "Getting the latest terraform version from Hashicorp"
         - echo "export LATEST_TERRAFORM_VERSION=$(curl https://checkpoint-api.hashicorp.com/v1/check/terraform | jq -r .current_version)" > terraform_version.sh
