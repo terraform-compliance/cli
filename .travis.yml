@@ -76,7 +76,7 @@ jobs:
         - echo "export LATEST_TERRAFORM_VERSION=$(curl https://checkpoint-api.hashicorp.com/v1/check/terraform | jq -r .current_version)" > terraform_version.sh
         - source terraform_version.sh
         - if [ -z "$LATEST_TERRAFORM_VERSION" ]; then echo "Can not identify latest terraform version!"; travis_terminate 1; fi
-        - docker build --compress --no-cache -t "$IMAGE_NAME" --build-arg VERSION=$RELEASE_VERSION --build-arg LATEST_TERRAFORM_VERSION=$LATEST_TERRAFORM_VERSION . || travis_terminate 1
+        - travis_retry docker build --compress --no-cache -t "$IMAGE_NAME" --build-arg VERSION=$RELEASE_VERSION --build-arg LATEST_TERRAFORM_VERSION=$LATEST_TERRAFORM_VERSION . || travis_terminate 1
         - docker images || travis_terminate 1
         - docker login -u "$DOCKER_HUB_USER" -p "$DOCKER_HUB_PASS" || travis_terminate 1
         - docker tag "$IMAGE_NAME" eerkunt/terraform-compliance:latest || travis_terminate 1

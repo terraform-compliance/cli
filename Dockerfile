@@ -13,7 +13,7 @@ RUN  apt-get update && \
      apt-get install -y git curl unzip && \
      curl https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip --output terraform_linux_amd64.zip && \
      unzip terraform_linux_amd64.zip -d /usr/bin && \
-     pip install 'terraform-compliance==__VERSION__' && \
+     pip install 'terraform-compliance==${VERSION}' && \
      pip uninstall -y radish radish-bdd && \
      pip install radish radish-bdd && \
      rm -rf /var/lib/apt/lists/* && \
