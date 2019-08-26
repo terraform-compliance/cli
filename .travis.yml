@@ -27,7 +27,7 @@ jobs:
       script:
         - py.test -v
         - coverage run --source terraform_compliance setup.py test
-        - "echo \"Current tag is $TRAVIS_TAG\""
+        - "echo \"Current tag is RAVIS_TAG$T\""
 
     - stage: Code Quality
       script:
@@ -46,7 +46,7 @@ jobs:
         - cp terraform_compliance/__init__.py.templated terraform_compliance/__init__.py
         - echo "export RELEASE_VERSION=$(cat /home/travis/build/eerkunt/terraform-compliance/terraform_compliance/__init__.py | grep __version__ | cut -d "'" -f2)" > reqs.sh
         - source reqs.sh
-        - if [[ "$TRAVIS_TAG" != "$RELEASE_VERSION" ]]; then echo "TRAVIS_TAG ($TRAVIS_TAG) does not match with RELEASE_VERSION ($RELEASE_VERSION); travis_terminate 1; fi
+        - if [[ "$TRAVIS_TAG" != "$RELEASE_VERSION" ]]; then echo "TRAVIS_TAG ($TRAVIS_TAG) does not match with RELEASE_VERSION ($RELEASE_VERSION)"; travis_terminate 1; fi
       if: tag IS present
       deploy:
           skip_cleanup: true
