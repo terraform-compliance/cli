@@ -66,7 +66,8 @@ jobs:
         - echo "Validating the version with the tag"
         - echo "export RELEASE_VERSION=$(cat /home/travis/build/eerkunt/terraform-compliance/terraform_compliance/__init__.py | grep __version__ | cut -d "'" -f2)" > reqs.sh
         - source reqs.sh
-        - if [[ "$TRAVIS_TAG" != "$RELEASE_VERSION" ]]; then echo "TRAVIS_TAG ($TRAVIS_TAG) does not match with RELEASE_VERSION ($RELEASE_VERSION); travis_terminate 1; fi
+        - if [[ "$TRAVIS_TAG" != "$RELEASE_VERSION" ]]; then echo "TRAVIS_TAG ($TRAVIS_TAG) does not match with RELEASE_VERSION ($RELEASE_VERSION)"; travis_terminate 1; fi
+  
         - if [ -z "$RELEASE_VERSION" ]; then echo "Can not identify the version!"; travis_terminate 1; fi
         - echo "Getting the latest terraform version from Hashicorp"
         - echo "export LATEST_TERRAFORM_VERSION=$(curl https://checkpoint-api.hashicorp.com/v1/check/terraform | jq -r .current_version)" > terraform_version.sh
