@@ -6,6 +6,9 @@ services:
 cache:
   pip: true
 
+env:
+  global:
+    - IMAGE_NAME=eerkunt/terraform-compliance
 addons:
   sonarcloud:
     organization: "eerkunt-github"
@@ -15,6 +18,7 @@ addons:
 install:
   - pip install coveralls
   - pip install -r requirements.txt
+  - pip install jinja2-cli
 after_success: coveralls
 jobs:
   include:
@@ -35,7 +39,14 @@ jobs:
     - stage: Build & Deploy (PYPI)
       script:
         - "echo 'PYPI Build & Deploy'"
-      if: branch = master AND type != pull_request
+        - "echo \"Current tag is $TRAVIS_TAG\""
+        - jinja2 -D VERSION=$TRAVIS_TAG terraform_compliance/__init__.py -o terraform_compliance/__init__.py.templated
+        - cat terraform_compliance/__init__.py.templated
+        - cp terraform_compliance/__init__.py.templated terraform_compliance/__init__.py
+        - echo "export RELEASE_VERSION=$(cat /home/travis/build/eerkunt/terraform-compliance/terraform_compliance/__init__.py | grep __version__ | cut -d "'" -f2)" > reqs.sh
+        - source reqs.sh
+        - if [[ "$TRAVIS_TAG" != "$RELEASE_VERSION" ]]; then echo "TRAVIS_TAG ($TRAVIS_TAG) does not match with RELEASE_VERSION ($RELEASE_VERSION); travis_terminate 1; fi
+      if: branch = master AND type != pull_request AND tag IS present
       deploy:
           skip_cleanup: true
           provider: pypi
@@ -48,40 +59,22 @@ jobs:
 
     - stage: Build & Deploy (Docker)
       provider: script
-      if: branch = master AND type != pull_request and fork = false
+      if: branch = master AND type != pull_request AND fork = false AND tag IS present
       script:
         - echo "Docker Build & Deploy"
-        - echo "export RELEASE_VERSION=$(cat /home/travis/build/eerkunt/terraform-compliance/terraform_compliance/__init__.py | grep -e "__version__ = \".*\"" | cut -d " " -f3 | tr -d "\"")" > reqs.sh
+        - echo "Validating the version with the tag"
+        - echo "export RELEASE_VERSION=$(cat /home/travis/build/eerkunt/terraform-compliance/terraform_compliance/__init__.py | grep __version__ | cut -d "'" -f2)" > reqs.sh
         - source reqs.sh
-        - echo "Release version identified as <$RELEASE_VERSION>"
-        - cat /home/travis/build/eerkunt/terraform-compliance/terraform_compliance/__init__.py | grep -e "__version__ = \".*\"" | cut -d " " -f3 | tr -d "\""
-        - if [ -z "$RELEASE_VERSION" ]; then echo "Can not identify the version!"; travis_terminate 1; fi
-        - sed s/__VERSION__/"$RELEASE_VERSION"/g Dockerfile.template > Dockerfile || travis_terminate 1
-        - docker build --compress --no-cache -t "$IMAGE_NAME" . || travis_terminate 1
+        - if [[ "$TRAVIS_TAG" != "$RELEASE_VERSION" ]]; then echo "TRAVIS_TAG ($TRAVIS_TAG) does not match with RELEASE_VERSION ($RELEASE_VERSION); travis_terminate 1; fi        - if [ -z "$RELEASE_VERSION" ]; then echo "Can not identify the version!"; travis_terminate 1; fi
+        - sed s/__VERSION__/"$RELEASE_VERSION"/g Dockerfile > Dockerfile || travis_terminate 1
+        - echo "Getting the latest terraform version from Hashicorp"
+        - echo "export LATEST_TERRAFORM_VERSION=$(curl https://checkpoint-api.hashicorp.com/v1/check/terraform | jq -r .current_version)" > terraform_version.sh
+        - source terraform_version.sh
+        - if [[ -z "$LATEST_TERRAFORM_VERSION" ]]; then echo "Can not identify latest terraform version : $LATEST_TERRAFORM_VERSION"; travis_terminate 1; fi
+        - docker build --compress --no-cache -t "$IMAGE_NAME" --build-arg VERSION=$RELEASE_VERSION --build-tag LATEST_TERRAFORM_VERSION=$LATEST_TERRAFORM_VERSION . || travis_terminate 1
         - docker images || travis_terminate 1
         - docker login -u "$DOCKER_HUB_USER" -p "$DOCKER_HUB_PASS" || travis_terminate 1
         - docker tag "$IMAGE_NAME" eerkunt/terraform-compliance:latest || travis_terminate 1
         - docker tag "$IMAGE_NAME" "$IMAGE_NAME":"$RELEASE_VERSION" || travis_terminate 1
         - docker push "$IMAGE_NAME":latest || travis_terminate 1
         - docker push "$IMAGE_NAME":"$RELEASE_VERSION" || travis_terminate 1
-
-    - stage: Release (GitHub)
-      script: "echo 'Releasing to GitHub'"
-      if: branch = master AND type != pull_request and fork = false
-      before_deploy:
-          - git config --local user.name "Emre Erkunt" || travis_terminate 1
-          - git config --local user.email "emre.erkunt@gmail.com" || travis_terminate 1
-          - echo "export RELEASE_VERSION=$(cat /home/travis/build/eerkunt/terraform-compliance/terraform_compliance/__init__.py | grep -e "__version__ = \".*\"" | cut -d " " -f3 | tr -d "\"")" > reqs.sh
-          - source reqs.sh
-          - echo "Release version identified as <$RELEASE_VERSION>"
-          - if [ -z "$RELEASE_VERSION" ]; then echo "Can not identify the version!"; travis_terminate 1; fi
-          - git tag --force "$RELEASE_VERSION" || travis_terminate 1
-      deploy:
-          skip_cleanup: true
-          provider: releases
-          api_key: $GITHUB_OAUTH_TOKEN
-          skip_cleanup: true
-          name: $RELEASE_VERSION
-          on:
-            branch: master
-            fork: false

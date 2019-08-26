@@ -1,10 +1,13 @@
 FROM python:3.7.3-slim
 
-LABEL terraform_compliance.version="__VERSION__"
+ARG VERSION
+ARG LATEST_TERRAFORM_VERSION
+
+LABEL terraform_compliance.version="${VERSION}"
 LABEL author="Emre Erkunt <emre.erkunt@gmail.com>"
 LABEL source="https://github.com/eerkunt/terraform-compliance"
 
-ENV TERRAFORM_VERSION=0.12.5
+ENV TERRAFORM_VERSION=${LATEST_TERRAFORM_VERSION}
 
 RUN  apt-get update && \
      apt-get install -y git curl unzip && \
