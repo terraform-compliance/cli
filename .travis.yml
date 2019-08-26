@@ -46,7 +46,7 @@ jobs:
         - echo "export RELEASE_VERSION=$(cat /home/travis/build/eerkunt/terraform-compliance/terraform_compliance/__init__.py | grep __version__ | cut -d "'" -f2)" > reqs.sh
         - source reqs.sh
         - if [[ "$TRAVIS_TAG" != "$RELEASE_VERSION" ]]; then echo "TRAVIS_TAG ($TRAVIS_TAG) does not match with RELEASE_VERSION ($RELEASE_VERSION); travis_terminate 1; fi
-      if: branch = master AND type != pull_request AND tag IS present
+      if: branch = master AND type != pull_request AND fork = false AND tag IS present
       deploy:
           skip_cleanup: true
           provider: pypi
@@ -65,12 +65,12 @@ jobs:
         - echo "Validating the version with the tag"
         - echo "export RELEASE_VERSION=$(cat /home/travis/build/eerkunt/terraform-compliance/terraform_compliance/__init__.py | grep __version__ | cut -d "'" -f2)" > reqs.sh
         - source reqs.sh
-        - if [[ "$TRAVIS_TAG" != "$RELEASE_VERSION" ]]; then echo "TRAVIS_TAG ($TRAVIS_TAG) does not match with RELEASE_VERSION ($RELEASE_VERSION); travis_terminate 1; fi        - if [ -z "$RELEASE_VERSION" ]; then echo "Can not identify the version!"; travis_terminate 1; fi
-        - sed s/__VERSION__/"$RELEASE_VERSION"/g Dockerfile > Dockerfile || travis_terminate 1
+        - if [[ "$TRAVIS_TAG" != "$RELEASE_VERSION" ]]; then echo "TRAVIS_TAG ($TRAVIS_TAG) does not match with RELEASE_VERSION ($RELEASE_VERSION); travis_terminate 1; fi
+        - if [ -z "$RELEASE_VERSION" ]; then echo "Can not identify the version!"; travis_terminate 1; fi
         - echo "Getting the latest terraform version from Hashicorp"
         - echo "export LATEST_TERRAFORM_VERSION=$(curl https://checkpoint-api.hashicorp.com/v1/check/terraform | jq -r .current_version)" > terraform_version.sh
         - source terraform_version.sh
-        - if [[ -z "$LATEST_TERRAFORM_VERSION" ]]; then echo "Can not identify latest terraform version : $LATEST_TERRAFORM_VERSION"; travis_terminate 1; fi
+        - if [ -z "$LATEST_TERRAFORM_VERSION" ]; then echo "Can not identify latest terraform version!"; travis_terminate 1; fi
         - docker build --compress --no-cache -t "$IMAGE_NAME" --build-arg VERSION=$RELEASE_VERSION --build-tag LATEST_TERRAFORM_VERSION=$LATEST_TERRAFORM_VERSION . || travis_terminate 1
         - docker images || travis_terminate 1
         - docker login -u "$DOCKER_HUB_USER" -p "$DOCKER_HUB_PASS" || travis_terminate 1
