@@ -111,14 +111,17 @@ class TerraformParser(object):
         # Resource Changes ( exists in Plan )
         for finding in self.raw.get('resource_changes', {}):
             resource = deepcopy(finding)
-            resource['values'] = resource.get('change', {}).get('after', {})
-            if 'change' in resource:
-                del resource['change']
+            change = resource.get('change', {})
+            actions = change.get('actions', [])
+            if actions != ['delete']:
+                resource['values'] = change.get('after', {})
+                if 'change' in resource:
+                    del resource['change']
 
-            if resource['address'].startswith('data'):
-                self.data[resource['address']] = resource
-            else:
-                self.resources[resource['address']] = resource
+                if resource['address'].startswith('data'):
+                    self.data[resource['address']] = resource
+                else:
+                    self.resources[resource['address']] = resource
 
     def _parse_configurations(self):
         '''
