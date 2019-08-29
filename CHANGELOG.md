@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.0.47 (2019-08-27)
+* This release includes several optimisations on CI/CD pipeline and the general build structure of the project.
+* Using new version of Colorful dependency.
+
 ## 1.0.46 (2019-08-22)
 * Fixed a problem where `gitphyton` was causing problems about installing `gitdb` python dependency.
 
