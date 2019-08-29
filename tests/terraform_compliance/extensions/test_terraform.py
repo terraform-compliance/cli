@@ -154,6 +154,65 @@ class TestTerraformParser(TestCase):
         obj._parse_resources()
         self.assertEqual(obj.resources['something'], {'address': 'something'})
 
+    @patch.object(TerraformParser, '_read_file', return_value={})
+    def test_parse_resources_resources_exists_in_the_resource_changes_data(self, *args):
+        obj = TerraformParser('somefile', parse_it=False)
+        obj.raw['resource_changes'] = [
+            {
+                'address': 'data_something',
+                'change': {
+                    'actions': ['update'],
+                    'before': {
+                        'key': 'foo'
+                    },
+                    'after': {
+                        'key': 'bar'
+                    }
+                }
+            }
+        ]
+        obj._parse_resources()
+        self.assertEqual(obj.data['data_something'], {'address': 'data_something', 'values': {'key': 'bar'}})
+
+    @patch.object(TerraformParser, '_read_file', return_value={})
+    def test_parse_resources_resources_exists_in_the_resource_changes_resource(self, *args):
+        obj = TerraformParser('somefile', parse_it=False)
+        obj.raw['resource_changes'] = [
+            {
+                'address': 'something',
+                'change': {
+                    'actions': ['update'],
+                    'before': {
+                        'key': 'foo'
+                    },
+                    'after': {
+                        'key': 'bar'
+                    }
+                }
+            }
+        ]
+        obj._parse_resources()
+        self.assertEqual(obj.resources['something'], {'address': 'something', 'values': {'key': 'bar'}})
+
+    @patch.object(TerraformParser, '_read_file', return_value={})
+    def test_parse_resources_resources_exists_in_the_resource_changes_deleted(self, *args):
+        obj = TerraformParser('somefile', parse_it=False)
+        obj.raw['resource_changes'] = [
+            {
+                'address': 'something',
+                'change': {
+                    'actions': ['delete'],
+                    'before': {
+                        'key': 'foo'
+                    },
+                    'after': {
+                        'key': 'bar'
+                    }
+                }
+            }
+        ]
+        obj._parse_resources()
+        self.assertEqual(obj.resources, {})
 
     @patch.object(TerraformParser, '_read_file', return_value={})
     def test_parse_configurations_resources(self, *args):

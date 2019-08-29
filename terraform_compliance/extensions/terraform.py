@@ -76,8 +76,6 @@ class TerraformParser(object):
         :return: none
         '''
 
-        #TODO: Consider about using 'resource_changes' instead of 'resources'
-
         # Resources ( exists in Plan )
         for findings in seek_key_in_dict(self.raw.get('planned_values', {}).get('root_module', {}), 'resources'):
             for resource in findings.get('resources', []):
@@ -105,6 +103,21 @@ class TerraformParser(object):
         # Child Modules Resources ( exists in State )
         for findings in seek_key_in_dict(self.raw.get('values', {}).get('root_module', {}), 'child_modules'):
             for resource in findings.get('resources', []):
+                if resource['address'].startswith('data'):
+                    self.data[resource['address']] = resource
+                else:
+                    self.resources[resource['address']] = resource
+
+        # Resource Changes ( exists in Plan )
+        for finding in self.raw.get('resource_changes', {}):
+            resource = deepcopy(finding)
+            change = resource.get('change', {})
+            actions = change.get('actions', [])
+            if actions != ['delete']:
+                resource['values'] = change.get('after', {})
+                if 'change' in resource:
+                    del resource['change']
+
                 if resource['address'].startswith('data'):
                     self.data[resource['address']] = resource
                 else:
