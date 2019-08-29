@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.0.48 (2019-08-29)
+* Fixed a problem where some resources can not be detected (or removed resources were still detected) due to plan changes. ([#152](https://github.com/eerkunt/terraform-compliance/pull/152))
+
 ## 1.0.47 (2019-08-27)
 * This release includes several optimisations on CI/CD pipeline and the general build structure of the project.
 * Using new version of Colorful dependency.
