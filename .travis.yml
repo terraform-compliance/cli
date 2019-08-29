@@ -27,20 +27,12 @@ jobs:
       script:
         - py.test -v
         - coverage run --source terraform_compliance setup.py test
-        - echo \"Current tag is $TRAVIS_TAG\"
-
-    - stage: Code Quality
-      script:
-        - echo 'Scanning source code with SonarCloud'
-        - coverage erase
-        - coverage run --branch --source=terraform_compliance setup.py test
-        - coverage xml -i
-        - sonar-scanner -Dsonar.projectKey=terraform-compliance -Dsonar.organization=eerkunt-github -Dsonar.sources=. -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_LOGIN -Dsonar.exclusions=tests/** -Dsonar.python.coverage.reportPath=coverage.xml || travis_terminate 1
+        - echo "Current tag is $TRAVIS_TAG"
 
     - stage: Build & Deploy (PYPI)
       script:
-        - echo 'PYPI Build & Deploy'
-        - echo \"Current tag is $TRAVIS_TAG\"
+        - echo "PYPI Build & Deploy"
+        - echo "Current tag is $TRAVIS_TAG"
         - jinja2 -D VERSION=$TRAVIS_TAG terraform_compliance/__init__.py -o terraform_compliance/__init__.py.templated
         - cat terraform_compliance/__init__.py.templated
         - cp terraform_compliance/__init__.py.templated terraform_compliance/__init__.py
@@ -64,7 +56,7 @@ jobs:
       script:
         - echo "Docker Build & Deploy"
         - echo "Validating the version with the tag"
-        - echo \"Current tag is $TRAVIS_TAG\"
+        - echo "Current tag is $TRAVIS_TAG"
         - jinja2 -D VERSION=$TRAVIS_TAG terraform_compliance/__init__.py -o terraform_compliance/__init__.py.templated
         - cat terraform_compliance/__init__.py.templated
         - cp terraform_compliance/__init__.py.templated terraform_compliance/__init__.py
