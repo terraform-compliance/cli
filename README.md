@@ -56,7 +56,7 @@
 `terraform-compliance` had a huge revamp/redesign following `terraform`'s huge change coming with 0.12 version. 
 Due to these breaking changes `terraform-compliance` `1.0.0+` versions only supports terraform `0.12+` versions.  
 
-Older `terraform` versions is supported with 0.6.4 with limited functionality.	
+Older `terraform` versions is supported with 0.6.4 with limited functionality. Please use it with your own risk, since older versions of `terraform-compliance` (0.6.4 and older) is discontinued.
 
 ## Changelog
 
