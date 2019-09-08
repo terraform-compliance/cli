@@ -8,6 +8,8 @@ from terraform_compliance.common.readable_plan import ReadablePlan
 from radish.main import main as call_radish
 
 
+if __version__ == "{{VERSION}}":
+    __version__ = "\blocal development version"
 print('{} v{} initiated\n'.format(__app_name__, __version__))
 
 
