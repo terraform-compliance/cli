@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.0.49 (2019-09-08)
+* Fixed a problem where resource mounting (via references) is done in both ways (A->B, B->A). This was causing a problem on `aws_instance` resource having an `iam_role` attached on it. ([#156](https://github.com/eerkunt/terraform-compliance/pull/156))
+
 ## 1.0.48 (2019-08-29)
 * Fixed a problem where some resources can not be detected (or removed resources were still detected) due to plan changes. ([#152](https://github.com/eerkunt/terraform-compliance/pull/152))
 
