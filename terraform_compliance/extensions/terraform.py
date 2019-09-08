@@ -201,6 +201,10 @@ class TerraformParser(object):
         '''
         self.resources_raw = deepcopy(self.resources)
         invalid_references = ('var')
+
+        # This section will link resources found in configuration part of the plan output.
+        # The reference should be on both ways (A->B, B->A) since terraform sometimes report these references
+        # in opposite ways, depending on the provider structure.
         for resource in self.configuration['resources']:
             if 'expressions' in self.configuration['resources'][resource]:
                 ref_list = list()
@@ -209,16 +213,27 @@ class TerraformParser(object):
                         ref_list.extend([self._find_resource_from_name(ref) for ref in value['references']
                                          if not ref.startswith(invalid_references)])
 
-
                 if ref_list:
-                    ref_type = self.configuration['resources'][resource]['expressions'].get('type', {}).get('constant_value', {})
+                    ref_type = self.configuration['resources'][resource]['expressions'].get('type',
+                                                                                            {}).get('constant_value',
+                                                                                                    {})
 
                     if not ref_type and not resource.startswith(('data')):
                             resource_type, resource_id = resource.split('.')
                             ref_type = resource_type
 
+                    # Mounting A->B
                     source_resources = self._find_resource_from_name(self.configuration['resources'][resource]['address'])
                     self._mount_resources(source_resources, flatten_list(ref_list), ref_type)
+                    
+                    # Mounting B->A
+                    for source_resource in flatten_list(ref_list):
+                        if not source_resource.startswith(('var', 'data', 'module', 'provider')):
+                            ref_type, ref_address = source_resource.split('.')
+                            self._mount_resources([source_resource],
+                                                  [resource],
+                                                  ref_type)
+
 
     def _distribute_providers(self):
         for resource_name, resource_data in self.resources.items():
