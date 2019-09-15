@@ -171,9 +171,11 @@ class TerraformParser(object):
 
                 if ref_type not in self.resources[target_resource]['values']:
                     self.resources[target_resource]['values'][ref_type] = list()
-                    self.resources[target_resource]['values'][ref_type].append(self.resources[source_resource]['values'])
+                    self.resources[target_resource]['values'][ref_type].append(
+                        deepcopy(self.resources[source_resource]['values']))
                 else:
-                    self.resources[target_resource]['values'][ref_type].append(self.resources[source_resource]['values'])
+                    self.resources[target_resource]['values'][ref_type].append(
+                        deepcopy(self.resources[source_resource]['values']))
 
     def _find_resource_from_name(self, resource_name):
         '''
