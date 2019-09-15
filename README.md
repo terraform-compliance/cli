@@ -40,7 +40,7 @@
 ## Table of Contents
 - [Usage](#usage)
 - [Features](#features)
-- [BDD Directives](#BDD Directives)
+- [BDD Directives](#bdd-directives)
 - [Sample Test Set](#Examples)
 - [FAQ](#faq)
 
@@ -296,7 +296,7 @@ Scenario Outline: Well-known insecure protocol exposure on Public Network for in
 
 
 
-### Examples
+# Examples
 Just as a sample to show the capabilities, `terraform-compliance` repository includes [a sample of tests](https://github.com/eerkunt/terraform-compliance/tree/master/example/example_01/aws).
 
 These sample tests include ;
