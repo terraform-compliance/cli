@@ -247,6 +247,7 @@ class MockedStep(object):
     def __init__(self, no_init=None):
         self.context = MockedStepContext()
         self.sentence = 'Given I am a step'
+        self.context_sensitive_sentence = self.sentence
 
         if no_init is None:
             self.parent = MockedParentStep()
