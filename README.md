@@ -204,7 +204,7 @@ Steps are the functional tests that is actually executing necessary task to vali
 
 | BDD Conditions | Step Sentence | Parameters | 
 | ---------------| --------------| ---------- |
-| GIVEN          | I have `{name}` `{type}` configured | `name`: name of the key in terraform (e.g. `aws_security_group`, `aws` or `any` for all resources ) <br>`type`: The type of the key (e.g. `resource(s)`, `provider(s)`, `data(s)` or `variable(s)`) |
+| GIVEN          | I have `{name}` `{type}` configured | `name`: name of the key in terraform (e.g. `aws_security_group`, `aws`) (In order to define all resources you can use `a resource`, `any resource`, `a`, `any`, `anything`) <br>`type`: The type of the key (e.g. `resource(s)`, `provider(s)`, `data(s)` or `variable(s)`) |
 | GIVEN          | I have `{resource_name}` defined | `name`: name of the resource ( e.g. `aws_security_group` ) |
 | WHEN           | I `{math_formula}` them | `action`: `math_formula` |
 | WHEN           | its `{key}` is `{value}`<br>its `{key}` has `{value}`<br>its `{key}` contains `{value}`<br>its `{key}` includes `{value}`  | `key`: any property that resource have (e.g. name, address, etc. ) `address` will give the terraform object name<br>`value`: any string or numeric value that the property has.<br>_Found resources from previous step will be filtered based on these values._ |
