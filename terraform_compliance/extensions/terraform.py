@@ -233,7 +233,7 @@ class TerraformParser(object):
                         if not source_resource.startswith(('var', 'data', 'module', 'provider')):
                             ref_type, ref_address = source_resource.split('.')
                             self._mount_resources([source_resource],
-                                                  [resource],
+                                                  source_resources,
                                                   ref_type)
 
 
