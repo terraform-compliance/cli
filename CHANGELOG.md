@@ -2,6 +2,7 @@
 
 ## 1.0.50 (Unreleased)
 * Fixed a recursion problem occurred due to pointer assignment in resource mounting. ([#156](https://github.com/eerkunt/terraform-compliance/issues/156))
+* Added a capability where some of the resource & property information was not shown in some tests. ([#153](https://github.com/eerkunt/terraform-compliance/issues/153))
 
 ## 1.0.49 (2019-09-08)
 * Fixed a problem where resource mounting (via references) is done in both ways (A->B, B->A). This was causing a problem on `aws_instance` resource having an `iam_role` attached on it. ([#156](https://github.com/eerkunt/terraform-compliance/pull/156))
