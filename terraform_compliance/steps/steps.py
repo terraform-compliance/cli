@@ -281,6 +281,10 @@ def it_condition_contain_something(_step_obj, something):
             _step_obj.context.stash = values
             _step_obj.context.property_name = something
             return True
+        elif 'must' in _step_obj.context_sensitive_sentence:
+            raise Failure('{} {} does not have {} property.'.format(_step_obj.context.addresses,
+                                                                      _step_obj.context.type,
+                                                                      something))
 
     skip_step(_step_obj,
               resource=_step_obj.context.name,
