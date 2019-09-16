@@ -4,7 +4,7 @@ from radish import world, given, when, then, step
 from terraform_compliance.steps import property_match_list
 from terraform_compliance.common.helper import check_sg_rules, convert_resource_type, find_root_by_key, seek_key_in_dict
 from terraform_compliance.common.helper import seek_regex_key_in_dict_values, jsonify, Null, EmptyStash
-from terraform_compliance.common.helper import get_resource_name_from_stash
+from terraform_compliance.common.helper import get_resource_name_from_stash, get_resource_address_list_from_stash
 from terraform_compliance.extensions.ext_radish_bdd import skip_step
 from terraform_compliance.extensions.ext_radish_bdd import custom_type_any
 from terraform_compliance.extensions.ext_radish_bdd import custom_type_condition
@@ -57,6 +57,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
             _step_obj.context.type = type_name
             _step_obj.context.name = name
             _step_obj.context.stash = resource_list
+            _step_obj.context.addresses = get_resource_address_list_from_stash(resource_list)
             return True
 
     elif type_name == 'resource':
@@ -67,6 +68,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
             _step_obj.context.type = type_name
             _step_obj.context.name = name
             _step_obj.context.stash = resource_list
+            _step_obj.context.addresses = get_resource_address_list_from_stash(resource_list)
             return True
 
     elif type_name == 'variable':
@@ -76,6 +78,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
             _step_obj.context.type = type_name
             _step_obj.context.name = name
             _step_obj.context.stash = found_variable
+            _step_obj.context.addresses = name
             return True
 
     elif type_name == 'provider':
@@ -85,6 +88,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
             _step_obj.context.type = type_name
             _step_obj.context.name = name
             _step_obj.context.stash = found_provider
+            _step_obj.context.addresses = name
             return True
 
     elif type_name == 'data':
@@ -95,6 +99,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
             _step_obj.context.type = type_name
             _step_obj.context.name = name
             _step_obj.context.stash = data_list
+            _step_obj.context.addresses = name
             return True
 
     skip_step(_step_obj, name)
@@ -382,6 +387,15 @@ def i_action_them(_step_obj, action_type):
 @then(u'Its value must be {operator:ANY} to {number:d}')
 @then(u'I expect the result is {operator:ANY} to {number:d}')
 def i_expect_the_result_is_operator_than_number(_step_obj, operator, number, _stash=EmptyStash):
+
+    def fail(assertion, message):
+        try:
+            assert assertion, 'Failed'
+        except AssertionError as e:
+            raise Failure('for {} on {}. {}.'.format(', '.join(_step_obj.context.addresses),
+                                                     _step_obj.context.property_name,
+                                                     message))
+
     values = _step_obj.context.stash if _stash is EmptyStash else _stash
 
     if type(values) is list:
@@ -393,16 +407,16 @@ def i_expect_the_result_is_operator_than_number(_step_obj, operator, number, _st
 
     elif type(values) is int or type(values) is str:
         values = int(values)
-        if operator in ("more", "greater", "bigger"):
-            assert values > number, "{} is not more than {}".format(values, number)
-        elif operator in ("more and equal", "greater and equal", "bigger and equal"):
-            assert values >= number, "{} is not more and equal than {}".format(values, number)
-        elif operator in ("less", "lesser", "smaller"):
-            assert values < number, "{} is not less than {}".format(values, number)
-        elif operator in ("less and equal", "lesser and equal", "smaller and equal"):
-            assert values <= number, "{} is not less and equal than {}".format(values, number)
-        elif operator in ("equal",):
-            assert values == number, "{} is not equal to {}".format(values, number)
+        if operator in ('more', 'greater', 'bigger'):
+            fail(values > number, '{} is not more than {}'.format(values, number))
+        elif operator in ('more and equal', 'greater and equal', 'bigger and equal'):
+            fail(values >= number, '{} is not more and equal than {}'.format(values, number))
+        elif operator in ('less', 'lesser', 'smaller'):
+            fail(values < number, '{} is not less than {}'.format(values, number))
+        elif operator in ('less and equal', 'lesser and equal', 'smaller and equal'):
+            fail(values <= number, '{} is not less and equal than {}'.format(values, number))
+        elif operator in ('equal',):
+            fail(values == number, '{} is not equal to {}'.format(values, number))
         else:
             raise TerraformComplianceNotImplemented('Invalid operator: {}'.format(operator))
 
@@ -496,8 +510,9 @@ def _its_value_condition_contain(_step_obj, condition, value, values):
 @then(u'it should fail')
 @then(u'it must fail')
 def it_fails(_step_obj):
-    raise Failure('Forcefully failing the scenario on {} {}'.format(_step_obj.context.name,
-                                                                    _step_obj.context.type))
+    raise Failure('Forcefully failing the scenario on {} ({}) {}'.format(_step_obj.context.name,
+                                                                         ', '.join(_step_obj.context.addresses),
+                                                                         _step_obj.context.type))
 
 
 @then(u'its value {condition:ANY} be null')

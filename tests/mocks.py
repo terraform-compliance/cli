@@ -263,6 +263,8 @@ class MockedStepContext(object):
         self.stash = MockedWorldConfigTerraform()
         self.resource_type = 'aws_db_instance'
         self.name = ''
+        self.addresses = 'aws_db_instance.something'
+        self.property_name = 'mocked_property'
 
 
 class MockedWorld(object):

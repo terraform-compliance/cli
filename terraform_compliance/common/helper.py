@@ -290,3 +290,11 @@ def get_resource_name_from_stash(stash, alternative_stash=None):
                 return alternative_stash
             else:
                 return {'address': alternative_stash}
+
+def get_resource_address_list_from_stash(resource_list):
+    address_list = []
+    for resource in resource_list:
+        if 'address' in resource and resource['address'] not in address_list:
+                address_list.append(resource['address'])
+
+    return address_list
