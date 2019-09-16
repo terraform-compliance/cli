@@ -19,10 +19,6 @@ from terraform_compliance.common.exceptions import TerraformComplianceInternalFa
 # TODO: Implement an IAM Compliance via https://github.com/Netflix-Skunkworks/policyuniverse
 
 
-
-# def i have_name_defined(_step_obj, name, _terraform_config=world):
-#     pass
-
 @given(u'I have {name:ANY} defined')
 @given(u'I have {name:ANY} {type_name:SECTION} configured')
 def i_have_name_section_configured(_step_obj, name, type_name='resource', _terraform_config=world):
@@ -45,7 +41,14 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
     if type_name.endswith('s'):
         type_name = type_name[:-1]
 
-    if name == 'resource that supports tags':
+    if name in ('a resource', 'any resource', 'a', 'any', 'anything'):
+        _step_obj.context.type = type_name
+        _step_obj.context.name = name
+        _step_obj.context.stash = [obj for key, obj in _terraform_config.config.terraform.resources_raw.items()]
+        _step_obj.context.addresses = get_resource_address_list_from_stash(_step_obj.context.stash)
+        return True
+
+    elif name == 'resource that supports tags':
         resource_types_supports_tags = find_root_by_key(_terraform_config.config.terraform.resources_raw,
                                                         'tags',
                                                         return_key='type')
@@ -142,8 +145,9 @@ def its_key_is_value(_step_obj, key, value):
         elif type(object_key) is dict and (value in object_key.keys()):
             found_list.append(obj)
 
-    if found_list is not []:
+    if found_list != []:
         _step_obj.context.stash = found_list
+        _step_obj.context.addresses = get_resource_address_list_from_stash(found_list)
     else:
         skip_step(_step_obj, value)
 
@@ -186,8 +190,9 @@ def its_key_is_not_value(_step_obj, key, value):
         elif type(object_key) is dict and (value in object_key.keys()):
             found_list.append(obj)
 
-    if found_list is not []:
+    if found_list != []:
         _step_obj.context.stash = found_list
+        _step_obj.context.addresses = get_resource_address_list_from_stash(found_list)
     else:
         skip_step(_step_obj, value)
 

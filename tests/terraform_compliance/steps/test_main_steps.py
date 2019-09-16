@@ -354,8 +354,7 @@ class Test_Step_Cases(TestCase):
             }
         ]
         its_key_is_value(step, 'something_else', 'some_value')
-        self.assertTrue(type(step.context.stash) is list)
-        self.assertEqual(step.context.stash, [])
+        self.assertEqual(step.state, 'skipped')
 
     def test_its_key_is_value_success(self):
         step = MockedStep()
@@ -587,8 +586,7 @@ class Test_Step_Cases(TestCase):
             }
         ]
         its_key_is_not_value(step, 'something_else', 'some_value')
-        self.assertTrue(type(step.context.stash) is list)
-        self.assertEqual(step.context.stash, [])
+        self.assertEqual(step.state, 'skipped')
 
     def test_its_key_is_not_value_success(self):
         step = MockedStep()
