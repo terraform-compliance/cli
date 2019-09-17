@@ -401,7 +401,7 @@ def i_expect_the_result_is_operator_than_number(_step_obj, operator, number, _st
         try:
             assert assertion, 'Failed'
         except AssertionError as e:
-            raise Failure('for {} on {}. {}.'.format(', '.join(_step_obj.context.addresses),
+            raise Failure('for {} on {}. {}.'.format(_step_obj.context.address,
                                                      _step_obj.context.property_name,
                                                      message))
 
@@ -412,6 +412,8 @@ def i_expect_the_result_is_operator_than_number(_step_obj, operator, number, _st
             i_expect_the_result_is_operator_than_number(_step_obj, operator, number, _stash=value_set)
 
     elif type(values) is dict:
+        _step_obj.context.property_name = values.get('type')
+        _step_obj.context.address = values.get('address')
         i_expect_the_result_is_operator_than_number(_step_obj, operator, number, values.get('values', Null))
 
     elif type(values) is int or type(values) is str:
