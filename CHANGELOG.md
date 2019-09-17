@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.0.50 (Unreleased)
+## 1.0.50 (2019-09-16)
 * Fixed a recursion problem occurred due to pointer assignment in resource mounting. ([#156](https://github.com/eerkunt/terraform-compliance/issues/156))
 * Added a capability where some of the resource & property information was not shown in some tests. ([#153](https://github.com/eerkunt/terraform-compliance/issues/153))
 * Added a capability where we can define ALL resources in GIVEN directive. ([#157](https://github.com/eerkunt/terraform-compliance/issues/157))
