@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.0.51 (2019-09-17)
+* Fixed a problem where multiple resources were reported even some not failed. ([#153](https://github.com/eerkunt/terraform-compliance/issues/153))
+
 ## 1.0.50 (2019-09-16)
 * Fixed a recursion problem occurred due to pointer assignment in resource mounting. ([#156](https://github.com/eerkunt/terraform-compliance/issues/156))
 * Added a capability where some of the resource & property information was not shown in some tests. ([#153](https://github.com/eerkunt/terraform-compliance/issues/153))
