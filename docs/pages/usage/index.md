@@ -1,11 +1,11 @@
 ---
 layout: default
-title: CLI Parameters
+title: Usage
 nav_order: 3
 has_children: false
 ---
 
-# CLI Parameters
+# Usage
 
 Coming soon
 {: .label .label-yellow }
