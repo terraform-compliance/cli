@@ -6,3 +6,6 @@ has_children: true
 ---
 
 # Examples
+
+Coming soon
+{: .label .label-yellow }

@@ -7,3 +7,5 @@ has_children: true
 
 # Installation
 
+Coming soon
+{: .label .label-yellow }

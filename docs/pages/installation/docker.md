@@ -7,3 +7,6 @@ parent: Installation
 ---
 
 # Installing via Docker
+
+Coming soon
+{: .label .label-yellow }

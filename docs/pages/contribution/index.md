@@ -7,3 +7,5 @@ has_children: false
 
 # Contribution
 
+Coming soon
+{: .label .label-yellow }

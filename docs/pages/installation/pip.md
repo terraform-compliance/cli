@@ -8,3 +8,5 @@ parent: Installation
 
 # Installing via pip
 
+Coming soon
+{: .label .label-yellow }
