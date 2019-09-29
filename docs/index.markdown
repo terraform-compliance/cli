@@ -58,8 +58,7 @@ Then it must contain server_side_encryption_configuration
 
 `server_side_encryption_configuration` is coming from the terraform code, as shown below ;
 
-
-```hcl
+```
 resource "aws_s3_bucket" "b" {
   bucket = "my-bucket"
   acl    = "private"
