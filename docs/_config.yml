@@ -2,7 +2,7 @@ title: "terraform-compliance"
 email: emre@coreaida.co.uk
 description: >- # this means to ignore newlines until "baseurl:"
   BDD Test Framework focused on Security/Compliance against HashiCorp Terraform
-baseurl: "/terraform-compliance"
+baseurl: "/"
 url: "http://terraform-compliance.com"
 twitter_username: e3rkunt
 github_username:  eerkunt
