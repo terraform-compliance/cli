@@ -1,6 +1,82 @@
 ---
-# Feel free to add content and custom Front Matter to this file.
-# To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
-
 layout: home
+title: Overview
+permalink: /
 ---
+## Overview
+
+`terraform-compliance` is a lightweight, security and compliance focused test framework against terraform to enable negative testing capability for your infrastructure-as-code.
+
+
+- __compliance:__ Ensure the implemented code is following security standards, your own custom standards
+- __behaviour driven development:__ We have BDD for nearly everything, why not for IaC ?
+- __portable:__ just install it from `pip` or run it via `docker`. See [Installation](/pages/installation/)
+- __pre-deploy:__ it validates your code before it is deployed
+- __easy to integrate:__ it can run in your pipeline (or in git hooks) to ensure all deployments are validated.
+- __segregation of duty:__ you can keep your tests in a different repository where a separate team is responsible. 
+- __why ?:__ why not ?
+{: .fs-3 }
+
+## Idea
+
+
+`terraform-compliance` mainly focuses on [negative testing](https://en.wikipedia.org/wiki/Negative_testing) instead
+of having fully-fledged [functional tests](https://en.wikipedia.org/wiki/Functional_testing) that are mostly used for
+proving a component of code is performing properly. 
+
+Fortunately, `terraform` is a marvellous abstraction layer for any API 
+that __creates__/__updates__/__destroys__ entities. `terraform` also provides the 
+[capability](https://www.terraform.io/docs/commands/plan.html#detailed-exitcode) 
+to ensure everything is up-to-date between the local configuration and the remote API(s) responses. 
+
+Given the fact, `terraform` is used mostly against Cloud APIs, what was missing is to ensure 
+your code against your infrastructure must follow specific policies. Currently HashiCorp provides 
+[Sentinel](https://www.hashicorp.com/sentinel/) for Enterprise Products. `terraform-compliance` is providing a 
+similar functionality only for `terraform` while it is free-to-use and it is Open Source.
+
+E.g. a sample policy could be, if you are working with `AWS`, you should not create an `S3 bucket`, 
+without having any `encryption`. Of course, this is just an example which may or not be applicable 
+for your case.
+
+`terraform-compliance` provides a test framework to create these policies that will be executed against 
+your [terraform plan](https://www.terraform.io/docs/commands/plan.html) in a context where both 
+developers and security teams can understand easily while reading it, by applying [Behaviour Driven 
+Development](https://en.wikipedia.org/wiki/Behavior-driven_development) Principles.
+
+As returning back to the example, our example defined above will be translated into a BDD Feature 
+and Scenario, as also seen in below ;
+
+```
+if you are working with AWS, you should not create an S3 bucket, without having any encryption
+```
+
+translates into ;
+
+```gherkin
+Given I have AWS S3 Bucket defined
+Then it must contain server_side_encryption_configuration
+```
+
+`server_side_encryption_configuration` is coming from the terraform code, as shown below ;
+
+```hcl
+resource "aws_s3_bucket" "b" {
+  bucket = "my-bucket"
+  acl    = "private"
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        kms_master_key_id = "${aws_kms_key.mykey.arn}"
+        sse_algorithm     = "aws:kms"
+      }
+    }
+  }
+}
+```
+
+This policy ( Scenario ) will allow all S3 buckets newly created or updated must have encryption configuration set within the code. In an ideal way, this Scenario (among with all other Scenarios) will run on a CI/CD pipeline that will ensure that nothing is deployed by violating your policies.
+
+
+See [Examples](/pages/examples/) for more sample use cases.
+{: .fs-3 }
