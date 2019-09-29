@@ -34,9 +34,9 @@ Given I have <resource_type> defined
 ## Reference
 
 ----------------------
-### <span>&#10003;</span> <span class="d-inline-block p-1 v-align-middle text-xs text-grey-lt-000 bg-green-200">Given</span> I have <span class="d-inline-block p-1 v-align-middle text-xs text-grey-lt-000 bg-yellow-200">name</span> <span class="d-inline-block p-1 v-align-middle text-xs text-grey-lt-000 bg-blue-300">type</span> configured 
+### <span>&#10003;</span> <span class="d-inline-block p-1 text-xs text-grey-lt-000 bg-green-200">Given</span> I have <span class="d-inline-block p-1 text-xs text-grey-lt-000 bg-yellow-200">name</span> <span class="d-inline-block p-1 text-xs text-grey-lt-000 bg-blue-300">type</span> configured 
 
-#### <span class="d-inline-block p-1 v-align-middle text-grey-lt-000 bg-yellow-200">name</span>: name of the key in terraform. 
+#### <span class="d-inline-block p-1 text-grey-lt-000 bg-yellow-200">name</span>: name of the key in terraform. 
 
 Examples ;
 
@@ -53,7 +53,7 @@ In order to define all resources, you can also use ;
 
 
 
-#### <span class="d-inline-block p-1 v-align-middle text-grey-lt-000 bg-blue-300">type</span>: The type of the key.
+#### <span class="d-inline-block p-1 text-grey-lt-000 bg-blue-300">type</span>: The type of the key.
 
 If can be one of these ;
 
@@ -68,9 +68,9 @@ If can be one of these ;
 
 ----------------------
 
-### <span>&#10003;</span> <span class="d-inline-block p-1 v-align-middle text-xs text-grey-lt-000 bg-green-200">Given</span> I have <span class="d-inline-block p-1 v-align-middle text-xs text-grey-lt-000 bg-yellow-200">name</span> defined 
+### <span>&#10003;</span> <span class="d-inline-block p-1 text-xs text-grey-lt-000 bg-green-200">Given</span> I have <span class="d-inline-block p-1 text-xs text-grey-lt-000 bg-yellow-200">name</span> defined 
 
-#### <span class="d-inline-block p-1 v-align-middle text-grey-lt-000 bg-yellow-200">name</span>: name of the resource. The name must point to a resource. Can not be provider or anything else.
+#### <span class="d-inline-block p-1 text-grey-lt-000 bg-yellow-200">name</span>: name of the resource. The name must point to a resource. Can not be provider or anything else.
 
 Examples:
 
