@@ -3,7 +3,7 @@ email: emre@coreaida.co.uk
 description: >- # this means to ignore newlines until "baseurl:"
   BDD Test Framework focused on Security/Compliance against HashiCorp Terraform
 baseurl: "/"
-url: "https://eerkunt.github.io/terraform-compliance"
+url: "https://eerkunt.github.io"
 twitter_username: e3rkunt
 github_username:  eerkunt
 
