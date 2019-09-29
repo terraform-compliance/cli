@@ -7,8 +7,8 @@ url: "https://eerkunt.github.io"
 twitter_username: e3rkunt
 github_username:  eerkunt
 
-logo: /images/logo.png
-#logo: "https://raw.githubusercontent.com/eerkunt/terraform-compliance/master/logo.png"
+#logo: /images/logo.png
+logo: "https://raw.githubusercontent.com/eerkunt/terraform-compliance/master/logo.png"
 search_enabled: true
 search_tokenizer_separator: /[\s/]+/
 heading_anchors: true
