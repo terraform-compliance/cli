@@ -15,7 +15,6 @@ permalink: /
 - __easy to integrate:__ it can run in your pipeline (or in git hooks) to ensure all deployments are validated.
 - __segregation of duty:__ you can keep your tests in a different repository where a separate team is responsible. 
 - __why ?:__ why not ?
-{: .fs-3 }
 
 ## Idea
 
