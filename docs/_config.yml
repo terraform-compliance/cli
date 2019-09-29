@@ -15,6 +15,10 @@ heading_anchors: true
 
 footer_content: "terraform-compliance made with <span style=\"color: #e25555;\">&hearts;</span>. Distributed by an <a href=\"https://tldrlegal.com/license/mit-license\">MIT license</a>."
 
+aux_links:
+  "terraform-compliance on GitHub":
+    - "//github.com/eerkunt/terraform-compliance"
+
 #theme: just-the-docs
 remote_theme: pmarsceill/just-the-docs
 plugins:
