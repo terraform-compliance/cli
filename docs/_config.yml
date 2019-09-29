@@ -1,0 +1,31 @@
+title: "terraform-compliance"
+email: emre@coreaida.co.uk
+description: >- # this means to ignore newlines until "baseurl:"
+  BDD Test Framework focused on Security/Compliance against HashiCorp Terraform
+baseurl: "/"
+#url: "http://terraform-compliance.com"
+twitter_username: e3rkunt
+github_username:  eerkunt
+
+logo: /images/logo.png
+search_enabled: true
+search_tokenizer_separator: /[\s/]+/
+heading_anchors: true
+
+footer_content: "terraform-compliance made with <span style=\"color: #e25555;\">&hearts;</span>. Distributed by an <a href=\"https://tldrlegal.com/license/mit-license\">MIT license</a>."
+
+theme: just-the-docs
+plugins:
+  - jekyll-feed
+
+# exclude:
+#   - .sass-cache/
+#   - .jekyll-cache/
+#   - gemfiles/
+#   - Gemfile
+#   - Gemfile.lock
+#   - node_modules/
+#   - vendor/bundle/
+#   - vendor/cache/
+#   - vendor/gems/
+#   - vendor/ruby/
