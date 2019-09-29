@@ -78,6 +78,8 @@ This policy ( Scenario ) will allow all S3 buckets newly created or updated must
 See [Examples](/pages/examples/) for more sample use cases.
 {: .fs-3 }
 
+![Example Run](https://github.com/eerkunt/terraform-compliance/blob/master/terraform-compliance-demo.gif?raw=true)
+
 ## Supporting / Requirements
 
 `terraform-compliance` only supports `terraform` 0.12.+. In order to use older versions of `terraform`,
