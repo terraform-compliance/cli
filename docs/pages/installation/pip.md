@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Installing via pip
-nav_order: 2
+nav_order: 1
 has_children: false
 parent: Installation
 ---

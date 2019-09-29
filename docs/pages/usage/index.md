@@ -101,7 +101,7 @@ and then you can run your features against this `state.out` file via ;
 
 ### -i / --identity
 OPTIONAL
-{: .label .label-gray}
+{: .label .label-yellow}
 
 In case you need to authenticate to a private git repository as also described in `-f` parameter, then you may
 need to provide a private ssh key.
@@ -117,7 +117,7 @@ Please note that, if the host that you are trying to authenticate already define
 
 ### -t  / --terraform
 OPTIONAL
-{: .label .label-gray}
+{: .label .label-yellow}
 
 In some cases, a `plan` file that is created by a specific version of `terraform` might require the same version
 of that `terraform` in order to process that. `terraform-compliance` uses `terraform` in order to parse any plan/state
