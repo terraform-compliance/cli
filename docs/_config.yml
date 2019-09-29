@@ -2,7 +2,7 @@ title: "terraform-compliance"
 email: emre@coreaida.co.uk
 description: >- # this means to ignore newlines until "baseurl:"
   BDD Test Framework focused on Security/Compliance against HashiCorp Terraform
-baseurl: "/"
+baseurl: "/terraform-compliance"
 url: "http://terraform-compliance.com"
 twitter_username: e3rkunt
 github_username:  eerkunt
@@ -12,7 +12,12 @@ search_enabled: true
 search_tokenizer_separator: /[\s/]+/
 heading_anchors: true
 
-footer_content: "terraform-compliance made with <span style=\"color: #e25555;\">&hearts;</span>. Distributed by an <a href=\"https://tldrlegal.com/license/mit-license\">MIT license</a>."
+footer_content: >-
+  terraform-compliance made with <span style=\"color: #e25555;\">&hearts;</span>.
+  Distributed by an <a href=\"https://tldrlegal.com/license/mit-license\">MIT license</a>.
+  <br />
+  <a href="{{site.github.repository_url}}/blob/docs/{{page.path}}">Edit this page</a>
+
 
 aux_links:
   "terraform-compliance on GitHub":
