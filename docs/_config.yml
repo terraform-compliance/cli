@@ -19,8 +19,9 @@ aux_links:
   "terraform-compliance on GitHub":
     - "//github.com/eerkunt/terraform-compliance"
 
-#theme: just-the-docs
-remote_theme: pmarsceill/just-the-docs
+theme: just-the-docs
+#remote_theme: pmarsceill/just-the-docs
+
 plugins:
   - jekyll-feed
 
