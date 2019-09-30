@@ -126,3 +126,7 @@ files that has been created. In these cases you can just provide the same versio
 ```shell
 [~] $ terraform-compliance -t /path/to/specific/versin/of/terraform ...
 ```
+
+If you are using a [Docker](/pages/installation/docker) version of `terraform-compliance`, `terraform` binary is already
+packaged within the Docker Image. In case, you may need to use another version of `terraform` binary, you can still use 
+`-t` to point the local version.
