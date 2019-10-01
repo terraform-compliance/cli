@@ -157,3 +157,32 @@ does not consist
 |:---:|:----------|:-|
 | [property](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} | any property that resource have (e.g. `name`, `address`, etc. ). Using `address` will give the terraform object name | `address` `name` `size`|
 | [something](#){: .p-1 .text-grey-lt-000 .bg-blue-300} | any string or numeric value that the property has. | `s3_my_bucket` `my-bucket` `50G`|
+
+------------------------
+### [When](#){: .p-1 .text-red-200} I [action](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} them
+This step is for mathematical operations. Currently it is only supported for `count`
+
+> __Possible sentences :__
+>
+> ▪
+[When](#){: .p-1 .text-red-200} 
+I
+[action](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} 
+them
+>
+> ▪
+[When](#){: .p-1 .text-red-200} 
+I
+[action](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} 
+it
+>
+> ▪
+[When](#){: .p-1 .text-red-200} 
+I
+[action](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} 
+the value
+>
+| key | Description | Examples |
+|:---:|:----------|:-|
+| [action](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} | mathematical operation | currently only supports for `count` |
+

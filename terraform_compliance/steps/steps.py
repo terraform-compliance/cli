@@ -18,7 +18,6 @@ from terraform_compliance.common.exceptions import TerraformComplianceInternalFa
 # TODO: Figure out how the IAM policies/statements shown in the plan.out
 # TODO: Implement an IAM Compliance via https://github.com/Netflix-Skunkworks/policyuniverse
 
-
 @given(u'I have {name:ANY} defined')
 @given(u'I have {name:ANY} {type_name:SECTION} configured')
 def i_have_name_section_configured(_step_obj, name, type_name='resource', _terraform_config=world):
@@ -106,7 +105,6 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
             return True
 
     skip_step(_step_obj, name)
-
 
 @when(u'its {key:PROPERTY} is {value:PROPERTY}')
 @when(u'its {key:PROPERTY} has {value:PROPERTY}')
@@ -291,8 +289,6 @@ def it_condition_contain_something(_step_obj, something):
               message='Skipping the step since {} type does not have {} property.'.format(_step_obj.context.type,
                                                                                           something))
 
-
-
 @then(u'{something:ANY} is be enabled')
 @then(u'{something:ANY} must be enabled')
 def property_is_enabled(_step_obj, something):
@@ -315,7 +311,6 @@ def property_is_enabled(_step_obj, something):
                                                                                               something,
                                                                                               property_value))
     return True
-
 
 @then(u'it must {condition:ANY} have {proto:ANY} protocol and port {port} for {cidr:ANY}')
 def it_condition_have_proto_protocol_and_port_port_for_cidr(_step_obj, condition, proto, port, cidr):
@@ -370,9 +365,6 @@ def it_condition_have_proto_protocol_and_port_port_for_cidr(_step_obj, condition
 @when(u'I {action_type:ANY} it')
 @when(u'I {action_type:ANY} them')
 @when(u'I {action_type:ANY} the value')
-@then(u'I {action_type:ANY} it')
-@then(u'I {action_type:ANY} them')
-@then(u'I {action_type:ANY} the value')
 def i_action_them(_step_obj, action_type):
     if action_type == "count":
         # WARNING: Only case where we set stash as a dictionary, instead of a list.
@@ -391,9 +383,9 @@ def i_action_them(_step_obj, action_type):
         raise TerraformComplianceNotImplemented('Invalid action_type in the scenario: {}'.format(action_type))
 
 
-@then(u'Its value must be {operator:ANY} than {number:d}')
+@then(u'its value must be {operator:ANY} than {number:d}')
 @then(u'I expect the result is {operator:ANY} than {number:d}')
-@then(u'Its value must be {operator:ANY} to {number:d}')
+@then(u'its value must be {operator:ANY} to {number:d}')
 @then(u'I expect the result is {operator:ANY} to {number:d}')
 def i_expect_the_result_is_operator_than_number(_step_obj, operator, number, _stash=EmptyStash):
 
@@ -517,6 +509,7 @@ def _its_value_condition_contain(_step_obj, condition, value, values):
 
 @then(u'the scenario fails')
 @then(u'the scenario should fail')
+@then(u'the scenario must fail')
 @then(u'it fails')
 @then(u'it should fail')
 @then(u'it must fail')
