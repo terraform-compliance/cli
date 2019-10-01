@@ -14,6 +14,8 @@ directive. `WHEN` must come after `GIVEN` directive.
 
 `WHEN` steps does not fail any scenario. It sets the condition for the further steps.
 
+`WHEN` can be used multiple times, either with using `WHEN` or `AND`
+
 Few examples can be ;
 
 ```gherkin
@@ -28,8 +30,10 @@ When its name is my-bucket
 When it contains server_side_encryption
 ```
 
-Using `WHEN` is optional. You might have some use cases that only a `GIVEN` directive could be enough for you.
+Using `WHEN` is optional. You might have some use cases that only a `GIVEN` and some `THEN`
+directives could be enough for you.
 
+You can use `AND` with `WHEN`.
 
 Depending on use a [Scenario Outline](/pages/bdd-references#Scenario) instead of a Scenario, it can also 
 be a variable like ;
@@ -46,41 +50,110 @@ not met with the infrastructure plan.
 * Table of Contents
 {:toc}
 
-### When it contains something
-<span>&#10003;</span> <span class="d-inline-block p-1 text-small text-grey-lt-000 bg-green-200">When</span> it contain <span class="d-inline-block text-small p-1 text-grey-dk-300 bg-yellow-200">something</span> 
-<br><span>&#10003;</span> <span class="d-inline-block p-1 text-small text-grey-lt-000 bg-green-200">When</span> it contains <span class="d-inline-block p-1 text-small text-grey-dk-300 bg-yellow-200">something</span>
-<br><span>&#10003;</span> <span class="d-inline-block p-1 text-small text-grey-lt-000 bg-green-200">When</span> it has <span class="d-inline-block p-1 text-small text-grey-dk-300 bg-yellow-200">something</span>
-<br><span>&#10003;</span> <span class="d-inline-block p-1 text-small text-grey-lt-000 bg-green-200">When</span> they have <span class="d-inline-block p-1 text-small text-grey-dk-300 bg-yellow-200">something</span>
+### [When](#){: .p-1 .text-red-200} it contains [something](#){: .p-1 .text-grey-dk-100 .bg-yellow-200}
 
+
+> __Possible sentences :__
+>
+> ▪
+[When](#){: .p-1 .text-red-200} 
+it contain
+[something](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} 
+>
+> ▪
+[When](#){: .p-1 .text-red-200} 
+it contains
+[something](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} 
+>
+> ▪
+[When](#){: .p-1 .text-red-200} 
+it has
+[something](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} 
+>
+> ▪
+[When](#){: .p-1 .text-red-200} 
+they have
+[something](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} 
+>
 | key | Description | Examples |
-|-----|----------|-|
-| <center><span class="d-inline-block p-1 text-small text-grey-dk-300 bg-yellow-200">something</span></center> | any property within terraform resoruce/provider/etc | `access_key` `ingress` |
+|:---:|:----------|:-|
+| [something](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} | any property within terraform resoruce/provider/etc | `access_key` `ingress` |
  
  
 ------------------------
-### When its property has something
+### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} has [something](#){: .p-1 .text-grey-lt-000 .bg-blue-300}
 This is a filtering function. Thus, found resources from previous step will be filtered based on these values.
 
-<span>&#10003;</span> <span class="d-inline-block p-1 text-small text-grey-lt-000 bg-green-200">When</span> its <span class="d-inline-block text-small p-1 text-grey-dk-300 bg-yellow-200">property</span> is <span class="d-inline-block p-1 text-small text-grey-lt-000 bg-blue-300">value</span>
-<br><span>&#10003;</span> <span class="d-inline-block p-1 text-small text-grey-lt-000 bg-green-200">When</span> its <span class="d-inline-block text-small p-1 text-grey-dk-300 bg-yellow-200">property</span> has <span class="d-inline-block p-1 text-small text-grey-lt-000 bg-blue-300">value</span>
-<br><span>&#10003;</span> <span class="d-inline-block p-1 text-small text-grey-lt-000 bg-green-200">When</span> its <span class="d-inline-block text-small p-1 text-grey-dk-300 bg-yellow-200">property</span> includes <span class="d-inline-block p-1 text-small text-grey-lt-000 bg-blue-300">value</span>
-<br><span>&#10003;</span> <span class="d-inline-block p-1 text-small text-grey-lt-000 bg-green-200">When</span> its <span class="d-inline-block text-small p-1 text-grey-dk-300 bg-yellow-200">property</span> consists <span class="d-inline-block p-1 text-small text-grey-lt-000 bg-blue-300">value</span>
-
+> __Possible sentences :__
+>
+> ▪
+[When](#){: .p-1 .text-red-200} 
+its 
+[property](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} 
+is
+[something](#){: .p-1 .text-grey-lt-000 .bg-blue-300} 
+>
+> ▪
+[When](#){: .p-1 .text-red-200} 
+its 
+[property](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} 
+has
+[something](#){: .p-1 .text-grey-lt-000 .bg-blue-300} 
+>
+> ▪
+[When](#){: .p-1 .text-red-200} 
+its 
+[property](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} 
+includes
+[something](#){: .p-1 .text-grey-lt-000 .bg-blue-300} 
+>
+> ▪
+[When](#){: .p-1 .text-red-200} 
+its 
+[property](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} 
+consists
+[something](#){: .p-1 .text-grey-lt-000 .bg-blue-300} 
+>
 | key | Description | Examples |
-|-----|-------------|----------|
-| <center><span class="d-inline-block p-1 text-small text-grey-dk-300 bg-yellow-200">property</span></center> | any property that resource have (e.g. `name`, `address`, etc. ). Using `address` will give the terraform object name | `address` `name` `size` |
-| <center><span class="d-inline-block p-1 text-small text-grey-lt-000 bg-blue-300">something</span> | any string or numeric value that the property has. | `s3_my_bucket` `my-bucket` `50G` |
+|:---:|:----------|:-|
+| [property](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} | any property that resource have (e.g. `name`, `address`, etc. ). Using `address` will give the terraform object name | `address` `name` `size` |
+| [something](#){: .p-1 .text-grey-lt-000 .bg-blue-300} | any string or numeric value that the property has. | `s3_my_bucket` `my-bucket` `50G` |
 
 ------------------------
-### When its property has not something
+### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} has not [something](#){: .p-1 .text-grey-lt-000 .bg-blue-300}
 This is a filtering function. Thus, found resources from previous step will be filtered based on these values.
 
-<span>&#10003;</span> <span class="d-inline-block p-1 text-small text-grey-lt-000 bg-green-200">When</span> its <span class="d-inline-block text-small p-1 text-grey-dk-300 bg-yellow-200">property</span> is not <span class="d-inline-block p-1 text-small text-grey-lt-000 bg-blue-300">value</span>
-<br><span>&#10003;</span> <span class="d-inline-block p-1 text-small text-grey-lt-000 bg-green-200">When</span> its <span class="d-inline-block text-small p-1 text-grey-dk-300 bg-yellow-200">property</span> has not <span class="d-inline-block p-1 text-small text-grey-lt-000 bg-blue-300">value</span>
-<br><span>&#10003;</span> <span class="d-inline-block p-1 text-small text-grey-lt-000 bg-green-200">When</span> its <span class="d-inline-block text-small p-1 text-grey-dk-300 bg-yellow-200">property</span> does not include <span class="d-inline-block p-1 text-small text-grey-lt-000 bg-blue-300">value</span>
-<br><span>&#10003;</span> <span class="d-inline-block p-1 text-small text-grey-lt-000 bg-green-200">When</span> its <span class="d-inline-block text-small p-1 text-grey-dk-300 bg-yellow-200">property</span> does not consist <span class="d-inline-block p-1 text-small text-grey-lt-000 bg-blue-300">value</span>
-
+> __Possible sentences :__
+>
+> ▪
+[When](#){: .p-1 .text-red-200} 
+its 
+[property](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} 
+is not
+[something](#){: .p-1 .text-grey-lt-000 .bg-blue-300} 
+>
+> ▪
+[When](#){: .p-1 .text-red-200} 
+its 
+[property](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} 
+has not 
+[something](#){: .p-1 .text-grey-lt-000 .bg-blue-300} 
+>
+> ▪
+[When](#){: .p-1 .text-red-200} 
+its 
+[property](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} 
+does not include
+[something](#){: .p-1 .text-grey-lt-000 .bg-blue-300} 
+>
+> ▪
+[When](#){: .p-1 .text-red-200} 
+its 
+[property](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} 
+does not consist
+[something](#){: .p-1 .text-grey-lt-000 .bg-blue-300} 
+>
 | key | Description | Examples |
-|-----|-------------|----------|
-| <center><span class="d-inline-block p-1 text-small text-grey-dk-300 bg-yellow-200">property</span></center> | any property that resource have (e.g. `name`, `address`, etc. ). Using `address` will give the terraform object name | `address` `name` `size`|
-| <center><span class="d-inline-block p-1 text-small text-grey-lt-000 bg-blue-300">something</span> | any string or numeric value that the property has. | `s3_my_bucket` `my-bucket` `50G`|
+|:---:|:----------|:-|
+| [property](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} | any property that resource have (e.g. `name`, `address`, etc. ). Using `address` will give the terraform object name | `address` `name` `size`|
+| [something](#){: .p-1 .text-grey-lt-000 .bg-blue-300} | any string or numeric value that the property has. | `s3_my_bucket` `my-bucket` `50G`|

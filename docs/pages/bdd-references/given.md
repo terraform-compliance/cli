@@ -25,6 +25,8 @@ Given I have aws provider configured
 Given I have any resource defined
 ```
 
+You can not use `AND` with `GIVEN`.
+
 or depending on use a [Scenario Outline](/pages/bdd-references#Scenario) instead of a Scenario, it can also 
 be a variable like ;
 
@@ -36,19 +38,36 @@ Given I have <resource_type> defined
 * Table of Contents
 {:toc}
 
-### Given I have name type configured
-<span>&#10003;</span> <span class="d-inline-block p-1 text-small text-grey-lt-000 bg-green-200">Given</span> I have <span class="d-inline-block text-small p-1 text-grey-dk-300 bg-yellow-200">name</span> <span class="d-inline-block p-1 text-small text-grey-lt-000 bg-blue-300">type</span> configured 
+### [Given](#){: .p-1 .text-red-200} I have [name](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} [type](#){: .p-1 .text-grey-lt-000 .bg-blue-300} configured
 
+
+> __Possible sentences :__
+>
+> ▪
+[Given](#){: .p-1 .text-red-200} 
+I have 
+[name](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} 
+[type](#){: .p-1 .text-grey-lt-000 .bg-blue-300} 
+configured
+>
 | key | Description | Examples |
-|-----|-------------|----------|
-| <center><span class="d-inline-block p-1 text-small text-grey-dk-300 bg-yellow-200">name</span></center> | name of the key in terraform. | `aws_security_group` `ingress`<br><br>In order to define all resources, you can also use ;<br><br>`a resource` `any resource` `a` `any` `anything` |
-| <center><span class="d-inline-block p-1 text-small text-grey-lt-000 bg-blue-300">type</span> | The type of the key. | It can be one of these ;<br>`resource` `resources` `provider` `providers` `data` `datas` `variable` `variables` |
+|:---:|:----------|:-|
+| [name](#){: .p-1 .text-grey-dk-100 .bg-yellow-200}  | name of the key in terraform. | `aws_security_group` `ingress`<br><br>In order to define all resources, you can also use ;<br><br>`a resource` `any resource` `a` `any` `anything` |
+| [type](#){: .p-1 .text-grey-lt-000 .bg-blue-300}  | The type of the key. | It can be one of these ;<br>`resource` `resources` `provider` `providers` `data` `datas` `variable` `variables` |
 
 ----------------------
-### Given I have name defined
-<span>&#10003;</span> <span class="d-inline-block p-1 text-small text-grey-lt-000 bg-green-200">Given</span> I have <span class="d-inline-block text-small p-1 text-grey-dk-300 bg-yellow-200">name</span> defined 
+### [Given](#){: .p-1 .text-red-200} I have [name](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} defined
 
+
+> __Possible sentences :__
+>
+> ▪
+[Given](#){: .p-1 .text-red-200} 
+I have 
+[name](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} 
+defined
+>
 | key | Description | Examples |
-|-----|-------------|----------|
-| <center><span class="d-inline-block p-1 text-small text-grey-dk-300 bg-yellow-200">name</span></center> | name of the resource. The name must point to a resource. Can not be `provider` or anything else. | `aws_security_group` `aws_s3_bucket` |
+|:---:|:----------|:-|
+| [name](#){: .p-1 .text-grey-dk-100 .bg-yellow-200}  | name of the resource. The name must point to a resource. Can not be `provider` or anything else. | `aws_security_group` `aws_s3_bucket` |
 

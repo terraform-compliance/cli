@@ -2,7 +2,7 @@
 layout: default
 title: Usage
 nav_order: 3
-has_children: false
+has_children: true
 ---
 
 # Usage
@@ -42,6 +42,7 @@ cli parameters.
 ## CLI Reference
 
 ### -f / --features
+{: .d-inline-block }
 REQUIRED
 {: .label .label-red}
 
@@ -70,6 +71,7 @@ The authentication to that git repository will be handled via your `~/.ssh/confi
 ssh key for this repository then you also need to provide `-i` parameter to pointing your private key.
 
 ### -p / --planfile
+{: .d-inline-block }
 REQUIRED
 {: .label .label-red}
 
@@ -100,6 +102,7 @@ and then you can run your features against this `state.out` file via ;
 ```
 
 ### -i / --identity
+{: .d-inline-block }
 OPTIONAL
 {: .label .label-yellow}
 
@@ -116,6 +119,7 @@ Please note that, if the host that you are trying to authenticate already define
 `terraform-compliance` will use that key for authentication.
 
 ### -t  / --terraform
+{: .d-inline-block }
 OPTIONAL
 {: .label .label-yellow}
 
