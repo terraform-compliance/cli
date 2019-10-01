@@ -47,6 +47,37 @@ There are two types of Scenario ;
 - Scenario : Used for defining a scenario without any multiple dynamic variables.
 - Scenario Outline : Used for defining a scenario loops by giving multiple dynamic variables.
 
+A Scenario can be like ;
+
+```gherkin
+Scenario: Ensure all resources have tags
+    Given I have resource that supports tags defined
+    Then it must contain tags
+    And its value must not be null
+```
+
+Where a Scenario Outline could be ;
+
+```gherkin
+Scenario Outline: Ensure that specific tags are defined
+    Given I have resource that supports tags defined
+    When it contains tags
+    Then it must contain <tags>
+    And its value must not be null
+    
+    Examples:
+      | tags           |
+      | Name           |
+      | Business Unit  |
+      | Cost Centre    |
+      | Environment    |
+      | Major Function |
+      | Service        |
+      | Work Order     |
+      | Service Level  |
+      | Creator        |
+```
+
 ### Steps
 Steps are the functional tests that is actually executing necessary task to validate if the test is successful or not.
 
