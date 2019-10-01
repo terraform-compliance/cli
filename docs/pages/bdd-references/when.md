@@ -50,7 +50,7 @@ not met with the infrastructure plan.
 * Table of Contents
 {:toc}
 
-### [When](#){: .p-1 .text-red-200} it contains [something](#){: .p-1 .text-grey-dk-100 .bg-yellow-200}
+### [When](#){: .p-1 .text-red-200} it contains [something](#){: .p-1 .text-green-200 .fw-700}
 
 
 > __Possible sentences :__
@@ -58,30 +58,30 @@ not met with the infrastructure plan.
 > ▪
 [When](#){: .p-1 .text-red-200} 
 it contain
-[something](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} 
+[something](#){: .p-1 .text-green-200 .fw-700} 
 >
 > ▪
 [When](#){: .p-1 .text-red-200} 
 it contains
-[something](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} 
+[something](#){: .p-1 .text-green-200 .fw-700} 
 >
 > ▪
 [When](#){: .p-1 .text-red-200} 
 it has
-[something](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} 
+[something](#){: .p-1 .text-green-200 .fw-700} 
 >
 > ▪
 [When](#){: .p-1 .text-red-200} 
 they have
-[something](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} 
+[something](#){: .p-1 .text-green-200 .fw-700} 
 >
 | key | Description | Examples |
 |:---:|:----------|:-|
-| [something](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} | any property within terraform resoruce/provider/etc | `access_key` `ingress` |
+| [something](#){: .p-1 .text-green-200 .fw-700} | any property within terraform resoruce/provider/etc | `access_key` `ingress` |
  
  
 ------------------------
-### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} has [something](#){: .p-1 .text-grey-lt-000 .bg-blue-300}
+### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} has [something](#){: .p-1 .text-blue-100 .fw-700}
 This is a filtering function. Thus, found resources from previous step will be filtered based on these values.
 
 > __Possible sentences :__
@@ -89,38 +89,38 @@ This is a filtering function. Thus, found resources from previous step will be f
 > ▪
 [When](#){: .p-1 .text-red-200} 
 its 
-[property](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} 
+[property](#){: .p-1 .text-green-200 .fw-700} 
 is
-[something](#){: .p-1 .text-grey-lt-000 .bg-blue-300} 
+[something](#){: .p-1 .text-blue-100 .fw-700} 
 >
 > ▪
 [When](#){: .p-1 .text-red-200} 
 its 
-[property](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} 
+[property](#){: .p-1 .text-green-200 .fw-700} 
 has
-[something](#){: .p-1 .text-grey-lt-000 .bg-blue-300} 
+[something](#){: .p-1 .text-blue-100 .fw-700} 
 >
 > ▪
 [When](#){: .p-1 .text-red-200} 
 its 
-[property](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} 
+[property](#){: .p-1 .text-green-200 .fw-700} 
 includes
-[something](#){: .p-1 .text-grey-lt-000 .bg-blue-300} 
+[something](#){: .p-1 .text-blue-100 .fw-700} 
 >
 > ▪
 [When](#){: .p-1 .text-red-200} 
 its 
-[property](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} 
+[property](#){: .p-1 .text-green-200 .fw-700} 
 consists
-[something](#){: .p-1 .text-grey-lt-000 .bg-blue-300} 
+[something](#){: .p-1 .text-blue-100 .fw-700} 
 >
 | key | Description | Examples |
 |:---:|:----------|:-|
-| [property](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} | any property that resource have (e.g. `name`, `address`, etc. ). Using `address` will give the terraform object name | `address` `name` `size` |
-| [something](#){: .p-1 .text-grey-lt-000 .bg-blue-300} | any string or numeric value that the property has. | `s3_my_bucket` `my-bucket` `50G` |
+| [property](#){: .p-1 .text-green-200 .fw-700} | any property that resource have (e.g. `name`, `address`, etc. ). Using `address` will give the terraform object name | `address` `name` `size` |
+| [something](#){: .p-1 .text-blue-100 .fw-700} | any string or numeric value that the property has. | `s3_my_bucket` `my-bucket` `50G` |
 
 ------------------------
-### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} has not [something](#){: .p-1 .text-grey-lt-000 .bg-blue-300}
+### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} has not [something](#){: .p-1 .text-blue-100 .fw-700}
 This is a filtering function. Thus, found resources from previous step will be filtered based on these values.
 
 > __Possible sentences :__
@@ -128,38 +128,38 @@ This is a filtering function. Thus, found resources from previous step will be f
 > ▪
 [When](#){: .p-1 .text-red-200} 
 its 
-[property](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} 
+[property](#){: .p-1 .text-green-200 .fw-700} 
 is not
-[something](#){: .p-1 .text-grey-lt-000 .bg-blue-300} 
+[something](#){: .p-1 .text-blue-100 .fw-700} 
 >
 > ▪
 [When](#){: .p-1 .text-red-200} 
 its 
-[property](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} 
+[property](#){: .p-1 .text-green-200 .fw-700} 
 has not 
-[something](#){: .p-1 .text-grey-lt-000 .bg-blue-300} 
+[something](#){: .p-1 .text-blue-100 .fw-700} 
 >
 > ▪
 [When](#){: .p-1 .text-red-200} 
 its 
-[property](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} 
+[property](#){: .p-1 .text-green-200 .fw-700} 
 does not include
-[something](#){: .p-1 .text-grey-lt-000 .bg-blue-300} 
+[something](#){: .p-1 .text-blue-100 .fw-700} 
 >
 > ▪
 [When](#){: .p-1 .text-red-200} 
 its 
-[property](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} 
+[property](#){: .p-1 .text-green-200 .fw-700} 
 does not consist
-[something](#){: .p-1 .text-grey-lt-000 .bg-blue-300} 
+[something](#){: .p-1 .text-blue-100 .fw-700} 
 >
 | key | Description | Examples |
 |:---:|:----------|:-|
-| [property](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} | any property that resource have (e.g. `name`, `address`, etc. ). Using `address` will give the terraform object name | `address` `name` `size`|
-| [something](#){: .p-1 .text-grey-lt-000 .bg-blue-300} | any string or numeric value that the property has. | `s3_my_bucket` `my-bucket` `50G`|
+| [property](#){: .p-1 .text-green-200 .fw-700} | any property that resource have (e.g. `name`, `address`, etc. ). Using `address` will give the terraform object name | `address` `name` `size`|
+| [something](#){: .p-1 .text-blue-100 .fw-700} | any string or numeric value that the property has. | `s3_my_bucket` `my-bucket` `50G`|
 
 ------------------------
-### [When](#){: .p-1 .text-red-200} I [action](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} them
+### [When](#){: .p-1 .text-red-200} I [action](#){: .p-1 .text-green-200 .fw-700} them
 This step is for mathematical operations. Currently it is only supported for `count`
 
 > __Possible sentences :__
@@ -167,22 +167,22 @@ This step is for mathematical operations. Currently it is only supported for `co
 > ▪
 [When](#){: .p-1 .text-red-200} 
 I
-[action](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} 
+[action](#){: .p-1 .text-green-200 .fw-700} 
 them
 >
 > ▪
 [When](#){: .p-1 .text-red-200} 
 I
-[action](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} 
+[action](#){: .p-1 .text-green-200 .fw-700} 
 it
 >
 > ▪
 [When](#){: .p-1 .text-red-200} 
 I
-[action](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} 
+[action](#){: .p-1 .text-green-200 .fw-700} 
 the value
 >
 | key | Description | Examples |
 |:---:|:----------|:-|
-| [action](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} | mathematical operation | currently only supports for `count` |
+| [action](#){: .p-1 .text-green-200 .fw-700} | mathematical operation | currently only supports for `count` |
 

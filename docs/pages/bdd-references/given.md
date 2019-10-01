@@ -38,7 +38,7 @@ Given I have <resource_type> defined
 * Table of Contents
 {:toc}
 
-### [Given](#){: .p-1 .text-red-200} I have [name](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} [type](#){: .p-1 .text-grey-lt-000 .bg-blue-300} configured
+### [Given](#){: .p-1 .text-red-200} I have [name](#){: .text-green-200 .fw-700} [type](#){: .text-blue-100 .fw-700} configured
 
 
 > __Possible sentences :__
@@ -46,17 +46,17 @@ Given I have <resource_type> defined
 > ▪
 [Given](#){: .p-1 .text-red-200} 
 I have 
-[name](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} 
-[type](#){: .p-1 .text-grey-lt-000 .bg-blue-300} 
+[name](#){: .text-green-200 .fw-700} 
+[type](#){: .text-blue-100 .fw-700} 
 configured
 >
 | key | Description | Examples |
 |:---:|:----------|:-|
-| [name](#){: .p-1 .text-grey-dk-100 .bg-yellow-200}  | name of the key in terraform. | `aws_security_group` `ingress`<br><br>In order to define all resources, you can also use ;<br><br>`a resource` `any resource` `a` `any` `anything` |
-| [type](#){: .p-1 .text-grey-lt-000 .bg-blue-300}  | The type of the key. | It can be one of these ;<br>`resource` `resources` `provider` `providers` `data` `datas` `variable` `variables` |
+| [name](#){: .text-green-200 .fw-700}  | name of the key in terraform. | `aws_security_group` `ingress`<br><br>In order to define all resources, you can also use ;<br><br>`a resource` `any resource` `a` `any` `anything` |
+| [type](#){: .text-blue-100 .fw-700}  | The type of the key. | It can be one of these ;<br>`resource` `resources` `provider` `providers` `data` `datas` `variable` `variables` |
 
 ----------------------
-### [Given](#){: .p-1 .text-red-200} I have [name](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} defined
+### [Given](#){: .p-1 .text-red-200} I have [name](#){: .text-green-200 .fw-700} defined
 
 
 > __Possible sentences :__
@@ -64,10 +64,10 @@ configured
 > ▪
 [Given](#){: .p-1 .text-red-200} 
 I have 
-[name](#){: .p-1 .text-grey-dk-100 .bg-yellow-200} 
+[name](#){: .text-green-200 .fw-700} 
 defined
 >
 | key | Description | Examples |
 |:---:|:----------|:-|
-| [name](#){: .p-1 .text-grey-dk-100 .bg-yellow-200}  | name of the resource. The name must point to a resource. Can not be `provider` or anything else. | `aws_security_group` `aws_s3_bucket` |
+| [name](#){: .text-green-200 .fw-700}  | name of the resource. The name must point to a resource. Can not be `provider` or anything else. | `aws_security_group` `aws_s3_bucket` |
 
