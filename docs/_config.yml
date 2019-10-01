@@ -29,6 +29,8 @@ remote_theme: pmarsceill/just-the-docs
 plugins:
   - jekyll-feed
 
+ga_tracking: UA-149258623-1
+
 # exclude:
 #   - .sass-cache/
 #   - .jekyll-cache/
