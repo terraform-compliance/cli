@@ -1,10 +1,7 @@
-<img src='https://github.com/eerkunt/terraform-compliance/blob/master/logo.png' align=right height="150"><h1 align="center">terraform-compliance</h1>
+<img src='https://github.com/eerkunt/terraform-compliance/blob/master/logo.png' align=right height=100 valign=top><h1 align="center">terraform-compliance</h1>
 
 <div align="center">
-  <strong>BDD Testing for Terraform</strong>
-</div>
-<div align="center">
-  A lightweight, security and compliance focused, BDD test framework 
+  <strong>A lightweight, security and compliance focused, BDD test framework </strong>
 </div>
 
 <br />
