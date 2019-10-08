@@ -1,5 +1,5 @@
 ---
-name: Question Template
+name: General Question
 about: Question about the project
 title: ''
 labels: ''
