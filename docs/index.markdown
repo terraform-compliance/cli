@@ -3,7 +3,7 @@ layout: home
 title: Overview
 permalink: /
 ---
-## Overview
+## terraform-compliance
 
 `terraform-compliance` is a lightweight, security and compliance focused test framework against terraform to enable negative testing capability for your infrastructure-as-code.
 
@@ -75,7 +75,7 @@ resource "aws_s3_bucket" "b" {
 
 This policy ( Scenario ) will allow all S3 buckets newly created or updated must have encryption configuration set within the code. In an ideal way, this Scenario (among with all other Scenarios) will run on a CI/CD pipeline that will ensure that nothing is deployed by violating your policies.
 
-See [Examples](/pages/examples/) for more sample use cases.
+See [Examples](/pages/Examples/) for more sample use cases.
 {: .fs-3 }
 
 ![Example Run](https://github.com/eerkunt/terraform-compliance/blob/master/terraform-compliance-demo.gif?raw=true)

@@ -1,10 +1,3 @@
----
-layout: default
-title: Contributing
-nav_order: 7
-has_children: false
----
-
 # Contributing to terraform-compliance
 
 **First**: if you're unsure or afraid of anything, just ask or submit the issue or pull request anyways. 
