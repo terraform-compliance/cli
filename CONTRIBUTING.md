@@ -63,7 +63,15 @@ change something in the `terraform_compliance/steps`, then the tests must exist 
 `terraform-compliance` uses [radish](http://radish-bdd.io/) for the BDD framework, with lots of [extensions](https://github.com/eerkunt/terraform-compliance/tree/master/terraform_compliance/extensions) written to parse and process 
 terraform files. Most of the functionality is described in https://terraform-compliance.com. 
 
+## Updating Website
+
+`terraform-compliance` uses Jekyll for templating and Github Pages for serving its website. https://terraform-compliance.com
+
+Website is stored in [docs](https://github.com/eerkunt/terraform-compliance/tree/master/docs) directory, where in most cases changes in [docs/pages](https://github.com/eerkunt/terraform-compliance/tree/master/docs/pages) will be sufficient for adding/removing/updating website pages. 
+
 ## Release Cycle
 
 Usually after every functionality change we try to release a new package immediately. 
+
+
  
