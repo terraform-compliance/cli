@@ -1,8 +1,6 @@
 <img src='https://github.com/eerkunt/terraform-compliance/blob/master/logo.png' align=right height=100 valign=top><h1 align="center">terraform-compliance</h1>
 
 <div align="center">
-  <strong>A lightweight, security and compliance focused, BDD test framework </strong>
-  <br />
   <!-- Build Status -->
   <a href="https://travis-ci.org/eerkunt/terraform-compliance">
     <img src="https://img.shields.io/travis/eerkunt/terraform-compliance/master.svg" alt="Build" />
