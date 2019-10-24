@@ -1,6 +1,11 @@
 <img src='https://github.com/eerkunt/terraform-compliance/blob/master/logo.png' align=right height=100 valign=top><h1 align="center">terraform-compliance</h1>
 
 <div align="center">
+  <!-- Website -->
+  <a href="https://terraform-compliance.com">
+    <img src="https://img.shields.io/badge/website-https%3A%2F%2Fterraform--compliance.com-blue" alt="Website" />
+  </a>
+  
   <!-- Build Status -->
   <a href="https://travis-ci.org/eerkunt/terraform-compliance">
     <img src="https://img.shields.io/travis/eerkunt/terraform-compliance/master.svg" alt="Build" />
@@ -28,320 +33,97 @@
   </a>
 </div>
 
-## Table of Contents
-- [Usage](#usage)
-- [Features](#features)
-- [BDD Directives](#bdd-directives)
-- [Sample Test Set](#Examples)
-- [FAQ](#faq)
+`terraform-compliance` is a lightweight, security and compliance focused test framework against terraform to enable negative testing capability for your infrastructure-as-code.
 
 
-## Quick Overview
 - __compliance:__ Ensure the implemented code is following security standards, your own custom standards
 - __behaviour driven development:__ We have BDD for nearly everything, why not for IaC ?
-- __portable:__ just install it from `pip` or run it via `docker`
+- __portable:__ just install it from `pip` or run it via `docker`. See [Installation](https://terraform-compliance.com/pages/installation/)
+- __pre-deploy:__ it validates your code before it is deployed
+- __easy to integrate:__ it can run in your pipeline (or in git hooks) to ensure all deployments are validated.
+- __segregation of duty:__ you can keep your tests in a different repository where a separate team is responsible. 
 - __why ?:__ why not ?
 
-## Support
+## Idea
 
-`terraform-compliance` had a huge revamp/redesign following `terraform`'s huge change coming with 0.12 version. 
-Due to these breaking changes `terraform-compliance` `1.0.0+` versions only supports terraform `0.12+` versions.  
+`terraform-compliance` mainly focuses on [negative testing](https://en.wikipedia.org/wiki/Negative_testing) instead
+of having fully-fledged [functional tests](https://en.wikipedia.org/wiki/Functional_testing) that are mostly used for
+proving a component of code is performing properly. 
 
-Older `terraform` versions is supported with 0.6.4 with limited functionality. Please use it with your own risk, since older versions of `terraform-compliance` (0.6.4 and older) is discontinued.
+Fortunately, `terraform` is a marvellous abstraction layer for any API 
+that __creates__/__updates__/__destroys__ entities. `terraform` also provides the 
+[capability](https://www.terraform.io/docs/commands/plan.html#detailed-exitcode) 
+to ensure everything is up-to-date between the local configuration and the remote API(s) responses. 
 
-## Changelog
+Given the fact, `terraform` is used mostly against Cloud APIs, what was missing is to ensure 
+your code against your infrastructure must follow specific policies. Currently HashiCorp provides 
+[Sentinel](https://www.hashicorp.com/sentinel/) for Enterprise Products. `terraform-compliance` is providing a 
+similar functionality only for `terraform` while it is free-to-use and it is Open Source.
 
-All changes coming with 1.0.0 and further versions can be found in [CHANGELOG](https://github.com/eerkunt/terraform-compliance/blob/master/CHANGELOG.md).
+E.g. a sample policy could be, if you are working with `AWS`, you should not create an `S3 bucket`, 
+without having any `encryption`. Of course, this is just an example which may or not be applicable 
+for your case.
 
-## Usage
+`terraform-compliance` provides a test framework to create these policies that will be executed against 
+your [terraform plan](https://www.terraform.io/docs/commands/plan.html) in a context where both 
+developers and security teams can understand easily while reading it, by applying [Behaviour Driven 
+Development](https://en.wikipedia.org/wiki/Behavior-driven_development) Principles.
 
-Recommended way to use `terraform-compliance` is using it's [Docker](https://hub.docker.com/r/eerkunt/terraform-compliance/) image.
-
-Just define it as a function in your shell ;
-```commandline
-[~] $ function terraform-compliance { docker run --rm -v $(pwd):/target -i -t eerkunt/terraform-compliance "$@"; }
-```
-and use it wherever you want that has docker installed.
-
-```commandline
-[~] $ terraform-compliance -h
-
-  terraform-compliance v1.0.0 initiated
-  
-  usage: terraform-compliance [-h] --features feature directory --planfile
-                              plan_file [--identity [ssh private key]]
-                              [--version]
-  
-  BDD Test Framework for Hashicorp terraform
-  
-  optional arguments:
-    -h, --help            show this help message and exit
-    --features feature directory, -f feature directory
-                          Directory (or git repository with 'git:' prefix)
-                          consists of BDD features
-    --planfile plan_file, -p plan_file
-                          Plan output file generated by Terraform
-    --identity [ssh private key], -i [ssh private key]
-                          SSH Private key that will be use on git
-                          authentication.
-    --terraform [terraform_file], -t [terraform_file]
-                            The absolute path to the terraform executable.
-    --version, -v         show program's version number and exit
-```
-
-`terraform-compliance` is also available via `PyPi` package, so you can also install and use it via ;
-```commandline
-[~] $ pip install terraform-compliance
-```
-
-## How to use
-
-```diff
--THIS IS ONLY APPLICABLE FOR 1.0.0+ VERSIONS
-```
-`terraform-compliance` requires a valid `terraform` plan file that is generated by terraform.
-
-In order to do that you should add `-out=plan.out` to your `terraform plan` executions like ;
+As returning back to the example, our example defined above will be translated into a BDD Feature 
+and Scenario, as also seen in below ;
 
 ```
-terraform plan -out=plan.out
-``` 
-
-This will create a propriety plan file that `terraform` can read also on `apply` operations.
-
-After having your `plan.out` ( or any filename that is suitable for you ) created, you can run your `terraform-compliance` tests via ;
-
-```
-terraform-compliance -f /path/to/bdd/files -p /path/to/plan.out
+if you are working with AWS, you should not create an S3 bucket, without having any encryption
 ```
 
-#### Another Use Case: "I don't want to plan but want to scan my state file, current environment"
+translates into ;
 
-Just run ;
-
-```
-terraform show -json > state.out
-```
-
-which will generate a similar file to `plan.out` (as `state.out` in this example) that can be read by `terraform-compliance`
-
-```
-terraform-compliance -f /path/to/bdd/files -p /path/to/state.out
+```gherkin
+Given I have AWS S3 Bucket defined
+Then it must contain server_side_encryption_configuration
 ```
 
-## Features
-
-### Terraform Interpolations and Modules
-`terraform-compliance` v1.0.0+ has full support for all terraform interpolations and modules, unlike to older versions.
-]
-### Compliance Tests
-
-The idea of `terraform-compliance` is to define compliance-as-code in BDD fashion where compliance against infrastructure-as-code
-is defined in a human readable format which makes the life easier to understand what is being tested and failed/passed.
-
-Ideally, the tools needs to be integrated with a CI/CD tool and runs on every build - where you can define the scope like
-* Company wide compliance-as-code
-* Project wide compliance-as-code
-
-`terraform-compliance` does not require any target environment to run. It runs against `terraform` plan outputs or state files, 
-depending on your use case. Thus it is a stage that needs to run before any deployment (**PRE-COMPLIANCE**). 
-
-Here is a quick DEMO about how does it look like when it runs to a sample `plan.out`
-
-![Example Run](terraform-compliance-demo.gif)
-
-### BDD Directives
-Every BDD feature file will have ;
-
-- Feature
-- Scenario/Scenario Outline
-- Steps
-
-##### Feature
-This draws the overall picture of the feature file that may consist several scenarios.
-
-For e.g. ;
-
-```cucumber
-Feature: Security Groups should be used to protect services/instances
-  In order to improve security
-  As engineers
-  We'll use AWS Security Groups as a Perimeter Defence
-```
-
-This won't effect anything about the test steps, but it will ease the pain for everybody to understand what does that feature aims for.
-
-##### Scenario
-Every feature might have multiple scenarios. A scenario will define a test that might include multiple steps with BDD directives like ;
-
-- GIVEN
-- WHEN
-- THEN
-
-and every step might also have an additional extension step starting with ;
-- AND
-
-There are two types of Scenario ;
-
-- Scenario : Used for defining a scenario without any multiple dynamic variables.
-- Scenario Outline : Used for defining a scenario loops by giving multiple dynamic variables.
-
-##### Steps
-Steps are the functional tests that is actually executing necessary task to validate if the test is successful or not.
-
-`terraform-compliance` has fixed steps already defined within the tool. It is possible to drill down your terraform resources by using these fixed steps.
-
-###### Available Steps
-
-| BDD Conditions | Step Sentence | Parameters | 
-| ---------------| --------------| ---------- |
-| GIVEN          | I have `{name}` `{type}` configured | `name`: name of the key in terraform (e.g. `aws_security_group`, `aws`) (In order to define all resources you can use `a resource`, `any resource`, `a`, `any`, `anything`) <br>`type`: The type of the key (e.g. `resource(s)`, `provider(s)`, `data(s)` or `variable(s)`) |
-| GIVEN          | I have `{resource_name}` defined | `name`: name of the resource ( e.g. `aws_security_group` ) |
-| WHEN           | I `{math_formula}` them | `action`: `math_formula` |
-| WHEN           | its `{key}` is `{value}`<br>its `{key}` has `{value}`<br>its `{key}` contains `{value}`<br>its `{key}` includes `{value}`  | `key`: any property that resource have (e.g. name, address, etc. ) `address` will give the terraform object name<br>`value`: any string or numeric value that the property has.<br>_Found resources from previous step will be filtered based on these values._ |
-| WHEN           | its `{key}` is not `{value}`<br>its `{key}` has not `{value}`<br>its `{key}` does not contain `{value}`<br>its `{key}` does not include `{value}`  | `key`: any property that resource have (e.g. name, address, etc. ) `address` will give the terraform object name<br>`value`: any string, bool or numeric value that the property has.<br>_Found resources from previous step will be filtered based on these values._ |
-| THEN           | I expect the result is `{operator}` than/to `{number}`<br>Its value must be `{operator}` than/to `{number}` | `operator`: `more`, `more and equal`, `less`, `less and equal`, `equal`<br>`number`: an integer |
-| WHEN<br>THEN   | it contain `{something}`<br>it contains `{something}`<br>it must contain `{something}` | `something`: any property within terraform resoruce/provider/etc. (e.g. `access_key`, `ingress` ) |
-| THEN           | `{property}` is enabled<br>`{property}` must be enabled | `property`: can be either a generic property from your terraform configuration or templated ones like below for some resources;<br>* `encryption at rest`<br>* `encrytion in flight`|
-| THEN           | its value `{condition}` match the "`{search_regex}`" regex | `condition`: `must` or `must not`<br>`search_regex`: the regular expression of the searching value |
-| THEN           | its value `{condition}` be `{value}` | `condition`: `must` or `must not`<br>`value`: the matching value |
-| WHEN<br>THEN   | its value must be set by a variable | |
-| THEN           | it must `{condition}` have `{proto}` protocol and port `{port}` for `{cidr}` | `{condition}`: only,not<br>`proto`: tcp, udp<br>`port`: integer port number (or a port range by using `-` delimeter between port ranges [e.g. 80-84])<br>`cidr`: IP/Cidr |
-| THEN           | its value `{condition}` contain `{value}` | `{condition}`: `must` or `must not`, `value`: the item to look for in the list |
-| THEN           | the scenario fails<br>the scenario should fail<br>it fails<br>it should fail<br>it must fail | None |
-| THEN           | its value '{condition}' be null | 'condition': 'must' or 'must not' |
-
-Every condition can also be used to drill down more in the terraform code by utilising `AND` directive.
-
-Any step consisting `GIVEN` and `WHEN` directives will lead to skip the whole scenario if one of those steps fails. `THEN` directive does not lead any scenario/step skipping, so if the step fails, whole scenario fails.
-
-For e.g. ;
-```cucumber
-  Scenario: TLS enforcement on ELB resources
-    Given I have AWS ELB resource defined
-    When it contains listener
-    Then it must contain ssl_certificate_id
-```
-
-To explain this, it is better to explain this by checking an example terraform code ;
+`server_side_encryption_configuration` is coming from the terraform code, as shown below ;
 
 ```
-resource "aws_elb" "some_elb" {
-    name            = "My gorgeous ELB name"
-    subnets         = "${var.subnet_ids}"
-    security_groups = ["${aws_security_group.some_elb_sg.id}"]
+resource "aws_s3_bucket" "b" {
+  bucket = "my-bucket"
+  acl    = "private"
 
-    listener {
-        instance_port      = 8084
-        instance_protocol  = "https"
-        lb_port            = 8084
-        lb_protocol        = "https"
-        ssl_certificate_id = "${module.acm-cert-elb.acm_cert_arn}"
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        kms_master_key_id = "${aws_kms_key.mykey.arn}"
+        sse_algorithm     = "aws:kms"
+      }
     }
+  }
 }
 ```
-We are trying to create an AWS ELB Instance with SSL Certificates created from a module. 
-The test steps will first run ;
 
-```cucumber
-Given I have AWS ELB resource defined
-```
-which will locate the resorce named `aws_elb` among all other resources ( please have a look [Naming Conventions](https://github.com/eerkunt/terraform-compliance/blob/c59c5014a703640dfbf161b5119907036610ffef/terraform_compliance/steps/__init__.py#L18) if you are not sure how `AWS ELB` transformed into `aws_elb` ) and then push the data to the step below ;
+This policy ( Scenario ) will allow all S3 buckets newly created or updated must have encryption configuration set within the code. In an ideal way, this Scenario (among with all other Scenarios) will run on a CI/CD pipeline that will ensure that nothing is deployed by violating your policies.
 
-```cucumber
-When it contains listener
-```
+See [Examples](https://terraform-compliance.com/pages/Examples/) for more sample use cases.
+{: .fs-3 }
 
-Then it will drill down the `listener` definition within the HCL. If found, then the data within `listener` will be pushed on the next step.
+![Example Run](https://github.com/eerkunt/terraform-compliance/blob/master/terraform-compliance-demo.gif?raw=true)
 
-*Till this point, if any of the steps fail, the further steps will be SKIPPED.*
+## Supporting / Requirements
 
-For the last step ;
-```cucumber
-Then it must contain ssl_certificate_id
-```
-Here it will check within the data coming from the parent step if there is `ssl_certificate_id` defined within. This step is critical since it defines if the scenario will fail or pass.
+`terraform-compliance` only supports `terraform` 0.12.+. In order to use older versions of `terraform`,
+you can use [0.6.4](https://github.com/eerkunt/terraform-compliance/releases/tag/0.6.4) of the tool, 
+but many capabilities will not be supported and maintaining of `0.6.4` version is ended.
 
-###### Scenario Loops
+Some of the features that you will be missing can be listed as ;
 
-It is also possible to use scenario loops. Please note that, `Scenario Outline` needs to be used instead of `Scenario`
-.
+- Complete `terraform` interpolations support
+- `terraform` modules, variables and providers support.
+- Any filtering function for advanced queries
+- Many missing resources requires `tag`ging.
+- .. and many more ..
 
-```
-Scenario Outline: Well-known insecure protocol exposure on Public Network for ingress traffic
-    Given I have AWS Security Group defined
-  	When it contains ingress
-    Then it must not have <proto> protocol and port <portNumber> for 0.0.0.0/0
-
-  Examples:
-    | ProtocolName | proto | portNumber |
-    | HTTP         | tcp   | 443       |
-    | Telnet       | tcp   | 23         |
-    | SSH          | tcp   | 22         |
-    | MySQL        | tcp   | 3306       |
-    | MSSQL        | tcp   | 1443       |
-    | NetBIOS      | tcp   | 139        |
-    | RDP          | tcp   | 3389       |
-    | Jenkins Slave| tcp   | 50000      |
-```
-
-
-
-# Examples
-Just as a sample to show the capabilities, `terraform-compliance` repository includes [a sample of tests](https://github.com/eerkunt/terraform-compliance/tree/master/example/example_01/aws).
-
-These sample tests include ;
-
-* Checks if encryption at rest is applied
-* Checks if encryption in flight is applied
-* Checks if naming standards are applied based on a specific format
-* Checks if tagging is applied for applicable resources following the standards
-* Checks if there are number of subnets defined in the terraform code for a multi-layered architecture
-* Checks if there are some specific ports are not allowed for specific subnets in Security Groups
-* Checks if API Keys/Credentials are not used within the code.
-* Checks/Filters for a specific resource rather than a resource type.
-* Checks if specific resource types should not be created.
-* Checks if S3 Public Block access is enforces.
-
-The tests can be easily extended with the current capabilities. For any new capability please raise [a new Issue](https://github.com/eerkunt/terraform-compliance/issues/new) and it will be implemented as soon as possible.
-
-### Using git repositories for features
-`terraform-compliance` also supports remote fetching if any of the feature or terraform files exist in a remote git repo. Sample usage is like ;
-
-```commandline
-[~] $ terraform-compliance -f git:https://some.git.repository/compliance-code.git -p /path/to/plan.out
-```
-
-If you already configured your `~/.ssh/config` and pointing remote host, and private key file, you don't even need to
-use `-i` argument, it will be used automatically.
-
-
-### Argument passing
-
-You can also push additional arguments that is specific for `radish`. Just to explain how it works ;
-
-For e.g.
-```bash
-[~] $ terraform-compliance -f /path/to/features -t /path/to/terraform_files -v
-terraform-compliance v1.0.0 initiated
-...
-...
-...
-Running tests.
-0.13.0  <--- This is coming from radish directly.
-```
-Please note that `0.13.0` is the `radish` version comes from `-v` parameter.
-
-## FAQ
-
-- __Q.__ Where are the steps defined ?
-- __A.__ They all comes with `terraform-compliance`, you can just focus on BDD feature/scenario files.
-<br /><br />
-- __Q.__ What if I would like to add more steps ?
-- __A.__ You are welcome to contribute on any test, or just add an issue it will be added.
-<br /><br />
-- __Q.__ Where should `terraform-compliance` run ?
-- __A.__ Ideally in a CI/CD tool, where company policies are defined as feature files and all IaC is tested against. Trust, but verify.
+You can have a look to the [CHANGELOG](https://github.com/eerkunt/terraform-compliance/blob/master/CHANGELOG.md)
+for further information.
 
 ## License
 [MIT](https://tldrlegal.com/license/mit-license)
