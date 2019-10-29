@@ -277,8 +277,7 @@ class TestTerraformParser(TestCase):
             }
         }
         obj._mount_resources([source], [target], ref_type)
-        self.assertEqual(['a', {'some_key': 'some_value'}], obj.resources[target]['values'][ref_type])
-
+        self.assertEqual(['a', {'some_key': 'some_value', 'terraform-compliance.mounted': True}], obj.resources[target]['values'][ref_type])
 
     @patch.object(TerraformParser, '_read_file', return_value={})
     def test_mount_resources_without_ref_type(self, *args):
@@ -297,7 +296,7 @@ class TestTerraformParser(TestCase):
             }
         }
         obj._mount_resources([source], [target], ref_type)
-        self.assertEqual([{'some_key': 'some_value'}], obj.resources[target]['values'][ref_type])
+        self.assertEqual([{'some_key': 'some_value', 'terraform-compliance.mounted': True}], obj.resources[target]['values'][ref_type])
 
     @patch.object(TerraformParser, '_read_file', return_value={})
     def test_mount_resources_failure_if_source_resource_does_not_have_values(self, *args):
@@ -419,3 +418,4 @@ class TestTerraformParser(TestCase):
 
         self.assertEqual(obj.find_resources_by_type('invalid_resource'),
                          [])
+
