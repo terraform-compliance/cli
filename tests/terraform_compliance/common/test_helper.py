@@ -10,7 +10,8 @@ from terraform_compliance.common.helper import (
     are_networks_same,
     convert_resource_type,
     seek_regex_key_in_dict_values,
-    jsonify
+    jsonify,
+    remove_mounted_resources
 )
 from terraform_compliance.common.exceptions import Failure
 from tests.mocks import MockedData
@@ -208,3 +209,32 @@ class TestHelperFunctions(TestCase):
         self.assertEqual(jsonify(12), 12)
         self.assertEqual(jsonify('something'), 'something')
         self.assertEqual(jsonify('{"test": "test_value"}'), {'test': 'test_value'})
+
+    def test_remove_mounted_resources(self, *args):
+        resource_list = {
+            'address': 'aws_subnet.test',
+            'type': 'aws_subnet',
+            'name': 'test',
+            'values': {
+                'tags': None,
+                'aws_vpc': [
+                    {
+                        'tags': {
+                            'Environment': 'Sandbox',
+                            'Name': 'mcrilly-sandbox'
+                        },
+                        'aws_subnet': [
+                            {
+                                'tags': None,
+                                'terraform-compliance.mounted': True
+                            }
+                        ], 'terraform-compliance.mounted': True
+                    }
+                ]
+            },
+            'terraform-compliance.mounted_resources': [
+                'aws_vpc'
+            ]
+        }
+        output = remove_mounted_resources([resource_list])
+        self.assertEqual({'tags': None}, output[0]['values'])

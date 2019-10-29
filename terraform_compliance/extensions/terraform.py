@@ -21,12 +21,18 @@ class TerraformParser(object):
 
         self.raw = self._read_file(filename)
         self.variables = None
-        self.resources = dict()
-        self.data = dict()
-        self.providers = dict()
-        self.configuration = dict(resources=dict(), variables=dict())
+        self.resources = {}
+
+        self.data = {}
+
+        self.providers = {}
+
+        self.configuration = dict(resources={}
+                                  , variables={}
+                                  )
         self.file_type = "plan"
-        self.resources_raw = dict()
+        self.resources_raw = {}
+
 
         if parse_it:
             self.parse()
@@ -132,7 +138,8 @@ class TerraformParser(object):
         '''
 
         # Resources
-        self.configuration['resources'] = dict()
+        self.configuration['resources'] = {}
+
         for findings in seek_key_in_dict(self.raw.get('configuration', {}).get('root_module', {}), 'resources'):
             for resource in findings.get('resources', []):
                 if resource['address'].startswith('data'):
@@ -141,12 +148,14 @@ class TerraformParser(object):
                     self.configuration['resources'][resource['address']] = resource
 
         # Variables
-        self.configuration['variables'] = dict()
+        self.configuration['variables'] = {}
+
         for findings in seek_key_in_dict(self.raw.get('configuration', {}).get('root_module', {}), 'variables'):
             self.configuration['variables'] = findings.get('variables', {})
 
         # Providers
-        self.configuration['providers'] = dict()
+        self.configuration['providers'] = {}
+
         for findings in seek_key_in_dict(self.raw.get('configuration', {}), 'provider_config'):
             self.configuration['providers'] = findings.get('provider_config', {})
 
@@ -169,13 +178,18 @@ class TerraformParser(object):
                 if 'values' not in self.resources[target_resource]:
                     continue
 
+                resource = deepcopy(self.resources[source_resource]['values'])
+                resource['terraform-compliance.mounted'] = True
+
+                self.resources[target_resource]['terraform-compliance.mounted_resources'] = []
+
                 if ref_type not in self.resources[target_resource]['values']:
-                    self.resources[target_resource]['values'][ref_type] = list()
-                    self.resources[target_resource]['values'][ref_type].append(
-                        deepcopy(self.resources[source_resource]['values']))
+                    self.resources[target_resource]['values'][ref_type] = []
+                    self.resources[target_resource]['values'][ref_type].append(resource)
+                    self.resources[target_resource]['terraform-compliance.mounted_resources'].append(ref_type)
                 else:
-                    self.resources[target_resource]['values'][ref_type].append(
-                        deepcopy(self.resources[source_resource]['values']))
+                    self.resources[target_resource]['values'][ref_type].append(resource)
+                    self.resources[target_resource]['terraform-compliance.mounted_resources'].append(ref_type)
 
     def _find_resource_from_name(self, resource_name):
         '''
@@ -187,7 +201,7 @@ class TerraformParser(object):
         if resource_name in self.resources:
             return [resource_name]
 
-        resource_list = list()
+        resource_list = []
 
         resource_type, resource_id = resource_name.split('.')[0:2]
         for key, value in self.resources.items():
@@ -209,7 +223,7 @@ class TerraformParser(object):
         # in opposite ways, depending on the provider structure.
         for resource in self.configuration['resources']:
             if 'expressions' in self.configuration['resources'][resource]:
-                ref_list = list()
+                ref_list = []
                 for key, value in self.configuration['resources'][resource]['expressions'].items():
                     if 'references' in value:
                         ref_list.extend([self._find_resource_from_name(ref) for ref in value['references']
@@ -242,7 +256,8 @@ class TerraformParser(object):
             resource_provider = resource_name.split('_')[0]
 
             if resource_provider not in self.providers:
-                self.providers[resource_provider] = dict()
+                self.providers[resource_provider] = {}
+
 
             self.providers[resource_provider][resource_name] = resource_data
 
@@ -272,7 +287,7 @@ class TerraformParser(object):
         :param resource_type: String of resource type defined in terraform
         :return: list of dict including resources
         '''
-        resource_list = list()
+        resource_list = []
 
         for _, resource_data in self.resources.items():
             if resource_type == 'any':
@@ -289,7 +304,7 @@ class TerraformParser(object):
         :param resource_type: String of resource type defined in terraform
         :return: list of dict including resources
         '''
-        resource_list = list()
+        resource_list = []
 
         for _, resource_data in self.data.items():
             if resource_data['type'] == resource_type.lower():

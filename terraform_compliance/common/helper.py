@@ -4,6 +4,7 @@ from terraform_compliance.steps import resource_name
 from terraform_compliance.common.exceptions import Failure
 from collections.abc import Iterable
 import json
+from copy import deepcopy
 
 
 class EmptyStash(object):
@@ -298,3 +299,16 @@ def get_resource_address_list_from_stash(resource_list):
                 address_list.append(resource['address'])
 
     return address_list
+
+def remove_mounted_resources(resource_list):
+    if type(resource_list) is not list:
+        return resource_list
+
+    resources = deepcopy(resource_list)
+    for resource in resources:
+        if 'terraform-compliance.mounted_resources' in resource:
+            for mounted_resource_type in resource['terraform-compliance.mounted_resources']:
+                if mounted_resource_type in resource['values']:
+                    del resource['values'][mounted_resource_type]
+
+    return resources
