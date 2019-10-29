@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.0.52 (2019-10-29)
+* Fixed a problem where resource mounting were causing a issues on `resources that support tags`. ([#168](https://github.com/eerkunt/terraform-compliance/issues/168))
+
 ## 1.0.51 (2019-09-17)
 * Fixed a problem where multiple resources were reported even some not failed. ([#153](https://github.com/eerkunt/terraform-compliance/issues/153))
 
