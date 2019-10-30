@@ -3,6 +3,7 @@
 ## 1.0.53 (2019-10-30)
 * Fixed a problem where resource names were reported wrong in some failures. ([#171](https://github.com/eerkunt/terraform-compliance/issues/171))
 * Fixed a problem where in some cases `teraform-compliance` where giving `AttributeError: 'NoneType' object has no attribute 'get'` exception. ([#172](https://github.com/eerkunt/terraform-compliance/issues/172))
+* Supporting multiple provider or providers aliases. ([#173](https://github.com/eerkunt/terraform-compliance/issues/173))
 
 ## 1.0.52 (2019-10-29)
 * Fixed a problem where resource mounting were causing a issues on `resources that support tags`. ([#168](https://github.com/eerkunt/terraform-compliance/issues/168))
