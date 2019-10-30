@@ -314,6 +314,9 @@ class MockedWorldConfigTerraform(object):
             if value['type'] == resource_type:
                 return [value]
 
+    def get_providers_from_configuration(self, provider_type):
+        return []
+
 
 class MockedTerraformPropertyList(object):
     def __init__(self):
