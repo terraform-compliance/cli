@@ -89,10 +89,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
             return True
 
     elif type_name == 'provider':
-        found_provider = [_terraform_config.config.terraform.configuration.get('providers', {}).get(name, None)]
-
-        if found_provider == [None]:
-            found_provider = _terraform_config.config.terraform.get_providers_from_configuration('aws')
+        found_provider = _terraform_config.config.terraform.get_providers_from_configuration('aws')
 
         if found_provider:
             _step_obj.context.type = type_name
