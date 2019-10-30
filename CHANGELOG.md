@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.0.54 (2019-10-30)
+* Fixed a problem on providers discovery where some providers have alias, some doesn't. ([#173](https://github.com/eerkunt/terraform-compliance/issues/173))
+
 ## 1.0.53 (2019-10-30)
 * Fixed a problem where resource names were reported wrong in some failures. ([#171](https://github.com/eerkunt/terraform-compliance/issues/171))
 * Fixed a problem where in some cases `teraform-compliance` where giving `AttributeError: 'NoneType' object has no attribute 'get'` exception. ([#172](https://github.com/eerkunt/terraform-compliance/issues/172))
