@@ -10,7 +10,9 @@ from terraform_compliance.common.helper import (
     are_networks_same,
     convert_resource_type,
     seek_regex_key_in_dict_values,
-    jsonify
+    jsonify,
+    remove_mounted_resources,
+    get_resource_name_from_stash
 )
 from terraform_compliance.common.exceptions import Failure
 from tests.mocks import MockedData
@@ -208,3 +210,44 @@ class TestHelperFunctions(TestCase):
         self.assertEqual(jsonify(12), 12)
         self.assertEqual(jsonify('something'), 'something')
         self.assertEqual(jsonify('{"test": "test_value"}'), {'test': 'test_value'})
+
+    def test_remove_mounted_resources(self, *args):
+        resource_list = {
+            'address': 'aws_subnet.test',
+            'type': 'aws_subnet',
+            'name': 'test',
+            'values': {
+                'tags': None,
+                'aws_vpc': [
+                    {
+                        'tags': {
+                            'Environment': 'Sandbox',
+                            'Name': 'mcrilly-sandbox'
+                        },
+                        'aws_subnet': [
+                            {
+                                'tags': None,
+                                'terraform-compliance.mounted': True
+                            }
+                        ], 'terraform-compliance.mounted': True
+                    }
+                ]
+            },
+            'terraform-compliance.mounted_resources': [
+                'aws_vpc'
+            ]
+        }
+        output = remove_mounted_resources([resource_list])
+        self.assertEqual({'tags': None}, output[0]['values'])
+
+    def test_get_resource_name_from_stash_address_exists(self):
+        stash = {}
+        self.assertEqual({'address': 'test'}, get_resource_name_from_stash(stash=stash, address='test'))
+
+    def test_get_resource_name_from_stash(self):
+        stash = [
+            {
+                'address': 'test'
+            }
+        ]
+        self.assertEqual({'address': 'test'}, get_resource_name_from_stash(stash=stash))

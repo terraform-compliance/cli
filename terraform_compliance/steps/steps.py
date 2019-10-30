@@ -5,6 +5,7 @@ from terraform_compliance.steps import property_match_list
 from terraform_compliance.common.helper import check_sg_rules, convert_resource_type, find_root_by_key, seek_key_in_dict
 from terraform_compliance.common.helper import seek_regex_key_in_dict_values, jsonify, Null, EmptyStash
 from terraform_compliance.common.helper import get_resource_name_from_stash, get_resource_address_list_from_stash
+from terraform_compliance.common.helper import remove_mounted_resources
 from terraform_compliance.extensions.ext_radish_bdd import skip_step
 from terraform_compliance.extensions.ext_radish_bdd import custom_type_any
 from terraform_compliance.extensions.ext_radish_bdd import custom_type_condition
@@ -53,7 +54,11 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
                                                         return_key='type')
         resource_list = []
         for resource_type in resource_types_supports_tags:
-            resource_list.extend(_terraform_config.config.terraform.find_resources_by_type(resource_type))
+            # Issue-168: Mounted resources causes problem on recursive searching for resources that supports tags
+            #            We are removing all mounted resources here for future steps, since we don't need them for
+            #            tags checking.
+            found_resources = remove_mounted_resources(_terraform_config.config.terraform.find_resources_by_type(resource_type))
+            resource_list.extend(found_resources)
 
         if resource_list:
             _step_obj.context.type = type_name
@@ -382,7 +387,6 @@ def i_action_them(_step_obj, action_type):
     else:
         raise TerraformComplianceNotImplemented('Invalid action_type in the scenario: {}'.format(action_type))
 
-
 @then(u'its value must be {operator:ANY} than {number:d}')
 @then(u'I expect the result is {operator:ANY} than {number:d}')
 @then(u'its value must be {operator:ANY} to {number:d}')
@@ -426,7 +430,6 @@ def i_expect_the_result_is_operator_than_number(_step_obj, operator, number, _st
     elif type(values) is Null:
         raise TerraformComplianceNotImplemented('Null/Empty value found on {}'.format(_step_obj.context.type))
 
-
 @step(u'its value {condition:ANY} match the "{search_regex}" regex')
 def its_value_condition_match_the_search_regex_regex(_step_obj, condition, search_regex, _stash=EmptyStash):
     def fail(condition, name=None):
@@ -447,7 +450,7 @@ def its_value_condition_match_the_search_regex_regex(_step_obj, condition, searc
         matches = re.match(regex, str(values), flags=re.IGNORECASE)
 
         if (condition == 'must' and matches is None) or (condition == "must not" and matches is not None):
-            _stash = get_resource_name_from_stash(_step_obj.context.stash, _stash)
+            _stash = get_resource_name_from_stash(_step_obj.context.stash, _stash, _step_obj.context.address)
             fail(condition, name=_stash.get('address'))
 
     elif type(values) is list:
@@ -455,6 +458,11 @@ def its_value_condition_match_the_search_regex_regex(_step_obj, condition, searc
             its_value_condition_match_the_search_regex_regex(_step_obj, condition, search_regex, value)
 
     elif type(values) is dict:
+        if not hasattr(_step_obj.context, 'address'):
+            _step_obj.context.address = None
+
+        _step_obj.context.address = values.get('address', _step_obj.context.address)
+
         if 'values' in values:
             if values['values'] is None and regex == '\x00' and condition == 'must not':
                 values = values['values']
@@ -466,11 +474,9 @@ def its_value_condition_match_the_search_regex_regex(_step_obj, condition, searc
             for key, value in values.items():
                 its_value_condition_match_the_search_regex_regex(_step_obj, condition, search_regex, value)
 
-
 @step(u'its value {condition:ANY} be {match:ANY}')
 def its_value_condition_equal(_step_obj, condition, match, _stash=EmptyStash):
     its_value_condition_match_the_search_regex_regex(_step_obj, condition, "^" + re.escape(match) + "$", _stash)
-
 
 @then(u'its value {condition:ANY} contain {value:ANY}')
 def its_value_condition_contain(_step_obj, condition, value, _stash=EmptyStash):
@@ -482,7 +488,6 @@ def its_value_condition_contain(_step_obj, condition, value, _stash=EmptyStash):
         _its_value_condition_contain(_step_obj, condition, value, values.get('values', Null))
     elif type(values) is Null:
         raise TerraformComplianceNotImplemented('Null/Empty value found on {}'.format(_step_obj.context.type))
-
 
 def _its_value_condition_contain(_step_obj, condition, value, values):
     assert condition in ('must', 'must not'), 'Condition should be one of: `must`, `must not`'
@@ -506,7 +511,6 @@ def _its_value_condition_contain(_step_obj, condition, value, values):
     else:
         raise Failure('Can only check that if list contains value')
 
-
 @then(u'the scenario fails')
 @then(u'the scenario should fail')
 @then(u'the scenario must fail')
@@ -517,7 +521,6 @@ def it_fails(_step_obj):
     raise Failure('Forcefully failing the scenario on {} ({}) {}'.format(_step_obj.context.name,
                                                                          ', '.join(_step_obj.context.addresses),
                                                                          _step_obj.context.type))
-
 
 @then(u'its value {condition:ANY} be null')
 def its_value_condition_be_null(_step_obj, condition):
