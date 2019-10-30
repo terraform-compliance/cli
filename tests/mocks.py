@@ -305,7 +305,11 @@ class MockedWorldConfigTerraform(object):
         }
         self.configuration = {
             'providers' : {
-                'some_provider': 'some_provider_value'
+                'some_provider.some_provider_alias': {
+                    'name': 'some_provider',
+                    'alias': 'some_provider_alias',
+                    'some_provider': 'some_provider_value'
+                }
             }
         }
 
@@ -315,6 +319,9 @@ class MockedWorldConfigTerraform(object):
                 return [value]
 
     def get_providers_from_configuration(self, provider_type):
+        if provider_type == 'some_provider':
+            return ['some_provider']
+
         return []
 
 
