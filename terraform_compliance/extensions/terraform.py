@@ -311,3 +311,17 @@ class TerraformParser(object):
                 resource_list.append(resource_data)
 
         return resource_list
+
+    def get_providers_from_configuration(self, provider_type):
+        '''
+        Returns all providers as a list for the given provider type
+
+        :param provider_type: String of a provider type like aws
+        :return: list of providers that has this type
+        '''
+        providers = []
+        for provider_alias, values in self.configuration['providers'].items():
+            if type(values) is dict and values.get('name') == provider_type:
+                providers.append(values)
+
+        return providers

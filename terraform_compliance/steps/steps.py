@@ -89,7 +89,10 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
             return True
 
     elif type_name == 'provider':
-        found_provider = _terraform_config.config.terraform.configuration.get('providers', {}).get(name, None)
+        found_provider = [_terraform_config.config.terraform.configuration.get('providers', {}).get(name, None)]
+
+        if found_provider == [None]:
+            found_provider = _terraform_config.config.terraform.get_providers_from_configuration('aws')
 
         if found_provider:
             _step_obj.context.type = type_name
@@ -136,7 +139,7 @@ def its_key_is_value(_step_obj, key, value):
             if "[" in object_key:
                 object_key = object_key.split('[')[0]
 
-            if object_key == value:
+            if object_key.lower() == value.lower():
                 found_list.append(obj)
 
         elif type(object_key) in (int, bool) and object_key == value:
@@ -278,17 +281,23 @@ def it_condition_contain_something(_step_obj, something):
                           'terraform plan.'.format(something, _step_obj.context.name))
 
     elif _step_obj.context.type == 'provider':
-        values = seek_key_in_dict(_step_obj.context.stash, something)
+        for provider_data in _step_obj.context.stash:
+            values = seek_key_in_dict(provider_data, something)
 
-        if values:
-            _step_obj.context.stash = values
-            _step_obj.context.property_name = something
-            return True
-        elif 'must' in _step_obj.context_sensitive_sentence:
+            if values:
+                _step_obj.context.stash = values
+                _step_obj.context.property_name = something
+                _step_obj.context.address = '{}.{}'.format(provider_data.get('name', _step_obj.context.addresses),
+                                                           provider_data.get('alias', "\b"))
+                return True
+            elif 'must' in _step_obj.context_sensitive_sentence:
+                raise Failure('{} {} does not have {} property.'.format(_step_obj.context.addresses,
+                                                                        _step_obj.context.type,
+                                                                        something))
+        if 'must' in _step_obj.context_sensitive_sentence:
             raise Failure('{} {} does not have {} property.'.format(_step_obj.context.addresses,
-                                                                      _step_obj.context.type,
-                                                                      something))
-
+                                                                    _step_obj.context.type,
+                                                                    something))
     skip_step(_step_obj,
               resource=_step_obj.context.name,
               message='Skipping the step since {} type does not have {} property.'.format(_step_obj.context.type,
@@ -408,8 +417,12 @@ def i_expect_the_result_is_operator_than_number(_step_obj, operator, number, _st
             i_expect_the_result_is_operator_than_number(_step_obj, operator, number, _stash=value_set)
 
     elif type(values) is dict:
-        _step_obj.context.property_name = values.get('type')
-        _step_obj.context.address = values.get('address')
+        _step_obj.context.property_name = values.get('type', _step_obj.context.property_name)
+        _step_obj.context.address = values.get('address', _step_obj.context.addresses)
+
+        if type(_step_obj.context.address) is list and len(_step_obj.context.address) == 1:
+            _step_obj.context.address = _step_obj.context.address[0]
+
         i_expect_the_result_is_operator_than_number(_step_obj, operator, number, values.get('values', Null))
 
     elif type(values) is int or type(values) is str:
@@ -430,7 +443,7 @@ def i_expect_the_result_is_operator_than_number(_step_obj, operator, number, _st
     elif type(values) is Null:
         raise TerraformComplianceNotImplemented('Null/Empty value found on {}'.format(_step_obj.context.type))
 
-@step(u'its value {condition:ANY} match the "{search_regex}" regex')
+@then(u'its value {condition:ANY} match the "{search_regex}" regex')
 def its_value_condition_match_the_search_regex_regex(_step_obj, condition, search_regex, _stash=EmptyStash):
     def fail(condition, name=None):
         text = 'matches' if condition == 'must not' else 'does not match'

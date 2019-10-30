@@ -189,7 +189,7 @@ class Test_Step_Cases(TestCase):
     def test_it_condition_contain_something_provider_found(self, *args):
         step = MockedStep()
         step.context.type = 'provider'
-        step.context.stash = []
+        step.context.stash = [{'name': 'test'}]
 
         self.assertTrue(it_condition_contain_something(step, 'something'))
 
