@@ -450,7 +450,7 @@ def its_value_condition_match_the_search_regex_regex(_step_obj, condition, searc
         matches = re.match(regex, str(values), flags=re.IGNORECASE)
 
         if (condition == 'must' and matches is None) or (condition == "must not" and matches is not None):
-            _stash = get_resource_name_from_stash(_step_obj.context.stash, _stash)
+            _stash = get_resource_name_from_stash(_step_obj.context.stash, _stash, _step_obj.context.address)
             fail(condition, name=_stash.get('address'))
 
     elif type(values) is list:
@@ -458,6 +458,11 @@ def its_value_condition_match_the_search_regex_regex(_step_obj, condition, searc
             its_value_condition_match_the_search_regex_regex(_step_obj, condition, search_regex, value)
 
     elif type(values) is dict:
+        if not hasattr(_step_obj.context, 'address'):
+            _step_obj.context.address = None
+
+        _step_obj.context.address = values.get('address', _step_obj.context.address)
+
         if 'values' in values:
             if values['values'] is None and regex == '\x00' and condition == 'must not':
                 values = values['values']

@@ -276,7 +276,10 @@ def jsonify(string):
         return string
 
 
-def get_resource_name_from_stash(stash, alternative_stash=None):
+def get_resource_name_from_stash(stash, alternative_stash=None, address=None):
+    if address is not None:
+        return {'address': address}
+
     if type(alternative_stash) is str or type(alternative_stash) is bool or alternative_stash is None:
         if type(stash) is list:
 
