@@ -89,7 +89,10 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
             return True
 
     elif type_name == 'provider':
-        found_provider = _terraform_config.config.terraform.configuration.get('providers', {}).get(name, None)
+        found_provider = [_terraform_config.config.terraform.configuration.get('providers', {}).get(name, None)]
+
+        if found_provider == [None]:
+            found_provider = _terraform_config.config.terraform.get_providers_from_configuration('aws')
 
         if found_provider:
             _step_obj.context.type = type_name
@@ -278,16 +281,19 @@ def it_condition_contain_something(_step_obj, something):
                           'terraform plan.'.format(something, _step_obj.context.name))
 
     elif _step_obj.context.type == 'provider':
-        values = seek_key_in_dict(_step_obj.context.stash, something)
+        for provider_data in _step_obj.context.stash:
+            values = seek_key_in_dict(provider_data, something)
 
-        if values:
-            _step_obj.context.stash = values
-            _step_obj.context.property_name = something
-            return True
-        elif 'must' in _step_obj.context_sensitive_sentence:
-            raise Failure('{} {} does not have {} property.'.format(_step_obj.context.addresses,
-                                                                      _step_obj.context.type,
-                                                                      something))
+            if values:
+                _step_obj.context.stash = values
+                _step_obj.context.property_name = something
+                _step_obj.context.address = '{}.{}'.format(provider_data.get('name', _step_obj.context.addresses),
+                                                           provider_data.get('alias', "\b"))
+                return True
+            elif 'must' in _step_obj.context_sensitive_sentence:
+                raise Failure('{} {} does not have {} property.'.format(_step_obj.context.addresses,
+                                                                        _step_obj.context.type,
+                                                                        something))
 
     skip_step(_step_obj,
               resource=_step_obj.context.name,
