@@ -11,7 +11,8 @@ from terraform_compliance.common.helper import (
     convert_resource_type,
     seek_regex_key_in_dict_values,
     jsonify,
-    remove_mounted_resources
+    remove_mounted_resources,
+    get_resource_name_from_stash
 )
 from terraform_compliance.common.exceptions import Failure
 from tests.mocks import MockedData
@@ -238,3 +239,15 @@ class TestHelperFunctions(TestCase):
         }
         output = remove_mounted_resources([resource_list])
         self.assertEqual({'tags': None}, output[0]['values'])
+
+    def test_get_resource_name_from_stash_address_exists(self):
+        stash = {}
+        self.assertEqual({'address': 'test'}, get_resource_name_from_stash(stash=stash, address='test'))
+
+    def test_get_resource_name_from_stash(self):
+        stash = [
+            {
+                'address': 'test'
+            }
+        ]
+        self.assertEqual({'address': 'test'}, get_resource_name_from_stash(stash=stash))
