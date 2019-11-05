@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.0.55 (2019-11-05)
+* Fixed a problem where filtering steps were failing on properly performing if the data is a list of dict of lists. E.g. `aws_iam_policy` with multiple heredoc policy statements. ([#177](https://github.com/eerkunt/terraform-compliance/issues/177))
+* Added integration tests into the build pipeline for allowing end-to-end tests. 
 ## 1.0.54 (2019-10-30)
 * Fixed a problem on providers discovery where some providers have alias, some doesn't. ([#173](https://github.com/eerkunt/terraform-compliance/issues/173))
 
