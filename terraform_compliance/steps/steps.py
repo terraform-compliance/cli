@@ -126,7 +126,12 @@ def its_key_is_value(_step_obj, key, value):
             if type(object_key) is list:
                 object_keys = []
                 for object_key_element in object_key:
-                    object_keys.append(object_key_element.get(key, Null))
+                    if type(object_key_element) is dict:
+                        filtered_key = object_key_element.get(key)
+                        if type(filtered_key) is str and filtered_key.lower() == value.lower():
+                            found_list.append(object_key_element)
+                    else:
+                        object_keys.append(object_key_element.get(key, Null))
 
                 object_key = [keys for keys in object_keys if keys is not Null]
             else:
@@ -209,12 +214,14 @@ def it_condition_contain_something(_step_obj, something):
 
     if _step_obj.context.type in ('resource', 'data'):
         for resource in _step_obj.context.stash:
-            if type(resource) is not dict:
+            if type(resource) is not dict or 'values' not in resource or 'address' not in resource or 'type' not in resource:
                 resource = {'values': resource,
                             'address': resource,
                             'type': _step_obj.context.name}
 
             values = resource.get('values', resource.get('expressions', {}))
+            if not values:
+                values = seek_key_in_dict(resource, something)
 
             found_value = Null
             found_key = Null

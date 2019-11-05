@@ -26,8 +26,8 @@ def convert_terraform_plan_to_json(terraform_plan_file, terraform_executable=Non
         print('Using {} as terraform executable.'.format(terraform_executable))
 
     if terraform_executable is None:
-        print('ERROR: Could not find "terraform" executable in PATH. Please either use "-t" parameter or add terraform '
-              'executable to your PATH.')
+        sys.stderr.write('ERROR: Could not find "terraform" executable in PATH. Please either use "-t" parameter or add terraform '
+              'executable to your PATH.\n')
         sys.exit(1)
 
     path = os.path.dirname(terraform_plan_file)
@@ -42,16 +42,16 @@ def convert_terraform_plan_to_json(terraform_plan_file, terraform_executable=Non
                                        stdout=FP_plan_file,
                                        stderr=subprocess.PIPE)
     except FileNotFoundError as err:
-        print('ERROR: {} does not exist. Please give correct executable for "terraform".'.format(terraform_executable))
-        print('       {}'.format(str(err)))
+        sys.stderr.write('ERROR: {} does not exist. Please give correct executable for "terraform".\n'.format(terraform_executable))
+        sys.stderr.write('       {}\n'.format(str(err)))
         sys.exit(1)
     except PermissionError  as err:
-        print('ERROR: {} is not executable. Please give correct executable for "terraform".'.format(terraform_executable))
-        print('       {}'.format(str(err)))
+        sys.stderr.write('ERROR: {} is not executable. Please give correct executable for "terraform".\n'.format(terraform_executable))
+        sys.stderr.write('       {}\n'.format(str(err)))
         sys.exit(1)
     except OSError as err:
-        print('ERROR: {} does not look like terraform. Please give correct executable for "terraform".'.format(terraform_executable))
-        print('       {}'.format(str(err)))
+        sys.stderr.write('ERROR: {} does not look like terraform. Please give correct executable for "terraform".\n'.format(terraform_executable))
+        sys.stderr.write('       {}\n'.format(str(err)))
         sys.exit(1)
 
     os.chdir(cwd)
@@ -59,7 +59,7 @@ def convert_terraform_plan_to_json(terraform_plan_file, terraform_executable=Non
     if terraform.returncode == 0:
         return '{}.json'.format(terraform_plan_file)
 
-    print('ERROR: Failed to convert terraform plan file to JSON format via terraform. Here is the error :')
+    sys.stderr.write('ERROR: Failed to convert terraform plan file to JSON format via terraform. Here is the error :\n')
     print(terraform.stdout)
     print(terraform.stderr)
 
