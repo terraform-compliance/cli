@@ -1,0 +1,1 @@
+Failure: port property in aws_lb_listener.tcp-listener-noncompliant resource does not match with .* regex. It is set to 80.

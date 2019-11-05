@@ -1,0 +1,1 @@
+Failure: access_key property in aws.should-fail provider matches with .* regex. It is set to AKIAIOSFODNN7EXAMPLE.

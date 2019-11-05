@@ -1,0 +1,1 @@
+Failure: ssl_certificate_id property in aws_elb.bar resource does not match with .*acm.* regex. It is set to arn:aws:iam::123456789012:server-certificate/certName.

@@ -1,0 +1,1 @@
+Failure: Action property in aws_kms_key.example resource does not match with abc123 regex. It is set to kms:ReEncrypt*.

@@ -1,0 +1,1 @@
+Failure: Action property in aws_iam_policy.policy resource does not match with \^\(kms:Encrypt\|kms:Decrypt\)\$ regex. It is set to ec2:Describe.

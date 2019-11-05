@@ -1,0 +1,1 @@
+Failure: aws_subnet.test \(aws_subnet\) does not have Name property.

@@ -1,0 +1,1 @@
+Failure: kms_key_id property in aws_sagemaker_notebook_instance.foo resource does not match with .*kms.* regex. It is set to None.

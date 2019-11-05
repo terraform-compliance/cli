@@ -22,12 +22,17 @@ install:
 after_success: coveralls
 jobs:
   include:
-    - stage: Tests
+    - stage: Unit Tests
       provider: script
       script:
         - py.test -v
         - coverage run --source terraform_compliance setup.py test
         - echo "Current tag is $TRAVIS_TAG"
+
+    - stage: Integration Tests
+      provider: script
+      script:
+        - tox -e integration
 
     - stage: Build & Deploy (PYPI)
       script:

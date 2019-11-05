@@ -1,0 +1,95 @@
+{
+  "format_version": "0.1",
+  "terraform_version": "0.12.1",
+  "planned_values": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "aws_iam_policy.policy",
+          "mode": "managed",
+          "type": "aws_iam_policy",
+          "name": "policy",
+          "provider_name": "aws",
+          "schema_version": 0,
+          "values": {
+            "description": "My test policy",
+            "name": "test_policy",
+            "name_prefix": null,
+            "path": "/",
+            "policy": "{\r\n  \"Version\": \"2012-10-17\",\r\n  \"Statement\": [\r\n    {\r\n      \"Action\": [\r\n        \"ec2:Describe\"\r\n      ],\r\n      \"Effect\": \"Allow\",\r\n      \"Resource\": \"*\"\r\n    }\r\n  ]\r\n}\r\n"
+          }
+        }
+      ]
+    }
+  },
+  "resource_changes": [
+    {
+      "address": "aws_iam_policy.policy",
+      "mode": "managed",
+      "type": "aws_iam_policy",
+      "name": "policy",
+      "provider_name": "aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "description": "My test policy",
+          "name": "test_policy",
+          "name_prefix": null,
+          "path": "/",
+          "policy": "{\r\n  \"Version\": \"2012-10-17\",\r\n  \"Statement\": [\r\n    {\r\n      \"Action\": [\r\n        \"ec2:Describe\"\r\n      ],\r\n      \"Effect\": \"Allow\",\r\n      \"Resource\": \"*\"\r\n    }\r\n  ]\r\n}\r\n"
+        },
+        "after_unknown": {
+          "arn": true,
+          "id": true
+        }
+      }
+    }
+  ],
+  "configuration": {
+    "provider_config": {
+      "aws": {
+        "name": "aws",
+        "expressions": {
+          "region": {
+            "constant_value": "us-west-1"
+          },
+          "skip_credentials_validation": {
+            "constant_value": true
+          },
+          "skip_requesting_account_id": {
+            "constant_value": true
+          }
+        }
+      }
+    },
+    "root_module": {
+      "resources": [
+        {
+          "address": "aws_iam_policy.policy",
+          "mode": "managed",
+          "type": "aws_iam_policy",
+          "name": "policy",
+          "provider_config_key": "aws",
+          "expressions": {
+            "description": {
+              "constant_value": "My test policy"
+            },
+            "name": {
+              "constant_value": "test_policy"
+            },
+            "path": {
+              "constant_value": "/"
+            },
+            "policy": {
+              "constant_value": "{\r\n  \"Version\": \"2012-10-17\",\r\n  \"Statement\": [\r\n    {\r\n      \"Action\": [\r\n        \"ec2:Describe\"\r\n      ],\r\n      \"Effect\": \"Allow\",\r\n      \"Resource\": \"*\"\r\n    }\r\n  ]\r\n}\r\n"
+            }
+          },
+          "schema_version": 0
+        }
+      ]
+    }
+  }
+}

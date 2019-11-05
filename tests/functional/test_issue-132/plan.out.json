@@ -1,0 +1,28 @@
+{
+    "format_version": "0.1",
+    "terraform_version": "0.12.3",
+    "configuration": { "something":  true },
+    "planned_values": {
+        "root_module": {
+            "resources": [{
+                "address": "aws_sagemaker_notebook_instance.foo",
+                "mode": "managed",
+                "type": "aws_sagemaker_notebook_instance",
+                "name": "foo",
+                "provider_name": "aws",
+                "schema_version": 0,
+                "values": {
+                    "instance_type": "ml.t2.medium",
+                    "kms_key_id": null,
+                    "lifecycle_config_name": null,
+                    "name": "my-notebook-instance",
+                    "role_arn": "arn:aws:iam::123456789012:role/S3Access",
+                    "subnet_id": null,
+                    "tags": {
+                        "Name": "foo"
+                    }
+                }
+            }]
+        }
+    }
+}
