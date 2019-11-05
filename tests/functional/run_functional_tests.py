@@ -93,7 +93,7 @@ for test_dir in tests:
     test_summary.append('{:.<40s}{:.>60s}'.format(test_dir, test_result))
 
 print('\n\nRan {} tests.'.format(len(tests)))
-print('\n'.join(test_summary))
+print('\n'.join(sorted(test_summary)))
 
 if failure_happened:
     sys.exit(1)
