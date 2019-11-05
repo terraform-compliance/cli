@@ -18,7 +18,7 @@ addons:
 install:
   - pip install coveralls
   - pip install -r requirements.txt
-  - pip install jinja2-cli
+  - pip install jinja2-cli tox
 after_success: coveralls
 jobs:
   include:
