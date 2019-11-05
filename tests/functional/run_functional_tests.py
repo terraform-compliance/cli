@@ -31,9 +31,8 @@ for test_dir in tests:
     directory = '{}/{}'.format(Config.test_dir, test_dir)
 
     test_result = ''
-
-    negative_tests = ''
     expected = ''
+
     if not os.path.isfile('{}/plan.out.json'.format(directory)) or not os.path.isfile('{}/test.feature'.format(directory)):
         test_result = colorful.orange('skipped')
     else:
@@ -91,7 +90,7 @@ for test_dir in tests:
 
             print('Output: {}'.format(e.stdout))
 
-    test_summary.append('{:.<30s}{:.<10s}{:.>60s}'.format(test_dir, negative_tests, test_result))
+    test_summary.append('{:.<40s}{:.>60s}'.format(test_dir, test_result))
 
 print('\n\nRan {} tests.'.format(len(tests)))
 print('\n'.join(test_summary))

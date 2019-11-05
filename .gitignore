@@ -17,3 +17,7 @@ terraform_compliance.egg-info
 
 .DS_Store
 terraform-compliance.iml
+
+**/.terraform
+**/plan.out
+example
