@@ -35,13 +35,10 @@ for test_dir in tests:
     negative_tests = ''
     expected = ''
     if not os.path.isfile('{}/plan.out.json'.format(directory)) or not os.path.isfile('{}/test.feature'.format(directory)):
-        test_result = colorful.bold_orange('skipped')
+        test_result = colorful.orange('skipped')
     else:
         if os.path.isfile('{}/.failure'.format(directory)):
             parameters.append('--wip')
-            negative_tests = colorful.yellow('(negative)')
-        else:
-            negative_tests = colorful.green('(positive)')
 
         if os.path.isfile('{}/.expected'.format(directory)):
             with open('{}/.expected'.format(directory)) as expected_file:
@@ -68,28 +65,28 @@ for test_dir in tests:
             if test_process.returncode == 0:
                 if expected:
                     if re.findall(expected, str(test_process.stdout)):
-                        test_result = colorful.bold_green('passed')
+                        test_result = colorful.green('passed')
                     else:
                         print('\nOutput: {}'.format(test_process.stdout))
-                        test_result = colorful.bold_red('failed')
+                        test_result = colorful.red('failed')
                         print('Can not find ;')
                         print('\t{}'.format(colorful.yellow(expected)))
                         print('in the test output.\n')
                         failure_happened = True
                 else:
-                    test_result = colorful.bold_green('passed')
+                    test_result = colorful.green('passed')
             else:
                 print('Output: {}'.format(test_process.stdout))
-                test_result = colorful.bold_red('failed')
+                test_result = colorful.red('failed')
                 failure_happened = True
 
         except subprocess.CalledProcessError as e:
             failure_happened = True
 
             if e.returncode != 1:
-                test_result = colorful.bold_purple('errored')
+                test_result = colorful.orange('errored')
             else:
-                test_result = colorful.bold_red('failed')
+                test_result = colorful.red('failed')
                 print('Expected a different return code. Received {}'.format(colorful.yellow(e.returncode)))
 
             print('Output: {}'.format(e.stdout))

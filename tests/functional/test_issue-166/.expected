@@ -1,0 +1,1 @@
+ Failure: Name property in aws_security_group.instance resource does not match with terraform-compliance-test-156 regex. It is set to allow_all.
