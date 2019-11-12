@@ -1,5 +1,3 @@
-from os import environ
-
 
 class MockedData(object):
 
@@ -243,6 +241,7 @@ class MockedData(object):
     sg_params_list_range_public = dict(protocol=['tcp'], from_port=22, to_port=80, cidr_blocks=['0.0.0.0/0'])
     sg_params_list_range_private = dict(protocol=['tcp'], from_port=22, to_port=80, cidr_blocks=['192.168.0.0/23'])
 
+
 class MockedStep(object):
     def __init__(self, no_init=None):
         self.context = MockedStepContext()
@@ -255,9 +254,11 @@ class MockedStep(object):
     def skip(self):
         self.state = 'skipped'
 
+
 class MockedParentStep(object):
     def __init__(self):
         self.all_steps = [MockedStep(no_init=True), MockedStep(no_init=True), MockedStep(no_init=True)]
+
 
 class MockedStepContext(object):
     def __init__(self):
@@ -276,6 +277,7 @@ class MockedWorld(object):
 class MockedWorldConfig(object):
     def __init__(self):
         self.terraform = MockedWorldConfigTerraform()
+        self.formatter = 'gherkin'
 
 
 class MockedWorldConfigTerraform(object):
@@ -335,6 +337,7 @@ class MockedTerraformPropertyList(object):
     def should_match_regex(self, regex):
         return True
 
+
 class MockedTerraformProperty(object):
     def __init__(self):
         self.property_value = 'test_value'
@@ -344,6 +347,7 @@ class MockedTerraformProperty(object):
 
     def should_match_regex(self, regex):
         return True
+
 
 class MockedTerraformResourceList(object):
     def __init__(self, type={}):
@@ -391,6 +395,7 @@ class MockedArgHandling(object):
         self.features = '/path/to/features'
         self.tf_dir = '/path/to/terraform/files'
         self.enable_modules = False
+
 
 class MockedTerraformResource(object):
     def __init__(self):

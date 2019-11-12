@@ -15,7 +15,7 @@ def skip_step(step, resource=None, message=None):
     else:
         message = colorful.orange(message)
 
-    if world.config.formatter in ('gherkin'):
+    if str(world.config.formatter) in ('gherkin'):
         console_write("\t{}: {}".format(colorful.bold_purple('SKIPPING'),
                                         message.format(resource=colorful.magenta(resource)))
         )

@@ -37,7 +37,8 @@ class Test_Step_Cases(TestCase):
         self.assertEqual(step.context.name, name)
         self.assertEqual(step.context.type, type_name)
 
-    def test_i_have_name_section_configured_resource_that_supports_tags_not_found(self):
+    @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
+    def test_i_have_name_section_configured_resource_that_supports_tags_not_found(self, *args):
         step = MockedStep()
         world = MockedWorld()
         del world.config.terraform.resources['provider_type_id']
@@ -47,7 +48,8 @@ class Test_Step_Cases(TestCase):
         self.assertIsNone(i_have_name_section_configured(step, name, type_name, world))
         self.assertEqual(step.state, 'skipped')
 
-    def test_i_have_name_section_configured_resource_not_found(self):
+    @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
+    def test_i_have_name_section_configured_resource_not_found(self, *args):
         step = MockedStep()
         world = MockedWorld()
         name = 'non_existent_resource_id'
@@ -64,7 +66,8 @@ class Test_Step_Cases(TestCase):
 
         self.assertTrue(i_have_name_section_configured(step, name, type_name, world))
 
-    def test_i_have_name_section_configured_variable_not_found(self):
+    @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
+    def test_i_have_name_section_configured_variable_not_found(self, *args):
         step = MockedStep()
         world = MockedWorld()
         name = 'non_existent_variable'
@@ -81,7 +84,8 @@ class Test_Step_Cases(TestCase):
 
         self.assertTrue(i_have_name_section_configured(step, name, type_name, world))
 
-    def test_i_have_name_section_configured_provider_not_found(self):
+    @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
+    def test_i_have_name_section_configured_provider_not_found(self, *args):
         step = MockedStep()
         world = MockedWorld()
         name = 'non_existing_provider'
@@ -98,7 +102,8 @@ class Test_Step_Cases(TestCase):
 
         self.assertTrue(i_have_name_section_configured(step, name, type_name, world))
 
-    def test_it_condition_contain_something_resource_is_not_dict_failure(self):
+    @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
+    def test_it_condition_contain_something_resource_is_not_dict_failure(self, *args):
         step = MockedStep()
         step.context_sensitive_sentence = 'it must contain something'
         step.context.type = 'resource'
@@ -106,7 +111,8 @@ class Test_Step_Cases(TestCase):
         with self.assertRaises(Failure):
             self.assertIsNone(it_condition_contain_something(step, 'something'))
 
-    def test_it_condition_contain_something_resource_not_found(self):
+    @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
+    def test_it_condition_contain_something_resource_not_found(self, *args):
         step = MockedStep()
         step.context_sensitive_sentence = 'it must contain something'
         step.context.type = 'resource'
@@ -126,6 +132,7 @@ class Test_Step_Cases(TestCase):
                                                                                          'something else'))
 
     @patch('terraform_compliance.extensions.ext_radish_bdd', return_value=None)
+    @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
     def test_it_condition_contain_something_resource_not_found_skip_step(self, *args):
         step = MockedStep()
         step.context_sensitive_sentence = 'it contains something'
@@ -142,7 +149,8 @@ class Test_Step_Cases(TestCase):
 
         self.assertIsNone(it_condition_contain_something(step, 'something else'))
 
-    def test_it_condition_contain_something_resource_found(self):
+    @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
+    def test_it_condition_contain_something_resource_found(self, *args):
         step = MockedStep()
         step.context_sensitive_sentence = 'it contains something'
         step.context.type = 'resource'
@@ -158,7 +166,8 @@ class Test_Step_Cases(TestCase):
 
         self.assertTrue(it_condition_contain_something(step, 'something'))
 
-    def test_it_condition_contain_something_resource_value_is_list(self):
+    @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
+    def test_it_condition_contain_something_resource_value_is_list(self, *args):
         step = MockedStep()
         step.context_sensitive_sentence = 'it contains something'
         step.context.type = 'resource'
@@ -178,6 +187,7 @@ class Test_Step_Cases(TestCase):
         self.assertTrue(it_condition_contain_something(step, 'something'))
 
     @patch('terraform_compliance.steps.steps.seek_key_in_dict', return_value=None)
+    @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
     def test_it_condition_contain_something_provider_not_found(self, *args):
         step = MockedStep()
         step.context.type = 'provider'
@@ -186,6 +196,7 @@ class Test_Step_Cases(TestCase):
         self.assertIsNone(it_condition_contain_something(step, 'something'))
 
     @patch('terraform_compliance.steps.steps.seek_key_in_dict', return_value=True)
+    @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
     def test_it_condition_contain_something_provider_found(self, *args):
         step = MockedStep()
         step.context.type = 'provider'
@@ -335,7 +346,8 @@ class Test_Step_Cases(TestCase):
         with self.assertRaises(Failure):
             it_fails(step)
 
-    def test_its_key_is_value_not_existent(self):
+    @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
+    def test_its_key_is_value_not_existent(self, *args):
         step = MockedStep()
         step.context.stash = [
             {
@@ -444,7 +456,8 @@ class Test_Step_Cases(TestCase):
         self.assertTrue(type(step.context.stash) is list)
         self.assertEqual(step.context.stash[0]['some_key'], 'some_value[0]')
 
-    def test_find_keys_that_has_kv_structure(self):
+    @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
+    def test_find_keys_that_has_kv_structure(self, *args):
         step = MockedStep()
         step.context.stash = [
             {
@@ -567,7 +580,8 @@ class Test_Step_Cases(TestCase):
         self.assertTrue(type(step.context.stash) is list)
         self.assertEqual(step.context.stash[0]['some_key'], 'some_other_value')
 
-    def test_its_key_is_not_value_not_existent(self):
+    @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
+    def test_its_key_is_not_value_not_existent(self, *args):
         step = MockedStep()
         step.context.stash = [
             {
