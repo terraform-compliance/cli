@@ -52,10 +52,7 @@ def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
         Repo.clone_from(url=features_git_repo, to_path=args.features, env=ssh_cmd)
 
     features_directory = os.path.join(os.path.abspath(args.features))
-    print('* Features  : {}{}'.format(features_directory,
-                                     (' ({})'.format(features_git_repo) if 'features_git_repo' in locals() else '')))
 
-    print('* Plan File : {}'.format(args.plan_file))
     commands = ['radish',
                 '--write-steps-once',
                 features_directory,
@@ -63,7 +60,14 @@ def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
                 '--user-data=plan_file={}'.format(args.plan_file)]
     commands.extend(radish_arguments)
 
-    print('\n. Running tests.')
+    print('* Features  : {}{}'.format(features_directory,
+                                     (' ({})'.format(features_git_repo) if 'features_git_repo' in locals() else '')))
+
+    print('* Plan File : {}'.format(args.plan_file))
+
+    if not [args for args in radish_arguments if 'dotter' in args]:
+        print('\n. Running tests.')
+
     result = call_radish(args=commands[1:])
 
     return result

@@ -1,6 +1,7 @@
 import colorful
 from radish.utils import console_write
 from radish import custom_type
+from radish import world
 
 
 def skip_step(step, resource=None, message=None):
@@ -14,9 +15,10 @@ def skip_step(step, resource=None, message=None):
     else:
         message = colorful.orange(message)
 
-    console_write("\t{}: {}".format(colorful.bold_purple('SKIPPING'),
-                                    message.format(resource=colorful.magenta(resource)))
-    )
+    if world.config.formatter in ('gherkin'):
+        console_write("\t{}: {}".format(colorful.bold_purple('SKIPPING'),
+                                        message.format(resource=colorful.magenta(resource)))
+        )
     step.skip()
 
     # Skip all steps in the scenario
