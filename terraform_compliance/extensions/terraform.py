@@ -62,7 +62,7 @@ class TerraformParser(object):
         :param filename: json filename with full path
         :return: parsed dictionary
         '''
-        with open(filename, 'r') as plan_file:
+        with open(filename, 'r', encoding='utf-8') as plan_file:
             data = json.load(plan_file)
 
         return data

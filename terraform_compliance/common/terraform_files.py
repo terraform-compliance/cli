@@ -36,7 +36,7 @@ def convert_terraform_plan_to_json(terraform_plan_file, terraform_executable=Non
     os.chdir(path)
 
     try:
-        with open('{}.json'.format(terraform_plan_file), 'w') as FP_plan_file:
+        with open('{}.json'.format(terraform_plan_file), 'w', encoding='utf-8') as FP_plan_file:
             terraform = subprocess.run([terraform_executable, 'show', '-json', terraform_plan_file],
                                        universal_newlines=True,
                                        stdout=FP_plan_file,

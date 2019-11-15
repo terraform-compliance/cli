@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.0.57 (2019-11-15)
+* Fixed a problem about encoding where `terraform-compliance` crashes on HCL files with UTF-8 content. ([#183](https://github.com/eerkunt/terraform-compliance/issues/183)) 
+
 ## 1.0.56 (2019-11-12)
 * Removed `SKIPPED` lines if `dotter` formatter is used. (`--formatter dotter`) ([#180](https://github.com/eerkunt/terraform-compliance/issues/180)) 
 

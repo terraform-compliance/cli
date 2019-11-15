@@ -37,7 +37,7 @@ class ReadablePlan(Action):
 
         # Check if the given file is a json file.
         try:
-            with open(values, 'r') as plan_file:
+            with open(values, 'r', encoding='utf-8') as plan_file:
                 data = json.load(plan_file)
 
         except json.decoder.JSONDecodeError:
