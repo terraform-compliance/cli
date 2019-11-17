@@ -10,7 +10,9 @@ dependencies = [
     'gitpython>=3.0.2',
     'netaddr>=0.7.19',
     'colorful>=0.5.1',
-    'filetype>=1.0.5'
+    'filetype>=1.0.5',
+    'junit-xml>=1.8',
+    'lxml>=4.4.1'
 ]
 
 setup(
