@@ -5,7 +5,7 @@ permalink: /
 ---
 ## terraform-compliance
 
-<img src="/images/logo-falcon.png" align="right" width="150">
+<img src="https://github.com/eerkunt/terraform-compliance/raw/master/logo.png" align="right" width="132" height="100" valign="top" style="max-width:100%;">
 
 <div align="left">
   <a href="https://travis-ci.org/eerkunt/terraform-compliance">
