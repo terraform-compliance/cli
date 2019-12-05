@@ -281,10 +281,9 @@ class Test_Step_Cases(TestCase):
 
     def test_i_action_them_count(self):
         step = MockedStep()
-        del step.context.property_name
         step.context.stash = [1,2,3]
         i_action_them(step, 'count')
-        self.assertEqual(step.context.stash, {'values': 3})
+        self.assertEqual(step.context.stash, 3)
 
     def test_i_action_them_sum(self):
         step = MockedStep()
@@ -293,7 +292,7 @@ class Test_Step_Cases(TestCase):
 
     def test_i_expect_the_result_is_operator_than_number_more(self):
         step = MockedStep()
-        step.context.stash = {'values': 42}
+        step.context.stash = 42
         self.assertIsNone(i_expect_the_result_is_operator_than_number(step, 'more', 41))
         with self.assertRaises(Failure) as err:
             i_expect_the_result_is_operator_than_number(step, 'more', 43)
@@ -301,7 +300,7 @@ class Test_Step_Cases(TestCase):
 
     def test_i_expect_the_result_is_operator_than_number_more_and_equal(self):
         step = MockedStep()
-        step.context.stash = {'values': 42}
+        step.context.stash = 42
         self.assertIsNone(i_expect_the_result_is_operator_than_number(step, 'more and equal', 42))
         self.assertIsNone(i_expect_the_result_is_operator_than_number(step, 'more and equal', 41))
         with self.assertRaises(Failure) as err:
@@ -310,7 +309,7 @@ class Test_Step_Cases(TestCase):
 
     def test_i_expect_the_result_is_operator_than_number_less(self):
         step = MockedStep()
-        step.context.stash = {'values': 42}
+        step.context.stash = 42
         self.assertIsNone(i_expect_the_result_is_operator_than_number(step, 'less', 43))
         with self.assertRaises(Failure) as err:
             i_expect_the_result_is_operator_than_number(step, 'less', 41)
@@ -318,7 +317,7 @@ class Test_Step_Cases(TestCase):
 
     def test_i_expect_the_result_is_operator_than_number_less_and_equal(self):
         step = MockedStep()
-        step.context.stash = {'values': 42}
+        step.context.stash = 42
         self.assertIsNone(i_expect_the_result_is_operator_than_number(step, 'less and equal', 43))
         self.assertIsNone(i_expect_the_result_is_operator_than_number(step, 'less and equal', 42))
         with self.assertRaises(Failure) as err:
@@ -327,7 +326,7 @@ class Test_Step_Cases(TestCase):
 
     def test_i_expect_the_result_is_operator_than_number_equal(self):
         step = MockedStep()
-        step.context.stash = {'values': 42}
+        step.context.stash = 42
         self.assertIsNone(i_expect_the_result_is_operator_than_number(step, 'equal', 42))
         with self.assertRaises(Failure) as err:
             i_expect_the_result_is_operator_than_number(step, 'equal', 41)
@@ -335,7 +334,7 @@ class Test_Step_Cases(TestCase):
 
     def test_i_expect_the_result_is_more_than_number_failure(self):
         step = MockedStep()
-        step.context.stash = dict(values=3)
+        step.context.stash = 3
         with self.assertRaises(TerraformComplianceNotImplemented) as err:
             self.assertIsNone(i_expect_the_result_is_operator_than_number(step, 'invalid operator', 1))
         self.assertTrue('Invalid operator: invalid operator' in str(err.exception))

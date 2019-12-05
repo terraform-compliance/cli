@@ -394,9 +394,9 @@ def i_action_them(_step_obj, action_type):
                     for result in _step_obj.context.stash:
                         count += len(result.get('values', {})) if result.get('values') else 1
 
-                    _step_obj.context.stash = {'values': count}
+                    _step_obj.context.stash = count
             else:
-                _step_obj.context.stash = {'values': len(_step_obj.context.stash)}
+                _step_obj.context.stash = len(_step_obj.context.stash)
     else:
         raise TerraformComplianceNotImplemented('Invalid action_type in the scenario: {}'.format(action_type))
 
@@ -410,9 +410,10 @@ def i_expect_the_result_is_operator_than_number(_step_obj, operator, number, _st
         try:
             assert assertion, 'Failed'
         except AssertionError as e:
-            raise Failure('for {} on {}. {}.'.format(_step_obj.context.address,
-                                                     getattr(_step_obj.context, 'property_name', None),
+            raise Failure('for {} on {}. {}.'.format(getattr(_step_obj.context, 'address', '<EMPTY ADDRESS>'),
+                                                     getattr(_step_obj.context, 'property_name', '<EMPTY PROPERTY>'),
                                                      message))
+
     values = _step_obj.context.stash if _stash is EmptyStash else _stash
 
     if type(values) is list:
