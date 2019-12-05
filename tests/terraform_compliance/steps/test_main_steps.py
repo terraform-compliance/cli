@@ -281,6 +281,7 @@ class Test_Step_Cases(TestCase):
 
     def test_i_action_them_count(self):
         step = MockedStep()
+        del step.context.property_name
         step.context.stash = [1,2,3]
         i_action_them(step, 'count')
         self.assertEqual(step.context.stash, {'values': 3})

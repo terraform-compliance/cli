@@ -411,9 +411,8 @@ def i_expect_the_result_is_operator_than_number(_step_obj, operator, number, _st
             assert assertion, 'Failed'
         except AssertionError as e:
             raise Failure('for {} on {}. {}.'.format(_step_obj.context.address,
-                                                     _step_obj.context.property_name,
+                                                     getattr(_step_obj.context, 'property_name', None),
                                                      message))
-
     values = _step_obj.context.stash if _stash is EmptyStash else _stash
 
     if type(values) is list:
