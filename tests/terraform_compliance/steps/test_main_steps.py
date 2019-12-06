@@ -279,11 +279,42 @@ class Test_Step_Cases(TestCase):
         cidr = 'not important'
         self.assertTrue(it_condition_have_proto_protocol_and_port_port_for_cidr(step, condition, proto, port, cidr))
 
-    def test_i_action_them_count(self):
+    def test_i_action_them_count_list_of_list(self):
         step = MockedStep()
         step.context.stash = [1,2,3]
         i_action_them(step, 'count')
         self.assertEqual(step.context.stash, {'values': 3})
+
+    def test_i_action_them_count_list_of_dict_with_resources(self):
+        step = MockedStep()
+        step.context.stash = [
+            {
+                'values': {
+                    'first': True
+                }
+            },
+            {
+                'values': {
+                    'second': True
+                }
+            },
+            {
+                'values': {
+                    'third': True
+                }
+            }
+        ]
+        i_action_them(step, 'count')
+        self.assertEqual(step.context.stash, {'values': 3})
+
+    def test_i_action_them_count_list_of_dict_with_properties(self):
+        step = MockedStep()
+        step.context.stash = [{},{},{}]
+        step.context.property_name = 'resource'
+        i_action_them(step, 'count')
+        self.assertEqual(step.context.stash, {'values': 3})
+
+
 
     def test_i_action_them_sum(self):
         step = MockedStep()

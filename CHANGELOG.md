@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.0.58 (2019-12-06)
+* Enhanced `count` step where it was only applicable for resource properties, now it also works right after a `GIVEN` step. ([#187](https://github.com/eerkunt/terraform-compliance/issues/187)) 
+
 ## 1.0.57 (2019-11-15)
 * Fixed a problem about encoding where `terraform-compliance` crashes on HCL files with UTF-8 content. ([#183](https://github.com/eerkunt/terraform-compliance/issues/183)) 
 

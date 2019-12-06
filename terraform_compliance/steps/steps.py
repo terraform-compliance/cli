@@ -19,6 +19,8 @@ from terraform_compliance.common.exceptions import TerraformComplianceInternalFa
 # TODO: Figure out how the IAM policies/statements shown in the plan.out
 # TODO: Implement an IAM Compliance via https://github.com/Netflix-Skunkworks/policyuniverse
 
+types_list = ['resource', 'variable', 'provider', 'data', 'resource that supports tags']
+
 @given(u'I have {name:ANY} defined')
 @given(u'I have {name:ANY} {type_name:SECTION} configured')
 def i_have_name_section_configured(_step_obj, name, type_name='resource', _terraform_config=world):
@@ -46,6 +48,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
         _step_obj.context.name = name
         _step_obj.context.stash = [obj for key, obj in _terraform_config.config.terraform.resources_raw.items()]
         _step_obj.context.addresses = get_resource_address_list_from_stash(_step_obj.context.stash)
+        _step_obj.context.property_name = type_name
         return True
 
     elif name == 'resource that supports tags':
@@ -65,6 +68,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
             _step_obj.context.name = name
             _step_obj.context.stash = resource_list
             _step_obj.context.addresses = get_resource_address_list_from_stash(resource_list)
+            _step_obj.context.property_name = type_name
             return True
 
     elif type_name == 'resource':
@@ -76,6 +80,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
             _step_obj.context.name = name
             _step_obj.context.stash = resource_list
             _step_obj.context.addresses = get_resource_address_list_from_stash(resource_list)
+            _step_obj.context.property_name = type_name
             return True
 
     elif type_name == 'variable':
@@ -86,6 +91,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
             _step_obj.context.name = name
             _step_obj.context.stash = found_variable
             _step_obj.context.addresses = name
+            _step_obj.context.property_name = type_name
             return True
 
     elif type_name == 'provider':
@@ -96,6 +102,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
             _step_obj.context.name = name
             _step_obj.context.stash = found_provider
             _step_obj.context.addresses = name
+            _step_obj.context.property_name = type_name
             return True
 
     elif type_name == 'data':
@@ -107,6 +114,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
             _step_obj.context.name = name
             _step_obj.context.stash = data_list
             _step_obj.context.addresses = name
+            _step_obj.context.property_name = type_name
             return True
 
     skip_step(_step_obj, name)
@@ -158,6 +166,7 @@ def its_key_is_value(_step_obj, key, value):
         _step_obj.context.addresses = get_resource_address_list_from_stash(found_list)
     else:
         skip_step(_step_obj, value)
+
 
 @when(u'its {key:PROPERTY} is not {value:PROPERTY}')
 @when(u'its {key:PROPERTY} has not {value:PROPERTY}')
@@ -387,16 +396,24 @@ def i_action_them(_step_obj, action_type):
     if action_type == "count":
         # WARNING: Only case where we set stash as a dictionary, instead of a list.
         if type(_step_obj.context.stash) is list:
-            if type(_step_obj.context.stash[0]) is dict():
-                if _step_obj.context.stash.get('values'):
-                    _step_obj.context.stash = seek_key_in_dict(_step_obj.context.stash, 'values')
-                    count = 0
-                    for result in _step_obj.context.stash:
-                        count += len(result.get('values', {})) if result.get('values') else 1
 
-                    _step_obj.context.stash = {'values': count}
+            # This means we are directly started counting without drilling down any property
+            # Thus, our target for the count is stash itself.
+            if _step_obj.context.property_name in types_list:
+                _step_obj.context.stash = dict(values=len(_step_obj.context.stash))
+
             else:
-                _step_obj.context.stash = {'values': len(_step_obj.context.stash)}
+                if type(_step_obj.context.stash[0]) is dict:
+                    if _step_obj.context.stash[0].get('values'):
+                        _step_obj.context.stash = seek_key_in_dict(_step_obj.context.stash, 'values')
+                        count = 0
+                        for result in _step_obj.context.stash:
+                            count += len(result.get('values', {})) if result.get('values') else 1
+
+                        _step_obj.context.stash = dict(values=count)
+
+                else:
+                    _step_obj.context.stash = dict(values=len(_step_obj.context.stash))
     else:
         raise TerraformComplianceNotImplemented('Invalid action_type in the scenario: {}'.format(action_type))
 
