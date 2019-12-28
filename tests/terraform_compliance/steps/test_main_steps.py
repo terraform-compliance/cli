@@ -240,18 +240,6 @@ class Test_Step_Cases(TestCase):
         with self.assertRaises(Failure):
             property_is_enabled(step, 'storage_encrypted')
 
-    def test_it_condition_have_proto_protocol_and_port_port_for_cidr_ports_must_only_fail(self):
-        step = MockedStep()
-        condition = 'only'
-        proto = 'not important'
-        port = '1-2'
-        cidr = 'not important'
-        with self.assertRaises(Failure) as err:
-            it_condition_have_proto_protocol_and_port_port_for_cidr(step, condition, proto, port, cidr)
-
-        self.assertEqual(str(err.exception), '"must only" scenario cases must be used either with individual port '
-                                             'or multiple ports separated with comma.')
-
     def test_it_condition_have_proto_protocol_and_port_port_for_cidr_ports_must_only_success(self):
         step = MockedStep()
         step.context.stash = []

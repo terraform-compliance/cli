@@ -36,5 +36,270 @@ class TestSecurityGroupRule(TestCase):
 
             self.assertTrue('Invalid configuration from_port can not be bigger than to_port.' in context.exception)
 
+    # TODO: Implement failure tests here for consistency.
+
 
 class TestSecurityGroup(TestCase):
+
+    def setUp(self):
+        self.sg_given = dict(
+            port=80,
+            protocol='tcp',
+            cidr_blocks='0.0.0.0/0',
+        )
+        self.sg_in_conf = [
+            dict(
+                from_port=80,
+                to_port=80,
+                protocol='tcp',
+                cidr_blocks=['0.0.0.0/0'],
+                description='Test Security Group Description #1',
+                values=dict(address='test.security_group_rule1')
+            ),
+            dict(
+                from_port=81,
+                to_port=81,
+                protocol='tcp',
+                cidr_blocks=['10.0.0.0/8', '192.168.0.0/24'],
+                description='Test Security Group Description #2',
+                values=dict(address='test.security_group_rule2')
+
+            )
+        ]
+
+    # Tests about `must not have` scenarios
+    # Checks are singular per security group rule, failures are imminent.
+    def test_must_not_have_port_tcp_80_with_ALL_cidr(self):
+        with self.assertRaises(Failure) as context:
+            SecurityGroup(self.sg_given, self.sg_in_conf).validate()
+
+        self.assertEqual('tcp/80 port is defined within 0.0.0.0/0 network in test.security_group_rule1.',
+                         str(context.exception))
+
+    def test_must_not_have_port_tcp_80_with_multi_cidr(self):
+        self.sg_given['cidr_blocks'] = '192.168.1.0/24'
+        self.sg_in_conf[0]['cidr_blocks'] = ['192.168.0.0/16', '0.0.0.0/0']
+        with self.assertRaises(Failure) as context:
+            SecurityGroup(self.sg_given, self.sg_in_conf).validate()
+
+        self.assertEqual('tcp/80 port is defined within 192.168.0.0/16, 0.0.0.0/0 networks in test.security_group_rule1.',
+                         str(context.exception))
+
+    def test_must_not_have_port_tcp_80_with_ALL_cidr_success(self):
+        self.sg_in_conf[0]['cidr_blocks'] = ['192.168.0.0/16']
+        self.assertTrue(SecurityGroup(self.sg_given, self.sg_in_conf).validate())
+
+    def test_must_not_have_port_tcp_80_with_ALL_multi_success(self):
+        self.sg_given['cidr_blocks'] = '192.168.1.0/16'
+        self.sg_in_conf[0]['cidr_blocks'] = ['192.168.0.0/24', '10.0.0.0/8']
+        self.assertTrue(SecurityGroup(self.sg_given, self.sg_in_conf).validate())
+
+    def test_must_not_have_port_tcp_22_23_with_ALL_cidr(self):
+        self.sg_given['port'] = '22-23'
+        self.sg_in_conf[0]['from_port'] = 22
+        self.sg_in_conf[0]['to_port'] = 23
+        with self.assertRaises(Failure) as context:
+            SecurityGroup(self.sg_given, self.sg_in_conf).validate()
+
+        self.assertEqual('tcp/(22,23) ports are defined within 0.0.0.0/0 network in test.security_group_rule1.',
+                         str(context.exception))
+
+    def test_must_not_have_port_tcp_22_23_with_multi_cidr(self):
+        self.sg_given['port'] = '22-23'
+        self.sg_in_conf[0]['from_port'] = 22
+        self.sg_in_conf[0]['to_port'] = 23
+        self.sg_given['cidr_blocks'] = '192.168.1.0/24'
+        self.sg_in_conf[0]['cidr_blocks'] = ['192.168.0.0/16', '0.0.0.0/0']
+        with self.assertRaises(Failure) as context:
+            SecurityGroup(self.sg_given, self.sg_in_conf).validate()
+
+        self.assertEqual('tcp/(22,23) ports are defined within 192.168.0.0/16, 0.0.0.0/0 networks in '
+                         'test.security_group_rule1.',
+                         str(context.exception))
+
+    def test_must_not_have_port_tcp_22_23_with_ALL_cidr_success(self):
+        self.sg_given['port'] = '22-23'
+        self.sg_in_conf[0]['from_port'] = 22
+        self.sg_in_conf[0]['to_port'] = 23
+        self.sg_in_conf[0]['cidr_blocks'] = ['192.168.0.0/16']
+        self.assertTrue(SecurityGroup(self.sg_given, self.sg_in_conf).validate())
+
+    def test_must_not_have_port_tcp_22_23_with_ALL_multi_success(self):
+        self.sg_given['port'] = '22-23'
+        self.sg_in_conf[0]['from_port'] = 22
+        self.sg_in_conf[0]['to_port'] = 23
+        self.sg_given['cidr_blocks'] = '192.168.1.0/16'
+        self.sg_in_conf[0]['cidr_blocks'] = ['192.168.0.0/24', '10.0.0.0/8']
+        self.assertTrue(SecurityGroup(self.sg_given, self.sg_in_conf).validate())
+
+    def test_must_not_have_port_tcp_22_with_range_with_ALL_cidr(self):
+        self.sg_given['port'] = '21-22'
+        self.sg_in_conf[0]['from_port'] = 22
+        self.sg_in_conf[0]['to_port'] = 23
+        with self.assertRaises(Failure) as context:
+            SecurityGroup(self.sg_given, self.sg_in_conf).validate()
+
+        self.assertEqual('tcp/22 port is defined within 0.0.0.0/0 network in test.security_group_rule1.',
+                         str(context.exception))
+
+    def test_must_not_have_port_tcp_22_with_range_with_multi_cidr(self):
+        self.sg_given['port'] = '21-22'
+        self.sg_in_conf[0]['from_port'] = 22
+        self.sg_in_conf[0]['to_port'] = 23
+        self.sg_given['cidr_blocks'] = '192.168.1.0/24'
+        self.sg_in_conf[0]['cidr_blocks'] = ['192.168.0.0/16', '0.0.0.0/0']
+        with self.assertRaises(Failure) as context:
+            SecurityGroup(self.sg_given, self.sg_in_conf).validate()
+
+        self.assertEqual('tcp/22 port is defined within 192.168.0.0/16, 0.0.0.0/0 networks in test.security_group_rule1.',
+                         str(context.exception))
+
+    def test_must_not_have_port_tcp_22_with_range_with_ALL_cidr_success(self):
+        self.sg_given['port'] = '21-22'
+        self.sg_in_conf[0]['from_port'] = 22
+        self.sg_in_conf[0]['to_port'] = 23
+        self.sg_in_conf[0]['cidr_blocks'] = ['192.168.0.0/16']
+        self.assertTrue(SecurityGroup(self.sg_given, self.sg_in_conf).validate())
+
+    def test_must_not_have_port_tcp_22_with_range_with_ALL_multi_success(self):
+        self.sg_given['port'] = '21-22'
+        self.sg_in_conf[0]['from_port'] = 22
+        self.sg_in_conf[0]['to_port'] = 23
+        self.sg_given['cidr_blocks'] = '192.168.1.0/16'
+        self.sg_in_conf[0]['cidr_blocks'] = ['192.168.0.0/24', '10.0.0.0/8']
+        self.assertTrue(SecurityGroup(self.sg_given, self.sg_in_conf).validate())
+
+    # Tests about `must have` scenarios
+    def test_must_have_port_tcp_443_with_ALL_cidr(self):
+        self.sg_given['port'] = 443
+        with self.assertRaises(Failure) as context:
+            sg = SecurityGroup(self.sg_given, self.sg_in_conf)
+            sg.must_have()
+            sg.validate()
+
+        self.assertEqual('tcp/443 port is not defined within 0.0.0.0/0 network in test_sg.',
+                         str(context.exception))
+
+    def test_must_have_port_tcp_443_with_multi_cidr(self):
+        self.sg_given['port'] = 443
+        self.sg_given['cidr_blocks'] = '192.168.1.0/24'
+        self.sg_in_conf[0]['cidr_blocks'] = ['192.168.0.0/16', '0.0.0.0/0']
+        with self.assertRaises(Failure) as context:
+            sg = SecurityGroup(self.sg_given, self.sg_in_conf)
+            sg.must_have()
+            sg.validate()
+
+        self.assertEqual('tcp/443 port is not defined within 192.168.1.0/24 network in '
+                         'test_sg.',
+                         str(context.exception))
+
+    def test_must_have_port_tcp_80_with_multi_cidr_success(self):
+        self.sg_in_conf[0]['cidr_blocks'] = ['192.168.0.0/24']
+        self.sg_in_conf[1]['cidr_blocks'] = ['192.168.1.0/24']
+        self.sg_in_conf[1]['from_port'] = 79
+        self.sg_in_conf[1]['to_port'] = 81
+        self.sg_given['cidr_blocks'] = '192.168.0.0/24'
+
+        sg = SecurityGroup(self.sg_given, self.sg_in_conf)
+        sg.must_have()
+        self.assertTrue(sg.validate())
+
+    def test_must_have_port_tcp_80_with_multi_cidr_success(self):
+        self.sg_in_conf[0]['cidr_blocks'] = ['192.168.0.0/24']
+        self.sg_in_conf[1]['cidr_blocks'] = ['192.168.0.0/16']
+        self.sg_in_conf[1]['from_port'] = 79
+        self.sg_in_conf[1]['to_port'] = 81
+        self.sg_given['cidr_blocks'] = '192.168.0.1/32'
+        sg = SecurityGroup(self.sg_given, self.sg_in_conf)
+        sg.must_have()
+        self.assertTrue(sg.validate())
+
+    def test_must_have_port_tcp_443_444_with_ALL_cidr(self):
+        self.sg_given['port'] = '443-444'
+        with self.assertRaises(Failure) as context:
+            sg = SecurityGroup(self.sg_given, self.sg_in_conf)
+            sg.must_have()
+            sg.validate()
+
+        self.assertEqual('tcp/(443,444) ports are not defined within 0.0.0.0/0 network in test_sg.',
+                         str(context.exception))
+
+    def test_must_have_port_tcp_80_81_with_ALL_cidr(self):
+        self.sg_given['port'] = '80-82'
+        self.sg_in_conf[1]['cidr_blocks'] = ['0.0.0.0/0']
+        with self.assertRaises(Failure) as context:
+            sg = SecurityGroup(self.sg_given, self.sg_in_conf)
+            sg.must_have()
+            sg.validate()
+
+        self.assertEqual('tcp/82 port is not defined within 0.0.0.0/0 network in test_sg.',
+                         str(context.exception))
+
+    # Tests about `must only have` scenarios
+    # We are just checking if tcp/80 is defined for 0.0.0.0/0
+    def test_must_only_have_port_tcp_80_with_ALL_cidr_success(self):
+        sg = SecurityGroup(self.sg_given, self.sg_in_conf)
+        sg.must_only_have()
+        self.assertTrue(sg.validate())
+
+    def test_must_only_have_port_tcp_80_81_with_ALL_cidr_success(self):
+        self.sg_given['port'] = '80-81'
+        with self.assertRaises(Failure) as context:
+            sg = SecurityGroup(self.sg_given, self.sg_in_conf)
+            sg.must_only_have()
+            sg.validate()
+        self.assertEqual('tcp/81 port is not defined within 0.0.0.0/0 network in test_sg.',
+                         str(context.exception))
+
+    def test_must_only_have_port_some_ports_are_over_configured(self):
+        self.sg_in_conf[0]['from_port'] = 79
+        self.sg_in_conf[0]['to_port'] = 81
+        self.sg_in_conf[0]['cidr_blocks'] = ['192.168.0.0/16', '0.0.0.0/0']
+        self.sg_in_conf[1]['from_port'] = 80
+        self.sg_in_conf[1]['to_port'] = 80
+        self.sg_in_conf[1]['cidr_blocks'] = ['0.0.0.0/0']
+        with self.assertRaises(Failure) as context:
+            sg = SecurityGroup(self.sg_given, self.sg_in_conf)
+            sg.must_only_have()
+            sg.validate()
+        self.assertEqual('tcp/(81,79) ports are defined within 0.0.0.0/0 network in test_sg.',
+                         str(context.exception))
+
+    def test_must_only_have_port_not_match_multiple_errors_given(self):
+        self.sg_in_conf[0]['from_port'] = 22
+        self.sg_in_conf[0]['to_port'] = 23
+        self.sg_in_conf[0]['cidr_blocks'] = ['192.168.0.0/16', '0.0.0.0/0']
+        self.sg_in_conf[1]['from_port'] = 443
+        self.sg_in_conf[1]['to_port'] = 444
+        self.sg_in_conf[1]['cidr_blocks'] = ['0.0.0.0/0']
+        with self.assertRaises(Failure) as context:
+            sg = SecurityGroup(self.sg_given, self.sg_in_conf)
+            sg.must_only_have()
+            sg.validate()
+
+        self.assertTrue('tcp/80 port is not defined within 0.0.0.0/0 network in test_sg.'
+                        in str(context.exception))
+        self.assertTrue('tcp/(443,444,22,23) ports are defined within 0.0.0.0/0 network in test_sg.'
+                        in str(context.exception))
+        self.assertTrue('None of the ports given defined within 0.0.0.0/0 network in test_sg.'
+                        in str(context.exception))
+
+    def test_must_only_have_port_match_multiple_ports_not_ranges(self):
+        self.sg_in_conf[0]['from_port'] = 22
+        self.sg_in_conf[0]['to_port'] = 23
+        self.sg_in_conf[0]['cidr_blocks'] = ['192.168.0.0/16', '0.0.0.0/0']
+        self.sg_in_conf[1]['from_port'] = 443
+        self.sg_in_conf[1]['to_port'] = 444
+        self.sg_in_conf[1]['cidr_blocks'] = ['0.0.0.0/0']
+        self.sg_given['ports'] = '22,23,443,444'
+        with self.assertRaises(Failure) as context:
+            sg = SecurityGroup(self.sg_given, self.sg_in_conf)
+            sg.must_only_have()
+            sg.validate()
+
+        self.assertTrue('tcp/80 port is not defined within 0.0.0.0/0 network in test_sg.'
+                        in str(context.exception))
+        self.assertTrue('tcp/(443,444,22,23) ports are defined within 0.0.0.0/0 network in test_sg.'
+                        in str(context.exception))
+        self.assertTrue('None of the ports given defined within 0.0.0.0/0 network in test_sg.'
+                        in str(context.exception))
