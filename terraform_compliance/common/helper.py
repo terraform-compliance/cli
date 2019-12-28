@@ -1,7 +1,6 @@
 import re
 from netaddr import IPNetwork
 from terraform_compliance.steps import resource_name
-from terraform_compliance.common.exceptions import Failure
 from collections.abc import Iterable
 import json
 from copy import deepcopy

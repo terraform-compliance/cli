@@ -7,7 +7,6 @@ from terraform_compliance.common.exceptions import (
     TerraformComplianceInvalidData,
     TerraformComplianceInternalFailure
 )
-from copy import deepcopy
 
 
 class SecurityGroupRule(object):
@@ -116,6 +115,7 @@ class SecurityGroup(object):
     def __init__(self, given_reqs, security_groups_in_plan, address='test_sg'):
         self.given = given_reqs
         self.sgs = self._clean(security_groups_in_plan)
+        self.sgs = [self.sgs] if type(self.sgs) is dict else self.sgs
         self.address = address
 
         self.exact_match = False
@@ -125,7 +125,7 @@ class SecurityGroup(object):
         self.multiple_check = False
 
         self.given_rule = SecurityGroupRule(**given_reqs)
-        self.plan_rules = [SecurityGroupRule(**rule_data) for rule_data in security_groups_in_plan]
+        self.plan_rules = [SecurityGroupRule(**rule_data) for rule_data in self.sgs]
 
         self.found_ports = set()
 
@@ -285,8 +285,12 @@ class SecurityGroup(object):
         return output
 
     def _clean(self, sg_array):
-        for sg in sg_array:
-            if 'self' in sg:
-                sg.pop('self')
+        if type(sg_array) is list:
+            for sg in sg_array:
+                self._clean(sg)
 
-        return sg
+        elif type(sg_array) is dict:
+            if 'self' in sg_array:
+                sg_array.pop('self')
+
+        return sg_array
