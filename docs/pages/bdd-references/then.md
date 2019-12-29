@@ -94,7 +94,7 @@ This step is only valid for `aws_security_group` and `aws_security_group_rule` r
 >
 > ▪
 [Then](#){: .p-1 .text-red-200} 
-it must 
+it  
 [condition](#){: .p-1 .text-green-200 .fw-700} 
 have 
 [proto](#){: .p-1 .text-blue-100 .fw-700} 
@@ -105,11 +105,20 @@ for
 >
 | key | Description | Examples |
 |:---:|:----------|:-|
-| [condition](#){: .p-1 .text-green-200 .fw-700} | defines the conditional search. | Can only be `only`, `not` |
+| [condition](#){: .p-1 .text-green-200 .fw-700} | defines the conditional search. | Can only be `must`, `must not`, `must only` |
 | [proto](#){: .p-1 .text-blue-100 .fw-700} | defines the network transport protocol | Can only be `tcp` or `udp` |
 | [port](#){: .p-1 .text-purple-000 .fw-700}  | defines the network port or port range. | `80` `443` `8080-8090` |
 | [cidr](#){: .p-1 .text-yellow-300 .fw-700} | defines the network ip cidr | `0.0.0.0/0` `192.168.0.0/24` `8.8.8.8/32` |
 
+This step will execute tests that is applicable for both per rule and per security group, depending on the 
+[condition](#){: .p-1 .text-green-200 .fw-700} ;
+
+* **must**: The port(s) given must be a subset of the configured ports in related Security Group.
+* **must not**: The port(s) given must not exist in ANY rule of the Security Group.
+* **must only**: The port(s) given must be exactly same like the ones defined in Security Group.
+
+Please not that `must not` condition is executed per every Security Group Rule, while `must not` and `must only` is 
+executed for ALL rules exist in a Security Group.
 
 ------------------------
 ### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} has not [something](#){: .p-1 .text-blue-100 .fw-700}
