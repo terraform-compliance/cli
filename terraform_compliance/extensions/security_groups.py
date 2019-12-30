@@ -3,11 +3,10 @@ from terraform_compliance.common.helper import (
     is_ip_in_cidr
 )
 from terraform_compliance.common.exceptions import (
-    Failure,
     TerraformComplianceInvalidData,
     TerraformComplianceInternalFailure
 )
-from terraform_compliance.common.error_handling import Error
+
 
 class SecurityGroupRule(object):
     def __init__(self, **kwargs):

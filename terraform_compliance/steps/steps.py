@@ -321,6 +321,7 @@ def it_condition_contain_something(_step_obj, something):
               message='Skipping the step since {} type does not have {} property.'.format(_step_obj.context.type,
                                                                                           something))
 
+
 @then(u'{something:ANY} is be enabled')
 @then(u'{something:ANY} must be enabled')
 def property_is_enabled(_step_obj, something):
@@ -349,6 +350,7 @@ def property_is_enabled(_step_obj, something):
                                                    property_value))
     return True
 
+
 @then(u'it {condition:ANY} have {proto:ANY} protocol and port {port} for {cidr:ANY}')
 def it_condition_have_proto_protocol_and_port_port_for_cidr(_step_obj, condition, proto, port, cidr):
     searching_for=dict(port=port, protocol=proto, cidr_blocks=cidr)
@@ -375,6 +377,7 @@ def it_condition_have_proto_protocol_and_port_port_for_cidr(_step_obj, condition
             Error(_step_obj, message)
 
     return True
+
 
 @when(u'I {action_type:ANY} it')
 @when(u'I {action_type:ANY} them')
@@ -403,6 +406,7 @@ def i_action_them(_step_obj, action_type):
                     _step_obj.context.stash = dict(values=len(_step_obj.context.stash))
     else:
         raise TerraformComplianceNotImplemented('Invalid action_type in the scenario: {}'.format(action_type))
+
 
 @then(u'its value must be {operator:ANY} than {number:d}')
 @then(u'I expect the result is {operator:ANY} than {number:d}')
@@ -453,6 +457,7 @@ def i_expect_the_result_is_operator_than_number(_step_obj, operator, number, _st
 
     elif type(values) is Null:
         raise TerraformComplianceNotImplemented('Null/Empty value found on {}'.format(_step_obj.context.type))
+
 
 @then(u'its value {condition:ANY} match the "{search_regex}" regex')
 def its_value_condition_match_the_search_regex_regex(_step_obj, condition, search_regex, _stash=EmptyStash):
@@ -552,6 +557,7 @@ def it_fails(_step_obj):
     Error(_step_obj, 'Forcefully failing the scenario on {} ({}) {}'.format(_step_obj.context.name,
                                                                             ', '.join(_step_obj.context.addresses),
                                                                             _step_obj.context.type))
+
 
 @then(u'its value {condition:ANY} be null')
 def its_value_condition_be_null(_step_obj, condition):
