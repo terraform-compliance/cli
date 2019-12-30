@@ -33,7 +33,6 @@ class TerraformParser(object):
         self.file_type = "plan"
         self.resources_raw = {}
 
-
         if parse_it:
             self.parse()
 

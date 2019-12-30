@@ -7,7 +7,7 @@ from terraform_compliance.common.exceptions import (
     TerraformComplianceInvalidData,
     TerraformComplianceInternalFailure
 )
-
+from terraform_compliance.common.error_handling import Error
 
 class SecurityGroupRule(object):
     def __init__(self, **kwargs):
@@ -181,7 +181,7 @@ class SecurityGroup(object):
         # Finalise singular checks as returning True if nothing happens,
         # since it must have failed already.
         if self.singular_check:
-            return True
+            return True, None
 
         # Process non singular checks
         else:
@@ -192,7 +192,7 @@ class SecurityGroup(object):
             errors = []
             if self.exact_match:
                 if ports_found == self.given_rule.ports:
-                    return True
+                    return True, None
 
                 # Create errors
                 given_found_diff = self.given_rule.ports - ports_found
@@ -228,7 +228,7 @@ class SecurityGroup(object):
             # If not, found which ports are missing via GIVEN->FOUND diff
             else:
                 if self.given_rule.ports <= ports_found:
-                    return True
+                    return True, None
 
                 given_found_diff = self.given_rule.ports - ports_found
 
@@ -241,17 +241,17 @@ class SecurityGroup(object):
                                                                                                e['cidr_blocks_plural'],
                                                                                                e['address']))
             if errors:
-                raise Failure('{}'.format("\n".join(errors)))
+                return False, '{}'.format("\n".join(errors))
 
     def _run_singular_validation(self, rule, network_check, ports_check, protocol_check):
         if self.negative_match and network_check and ports_check and protocol_check:
             e = self._prepare_output(rule, ports_check, protocol_check)
-            raise Failure('{}/{} port{} defined within {} network{} in {}.'.format(e['protocol'],
+            return False, '{}/{} port{} defined within {} network{} in {}.'.format(e['protocol'],
                                                                                    e['ports'],
                                                                                    e['ports_plural'],
                                                                                    e['cidr_blocks'],
                                                                                    e['cidr_blocks_plural'],
-                                                                                   e['address']))
+                                                                                   e['address'])
 
     def _validate_network(self, cidr_in_plan):
         return is_ip_in_cidr(self.given_rule.cidr_blocks, cidr_in_plan)

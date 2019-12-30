@@ -15,12 +15,14 @@ from terraform_compliance.extensions.ext_radish_bdd import custom_type_prop
 import re
 from terraform_compliance.common.exceptions import Failure, TerraformComplianceNotImplemented
 from terraform_compliance.common.exceptions import TerraformComplianceInternalFailure
+from terraform_compliance.common.error_handling import Error
 
 
 # TODO: Figure out how the IAM policies/statements shown in the plan.out
 # TODO: Implement an IAM Compliance via https://github.com/Netflix-Skunkworks/policyuniverse
 
 types_list = ['resource', 'variable', 'provider', 'data', 'resource that supports tags']
+
 
 @given(u'I have {name:ANY} defined')
 @given(u'I have {name:ANY} {type_name:SECTION} configured')
@@ -120,6 +122,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
 
     skip_step(_step_obj, name)
 
+
 @when(u'its {key:PROPERTY} is {value:PROPERTY}')
 @when(u'its {key:PROPERTY} has {value:PROPERTY}')
 @when(u'its {key:PROPERTY} includes {value:PROPERTY}')
@@ -213,6 +216,7 @@ def its_key_is_not_value(_step_obj, key, value):
         _step_obj.context.addresses = get_resource_address_list_from_stash(found_list)
     else:
         skip_step(_step_obj, value)
+
 
 @when(u'it contain {something:ANY}')
 @when(u'they have {something:ANY}')
@@ -334,10 +338,15 @@ def property_is_enabled(_step_obj, something):
                     property_value = property_value.get(something, Null)
 
             if not property_value:
-                raise Failure('Resource {} does not have {} property enabled ({}={}).'.format(resource.get('address', "resource"),
-                                                                                              something,
-                                                                                              something,
-                                                                                              property_value))
+                # raise Failure('Resource {} does not have {} property enabled ({}={}).'.format(resource.get('address', "resource"),
+                #                                                                               something,
+                #                                                                               something,
+                #                                                                               property_value))
+                Error(_step_obj, 'Resource {} does not have {} property enabled '
+                                 '({}={}).'.format(resource.get('address', "resource"),
+                                                   something,
+                                                   something,
+                                                   property_value))
     return True
 
 @then(u'it {condition:ANY} have {proto:ANY} protocol and port {port} for {cidr:ANY}')
@@ -360,7 +369,11 @@ def it_condition_have_proto_protocol_and_port_port_for_cidr(_step_obj, condition
             raise TerraformComplianceInternalFailure('You can only use "must have", "must not have" and "must only have"'
                                                      'conditions on this step for now.'
                                                      'You tried to use "{}"'.format(condition))
-        sg_obj.validate()
+        result, message = sg_obj.validate()
+
+        if result is False:
+            Error(_step_obj, message)
+
     return True
 
 @when(u'I {action_type:ANY} it')
@@ -401,9 +414,12 @@ def i_expect_the_result_is_operator_than_number(_step_obj, operator, number, _st
         try:
             assert assertion, 'Failed'
         except AssertionError as e:
-            raise Failure('for {} on {}. {}.'.format(_step_obj.context.address,
-                                                     _step_obj.context.property_name,
-                                                     message))
+            # raise Failure('for {} on {}. {}.'.format(_step_obj.context.address,
+            #                                          _step_obj.context.property_name,
+            #                                          message))
+            Error(_step_obj, 'for {} on {}. {}.'.format(_step_obj.context.address,
+                                                        _step_obj.context.property_name,
+                                                        message))
 
     values = _step_obj.context.stash if _stash is EmptyStash else _stash
 
@@ -444,13 +460,15 @@ def its_value_condition_match_the_search_regex_regex(_step_obj, condition, searc
         text = 'matches' if condition == 'must not' else 'does not match'
         name = name if (name is not None or name is not False) else _step_obj.context.name
         pattern = 'Null/None' if regex == '\x00' else regex
-        raise Failure('{} property in {} {} {} with {} regex. '
-                      'It is set to {}.'.format(_step_obj.context.property_name,
-                                                name,
-                                                _step_obj.context.type,
-                                                text,
-                                                pattern,
-                                                values))
+        # raise Failure('{} property in {} {} {} with {} regex. '
+        Error(_step_obj, '{} property in {} {} {} with {} regex. '
+                         'It is set to {}.'.format(_step_obj.context.property_name,
+                                                   name,
+                                                   _step_obj.context.type,
+                                                   text,
+                                                   pattern,
+                                                   values))
+
     regex = r'{}'.format(search_regex)
     values = _step_obj.context.stash if _stash is EmptyStash else _stash
 
@@ -482,9 +500,11 @@ def its_value_condition_match_the_search_regex_regex(_step_obj, condition, searc
             for key, value in values.items():
                 its_value_condition_match_the_search_regex_regex(_step_obj, condition, search_regex, value)
 
+
 @step(u'its value {condition:ANY} be {match:ANY}')
 def its_value_condition_equal(_step_obj, condition, match, _stash=EmptyStash):
     its_value_condition_match_the_search_regex_regex(_step_obj, condition, "^" + re.escape(match) + "$", _stash)
+
 
 @then(u'its value {condition:ANY} contain {value:ANY}')
 def its_value_condition_contain(_step_obj, condition, value, _stash=EmptyStash):
@@ -496,6 +516,7 @@ def its_value_condition_contain(_step_obj, condition, value, _stash=EmptyStash):
         _its_value_condition_contain(_step_obj, condition, value, values.get('values', Null))
     elif type(values) is Null:
         raise TerraformComplianceNotImplemented('Null/Empty value found on {}'.format(_step_obj.context.type))
+
 
 def _its_value_condition_contain(_step_obj, condition, value, values):
     assert condition in ('must', 'must not'), 'Condition should be one of: `must`, `must not`'
@@ -517,7 +538,8 @@ def _its_value_condition_contain(_step_obj, condition, value, values):
         else:
             assert value not in values, fail_message
     else:
-        raise Failure('Can only check that if list contains value')
+        raise TerraformComplianceInternalFailure('Can only check that if list contains value')
+
 
 @then(u'the scenario fails')
 @then(u'the scenario should fail')
@@ -526,9 +548,10 @@ def _its_value_condition_contain(_step_obj, condition, value, values):
 @then(u'it should fail')
 @then(u'it must fail')
 def it_fails(_step_obj):
-    raise Failure('Forcefully failing the scenario on {} ({}) {}'.format(_step_obj.context.name,
-                                                                         ', '.join(_step_obj.context.addresses),
-                                                                         _step_obj.context.type))
+    # raise Failure('Forcefully failing the scenario on {} ({}) {}'.format(_step_obj.context.name,
+    Error(_step_obj, 'Forcefully failing the scenario on {} ({}) {}'.format(_step_obj.context.name,
+                                                                            ', '.join(_step_obj.context.addresses),
+                                                                            _step_obj.context.type))
 
 @then(u'its value {condition:ANY} be null')
 def its_value_condition_be_null(_step_obj, condition):
