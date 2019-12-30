@@ -64,7 +64,9 @@ def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
                 '--basedir', steps_directory,
                 '--user-data=plan_file={}'.format(args.plan_file),
                 '--user-data=exit_on_failure={}'.format(args.exit_on_failure),
-                '--user-data=terraform_executable={}'.format(args.terraform_file)]
+                '--user-data=terraform_executable={}'.format(args.terraform_file),
+                '--user-data=no_failure={}'.format(args.no_failure),
+                '--user-data=silence_mode_enabled={}'.format(args.silence)]
     commands.extend(radish_arguments)
 
     console_write('{} {} {}{}'.format(Defaults().icon,

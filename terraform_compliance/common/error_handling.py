@@ -22,6 +22,7 @@ class Error(Exception):
     def __init__(self, step_obj, message, exception=Failure):
         self.message = message.split("\n")
         self.exit_on_failure = literal_eval(world.config.user_data['exit_on_failure'])
+        self.no_failure = literal_eval(world.config.user_data['no_failure'])
         self.exception = exception
         self.exception_name = exception.__name__
         self.step_obj = step_obj
@@ -48,10 +49,15 @@ class Error(Exception):
             for message in msg:
                 console_write(message)
 
-            self._fail_step(self.step_obj.id, message)
+            if self.no_failure is False:
+                self._fail_step(self.step_obj.id, message)
+            else:
+                self.step_obj.state = Step.State.SKIPPED
             return
 
-        raise self.exception('\n'.join(msg))
+        if self.no_failure is False:
+            raise self.exception('\n'.join(msg))
+            self.step_obj.state = Step.State.SKIPPED
 
     @patch.object(traceback, 'extract_tb', return_value=None)
     def _fail_step(self, step_id, message, *args):
