@@ -131,8 +131,8 @@ def seek_regex_key_in_dict_values(haystack, key_name, needle, key_matched=None):
                     found.extend(seek_regex_key_in_dict_values(value, key_name, needle, True))
 
                 elif type(value) is list:
-                    for value in haystack:
-                        found.extend(seek_regex_key_in_dict_values(value, key_name, needle, True))
+                    for v in value:
+                        found.extend(seek_regex_key_in_dict_values(v, key_name, needle, True))
 
             else:
                 found.extend(seek_regex_key_in_dict_values(value, key_name, needle, key_matched))

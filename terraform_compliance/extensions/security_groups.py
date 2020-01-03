@@ -170,7 +170,9 @@ class SecurityGroup(object):
 
             # Apply enforcement on every rule. Only applicable for 'must not have'
             if self.singular_check:
-                self._run_singular_validation(rule, network_check, ports_check, protocol_check)
+                result, error = self._run_singular_validation(rule, network_check, ports_check, protocol_check)
+                if result is False:
+                    return result, error
 
             # Apply enforcement after the for loop, gather information first.
             elif not self.singular_check and network_check and protocol_check:
@@ -251,6 +253,8 @@ class SecurityGroup(object):
                                                                                    e['cidr_blocks'],
                                                                                    e['cidr_blocks_plural'],
                                                                                    e['address'])
+        else:
+            return True, None
 
     def _validate_network(self, cidr_in_plan):
         return is_ip_in_cidr(self.given_rule.cidr_blocks, cidr_in_plan)

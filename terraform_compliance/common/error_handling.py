@@ -1,9 +1,8 @@
 from terraform_compliance.common.exceptions import Failure
 from radish import world
-from radish.utils import console_write, Failure as RadishFailure, traceback
+from radish.utils import console_write
 from radish.stepmodel import Step
 import colorful
-from mock import patch
 from ast import literal_eval
 
 
@@ -21,14 +20,17 @@ class WrapperError(Exception):
 class Error(Exception):
     def __init__(self, step_obj, message, exception=Failure):
         self.message = message.split("\n")
-        self.exit_on_failure = literal_eval(world.config.user_data['exit_on_failure'])
-        self.no_failure = literal_eval(world.config.user_data['no_failure'])
+        if type(world.config.user_data['exit_on_failure']) is not bool:
+            self.exit_on_failure = True
+            self.no_failure = False
+        else:
+            self.exit_on_failure = literal_eval(world.config.user_data['exit_on_failure'])
+            self.no_failure = literal_eval(world.config.user_data['no_failure'])
         self.exception = exception
         self.exception_name = exception.__name__
         self.step_obj = step_obj
 
         self._process()
-
 
     def _process(self):
         # Prepare message
@@ -56,8 +58,8 @@ class Error(Exception):
             return
 
         if self.no_failure is False:
+            # self.step_obj.state = Step.State.SKIPPED
             raise self.exception('\n'.join(msg))
-            self.step_obj.state = Step.State.SKIPPED
 
     def _fail_step(self, step_id, message, *args):
         for step in self.step_obj.parent.all_steps:

@@ -1,7 +1,8 @@
 from unittest import TestCase
-from tests.mocks import MockedData
+from tests.mocks import MockedData, MockedWorld
 from terraform_compliance.extensions.security_groups import SecurityGroup, SecurityGroupRule
 from terraform_compliance.common.exceptions import Failure, TerraformComplianceInvalidData
+from mock import patch
 
 
 class TestSecurityGroupRule(TestCase):
@@ -70,20 +71,20 @@ class TestSecurityGroup(TestCase):
     # Tests about `must not have` scenarios
     # Checks are singular per security group rule, failures are imminent.
     def test_must_not_have_port_tcp_80_with_ALL_cidr(self):
-        with self.assertRaises(Failure) as context:
-            SecurityGroup(self.sg_given, self.sg_in_conf).validate()
+        result, error = SecurityGroup(self.sg_given, self.sg_in_conf).validate()
 
-        self.assertEqual('tcp/80 port is defined within 0.0.0.0/0 network in test.security_group_rule1.',
-                         str(context.exception))
+        self.assertFalse(result)
+        self.assertEqual('tcp/80 port is defined within 0.0.0.0/0 network in test.security_group_rule1.', error)
 
     def test_must_not_have_port_tcp_80_with_multi_cidr(self):
         self.sg_given['cidr_blocks'] = '192.168.1.0/24'
         self.sg_in_conf[0]['cidr_blocks'] = ['192.168.0.0/16', '0.0.0.0/0']
-        with self.assertRaises(Failure) as context:
-            SecurityGroup(self.sg_given, self.sg_in_conf).validate()
 
-        self.assertEqual('tcp/80 port is defined within 192.168.0.0/16, 0.0.0.0/0 networks in test.security_group_rule1.',
-                         str(context.exception))
+        result, error = SecurityGroup(self.sg_given, self.sg_in_conf).validate()
+
+        self.assertFalse(result)
+        self.assertEqual('tcp/80 port is defined within 192.168.0.0/16, 0.0.0.0/0 networks in '
+                         'test.security_group_rule1.', error)
 
     def test_must_not_have_port_tcp_80_with_ALL_cidr_success(self):
         self.sg_in_conf[0]['cidr_blocks'] = ['192.168.0.0/16']
@@ -98,11 +99,11 @@ class TestSecurityGroup(TestCase):
         self.sg_given['port'] = '22-23'
         self.sg_in_conf[0]['from_port'] = 22
         self.sg_in_conf[0]['to_port'] = 23
-        with self.assertRaises(Failure) as context:
-            SecurityGroup(self.sg_given, self.sg_in_conf).validate()
 
-        self.assertEqual('tcp/(22,23) ports are defined within 0.0.0.0/0 network in test.security_group_rule1.',
-                         str(context.exception))
+        result, error = SecurityGroup(self.sg_given, self.sg_in_conf).validate()
+
+        self.assertFalse(result)
+        self.assertEqual('tcp/(22,23) ports are defined within 0.0.0.0/0 network in test.security_group_rule1.', error)
 
     def test_must_not_have_port_tcp_22_23_with_multi_cidr(self):
         self.sg_given['port'] = '22-23'
@@ -110,12 +111,12 @@ class TestSecurityGroup(TestCase):
         self.sg_in_conf[0]['to_port'] = 23
         self.sg_given['cidr_blocks'] = '192.168.1.0/24'
         self.sg_in_conf[0]['cidr_blocks'] = ['192.168.0.0/16', '0.0.0.0/0']
-        with self.assertRaises(Failure) as context:
-            SecurityGroup(self.sg_given, self.sg_in_conf).validate()
 
+        result, error = SecurityGroup(self.sg_given, self.sg_in_conf).validate()
+
+        self.assertFalse(result)
         self.assertEqual('tcp/(22,23) ports are defined within 192.168.0.0/16, 0.0.0.0/0 networks in '
-                         'test.security_group_rule1.',
-                         str(context.exception))
+                         'test.security_group_rule1.', error)
 
     def test_must_not_have_port_tcp_22_23_with_ALL_cidr_success(self):
         self.sg_given['port'] = '22-23'
@@ -136,11 +137,11 @@ class TestSecurityGroup(TestCase):
         self.sg_given['port'] = '21-22'
         self.sg_in_conf[0]['from_port'] = 22
         self.sg_in_conf[0]['to_port'] = 23
-        with self.assertRaises(Failure) as context:
-            SecurityGroup(self.sg_given, self.sg_in_conf).validate()
 
-        self.assertEqual('tcp/22 port is defined within 0.0.0.0/0 network in test.security_group_rule1.',
-                         str(context.exception))
+        result, error = SecurityGroup(self.sg_given, self.sg_in_conf).validate()
+
+        self.assertFalse(result)
+        self.assertEqual('tcp/22 port is defined within 0.0.0.0/0 network in test.security_group_rule1.', error)
 
     def test_must_not_have_port_tcp_22_with_range_with_multi_cidr(self):
         self.sg_given['port'] = '21-22'
@@ -148,11 +149,12 @@ class TestSecurityGroup(TestCase):
         self.sg_in_conf[0]['to_port'] = 23
         self.sg_given['cidr_blocks'] = '192.168.1.0/24'
         self.sg_in_conf[0]['cidr_blocks'] = ['192.168.0.0/16', '0.0.0.0/0']
-        with self.assertRaises(Failure) as context:
-            SecurityGroup(self.sg_given, self.sg_in_conf).validate()
 
-        self.assertEqual('tcp/22 port is defined within 192.168.0.0/16, 0.0.0.0/0 networks in test.security_group_rule1.',
-                         str(context.exception))
+        result, error = SecurityGroup(self.sg_given, self.sg_in_conf).validate()
+
+        self.assertFalse(result)
+        self.assertEqual('tcp/22 port is defined within 192.168.0.0/16, 0.0.0.0/0 networks in '
+                         'test.security_group_rule1.', error)
 
     def test_must_not_have_port_tcp_22_with_range_with_ALL_cidr_success(self):
         self.sg_given['port'] = '21-22'
@@ -172,26 +174,25 @@ class TestSecurityGroup(TestCase):
     # Tests about `must have` scenarios
     def test_must_have_port_tcp_443_with_ALL_cidr(self):
         self.sg_given['port'] = 443
-        with self.assertRaises(Failure) as context:
-            sg = SecurityGroup(self.sg_given, self.sg_in_conf)
-            sg.must_have()
-            sg.validate()
 
-        self.assertEqual('tcp/443 port is not defined within 0.0.0.0/0 network in test_sg.',
-                         str(context.exception))
+        sg = SecurityGroup(self.sg_given, self.sg_in_conf)
+        sg.must_have()
+        result, error = sg.validate()
+
+        self.assertFalse(result)
+        self.assertEqual('tcp/443 port is not defined within 0.0.0.0/0 network in test_sg.', error)
 
     def test_must_have_port_tcp_443_with_multi_cidr(self):
         self.sg_given['port'] = 443
         self.sg_given['cidr_blocks'] = '192.168.1.0/24'
         self.sg_in_conf[0]['cidr_blocks'] = ['192.168.0.0/16', '0.0.0.0/0']
-        with self.assertRaises(Failure) as context:
-            sg = SecurityGroup(self.sg_given, self.sg_in_conf)
-            sg.must_have()
-            sg.validate()
 
-        self.assertEqual('tcp/443 port is not defined within 192.168.1.0/24 network in '
-                         'test_sg.',
-                         str(context.exception))
+        sg = SecurityGroup(self.sg_given, self.sg_in_conf)
+        sg.must_have()
+        result, error = sg.validate()
+
+        self.assertFalse(result)
+        self.assertEqual('tcp/443 port is not defined within 192.168.1.0/24 network in test_sg.', error)
 
     def test_must_have_port_tcp_80_with_multi_cidr_success(self):
         self.sg_in_conf[0]['cidr_blocks'] = ['192.168.0.0/24']
@@ -204,7 +205,7 @@ class TestSecurityGroup(TestCase):
         sg.must_have()
         self.assertTrue(sg.validate())
 
-    def test_must_have_port_tcp_80_with_multi_cidr_success(self):
+    def test_must_have_port_tcp_80_with_multi_cidr_32_success(self):
         self.sg_in_conf[0]['cidr_blocks'] = ['192.168.0.0/24']
         self.sg_in_conf[1]['cidr_blocks'] = ['192.168.0.0/16']
         self.sg_in_conf[1]['from_port'] = 79
@@ -214,26 +215,27 @@ class TestSecurityGroup(TestCase):
         sg.must_have()
         self.assertTrue(sg.validate())
 
-    def test_must_have_port_tcp_443_444_with_ALL_cidr(self):
+    @patch('radish.world', return_value=MockedWorld)
+    def test_must_have_port_tcp_443_444_with_ALL_cidr(self, *args):
         self.sg_given['port'] = '443-444'
-        with self.assertRaises(Failure) as context:
-            sg = SecurityGroup(self.sg_given, self.sg_in_conf)
-            sg.must_have()
-            sg.validate()
 
-        self.assertEqual('tcp/(443,444) ports are not defined within 0.0.0.0/0 network in test_sg.',
-                         str(context.exception))
+        sg = SecurityGroup(self.sg_given, self.sg_in_conf)
+        sg.must_have()
+        result, error = sg.validate()
+
+        self.assertFalse(result)
+        self.assertEqual('tcp/(443,444) ports are not defined within 0.0.0.0/0 network in test_sg.', error)
 
     def test_must_have_port_tcp_80_81_with_ALL_cidr(self):
         self.sg_given['port'] = '80-82'
         self.sg_in_conf[1]['cidr_blocks'] = ['0.0.0.0/0']
-        with self.assertRaises(Failure) as context:
-            sg = SecurityGroup(self.sg_given, self.sg_in_conf)
-            sg.must_have()
-            sg.validate()
 
-        self.assertEqual('tcp/82 port is not defined within 0.0.0.0/0 network in test_sg.',
-                         str(context.exception))
+        sg = SecurityGroup(self.sg_given, self.sg_in_conf)
+        sg.must_have()
+        result, error = sg.validate()
+
+        self.assertFalse(result)
+        self.assertEqual('tcp/82 port is not defined within 0.0.0.0/0 network in test_sg.', error)
 
     # Tests about `must only have` scenarios
     # We are just checking if tcp/80 is defined for 0.0.0.0/0
@@ -244,12 +246,13 @@ class TestSecurityGroup(TestCase):
 
     def test_must_only_have_port_tcp_80_81_with_ALL_cidr_success(self):
         self.sg_given['port'] = '80-81'
-        with self.assertRaises(Failure) as context:
-            sg = SecurityGroup(self.sg_given, self.sg_in_conf)
-            sg.must_only_have()
-            sg.validate()
-        self.assertEqual('tcp/81 port is not defined within 0.0.0.0/0 network in test_sg.',
-                         str(context.exception))
+
+        sg = SecurityGroup(self.sg_given, self.sg_in_conf)
+        sg.must_only_have()
+        result, error = sg.validate()
+
+        self.assertFalse(result)
+        self.assertEqual('tcp/81 port is not defined within 0.0.0.0/0 network in test_sg.', error)
 
     def test_must_only_have_port_some_ports_are_over_configured(self):
         self.sg_in_conf[0]['from_port'] = 79
@@ -258,12 +261,13 @@ class TestSecurityGroup(TestCase):
         self.sg_in_conf[1]['from_port'] = 80
         self.sg_in_conf[1]['to_port'] = 80
         self.sg_in_conf[1]['cidr_blocks'] = ['0.0.0.0/0']
-        with self.assertRaises(Failure) as context:
-            sg = SecurityGroup(self.sg_given, self.sg_in_conf)
-            sg.must_only_have()
-            sg.validate()
-        self.assertEqual('tcp/(81,79) ports are defined within 0.0.0.0/0 network in test_sg.',
-                         str(context.exception))
+
+        sg = SecurityGroup(self.sg_given, self.sg_in_conf)
+        sg.must_only_have()
+        result, error = sg.validate()
+
+        self.assertFalse(result)
+        self.assertEqual('tcp/(81,79) ports are defined within 0.0.0.0/0 network in test_sg.', error)
 
     def test_must_only_have_port_not_match_multiple_errors_given(self):
         self.sg_in_conf[0]['from_port'] = 22
@@ -272,17 +276,15 @@ class TestSecurityGroup(TestCase):
         self.sg_in_conf[1]['from_port'] = 443
         self.sg_in_conf[1]['to_port'] = 444
         self.sg_in_conf[1]['cidr_blocks'] = ['0.0.0.0/0']
-        with self.assertRaises(Failure) as context:
-            sg = SecurityGroup(self.sg_given, self.sg_in_conf)
-            sg.must_only_have()
-            sg.validate()
 
-        self.assertTrue('tcp/80 port is not defined within 0.0.0.0/0 network in test_sg.'
-                        in str(context.exception))
-        self.assertTrue('tcp/(443,444,22,23) ports are defined within 0.0.0.0/0 network in test_sg.'
-                        in str(context.exception))
-        self.assertTrue('None of the ports given defined within 0.0.0.0/0 network in test_sg.'
-                        in str(context.exception))
+        sg = SecurityGroup(self.sg_given, self.sg_in_conf)
+        sg.must_only_have()
+        result, error = sg.validate()
+
+        self.assertFalse(result)
+        self.assertTrue('tcp/80 port is not defined within 0.0.0.0/0 network in test_sg.', error)
+        self.assertTrue('tcp/(443,444,22,23) ports are defined within 0.0.0.0/0 network in test_sg.', error)
+        self.assertTrue('None of the ports given defined within 0.0.0.0/0 network in test_sg.', error)
 
     def test_must_only_have_port_match_multiple_ports_not_ranges(self):
         self.sg_in_conf[0]['from_port'] = 22
@@ -292,14 +294,12 @@ class TestSecurityGroup(TestCase):
         self.sg_in_conf[1]['to_port'] = 444
         self.sg_in_conf[1]['cidr_blocks'] = ['0.0.0.0/0']
         self.sg_given['ports'] = '22,23,443,444'
-        with self.assertRaises(Failure) as context:
-            sg = SecurityGroup(self.sg_given, self.sg_in_conf)
-            sg.must_only_have()
-            sg.validate()
 
-        self.assertTrue('tcp/80 port is not defined within 0.0.0.0/0 network in test_sg.'
-                        in str(context.exception))
-        self.assertTrue('tcp/(443,444,22,23) ports are defined within 0.0.0.0/0 network in test_sg.'
-                        in str(context.exception))
-        self.assertTrue('None of the ports given defined within 0.0.0.0/0 network in test_sg.'
-                        in str(context.exception))
+        sg = SecurityGroup(self.sg_given, self.sg_in_conf)
+        sg.must_only_have()
+        result, error = sg.validate()
+
+        self.assertFalse(result)
+        self.assertTrue('tcp/80 port is not defined within 0.0.0.0/0 network in test_sg.', error)
+        self.assertTrue('tcp/(443,444,22,23) ports are defined within 0.0.0.0/0 network in test_sg.', error)
+        self.assertTrue('None of the ports given defined within 0.0.0.0/0 network in test_sg.', error)

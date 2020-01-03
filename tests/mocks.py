@@ -247,6 +247,7 @@ class MockedStep(object):
         self.context = MockedStepContext()
         self.sentence = 'Given I am a step'
         self.context_sensitive_sentence = self.sentence
+        self.state = 'passed'
 
         if no_init is None:
             self.parent = MockedParentStep()
@@ -275,9 +276,17 @@ class MockedWorld(object):
 
 
 class MockedWorldConfig(object):
+    user_data = dict(
+        exit_on_failure=True,
+        no_failure=False
+    )
     def __init__(self):
         self.terraform = MockedWorldConfigTerraform()
         self.formatter = 'gherkin'
+        self.user_data = dict(
+            exit_on_failure=True,
+            no_failure=False
+        )
 
 
 class MockedWorldConfigTerraform(object):

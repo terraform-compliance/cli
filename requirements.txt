@@ -6,3 +6,4 @@ colorful==0.5.4
 filetype==1.0.5
 junit-xml==1.8
 lxml==4.4.2
+emoji==0.5.4
