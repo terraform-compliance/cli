@@ -59,7 +59,6 @@ class Error(Exception):
             raise self.exception('\n'.join(msg))
             self.step_obj.state = Step.State.SKIPPED
 
-    @patch.object(traceback, 'extract_tb', return_value=None)
     def _fail_step(self, step_id, message, *args):
         for step in self.step_obj.parent.all_steps:
             if step.id == step_id:

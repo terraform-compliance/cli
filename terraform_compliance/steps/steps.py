@@ -3,9 +3,9 @@
 from radish import world, given, when, then, step
 from terraform_compliance.steps import property_match_list
 from terraform_compliance.common.helper import convert_resource_type, find_root_by_key, seek_key_in_dict
-from terraform_compliance.common.helper import seek_regex_key_in_dict_values, jsonify, Null, EmptyStash
+from terraform_compliance.common.helper import search_regex_in_list, seek_regex_key_in_dict_values, jsonify, Null, EmptyStash
 from terraform_compliance.common.helper import get_resource_name_from_stash, get_resource_address_list_from_stash
-from terraform_compliance.common.helper import remove_mounted_resources
+from terraform_compliance.common.helper import remove_mounted_resources, search_regex_in_list
 from terraform_compliance.extensions.security_groups import SecurityGroup
 from terraform_compliance.extensions.ext_radish_bdd import skip_step
 from terraform_compliance.extensions.ext_radish_bdd import custom_type_any
@@ -16,7 +16,8 @@ import re
 from terraform_compliance.common.exceptions import Failure, TerraformComplianceNotImplemented
 from terraform_compliance.common.exceptions import TerraformComplianceInternalFailure
 from terraform_compliance.common.error_handling import Error
-
+from radish.stepmodel import Step
+from terraform_compliance.common.defaults import Defaults
 
 # TODO: Figure out how the IAM policies/statements shown in the plan.out
 # TODO: Implement an IAM Compliance via https://github.com/Netflix-Skunkworks/policyuniverse
@@ -128,6 +129,10 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
 @when(u'its {key:PROPERTY} includes {value:PROPERTY}')
 @when(u'its {key:PROPERTY} contains {value:PROPERTY}')
 def its_key_is_value(_step_obj, key, value):
+    orig_key = key
+    if key == 'reference':
+        key = Defaults.address_pointer
+
     search_key = str(key).lower()
     found_list = []
     for obj in _step_obj.context.stash:
@@ -169,7 +174,8 @@ def its_key_is_value(_step_obj, key, value):
         _step_obj.context.stash = found_list
         _step_obj.context.addresses = get_resource_address_list_from_stash(found_list)
     else:
-        skip_step(_step_obj, value)
+        skip_step(_step_obj, message='Can not find {} {} in {}.'.format(value, orig_key,
+                                                                        ', '.join(_step_obj.context.addresses)))
 
 
 @when(u'its {key:PROPERTY} is not {value:PROPERTY}')
@@ -177,6 +183,10 @@ def its_key_is_value(_step_obj, key, value):
 @when(u'its {key:PROPERTY} does not include {value:PROPERTY}')
 @when(u'its {key:PROPERTY} does not contain {value:PROPERTY}')
 def its_key_is_not_value(_step_obj, key, value):
+    orig_key = key
+    if key == 'reference':
+        key = Defaults.address_pointer
+
     search_key = str(key).lower()
     found_list = []
     for obj in _step_obj.context.stash:
@@ -215,7 +225,8 @@ def its_key_is_not_value(_step_obj, key, value):
         _step_obj.context.stash = found_list
         _step_obj.context.addresses = get_resource_address_list_from_stash(found_list)
     else:
-        skip_step(_step_obj, value)
+        skip_step(_step_obj, message='Can not find {} {} in {}.'.format(value, orig_key,
+                                                                        ', '.join(_step_obj.context.addresses)))
 
 
 @when(u'it contain {something:ANY}')
@@ -228,7 +239,10 @@ def it_condition_contain_something(_step_obj, something):
 
     if _step_obj.context.type in ('resource', 'data'):
         for resource in _step_obj.context.stash:
-            if type(resource) is not dict or 'values' not in resource or 'address' not in resource or 'type' not in resource:
+            if type(resource) is not dict \
+                    or 'values' not in resource \
+                    or 'address' not in resource \
+                    or 'type' not in resource:
                 resource = {'values': resource,
                             'address': resource,
                             'type': _step_obj.context.name}
@@ -284,19 +298,20 @@ def it_condition_contain_something(_step_obj, something):
                                   'type': _step_obj.context.name})
 
             elif 'must' in _step_obj.context_sensitive_sentence:
-                raise Failure('{} ({}) does not have {} property.'.format(resource['address'],
-                                                                          resource.get('type', ''),
-                                                                          something))
+                Error(_step_obj, '{} ({}) does not have {} property.'.format(resource['address'],
+                                                                             resource.get('type', ''),
+                                                                             something))
 
         if prop_list:
             _step_obj.context.stash = prop_list
             _step_obj.context.property_name = something
             return True
 
-        skip_step(_step_obj,
-                  resource=_step_obj.context.name,
-                  message='Can not find any {} property for {} resource in '
-                          'terraform plan.'.format(something, _step_obj.context.name))
+        if _step_obj.state != Step.State.FAILED:
+            skip_step(_step_obj,
+                      resource=_step_obj.context.name,
+                      message='Can not find any {} property for {} resource in '
+                              'terraform plan.'.format(something, _step_obj.context.name))
 
     elif _step_obj.context.type == 'provider':
         for provider_data in _step_obj.context.stash:
@@ -309,17 +324,18 @@ def it_condition_contain_something(_step_obj, something):
                                                            provider_data.get('alias', "\b"))
                 return True
             elif 'must' in _step_obj.context_sensitive_sentence:
-                raise Failure('{} {} does not have {} property.'.format(_step_obj.context.addresses,
-                                                                        _step_obj.context.type,
-                                                                        something))
+                Error(_step_obj, '{} {} does not have {} property.'.format(_step_obj.context.addresses,
+                                                                           _step_obj.context.type,
+                                                                           something))
         if 'must' in _step_obj.context_sensitive_sentence:
-            raise Failure('{} {} does not have {} property.'.format(_step_obj.context.addresses,
-                                                                    _step_obj.context.type,
-                                                                    something))
-    skip_step(_step_obj,
-              resource=_step_obj.context.name,
-              message='Skipping the step since {} type does not have {} property.'.format(_step_obj.context.type,
-                                                                                          something))
+            Error(_step_obj, '{} {} does not have {} property.'.format(_step_obj.context.addresses,
+                                                                       _step_obj.context.type,
+                                                                       something))
+    if _step_obj.state != Step.State.FAILED:
+        skip_step(_step_obj,
+                  resource=_step_obj.context.name,
+                  message='Skipping the step since {} type does not have {} property.'.format(_step_obj.context.type,
+                                                                                              something))
 
 
 @then(u'{something:ANY} is be enabled')
@@ -339,10 +355,6 @@ def property_is_enabled(_step_obj, something):
                     property_value = property_value.get(something, Null)
 
             if not property_value:
-                # raise Failure('Resource {} does not have {} property enabled ({}={}).'.format(resource.get('address', "resource"),
-                #                                                                               something,
-                #                                                                               something,
-                #                                                                               property_value))
                 Error(_step_obj, 'Resource {} does not have {} property enabled '
                                  '({}={}).'.format(resource.get('address', "resource"),
                                                    something,
@@ -418,9 +430,6 @@ def i_expect_the_result_is_operator_than_number(_step_obj, operator, number, _st
         try:
             assert assertion, 'Failed'
         except AssertionError as e:
-            # raise Failure('for {} on {}. {}.'.format(_step_obj.context.address,
-            #                                          _step_obj.context.property_name,
-            #                                          message))
             Error(_step_obj, 'for {} on {}. {}.'.format(_step_obj.context.address,
                                                         _step_obj.context.property_name,
                                                         message))
@@ -465,7 +474,6 @@ def its_value_condition_match_the_search_regex_regex(_step_obj, condition, searc
         text = 'matches' if condition == 'must not' else 'does not match'
         name = name if (name is not None or name is not False) else _step_obj.context.name
         pattern = 'Null/None' if regex == '\x00' else regex
-        # raise Failure('{} property in {} {} {} with {} regex. '
         Error(_step_obj, '{} property in {} {} {} with {} regex. '
                          'It is set to {}.'.format(_step_obj.context.property_name,
                                                    name,
@@ -553,7 +561,6 @@ def _its_value_condition_contain(_step_obj, condition, value, values):
 @then(u'it should fail')
 @then(u'it must fail')
 def it_fails(_step_obj):
-    # raise Failure('Forcefully failing the scenario on {} ({}) {}'.format(_step_obj.context.name,
     Error(_step_obj, 'Forcefully failing the scenario on {} ({}) {}'.format(_step_obj.context.name,
                                                                             ', '.join(_step_obj.context.addresses),
                                                                             _step_obj.context.type))
@@ -564,3 +571,19 @@ def its_value_condition_be_null(_step_obj, condition):
     its_value_condition_match_the_search_regex_regex(_step_obj, condition, u'\x00')
     its_value_condition_match_the_search_regex_regex(_step_obj, condition, u'^$')
     its_value_condition_match_the_search_regex_regex(_step_obj, condition, u'^null$')
+
+
+@then(u'it must have "{reference_address}" referenced')
+def it_must_have_reference_address_referenced(_step_obj, reference_address):
+    if _step_obj.context.stash:
+        for resource in _step_obj.context.stash:
+            if type(resource) is dict:
+                if Defaults.address_pointer in resource and search_regex_in_list(reference_address,
+                                                                                 resource[Defaults.address_pointer]):
+                    return True
+            else:
+                raise TerraformComplianceInternalFailure('Unexpected resource structure: {}'.format(resource))
+
+            Error(_step_obj, '{} is not referenced within {}.'.format(reference_address, resource.get('address')))
+    else:
+        Error(_step_obj, 'No entities found for this step to process. Check your filtering steps in this scenario.')

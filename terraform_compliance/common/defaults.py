@@ -4,6 +4,9 @@ from emoji import emojize
 
 
 class Defaults(object):
+
+    address_pointer = 'terraform-compliance.mounted_resources.addresses'
+
     def __init__(self):
         if '--no-ansi' in sys.argv:
             self.skip_colour = \

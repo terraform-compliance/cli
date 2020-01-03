@@ -233,3 +233,10 @@ def remove_mounted_resources(resource_list):
                     del resource['values'][mounted_resource_type]
 
     return resources
+
+
+def search_regex_in_list(regex, target_list):
+    if type(target_list) is list:
+        return list(filter(re.compile(r'{}'.format(regex)).match, target_list))
+
+    return False
