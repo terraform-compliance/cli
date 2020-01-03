@@ -1,4 +1,5 @@
 import sys
+import os
 import colorful
 from emoji import emojize
 
@@ -8,7 +9,9 @@ class Defaults(object):
     address_pointer = 'terraform-compliance.mounted_resources.addresses'
 
     def __init__(self):
-        if '--no-ansi' in sys.argv:
+        self.interactive_mode = self.detect_term()
+
+        if '--no-ansi' in sys.argv or not sys.stdout.isatty():
             self.skip_colour = \
             self.warning_colour = \
             self.failure_colour = \
@@ -42,3 +45,7 @@ class Defaults(object):
     @staticmethod
     def no_coloured_output(param):
         return param
+
+    @staticmethod
+    def detect_term():
+        return False if colorful.terminal.detect_color_support(env=os.environ) == 0 else True

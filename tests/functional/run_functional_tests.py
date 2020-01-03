@@ -90,7 +90,7 @@ for test_dir in tests:
 
             print('Output: {}'.format(e.stdout))
 
-    test_summary.append('{:.<40s}{:.>60s}'.format(test_dir, test_result))
+    test_summary.append('{:.<70s}{:.>10s}'.format(test_dir, test_result))
 
 print('\n\nRan {} tests.'.format(len(tests)))
 print('\n'.join(sorted(test_summary)))

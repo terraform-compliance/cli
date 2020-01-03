@@ -1,3 +1,1 @@
-Failure: tcp\/22 port is not defined within 10\.0\.0\.0\/8 network in aws_security_group.elb.
-tcp\/80 port is defined within 10\.0\.0\.0\/8 network in aws_security_group.elb.
-None of the ports given defined within 10\.0\.0\.0\/8 network in aws_security_group.elb.
+tcp\/80 port is defined within 10\.0\.0\.0\/8 network in aws_security_group\.elb\.

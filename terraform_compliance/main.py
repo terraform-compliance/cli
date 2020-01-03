@@ -94,12 +94,13 @@ def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
                                                                                             Defaults().failure_colour('failure'),
                                                                                             Defaults().info_colour(0)))
 
+    if Defaults().interactive_mode is False:
+        console_write('{} Running in non-interactive mode.'.format(Defaults().info_icon))
 
     if args.silence is False:
         console_write('\n{} Running tests. {}\n'.format(Defaults().icon,
                                                         Defaults().tada))
 
-    # TODO: Handle system exit somehow ?
     result = call_radish(args=commands[1:])
 
     return result
