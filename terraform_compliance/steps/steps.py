@@ -259,7 +259,7 @@ def it_condition_contain_something(_step_obj, something):
                     found_key = [{something: found_key}]
 
                 if len(found_key):
-                    found_key = found_key[0] if len(found_key) == 1 else found_key
+                    found_key = found_key[0] if len(found_key) == 1 and something in found_key[0] else found_key
 
                     if type(found_key) is dict:
                         found_value = jsonify(found_key.get(something, found_key))
