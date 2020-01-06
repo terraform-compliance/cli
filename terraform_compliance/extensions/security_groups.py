@@ -272,7 +272,7 @@ class SecurityGroup(object):
             output['protocol'] = str(list(protocol_check)[0]) if len(protocol_check) == 1 else '({})'.format(','.join(str(s) for s in protocol_check))
             output['cidr_blocks'] = rule.cidr_blocks[0] if len(rule.cidr_blocks) == 1 else ', '.join(rule.cidr_blocks)
             output['cidr_blocks_plural'] = '' if len(rule.cidr_blocks) == 1 else 's'
-            output['address'] = rule.address
+            output['address'] = rule.address if rule.address else self.address
             output['ports'] = str(list(ports_check)[0]) if len(ports_check) == 1 else '({})'.format(','.join(str(s) for s in ports_check))
             # TODO: If the ports output is too large, make it smaller by showing a range only.
             output['ports_plural'] = ' is' if len(ports_check) == 1 else 's are'

@@ -209,9 +209,21 @@ class TerraformParser(object):
         resource_list = []
 
         resource_type, resource_id = resource_name.split('.')[0:2]
-        for key, value in self.resources.items():
-            if value['type'] == resource_type and value['name'] == resource_id:
-                resource_list.append(key)
+
+        if resource_type == 'module':
+            module_name, output_id = resource_name.split('.')[1:3]
+            module = self.raw['configuration']['root_module'].get('module_calls', {}).get(module_name, {})
+
+            output_value = module.get('module', {}).get('outputs', {}).get(output_id, {})
+            resources = output_value.get('expression', {}).get('references') if 'expression' in output_value else output_value.get('value', [])
+            resources = ['{}.{}.{}'.format(resource_type, module_name, res) for res in resources]
+
+            if resources:
+                resource_list.extend(resources)
+        else:
+            for key, value in self.resources.items():
+                if value['type'] == resource_type and value['name'] == resource_id:
+                    resource_list.append(key)
 
         return resource_list
 
