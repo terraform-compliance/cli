@@ -39,20 +39,37 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
     '''
     assert (type_name in ['resource', 'resources',
                           'variable', 'variables',
+                          'output', 'outputs',
                           'provider', 'providers',
                           'data', 'datas']), \
         '{} configuration type does not exist or not implemented yet. ' \
-        'Use resource(s), provider(s), variable(s) or data(s) instead.'.format(type_name)
+        'Use resource(s), provider(s), variable(s), output(s) or data(s) instead.'.format(type_name)
 
     if type_name.endswith('s'):
         type_name = type_name[:-1]
 
-    if name in ('a resource', 'any resource', 'a', 'any', 'anything'):
+    if name in ('a resource', 'any resource', 'resources'):
         _step_obj.context.type = type_name
         _step_obj.context.name = name
         _step_obj.context.stash = [obj for key, obj in _terraform_config.config.terraform.resources_raw.items()]
         _step_obj.context.addresses = get_resource_address_list_from_stash(_step_obj.context.stash)
         _step_obj.context.property_name = type_name
+        return True
+
+    elif name in ('an output', 'any output', 'outputs'):
+        _step_obj.context.type = 'output'
+        _step_obj.context.name = name
+        _step_obj.context.stash = [obj for key, obj in _terraform_config.config.terraform.configuration['outputs'].items()]
+        _step_obj.context.addresses = get_resource_address_list_from_stash(_terraform_config.config.terraform.configuration['outputs'])
+        _step_obj.context.property_name = 'output'
+        return True
+
+    elif name in ('a variable', 'any variable', 'variables'):
+        _step_obj.context.type = 'variable'
+        _step_obj.context.name = name
+        _step_obj.context.stash = [obj for key, obj in _terraform_config.config.terraform.configuration['variables'].items()]
+        _step_obj.context.addresses = 'variable'
+        _step_obj.context.property_name = 'variable'
         return True
 
     elif name == 'resource that supports tags':
@@ -98,6 +115,18 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
             _step_obj.context.property_name = type_name
             return True
 
+
+    elif type_name == 'output':
+        found_output = _terraform_config.config.terraform.outputs.get(name, None)
+
+        if found_output:
+            _step_obj.context.type = type_name
+            _step_obj.context.name = name
+            _step_obj.context.stash = found_output
+            _step_obj.context.addresses = name
+            _step_obj.context.property_name = type_name
+            return True
+
     elif type_name == 'provider':
         found_provider = _terraform_config.config.terraform.get_providers_from_configuration(name)
 
@@ -106,6 +135,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
             _step_obj.context.name = name
             _step_obj.context.stash = found_provider
             _step_obj.context.addresses = name
+            _step_obj.context.address = name
             _step_obj.context.property_name = type_name
             return True
 
@@ -118,6 +148,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
             _step_obj.context.name = name
             _step_obj.context.stash = data_list
             _step_obj.context.addresses = name
+            _step_obj.context.address = name
             _step_obj.context.property_name = type_name
             return True
 
@@ -587,3 +618,49 @@ def it_must_have_reference_address_referenced(_step_obj, reference_address):
             Error(_step_obj, '{} is not referenced within {}.'.format(reference_address, resource.get('address')))
     else:
         Error(_step_obj, 'No entities found for this step to process. Check your filtering steps in this scenario.')
+
+
+@then('its {key:ANY} {condition:ANY} be {value:ANY}')
+@then('its {key:ANY} property {condition:ANY} be {value:ANY}')
+@then('its {key:ANY} key {condition:ANY} be {value:ANY}')
+def its_key_condition_be_value(_step_obj, key, condition, value, stash=Null, depth=0):
+    if condition not in ('must', 'must not'):
+        raise TerraformComplianceNotImplemented('This step only accepts "must" and "must not" as a condition.')
+
+    if stash is Null:
+        stash = _step_obj.context.stash
+
+    if not stash or stash is Null:
+        Error(_step_obj, 'No entities found for this step to process. Check your filtering steps in this scenario.')
+        return False
+
+    found_values = []
+    for entity in stash:
+        if type(entity) is dict:
+            found_values.extend(seek_regex_key_in_dict_values(entity, key, value))
+        elif type(entity) is list:
+            for element in entity:
+                found_values.extend(its_key_condition_be_value(_step_obj, key, condition, element, entity, depth+1))
+        elif type(entity) is str or type(entity) is int or type(entity) is bool:
+            if str(entity).lower == key.lower or str(entity) == value.lower:
+                found_values.append(entity)
+
+    # Return the values to the parent call.
+    if depth > 0:
+        return found_values
+
+    condition = condition == 'must'
+    found_values = [values for values in found_values if values is not None]
+
+    obj_address = _step_obj.context.name
+    if hasattr(_step_obj.context, 'address'):
+        obj_address = _step_obj.context.address
+    elif hasattr(_step_obj.context, 'addresses'):
+        obj_address = ', '.join(_step_obj.context.addresses)
+
+    if found_values and not condition:
+        Error(_step_obj, 'Found {}({}) in {} property of {}.'.format(value, ', '.join(found_values), key, obj_address))
+    elif not found_values and condition:
+        Error(_step_obj, 'Can not find {} in {} property of {}.'.format(value, key, obj_address))
+
+    return True

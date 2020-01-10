@@ -12,6 +12,9 @@ class TerraformParser(object):
         checked and exited in prior steps.
 
         :param filename: terraform plan filename in json format.
+        :parse_it: Runs self.parse() if given.
+
+        :return: None
         '''
         self.supported_terraform_versions = (
             '0.12', # This is here because this tuple must have multiple values.
@@ -148,15 +151,46 @@ class TerraformParser(object):
 
         # Variables
         self.configuration['variables'] = {}
-
         for findings in seek_key_in_dict(self.raw.get('configuration', {}).get('root_module', {}), 'variables'):
-            self.configuration['variables'] = findings.get('variables', {})
+            self.configuration['variables'].update(findings.get('variables', {}))
 
         # Providers
         self.configuration['providers'] = {}
-
         for findings in seek_key_in_dict(self.raw.get('configuration', {}), 'provider_config'):
-            self.configuration['providers'] = findings.get('provider_config', {})
+            self.configuration['providers'].update(findings.get('provider_config', {}))
+
+        # Outputs
+        self.configuration['outputs'] = {}
+        for findings in seek_key_in_dict(self.raw.get('configuration', {}), 'outputs'):
+            for key, value in findings.get('outputs', {}).items():
+                tmp_output = dict(address=key, value={})
+                if 'expression' in value:
+                    if 'references' in value['expression']:
+                        tmp_output['value'] = value['expression']['references']
+                        tmp_output['type'] = 'object'
+                    elif 'constant_value' in value['expression']:
+                        tmp_output['value'] = value['expression']['constant_value']
+
+                if 'sensitive' in value:
+                    tmp_output['sensitive'] = str(value['sensitive']).lower()
+                else:
+                    tmp_output['sensitive'] = 'false'
+
+                if 'type' in value:
+                    tmp_output['type'] = value['type']
+                elif 'type' not in tmp_output:
+                    if type(tmp_output['value']) is list:
+                        tmp_output['type'] = 'list'
+                    elif type(tmp_output['value']) is dict:
+                        tmp_output['type'] = 'map'
+                    elif type(tmp_output['value']) is str:
+                        tmp_output['type'] = 'string'
+                    elif type(tmp_output['value']) is int:
+                        tmp_output['type'] = 'integer'
+                    elif type(tmp_output['value']) is bool:
+                        tmp_output['type'] = 'boolean'
+
+                self.configuration['outputs'][key] = tmp_output
 
     def _mount_resources(self, source, target, ref_type):
         '''
@@ -267,7 +301,6 @@ class TerraformParser(object):
                                                   source_resources,
                                                   ref_type)
 
-
     def _distribute_providers(self):
         for resource_name, resource_data in self.resources.items():
             resource_provider = resource_name.split('_')[0]
@@ -295,7 +328,6 @@ class TerraformParser(object):
         self._mount_references()
         self._distribute_providers()
         return
-
 
     def find_resources_by_type(self, resource_type):
         '''
