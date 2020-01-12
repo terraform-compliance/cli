@@ -152,12 +152,12 @@ class TerraformParser(object):
         # Variables
         self.configuration['variables'] = {}
         for findings in seek_key_in_dict(self.raw.get('configuration', {}).get('root_module', {}), 'variables'):
-            self.configuration['variables'].update(findings.get('variables', {}))
+            self.configuration['variables'] = findings.get('variables')
 
         # Providers
         self.configuration['providers'] = {}
         for findings in seek_key_in_dict(self.raw.get('configuration', {}), 'provider_config'):
-            self.configuration['providers'].update(findings.get('provider_config', {}))
+            self.configuration['providers'] = findings.get('provider_config', {})
 
         # Outputs
         self.configuration['outputs'] = {}
@@ -179,15 +179,15 @@ class TerraformParser(object):
                 if 'type' in value:
                     tmp_output['type'] = value['type']
                 elif 'type' not in tmp_output:
-                    if type(tmp_output['value']) is list:
+                    if isinstance(tmp_output['value'], list):
                         tmp_output['type'] = 'list'
-                    elif type(tmp_output['value']) is dict:
+                    elif isinstance(tmp_output['value'], dict):
                         tmp_output['type'] = 'map'
-                    elif type(tmp_output['value']) is str:
+                    elif isinstance(tmp_output['value'], str):
                         tmp_output['type'] = 'string'
-                    elif type(tmp_output['value']) is int:
+                    elif isinstance(tmp_output['value'], int):
                         tmp_output['type'] = 'integer'
-                    elif type(tmp_output['value']) is bool:
+                    elif isinstance(tmp_output['value'], bool):
                         tmp_output['type'] = 'boolean'
 
                 self.configuration['outputs'][key] = tmp_output
@@ -339,9 +339,7 @@ class TerraformParser(object):
         resource_list = []
 
         for _, resource_data in self.resources.items():
-            if resource_type == 'any':
-                resource_list.append(resource_data)
-            elif resource_data['type'] == resource_type.lower():
+            if resource_type == 'any' or resource_data['type'] == resource_type.lower():
                 resource_list.append(resource_data)
 
         return resource_list
@@ -370,7 +368,7 @@ class TerraformParser(object):
         '''
         providers = []
         for provider_alias, values in self.configuration['providers'].items():
-            if type(values) is dict and values.get('name') == provider_type:
+            if isinstance(values, dict) and values.get('name') == provider_type:
                 providers.append(values)
 
         return providers

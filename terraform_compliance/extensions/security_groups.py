@@ -52,7 +52,7 @@ class SecurityGroupRule(object):
     def _normalise_protocols(self):
         # TODO: Implement other protocols, not just TCP and UDP.
         # There is always one protocol in the list as an input.
-        if self.protocol[0] == '-1' or type(self.protocol[0]) is int:
+        if self.protocol[0] == '-1' or isinstance(self.protocol[0], int):
             self.protocol = ['tcp', 'udp']
         else:
             self.protocol[0] = self.protocol[0].lower()
@@ -68,11 +68,11 @@ class SecurityGroupRule(object):
         if self.cidr_blocks is None:
             raise TerraformComplianceInvalidData('A cidr range must be given.')
 
-        if type(self.cidr_blocks) is list:
+        if isinstance(self.cidr_blocks, list):
             for cidr in self.cidr_blocks:
                 if check_if_cidr(cidr) is False:
                     raise TerraformComplianceInvalidData('{} is not a valid CIDR.'.format(cidr))
-        elif type(self.cidr_blocks) is str:
+        elif isinstance(self.cidr_blocks, str):
             if check_if_cidr(self.cidr_blocks) is False:
                 raise TerraformComplianceInvalidData('{} is not a valid CIDR.'.format(self.cidr_blocks))
         else:
@@ -114,7 +114,7 @@ class SecurityGroup(object):
     def __init__(self, given_reqs, security_groups_in_plan, address='test_sg'):
         self.given = given_reqs
         self.sgs = self._clean(security_groups_in_plan)
-        self.sgs = [self.sgs] if type(self.sgs) is dict else self.sgs
+        self.sgs = [self.sgs] if isinstance(self.sgs, dict) else self.sgs
         self.address = address
 
         self.exact_match = False
@@ -288,11 +288,11 @@ class SecurityGroup(object):
         return output
 
     def _clean(self, sg_array):
-        if type(sg_array) is list:
+        if isinstance(sg_array, list):
             for sg in sg_array:
                 self._clean(sg)
 
-        elif type(sg_array) is dict:
+        elif isinstance(sg_array, dict):
             if 'self' in sg_array:
                 sg_array.pop('self')
 

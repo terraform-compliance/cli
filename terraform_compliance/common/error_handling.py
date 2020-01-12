@@ -20,7 +20,7 @@ class WrapperError(Exception):
 class Error(Exception):
     def __init__(self, step_obj, message, exception=Failure):
         self.message = message.split("\n")
-        if type(world.config.user_data['exit_on_failure']) is not bool:
+        if not isinstance(world.config.user_data['exit_on_failure'], bool):
             self.exit_on_failure = True
             self.no_failure = False
         else:

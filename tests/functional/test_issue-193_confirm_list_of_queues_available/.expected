@@ -1,1 +1,0 @@
-Failure: enable_partitioning property in azurerm_servicebus_queue.sb\["somethingdifferent"\] resource does not match with \^false\$ regex. It is set to True.

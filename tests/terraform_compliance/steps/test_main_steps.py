@@ -25,7 +25,8 @@ class TestStepCases(TestCase):
             i_have_name_section_configured(step, 'some_name', 'some_invalid_type', 'some_world')
 
         self.assertEqual(str(err.exception), 'some_invalid_type configuration type does not exist or not implemented '
-                                             'yet. Use resource(s), provider(s), variable(s) or data(s) instead.')
+                                             'yet. Use resource(s), provider(s), variable(s), output(s) or data(s) '
+                                             'instead.')
 
     def test_i_have_name_section_configured_resource_that_supports_tags_found(self):
         step = MockedStep()
@@ -702,7 +703,8 @@ class TestStepCases(TestCase):
         self.assertTrue(type(step.context.stash) is list)
         self.assertEqual(step.context.stash[0]['some_key'], 'some_other_value')
 
-    def test_its_value_condition_contain(self):
+    @patch('terraform_compliance.common.error_handling.world', side_effect=MockedWorld())
+    def test_its_value_condition_contain(self, *args):
         step = MockedStep()
         step.context.stash = [
             {
@@ -710,9 +712,10 @@ class TestStepCases(TestCase):
             }
         ]
         step.context.property_name = 'some_thing'
-        its_value_condition_contain(step, 'must', 'foo')
-        its_value_condition_contain(step, 'must not', 'baz')
-        with self.assertRaises(AssertionError):
+        self.assertEqual([{'values': 'foo', 'address': None}],
+                         its_value_condition_contain(step, 'must', 'foo'))
+        self.assertEqual([], its_value_condition_contain(step, 'must not', 'baz'))
+        with self.assertRaises(Failure):
             its_value_condition_contain(step, 'must', 'baz')
-        with self.assertRaises(AssertionError):
+        with self.assertRaises(Failure):
             its_value_condition_contain(step, 'must not', 'foo')

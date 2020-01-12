@@ -85,14 +85,14 @@ def seek_key_in_dict(haystack, needle):
     :return: list of found keys & values
     '''
     found = list()
-    if type(haystack) is dict:
+    if isinstance(haystack, dict):
         for key, value in haystack.items():
             if key.lower() == needle.lower():
                 found.append({key: value})
             else:
                 found.extend(seek_key_in_dict(value, needle))
 
-    elif type(haystack) is list:
+    elif isinstance(haystack, list):
         for value in haystack:
             found.extend(seek_key_in_dict(value, needle))
 
@@ -116,10 +116,10 @@ def seek_regex_key_in_dict_values(haystack, key_name, needle, key_matched=None):
     '''
     regex = r'{}'.format(needle)
     found = list()
-    if type(haystack) is dict:
+    if isinstance(haystack, dict):
         for key, value in haystack.items():
             if key.lower() == key_name.lower() or key_matched is not None:
-                if type(value) is str:
+                if isinstance(value, str):
                     matches = re.match(regex, value)
 
                     if matches is not None:
@@ -127,17 +127,17 @@ def seek_regex_key_in_dict_values(haystack, key_name, needle, key_matched=None):
                     else:
                         found.extend(seek_regex_key_in_dict_values(value, key_name, needle, True))
 
-                elif type(value) is dict:
+                elif isinstance(value, dict):
                     found.extend(seek_regex_key_in_dict_values(value, key_name, needle, True))
 
-                elif type(value) is list:
+                elif isinstance(value, list):
                     for v in value:
                         found.extend(seek_regex_key_in_dict_values(v, key_name, needle, True))
 
             else:
                 found.extend(seek_regex_key_in_dict_values(value, key_name, needle, key_matched))
 
-    elif type(haystack) is list:
+    elif isinstance(haystack, list):
         for value in haystack:
             found.extend(seek_regex_key_in_dict_values(value, key_name, needle, key_matched))
 
@@ -161,7 +161,7 @@ def find_root_by_key(haystack, needle, return_key=None, _inherited_key=None, _de
     :return:
     '''
     found = list()
-    if type(haystack) is dict:
+    if isinstance(haystack, dict):
         for key, value in haystack.items():
             if not _depth:
                 _inherited_key = key
@@ -172,7 +172,7 @@ def find_root_by_key(haystack, needle, return_key=None, _inherited_key=None, _de
             else:
                 found.extend(find_root_by_key(value, needle, return_key, _inherited_key, _depth+1, _return_value))
 
-    elif type(haystack) is list and _inherited_key is not None:
+    elif isinstance(haystack, list) and _inherited_key is not None:
         for value in haystack:
             found.extend(find_root_by_key(value, needle, return_key, _inherited_key, _depth+1, _return_value))
 
@@ -183,7 +183,7 @@ def find_root_by_key(haystack, needle, return_key=None, _inherited_key=None, _de
 
 
 def jsonify(string):
-    if type(string) is not str:
+    if not isinstance(string, str):
         return string
 
     try:
@@ -196,11 +196,11 @@ def get_resource_name_from_stash(stash, alternative_stash=None, address=None):
     if address is not None:
         return {'address': address}
 
-    if type(alternative_stash) is str or type(alternative_stash) is bool or alternative_stash is None:
-        if type(stash) is list:
+    if isinstance(alternative_stash, (str, bool)) or alternative_stash is None:
+        if isinstance(stash, list):
 
             # Get the first number, since this is usually due to `count` usage in terraform
-            if 'address' in stash[0]:
+            if 'address' in stash[0] and stash[0]['address'] is not None:
                 return {'address': stash[0]['address'].replace('[0]','')}
             else:
                 return {'address': stash[0]}
@@ -222,7 +222,7 @@ def get_resource_address_list_from_stash(resource_list):
 
 
 def remove_mounted_resources(resource_list):
-    if type(resource_list) is not list:
+    if not isinstance(resource_list, list):
         return resource_list
 
     resources = deepcopy(resource_list)
@@ -236,7 +236,28 @@ def remove_mounted_resources(resource_list):
 
 
 def search_regex_in_list(regex, target_list):
-    if type(target_list) is list:
+    if isinstance(target_list, list):
         return list(filter(re.compile(r'{}'.format(regex)).match, target_list))
 
     return False
+
+
+def seek_value_in_dict(needle, haystack, address=None):
+    findings = []
+    if isinstance(haystack, (str, int, bool, float)) and needle in haystack:
+        findings.append(dict(values=needle, address=None))
+
+    elif isinstance(haystack, dict):
+        address = haystack.get('address') if address is None else address
+
+        for key, value in haystack.items():
+            if isinstance(value, (dict, list)):
+                findings.extend(seek_value_in_dict(needle, value))
+            elif isinstance(value, (str, bool, int, float)) and needle.lower() == str(value).lower():
+                findings.append(dict(values=needle, address=address))
+
+    elif isinstance(haystack, list):
+        for value in haystack:
+            findings.extend(seek_value_in_dict(needle, value))
+
+    return findings

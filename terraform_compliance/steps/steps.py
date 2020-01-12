@@ -5,7 +5,7 @@ from terraform_compliance.steps import property_match_list
 from terraform_compliance.common.helper import convert_resource_type, find_root_by_key, seek_key_in_dict
 from terraform_compliance.common.helper import search_regex_in_list, seek_regex_key_in_dict_values, jsonify, Null, EmptyStash
 from terraform_compliance.common.helper import get_resource_name_from_stash, get_resource_address_list_from_stash
-from terraform_compliance.common.helper import remove_mounted_resources, search_regex_in_list
+from terraform_compliance.common.helper import remove_mounted_resources, search_regex_in_list, seek_value_in_dict
 from terraform_compliance.extensions.security_groups import SecurityGroup
 from terraform_compliance.extensions.ext_radish_bdd import skip_step
 from terraform_compliance.extensions.ext_radish_bdd import custom_type_any
@@ -171,12 +171,12 @@ def its_key_is_value(_step_obj, key, value):
 
         if object_key is Null:
             object_key = obj.get('values', {})
-            if type(object_key) is list:
+            if isinstance(object_key, list):
                 object_keys = []
                 for object_key_element in object_key:
-                    if type(object_key_element) is dict:
+                    if isinstance(object_key_element, dict):
                         filtered_key = object_key_element.get(key)
-                        if type(filtered_key) is str and filtered_key.lower() == value.lower():
+                        if isinstance(filtered_key, str) and filtered_key.lower() == value.lower():
                             found_list.append(object_key_element)
                     else:
                         object_keys.append(object_key_element.get(key, Null))
@@ -185,20 +185,20 @@ def its_key_is_value(_step_obj, key, value):
             else:
                 object_key = object_key.get(key, Null)
 
-        if type(object_key) is str:
+        if isinstance(object_key, str):
             if "[" in object_key:
                 object_key = object_key.split('[')[0]
 
             if object_key.lower() == value.lower():
                 found_list.append(obj)
 
-        elif type(object_key) in (int, bool) and object_key == value:
+        elif isinstance(object_key, (int, bool)) and object_key == value:
             found_list.append(obj)
 
-        elif type(object_key) is list and value in object_key:
+        elif isinstance(object_key, list) and value in object_key:
             found_list.append(obj)
 
-        elif type(object_key) is dict and (value in object_key.keys()):
+        elif isinstance(object_key, dict) and (value in object_key.keys()):
             found_list.append(obj)
 
     if found_list != []:
@@ -225,7 +225,7 @@ def its_key_is_not_value(_step_obj, key, value):
 
         if object_key is Null:
             object_key = obj.get('values', {})
-            if type(object_key) is list:
+            if isinstance(object_key, list):
                 object_keys = []
                 for object_key_element in object_key:
                     if object_key_element.get(key, Null) != value:
@@ -236,20 +236,20 @@ def its_key_is_not_value(_step_obj, key, value):
                 if object_key.get(key, Null) != value:
                     object_key = object_key.get(key, Null)
 
-        if type(object_key) is str:
+        if isinstance(object_key, str):
             if "[" in object_key:
                 object_key = object_key.split('[')[0]
 
             if object_key != value:
                 found_list.append(obj)
 
-        elif type(object_key) in (int, bool) and object_key != value:
+        elif isinstance(object_key, (int, bool)) and object_key != value:
             found_list.append(obj)
 
-        elif type(object_key) is list and value not in object_key:
+        elif isinstance(object_key, list) and value not in object_key:
             found_list.append(obj)
 
-        elif type(object_key) is dict and (value in object_key.keys()):
+        elif isinstance(object_key, dict) and (value in object_key.keys()):
             found_list.append(obj)
 
     if found_list != []:
@@ -270,7 +270,7 @@ def it_condition_contain_something(_step_obj, something):
 
     if _step_obj.context.type in ('resource', 'data'):
         for resource in _step_obj.context.stash:
-            if type(resource) is not dict \
+            if not isinstance(resource, dict) \
                     or 'values' not in resource \
                     or 'address' not in resource \
                     or 'type' not in resource:
@@ -284,24 +284,24 @@ def it_condition_contain_something(_step_obj, something):
 
             found_value = Null
             found_key = Null
-            if type(values) is dict:
+            if isinstance(values, dict):
                 found_key = values.get(something, seek_key_in_dict(values, something))
-                if type(found_key) is not list:
+                if not isinstance(found_key, list):
                     found_key = [{something: found_key}]
 
                 if len(found_key):
                     found_key = found_key[0] if len(found_key) == 1 and something in found_key[0] else found_key
 
-                    if type(found_key) is dict:
+                    if isinstance(found_key, dict):
                         found_value = jsonify(found_key.get(something, found_key))
                     else:
                         found_value = found_key
-            elif type(values) is list:
+            elif isinstance(values, list):
                 found_value = []
 
                 for value in values:
 
-                    if type(value) is dict:
+                    if isinstance(value, dict):
                         # First search in the keys
                         found_key = seek_key_in_dict(value, something)
 
@@ -317,10 +317,10 @@ def it_condition_contain_something(_step_obj, something):
                     if found_key is not Null and len(found_key):
                         found_key = found_key[0] if len(found_key) == 1 else found_key
 
-                        if type(found_key) is dict:
+                        if isinstance(found_key, dict):
                             found_value.append(jsonify(found_key.get(something, found_key)))
 
-            if type(found_value) is dict and 'constant_value' in found_value:
+            if isinstance(found_value, dict) and 'constant_value' in found_value:
                 found_value = found_value['constant_value']
 
             if found_value is not Null and found_value != [] and found_value != '' and found_value != {}:
@@ -373,7 +373,7 @@ def it_condition_contain_something(_step_obj, something):
 @then(u'{something:ANY} must be enabled')
 def property_is_enabled(_step_obj, something):
     for resource in _step_obj.context.stash:
-        if type(resource) is dict:
+        if isinstance(resource, dict):
             if something in property_match_list:
                 something = property_match_list[something].get(resource['type'], something)
 
@@ -382,7 +382,7 @@ def property_is_enabled(_step_obj, something):
             if len(property_value):
                 property_value = property_value[0]
 
-                if type(property_value) is dict:
+                if isinstance(property_value, dict):
                     property_value = property_value.get(something, Null)
 
             if not property_value:
@@ -428,7 +428,7 @@ def it_condition_have_proto_protocol_and_port_port_for_cidr(_step_obj, condition
 def i_action_them(_step_obj, action_type):
     if action_type == "count":
         # WARNING: Only case where we set stash as a dictionary, instead of a list.
-        if type(_step_obj.context.stash) is list:
+        if isinstance(_step_obj.context.stash, list):
 
             # This means we are directly started counting without drilling down any property
             # Thus, our target for the count is stash itself.
@@ -436,7 +436,7 @@ def i_action_them(_step_obj, action_type):
                 _step_obj.context.stash = dict(values=len(_step_obj.context.stash))
 
             else:
-                if type(_step_obj.context.stash[0]) is dict:
+                if isinstance(_step_obj.context.stash[0], dict):
                     if _step_obj.context.stash[0].get('values'):
                         _step_obj.context.stash = seek_key_in_dict(_step_obj.context.stash, 'values')
                         count = 0
@@ -467,20 +467,20 @@ def i_expect_the_result_is_operator_than_number(_step_obj, operator, number, _st
 
     values = _step_obj.context.stash if _stash is EmptyStash else _stash
 
-    if type(values) is list:
+    if isinstance(values, list):
         for value_set in values:
             i_expect_the_result_is_operator_than_number(_step_obj, operator, number, _stash=value_set)
 
-    elif type(values) is dict:
+    elif isinstance(values, dict):
         _step_obj.context.property_name = values.get('type', _step_obj.context.property_name)
         _step_obj.context.address = values.get('address', _step_obj.context.addresses)
 
-        if type(_step_obj.context.address) is list and len(_step_obj.context.address) == 1:
+        if isinstance(_step_obj.context.address, list) and len(_step_obj.context.address) == 1:
             _step_obj.context.address = _step_obj.context.address[0]
 
         i_expect_the_result_is_operator_than_number(_step_obj, operator, number, values.get('values', Null))
 
-    elif type(values) is int or type(values) is str:
+    elif isinstance(values, (int, str)):
         values = int(values)
         if operator in ('more', 'greater', 'bigger'):
             fail(values > number, '{} is not more than {}'.format(values, number))
@@ -495,7 +495,7 @@ def i_expect_the_result_is_operator_than_number(_step_obj, operator, number, _st
         else:
             raise TerraformComplianceNotImplemented('Invalid operator: {}'.format(operator))
 
-    elif type(values) is Null:
+    elif isinstance(values, Null):
         raise TerraformComplianceNotImplemented('Null/Empty value found on {}'.format(_step_obj.context.type))
 
 
@@ -516,18 +516,18 @@ def its_value_condition_match_the_search_regex_regex(_step_obj, condition, searc
     regex = r'{}'.format(search_regex)
     values = _step_obj.context.stash if _stash is EmptyStash else _stash
 
-    if type(values) in (str, int, bool) or values is None:
+    if isinstance(values, (str, int, bool)) or values is None:
         matches = re.match(regex, str(values), flags=re.IGNORECASE)
 
         if (condition == 'must' and matches is None) or (condition == "must not" and matches is not None):
             _stash = get_resource_name_from_stash(_step_obj.context.stash, _stash, _step_obj.context.address)
             fail(condition, name=_stash.get('address'))
 
-    elif type(values) is list:
+    elif isinstance(values, list):
         for value in values:
             its_value_condition_match_the_search_regex_regex(_step_obj, condition, search_regex, value)
 
-    elif type(values) is dict:
+    elif isinstance(values, dict):
         if not hasattr(_step_obj.context, 'address'):
             _step_obj.context.address = None
 
@@ -552,21 +552,38 @@ def its_value_condition_equal(_step_obj, condition, match, _stash=EmptyStash):
 
 @then(u'its value {condition:ANY} contain {value:ANY}')
 def its_value_condition_contain(_step_obj, condition, value, _stash=EmptyStash):
+    if condition not in ('must', 'must not'):
+        raise TerraformComplianceNotImplemented('Condition should be one of: `must`, `must not`')
+
     values = _step_obj.context.stash if _stash is EmptyStash else _stash
-    if isinstance(values, list):
-        for value_set in values:
-            its_value_condition_contain(_step_obj, condition, value, value_set)
-    elif isinstance(values, dict):
-        _its_value_condition_contain(_step_obj, condition, value, values.get('values', Null))
-    elif type(values) is Null:
-        raise TerraformComplianceNotImplemented('Null/Empty value found on {}'.format(_step_obj.context.type))
+    # TODO: Update here for checking values in a list or dict.
+
+    if isinstance(values, (int, bool, str, float)):
+        values = dict(values=values,
+                      address=_step_obj.context.address if hasattr(_step_obj.context, 'address') else _step_obj.context.addresses)
+
+    found_values = seek_value_in_dict(value, values)
+    condition = condition == 'must'
+
+    if condition and not found_values:
+        Error(_step_obj, '{} could not found.'.format(value))
+
+    elif not condition and found_values:
+        Error(_step_obj, '{} found in {}.'.format(value, get_resource_name_from_stash(found_values).get('address')))
+
+    return found_values
+
+
+    # if isinstance(values, list):
+    #     for value_set in values:
+    #         its_value_condition_contain(_step_obj, condition, value, value_set)
+    # elif isinstance(values, dict):
+    #     _its_value_condition_contain(_step_obj, condition, value, values.get('values', Null))
+    # elif isinstance(values, Null):
+    #     raise TerraformComplianceNotImplemented('Null/Empty value found on {}'.format(_step_obj.context.type))
 
 
 def _its_value_condition_contain(_step_obj, condition, value, values):
-    assert condition in ('must', 'must not'), 'Condition should be one of: `must`, `must not`'
-    if isinstance(values, (int, bool, str, float)):
-        values = [values]
-
     if isinstance(values, list):
         values = [str(v) for v in values]
         _fail_text = 'did not contain' if condition == 'must' else 'contains'
@@ -608,7 +625,7 @@ def its_value_condition_be_null(_step_obj, condition):
 def it_must_have_reference_address_referenced(_step_obj, reference_address):
     if _step_obj.context.stash:
         for resource in _step_obj.context.stash:
-            if type(resource) is dict:
+            if isinstance(resource, dict):
                 if Defaults.address_pointer in resource and search_regex_in_list(reference_address,
                                                                                  resource[Defaults.address_pointer]):
                     return True
@@ -636,14 +653,13 @@ def its_key_condition_be_value(_step_obj, key, condition, value, stash=Null, dep
 
     found_values = []
     for entity in stash:
-        if type(entity) is dict:
+        if isinstance(entity, dict):
             found_values.extend(seek_regex_key_in_dict_values(entity, key, value))
-        elif type(entity) is list:
+        elif isinstance(entity, list):
             for element in entity:
                 found_values.extend(its_key_condition_be_value(_step_obj, key, condition, element, entity, depth+1))
-        elif type(entity) is str or type(entity) is int or type(entity) is bool:
-            if str(entity).lower == key.lower or str(entity) == value.lower:
-                found_values.append(entity)
+        elif isinstance(entity ,(str, int, bool)) and (str(entity).lower == key.lower or str(entity) == value.lower):
+            found_values.append(entity)
 
     # Return the values to the parent call.
     if depth > 0:
