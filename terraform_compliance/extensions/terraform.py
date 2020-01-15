@@ -296,7 +296,8 @@ class TerraformParser(object):
                     # Mounting B->A
                     for source_resource in flatten_list(ref_list):
                         if not source_resource.startswith(('var', 'data', 'module', 'provider')):
-                            ref_type, ref_address = source_resource.split('.')
+                            ref_type = source_resource.split('.', maxsplit=1)[0]
+
                             self._mount_resources([source_resource],
                                                   source_resources,
                                                   ref_type)
