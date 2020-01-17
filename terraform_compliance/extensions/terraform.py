@@ -292,7 +292,7 @@ class TerraformParser(object):
         for _, resource_data in self.resources.items():
             if resource_type == 'any':
                 resource_list.append(resource_data)
-            elif resource_data['type'] == resource_type.lower():
+            elif resource_data['type'] == resource_type.lower() and resource_data['mode'] == 'managed':
                 resource_list.append(resource_data)
 
         return resource_list
