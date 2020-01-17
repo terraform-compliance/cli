@@ -208,7 +208,7 @@ class TerraformParser(object):
 
             for target_resource in target:
 
-                if 'values' not in self.resources[target_resource]:
+                if target_resource not in self.resources or 'values' not in self.resources[target_resource]:
                     continue
 
                 resource = deepcopy(self.resources[source_resource]['values'])
@@ -340,7 +340,7 @@ class TerraformParser(object):
         resource_list = []
 
         for _, resource_data in self.resources.items():
-            if resource_type == 'any' or resource_data['type'] == resource_type.lower():
+            if resource_type == 'any' or (resource_data['type'] == resource_type.lower() and resource_data['mode'] == 'managed'):
                 resource_list.append(resource_data)
 
         return resource_list
