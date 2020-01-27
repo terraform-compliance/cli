@@ -388,18 +388,21 @@ class TestTerraformParser(TestCase):
         obj.resources = {
             'provider_resource_id': {
                 'type': 'resource_type',
-                'name': 'resource_id'
+                'name': 'resource_id',
+                'mode': 'managed'
             },
             'other-provider_other_resource_id': {
                 'type': 'other-provider_other_resource_type',
-                'name': 'resource_id'
+                'name': 'resource_id',
+                'mode': 'managed'
             }
         }
 
         self.assertEqual(obj.find_resources_by_type('resource_type'),
                          [{
                             'type': 'resource_type',
-                            'name': 'resource_id'
+                            'name': 'resource_id',
+                            'mode': 'managed'
                           }])
 
     @patch.object(TerraformParser, '_read_file', return_value={})
@@ -408,11 +411,13 @@ class TestTerraformParser(TestCase):
         obj.resources = {
             'provider_resource_id': {
                 'type': 'resource_type',
-                'name': 'resource_id'
+                'name': 'resource_id',
+                'mode': 'managed'
             },
             'other-provider_other_resource_id': {
                 'type': 'other-provider_other_resource_type',
-                'name': 'resource_id'
+                'name': 'resource_id',
+                'mode': 'managed'
             }
         }
 
