@@ -712,9 +712,9 @@ class TestStepCases(TestCase):
             }
         ]
         step.context.property_name = 'some_thing'
-        self.assertEqual([{'values': 'foo', 'address': None}],
+        self.assertEqual({'values': ['foo', 'bar']},
                          its_value_condition_contain(step, 'must', 'foo'))
-        self.assertEqual([], its_value_condition_contain(step, 'must not', 'baz'))
+        self.assertEqual({'values': ['foo', 'bar']}, its_value_condition_contain(step, 'must not', 'baz'))
         with self.assertRaises(Failure):
             its_value_condition_contain(step, 'must', 'baz')
         with self.assertRaises(Failure):

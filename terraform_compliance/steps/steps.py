@@ -16,7 +16,6 @@ import re
 from terraform_compliance.common.exceptions import Failure, TerraformComplianceNotImplemented
 from terraform_compliance.common.exceptions import TerraformComplianceInternalFailure
 from terraform_compliance.common.error_handling import Error
-# from radish.stepmodel import Step
 from terraform_compliance.main import Step
 from terraform_compliance.common.defaults import Defaults
 
@@ -546,7 +545,7 @@ def its_value_condition_match_the_search_regex_regex(_step_obj, condition, searc
                 its_value_condition_match_the_search_regex_regex(_step_obj, condition, search_regex, value)
 
 
-@step(u'its value {condition:ANY} be {match:ANY}')
+@then(u'its value {condition:ANY} be {match:ANY}')
 def its_value_condition_equal(_step_obj, condition, match, _stash=EmptyStash):
     its_value_condition_match_the_search_regex_regex(_step_obj, condition, "^" + re.escape(match) + "$", _stash)
 
@@ -559,7 +558,11 @@ def its_value_condition_contain(_step_obj, condition, value, _stash=EmptyStash):
     values = _step_obj.context.stash if _stash is EmptyStash else _stash
     # TODO: Update here for checking values in a list or dict.
 
-    if isinstance(values, (int, bool, str, float)):
+    if isinstance(values, list):
+        for elem in values:
+            values = its_value_condition_contain(_step_obj, condition, value, elem)
+
+    elif isinstance(values, (int, bool, str, float)):
         values = dict(values=values,
                       address=_step_obj.context.address if hasattr(_step_obj.context, 'address') else _step_obj.context.addresses)
 
@@ -567,12 +570,15 @@ def its_value_condition_contain(_step_obj, condition, value, _stash=EmptyStash):
     condition = condition == 'must'
 
     if condition and not found_values:
-        Error(_step_obj, '{} could not found.'.format(value))
+        Error(_step_obj, '{} could not found in {}. It is set to {}'.format(value,
+                                                                            values.get('address'),
+                                                                            values.get('values')))
 
     elif not condition and found_values:
-        Error(_step_obj, '{} found in {}.'.format(value, get_resource_name_from_stash(found_values).get('address')))
+        Error(_step_obj, '{} found in {}.'.format(value,
+                                                  values.get('address', get_resource_name_from_stash(found_values).get('address'))))
 
-    return found_values
+    return values
 
 
     # if isinstance(values, list):

@@ -4,6 +4,7 @@ from radish.utils import console_write
 from terraform_compliance.main import Step
 import colorful
 from ast import literal_eval
+from mock import MagicMock
 
 
 class WrapperError(Exception):
@@ -20,7 +21,10 @@ class WrapperError(Exception):
 class Error(Exception):
     def __init__(self, step_obj, message, exception=Failure):
         self.message = message.split("\n")
-        if not isinstance(world.config.user_data['exit_on_failure'], bool):
+        if isinstance(world.config.user_data['exit_on_failure'], bool):
+            self.exit_on_failure = world.config.user_data['exit_on_failure']
+            self.no_failure = world.config.user_data['no_failure']
+        elif isinstance(world.config.user_data, MagicMock):
             self.exit_on_failure = True
             self.no_failure = False
         else:

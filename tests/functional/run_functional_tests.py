@@ -8,7 +8,6 @@ import re
 class Config(object):
     test_dir = 'tests/functional'
     default_parameters = [
-        '--early-exit',
         '--no-ansi'
     ]
 
@@ -41,7 +40,10 @@ for test_dir in tests:
 
         if os.path.isfile('{}/.expected'.format(directory)):
             with open('{}/.expected'.format(directory)) as expected_file:
-                expected = expected_file.read()
+                expected = expected_file.read().split('\n')
+
+        if not os.path.isfile('{}/.no_early_exit'.format(directory)):
+            parameters.append('-q')
 
         parameters.extend([
             '-f', '{}'.format(directory),
@@ -63,15 +65,16 @@ for test_dir in tests:
 
             if test_process.returncode == 0:
                 if expected:
-                    if re.findall(expected, str(test_process.stdout)):
-                        test_result = colorful.green('passed')
-                    else:
-                        print('\nOutput: {}'.format(test_process.stdout))
-                        test_result = colorful.red('failed')
-                        print('Can not find ;')
-                        print('\t{}'.format(colorful.yellow(expected)))
-                        print('in the test output.\n')
-                        failure_happened = True
+                    for each in expected:
+                        if re.findall(each, str(test_process.stdout)):
+                            test_result = colorful.green('passed')
+                        else:
+                            print('\nOutput: {}'.format(test_process.stdout))
+                            test_result = colorful.red('failed')
+                            print('Can not find ;')
+                            print('\t{}'.format(colorful.yellow(each)))
+                            print('in the test output.\n')
+                            failure_happened = True
                 else:
                     test_result = colorful.green('passed')
             else:
