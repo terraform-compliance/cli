@@ -9,6 +9,10 @@ from radish.main import main as call_radish
 from radish.utils import console_write
 from terraform_compliance.common.defaults import Defaults
 
+from terraform_compliance.extensions.override_radish_step import Step as StepOverride
+from radish.stepmodel import Step
+
+Step.run = StepOverride.run
 
 if __version__ == "{{VERSION}}":
     __version__ = "\blocal development version"

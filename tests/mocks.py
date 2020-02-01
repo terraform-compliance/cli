@@ -295,6 +295,7 @@ class MockedWorldConfigTerraform(object):
             'provider_type_id': {
                 'type': 'resource_type_supports_tags',
                 'address': 'provider_type_id',
+                'mode': 'managed',
                 'values': {
                     'tags': {
                         'some': 'tags',
@@ -306,6 +307,7 @@ class MockedWorldConfigTerraform(object):
             'provider_type_id_without_tags': {
                 'type': 'resource_type_without_tags',
                 'address': 'provider_type_id_without_tags',
+                'mode': 'managed',
                 'values': {}
             }
         }
@@ -326,7 +328,7 @@ class MockedWorldConfigTerraform(object):
 
     def find_resources_by_type(self, resource_type):
         for key, value in self.resources.items():
-            if value['type'] == resource_type:
+            if value['type'] == resource_type and value['mode'] == 'managed':
                 return [value]
 
     def get_providers_from_configuration(self, provider_type):

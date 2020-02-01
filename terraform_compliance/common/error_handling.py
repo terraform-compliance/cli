@@ -1,7 +1,7 @@
 from terraform_compliance.common.exceptions import Failure
 from radish import world
 from radish.utils import console_write
-from radish.stepmodel import Step
+from terraform_compliance.main import Step
 import colorful
 from ast import literal_eval
 
@@ -52,16 +52,15 @@ class Error(Exception):
                 console_write(message)
 
             if self.no_failure is False:
-                self._fail_step(self.step_obj.id, message)
+                self._fail_step(self.step_obj.id)
             else:
                 self.step_obj.state = Step.State.SKIPPED
             return
 
         if self.no_failure is False:
-            # self.step_obj.state = Step.State.SKIPPED
             raise self.exception('\n'.join(msg))
 
-    def _fail_step(self, step_id, message, *args):
+    def _fail_step(self, step_id):
         for step in self.step_obj.parent.all_steps:
             if step.id == step_id:
                 step.state = Step.State.FAILED

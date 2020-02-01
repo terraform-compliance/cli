@@ -5,4 +5,4 @@ Feature: test
     When it contains policy
     And it contains Statement
     And it contains Effect
-    Then its value must contain Deny
+    Then its value must be Deny

@@ -16,6 +16,10 @@ def which(program):
             exe_file = os.path.join(path, program)
             if is_exe(exe_file):
                 return exe_file
+
+            windows_executable = os.path.join(path, '{}.exe'.format(program))
+            if is_exe(windows_executable):
+                return windows_executable
     return None
 
 

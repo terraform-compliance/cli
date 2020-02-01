@@ -16,7 +16,8 @@ import re
 from terraform_compliance.common.exceptions import Failure, TerraformComplianceNotImplemented
 from terraform_compliance.common.exceptions import TerraformComplianceInternalFailure
 from terraform_compliance.common.error_handling import Error
-from radish.stepmodel import Step
+# from radish.stepmodel import Step
+from terraform_compliance.main import Step
 from terraform_compliance.common.defaults import Defaults
 
 # TODO: Figure out how the IAM policies/statements shown in the plan.out
