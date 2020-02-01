@@ -257,7 +257,13 @@ def seek_value_in_dict(needle, haystack, address=None):
                 findings.append(dict(values=needle, address=address))
 
     elif isinstance(haystack, list):
-        for value in haystack:
-            findings.extend(seek_value_in_dict(needle, value))
+        # Check if this is a list of strings
+        if all(isinstance(elem, str) for elem in haystack):
+            findings.extend([elem for elem in haystack if elem.lower() == needle.lower()])
+
+        # Otherwise, there are more stuff, so go recursive
+        else:
+            for value in haystack:
+                findings.extend(seek_value_in_dict(needle, value))
 
     return findings

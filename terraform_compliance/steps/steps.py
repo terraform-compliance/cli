@@ -562,7 +562,7 @@ def its_value_condition_contain(_step_obj, condition, value, _stash=EmptyStash):
         for elem in values:
             values = its_value_condition_contain(_step_obj, condition, value, elem)
 
-    elif isinstance(values, (int, bool, str, float)):
+    if isinstance(values, (int, bool, str, float)):
         values = dict(values=values,
                       address=_step_obj.context.address if hasattr(_step_obj.context, 'address') else _step_obj.context.addresses)
 
@@ -570,24 +570,21 @@ def its_value_condition_contain(_step_obj, condition, value, _stash=EmptyStash):
     condition = condition == 'must'
 
     if condition and not found_values:
-        Error(_step_obj, '{} could not found in {}. It is set to {}'.format(value,
-                                                                            values.get('address'),
-                                                                            values.get('values')))
+        if isinstance(values, list):
+            objects = []
+            for elem in values:
+                objects.append(elem.get('address', '???'))
+            objects = ', '.join(objects)
+        else:
+            objects = values.get('address')
+
+        Error(_step_obj, '{} could not found in {}.'.format(value, objects))
 
     elif not condition and found_values:
         Error(_step_obj, '{} found in {}.'.format(value,
-                                                  values.get('address', get_resource_name_from_stash(found_values).get('address'))))
+                                                  get_resource_name_from_stash(found_values).get('address')))
 
     return values
-
-
-    # if isinstance(values, list):
-    #     for value_set in values:
-    #         its_value_condition_contain(_step_obj, condition, value, value_set)
-    # elif isinstance(values, dict):
-    #     _its_value_condition_contain(_step_obj, condition, value, values.get('values', Null))
-    # elif isinstance(values, Null):
-    #     raise TerraformComplianceNotImplemented('Null/Empty value found on {}'.format(_step_obj.context.type))
 
 
 def _its_value_condition_contain(_step_obj, condition, value, values):
@@ -687,3 +684,20 @@ def its_key_condition_be_value(_step_obj, key, condition, value, stash=Null, dep
         Error(_step_obj, 'Can not find {} in {} property of {}.'.format(value, key, obj_address))
 
     return True
+
+
+@step('I flatten all values found')
+def i_flatten_everything_found(_step_obj):
+    flattened_list = []
+    addresses_flattened = []
+    for each in _step_obj.context.stash:
+        flattened_list.append(each.get('values', each))
+        addresses_flattened.append(each.get('address', each))
+
+    if flattened_list:
+        _step_obj.context.stash = {
+            'address': ', '.join(addresses_flattened),
+            'values': flattened_list
+        }
+
+    return flattened_list

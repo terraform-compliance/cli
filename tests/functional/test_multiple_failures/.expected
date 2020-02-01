@@ -1,1 +1,2 @@
 Failure: tcp\/80 port is defined within 0\.0\.0\.0\/0 network in aws_security_group\.failure\.
+Failure: tcp\/80 port is defined within 0\.0\.0\.0\/0 network in aws_security_group\.another_failure\.

@@ -248,6 +248,7 @@ class MockedStep(object):
         self.sentence = 'Given I am a step'
         self.context_sensitive_sentence = self.sentence
         self.state = 'passed'
+        self.id = 0
 
         if no_init is None:
             self.parent = MockedParentStep()
