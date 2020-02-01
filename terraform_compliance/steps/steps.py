@@ -403,9 +403,6 @@ def it_condition_have_proto_protocol_and_port_port_for_cidr(_step_obj, condition
             raise TerraformComplianceInternalFailure('This method can only be used for aws_security_group resources '
                                                      'for now. You tried to used it on {}'.format(sg['type']))
 
-        if 'cidr_blocks' not in sg['values']:
-            continue
-
         sg_obj = SecurityGroup(searching_for, sg['values'], address=sg['address'])
         if condition == 'must only':
             sg_obj.must_only_have()

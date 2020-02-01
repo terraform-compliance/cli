@@ -124,7 +124,7 @@ class SecurityGroup(object):
         self.multiple_check = False
 
         self.given_rule = SecurityGroupRule(**given_reqs)
-        self.plan_rules = [SecurityGroupRule(**rule_data) for rule_data in self.sgs]
+        self.plan_rules = [SecurityGroupRule(**rule_data) for rule_data in self.sgs if rule_data.get('cidr_blocks')]
 
         self.found_ports = set()
 
