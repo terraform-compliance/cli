@@ -1,5 +1,7 @@
 # CHANGELOG
 
+## 1.1.1 (2020-02-01)
+* Fixed an internal problem where a security group step will fail if there is no `cidr_blocks` definition within the plan. [#198](https://github.com/eerkunt/terraform-compliance/issues/198)
 ## 1.1.0 (2020-02-01)
 
 * New step: [Then it must have "something" referenced](https://terraform-compliance.com/pages/bdd-references/then.html#then-it-must-have-something-referenced). [#195](https://github.com/eerkunt/terraform-compliance/issues/195))
