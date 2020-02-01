@@ -185,4 +185,3 @@ the value
 | key | Description | Examples |
 |:---:|:----------|:-|
 | [action](#){: .p-1 .text-green-200 .fw-700} | mathematical operation | currently only supports for `count` |
-

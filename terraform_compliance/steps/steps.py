@@ -686,7 +686,7 @@ def its_key_condition_be_value(_step_obj, key, condition, value, stash=Null, dep
     return True
 
 
-@step('I flatten all values found')
+@then('I flatten all values found')
 def i_flatten_everything_found(_step_obj):
     flattened_list = []
     addresses_flattened = []

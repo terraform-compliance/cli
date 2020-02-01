@@ -1,1 +1,1 @@
-Failure: Deny could not found in aws_s3_bucket_policy\.c\. It is set to \['Allow', 'Allow'\]
+Failure: Deny could not found in aws_s3_bucket_policy\.c\.

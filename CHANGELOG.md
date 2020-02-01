@@ -1,22 +1,34 @@
 # CHANGELOG
 
-## 1.1.0 (not released yet)
+## 1.1.0 (2020-02-01)
 
-* New step: [Then it must have "something" referenced](link-to-the-document).
-* Resources referencing each other can also be filtered out based on terraform reference. ([docs](link-to-the-document), [#195](https://github.com/eerkunt/terraform-compliance/issues/183))
-* TODO: Output parameters can also be enforced as part of tests.
+* New step: [Then it must have "something" referenced](https://terraform-compliance.com/pages/bdd-references/then.html#then-it-must-have-something-referenced). [#195](https://github.com/eerkunt/terraform-compliance/issues/195))
+* New step: [Then I flatten all values found](https://terraform-compliance.com/pages/bdd-references/then.html#then-i-flatten-all-values-found). [#193](https://github.com/eerkunt/terraform-compliance/issues/193))
+* New step: [Then its {key} must/must not be {value}](https://terraform-compliance.com/pages/bdd-references/then.html#its-key-condition-be-value).
 
+* Security group revamp, which also addresses the problem defined in [docs](https://terraform-compliance.com/pages/bdd-references/then.html#then--it-must-condition-have-proto-protocol-and-port-port-for-cidr) [#181](https://github.com/eerkunt/terraform-compliance/issues/181))
+    * Security Group related code is rewritten, it is more flexible and extendable right now.
+    * Security Group related tests now also have `must` condition where you may want to enforce if some subset of rules are defined in Security Groups.
+    * Fixed a problem where `must only` and `must not` was not working properly when Security Groups have multiple rules attached. ([#181](https://github.com/eerkunt/terraform-compliance/issues/181))
+* Now you can enforce rules for `output` variables. [#185](https://github.com/eerkunt/terraform-compliance/issues/185))
 
-* New parameter: `-S/--silent` where test execution output will be suppressed. ([docs](link-to-the-document))
-* New parameter: `-n/--no-failure` where exit code will always be `0`/successful even there is a failure. ([docs](link-to-the-document))
-* New parameter: `-q/--quit-early` where the scenario executions will stop on the first failure. ([docs](link-to-the-document))
-* `terraform-complinace` __will not__ STOP any test execution by default. 
-
-
-* Security Group related code is rewritten, it is more flexible and extendable right now.
-* Security Group related tests now also have `must` condition where you may want to enforce if some subset of rules are defined in Security Groups.
-* Fixed a problem where `must only` and `must not` was not working properly when Security Groups have multiple rules attached. ([#181](https://github.com/eerkunt/terraform-compliance/issues/181))
+* New parameter: `-S/--silent` where test execution output will be suppressed. ([docs](https://terraform-compliance.com/pages/usage/#-S--silent))
+* New parameter: `-n/--no-failure` where exit code will always be `0`/successful even there is a failure. ([docs](https://terraform-compliance.com/pages/usage/#-n--no-failure)) [#191](https://github.com/eerkunt/terraform-compliance/issues/191)
+* New parameter: `-q/--quit-early` where the scenario executions will stop on the first failure. ([docs](https://terraform-compliance.com/pages/usage/#-q--quit-early)) [#170](https://github.com/eerkunt/terraform-compliance/issues/170)
+* **CHANGE OF DEFAULT BEHAVIOUR** : `terraform-complinace` __will not__ STOP any test execution by default. 
 * New emoticons and a bit of cosmetic make-up is done. All emoticons will be disabled on non-interactive shells (CI/CD pipelines) or if `--no-ansi` is explicitly used.
+
+* Fixed `-h` which was not reporting all parameter properly
+* Fixed a problem where `it contains` step was converting list of properties to dict of properties which was causing a problem. ([#194](https://github.com/eerkunt/terraform-compliance/issues/194))
+* Fixed a problem where module outputs referencing a resource were not used on resource mounting. ([#190](https://github.com/eerkunt/terraform-compliance/issues/190))
+* Fixed a problem where resources using `for_each` might cause some problems if `for_each` key includes `.` within. ([#197](https://github.com/eerkunt/terraform-compliance/issues/197))
+* Fixed by overriding/monkey patching a method within [radish-bdd](https://github.com/radish-bdd/radish/issues/392) which enabled many other features.
+
+### 1.0.60 (2019-12-28)
+* Fixed a problem where some Windows Operating Systems could not find terraform executable. 
+
+### 1.0.59 (2019-12-17)
+* Fixed a problem where "resource" and "data" definitions existing for the same resource type in the same module causing some problems on all "GIVEN" steps. 
 
 ### 1.0.58 (2019-12-06)
 * Enhanced `count` step where it was only applicable for resource properties, now it also works right after a `GIVEN` step. ([#187](https://github.com/eerkunt/terraform-compliance/issues/187)) 

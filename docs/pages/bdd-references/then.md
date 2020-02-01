@@ -310,3 +310,75 @@ it should fail
 [Then](#){: .p-1 .text-red-200} 
 it must fail
 >
+
+------------------------
+### [Then](#){: .p-1 .text-red-200} it must have [address](#){: .p-1 .text-green-200 .fw-700} referenced
+`terraform-compliance` mounts resources into each other if they are referenced. E.g. an `aws_security_group_rule` onto
+`aws_security_grouup`. Some use cases may require to find these references, mount points about which entity is mounted 
+on top of which entity. This step can be used in these situations.
+
+> __Possible sentences :__
+>
+> ▪
+[Then](#){: .p-1 .text-red-200} 
+its must have
+[address](#){: .p-1 .text-green-200 .fw-700} 
+referenced
+>
+
+| key | Description | Examples |
+|:---:|:----------|:-|
+| [address](#){: .p-1 .text-green-200 .fw-700} | resource address within terraform | `aws_security_group.my_group` |
+
+------------------------
+### [Then](#){: .p-1 .text-red-200} its [key](#){: .p-1 .text-green-200 .fw-700} [condition](#){: .p-1 .text-blue-100 .fw-700} be [value](#){: .p-1 .text-blue-100 .fw-700} 
+This is an optimised way of reading and matching a data without drilling down once more by using `it contains` steps.
+This step will match `key` = `value` or `key` != `value` depending on the `condition`
+
+> __Possible sentences :__
+>
+> ▪
+[Then](#){: .p-1 .text-red-200} 
+its
+[key](#){: .p-1 .text-green-200 .fw-700}
+[condition](#){: .p-1 .text-blue-100 .fw-700}
+be
+[value](#){: .p-1 .text-blue-100 .fw-700} 
+>
+> ▪
+[Then](#){: .p-1 .text-red-200} 
+its
+[key](#){: .p-1 .text-green-200 .fw-700}
+property
+[condition](#){: .p-1 .text-blue-100 .fw-700}
+be
+[value](#){: .p-1 .text-blue-100 .fw-700} 
+>
+> ▪
+[Then](#){: .p-1 .text-red-200} 
+its
+[key](#){: .p-1 .text-green-200 .fw-700}
+key
+[condition](#){: .p-1 .text-blue-100 .fw-700}
+be
+[value](#){: .p-1 .text-blue-100 .fw-700} 
+>
+
+| key | Description | Examples |
+|:---:|:----------|:-|
+| [key](#){: .p-1 .text-green-200 .fw-700} | The key name of the property | `encryption`, `private`, `name`, `id` |
+| [condition](#){: .p-1 .text-blue-100 .fw-700} | Defines if the match will be `=` or `!=` | Only `must` and `must not` |
+| [value](#){: .p-1 .text-blue-100 .fw-700} | The value of the property | `true`, `closed`, `my_bucket` |
+
+------------------------
+### [Then](#){: .p-1 .text-red-200} I flatten all values found
+This will apply a `union/combine/merge` function for the values that has been found for the resources from the previous
+steps. A valid use case could be checking a value that exists in a list of values that has been combined into one. For 
+example, checking a specific `name` that has been created by a `for_each` of resource iteration.
+
+> __Possible sentences :__
+>
+> ▪
+[Then](#){: .p-1 .text-red-200} 
+I flatten all values found
+>
