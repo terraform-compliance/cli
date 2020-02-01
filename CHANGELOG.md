@@ -1,78 +1,108 @@
 # CHANGELOG
 
-## 1.0.58 (2019-12-06)
+## 1.1.0 (2020-02-01)
+
+* New step: [Then it must have "something" referenced](https://terraform-compliance.com/pages/bdd-references/then.html#then-it-must-have-something-referenced). [#195](https://github.com/eerkunt/terraform-compliance/issues/195))
+* New step: [Then I flatten all values found](https://terraform-compliance.com/pages/bdd-references/then.html#then-i-flatten-all-values-found). [#193](https://github.com/eerkunt/terraform-compliance/issues/193))
+* New step: [Then its {key} must/must not be {value}](https://terraform-compliance.com/pages/bdd-references/then.html#its-key-condition-be-value).
+
+* Security group revamp, which also addresses the problem defined in [docs](https://terraform-compliance.com/pages/bdd-references/then.html#then--it-must-condition-have-proto-protocol-and-port-port-for-cidr) [#181](https://github.com/eerkunt/terraform-compliance/issues/181))
+    * Security Group related code is rewritten, it is more flexible and extendable right now.
+    * Security Group related tests now also have `must` condition where you may want to enforce if some subset of rules are defined in Security Groups.
+    * Fixed a problem where `must only` and `must not` was not working properly when Security Groups have multiple rules attached. ([#181](https://github.com/eerkunt/terraform-compliance/issues/181))
+* Now you can enforce rules for `output` variables. [#185](https://github.com/eerkunt/terraform-compliance/issues/185))
+
+* New parameter: `-S/--silent` where test execution output will be suppressed. ([docs](https://terraform-compliance.com/pages/usage/#-S--silent))
+* New parameter: `-n/--no-failure` where exit code will always be `0`/successful even there is a failure. ([docs](https://terraform-compliance.com/pages/usage/#-n--no-failure)) [#191](https://github.com/eerkunt/terraform-compliance/issues/191)
+* New parameter: `-q/--quit-early` where the scenario executions will stop on the first failure. ([docs](https://terraform-compliance.com/pages/usage/#-q--quit-early)) [#170](https://github.com/eerkunt/terraform-compliance/issues/170)
+* **CHANGE OF DEFAULT BEHAVIOUR** : `terraform-complinace` __will not__ STOP any test execution by default. 
+* New emoticons and a bit of cosmetic make-up is done. All emoticons will be disabled on non-interactive shells (CI/CD pipelines) or if `--no-ansi` is explicitly used.
+
+* Fixed `-h` which was not reporting all parameter properly
+* Fixed a problem where `it contains` step was converting list of properties to dict of properties which was causing a problem. ([#194](https://github.com/eerkunt/terraform-compliance/issues/194))
+* Fixed a problem where module outputs referencing a resource were not used on resource mounting. ([#190](https://github.com/eerkunt/terraform-compliance/issues/190))
+* Fixed a problem where resources using `for_each` might cause some problems if `for_each` key includes `.` within. ([#197](https://github.com/eerkunt/terraform-compliance/issues/197))
+* Fixed by overriding/monkey patching a method within [radish-bdd](https://github.com/radish-bdd/radish/issues/392) which enabled many other features.
+
+### 1.0.60 (2019-12-28)
+* Fixed a problem where some Windows Operating Systems could not find terraform executable. 
+
+### 1.0.59 (2019-12-17)
+* Fixed a problem where "resource" and "data" definitions existing for the same resource type in the same module causing some problems on all "GIVEN" steps. 
+
+### 1.0.58 (2019-12-06)
 * Enhanced `count` step where it was only applicable for resource properties, now it also works right after a `GIVEN` step. ([#187](https://github.com/eerkunt/terraform-compliance/issues/187)) 
 
-## 1.0.57 (2019-11-15)
+### 1.0.57 (2019-11-15)
 * Fixed a problem about encoding where `terraform-compliance` crashes on HCL files with UTF-8 content. ([#183](https://github.com/eerkunt/terraform-compliance/issues/183)) 
 
-## 1.0.56 (2019-11-12)
+### 1.0.56 (2019-11-12)
 * Removed `SKIPPED` lines if `dotter` formatter is used. (`--formatter dotter`) ([#180](https://github.com/eerkunt/terraform-compliance/issues/180)) 
 
-## 1.0.55 (2019-11-05)
+### 1.0.55 (2019-11-05)
 * Fixed a problem where filtering steps were failing on properly performing if the data is a list of dict of lists. E.g. `aws_iam_policy` with multiple heredoc policy statements. ([#177](https://github.com/eerkunt/terraform-compliance/issues/177))
 * Added integration tests into the build pipeline for allowing end-to-end tests. 
 
-## 1.0.54 (2019-10-30)
+### 1.0.54 (2019-10-30)
 * Fixed a problem on providers discovery where some providers have alias, some doesn't. ([#173](https://github.com/eerkunt/terraform-compliance/issues/173))
 
-## 1.0.53 (2019-10-30)
+### 1.0.53 (2019-10-30)
 * Fixed a problem where resource names were reported wrong in some failures. ([#171](https://github.com/eerkunt/terraform-compliance/issues/171))
 * Fixed a problem where in some cases `teraform-compliance` where giving `AttributeError: 'NoneType' object has no attribute 'get'` exception. ([#172](https://github.com/eerkunt/terraform-compliance/issues/172))
 * Supporting multiple provider or providers aliases. ([#173](https://github.com/eerkunt/terraform-compliance/issues/173))
 * Filtering steps are now performing case insensitive matching.
 * Improved error messaged on steps doing math operations.
 
-## 1.0.52 (2019-10-29)
+### 1.0.52 (2019-10-29)
 * Fixed a problem where resource mounting were causing a issues on `resources that support tags`. ([#168](https://github.com/eerkunt/terraform-compliance/issues/168))
 
-## 1.0.51 (2019-09-17)
+### 1.0.51 (2019-09-17)
 * Fixed a problem where multiple resources were reported even some not failed. ([#153](https://github.com/eerkunt/terraform-compliance/issues/153))
 
-## 1.0.50 (2019-09-16)
+### 1.0.50 (2019-09-16)
 * Fixed a recursion problem occurred due to pointer assignment in resource mounting. ([#156](https://github.com/eerkunt/terraform-compliance/issues/156))
 * Added a capability where some of the resource & property information was not shown in some tests. ([#153](https://github.com/eerkunt/terraform-compliance/issues/153))
 * Added a capability where we can define ALL resources in GIVEN directive. ([#157](https://github.com/eerkunt/terraform-compliance/issues/157))
 * Fixed a problem where `must` in a step does not trigger a failure for `provider`s. ([#158](https://github.com/eerkunt/terraform-compliance/issues/158))
 
-## 1.0.49 (2019-09-08)
+### 1.0.49 (2019-09-08)
 * Fixed a problem where resource mounting (via references) is done in both ways (A->B, B->A). This was causing a problem on `aws_instance` resource having an `iam_role` attached on it. ([#156](https://github.com/eerkunt/terraform-compliance/pull/156))
 
-## 1.0.48 (2019-08-29)
+### 1.0.48 (2019-08-29)
 * Fixed a problem where some resources can not be detected (or removed resources were still detected) due to plan changes. ([#152](https://github.com/eerkunt/terraform-compliance/pull/152))
 
-## 1.0.47 (2019-08-27)
+### 1.0.47 (2019-08-27)
 * This release includes several optimisations on CI/CD pipeline and the general build structure of the project.
 * Using new version of Colorful dependency.
 
-## 1.0.46 (2019-08-22)
+### 1.0.46 (2019-08-22)
 * Fixed a problem where `gitphyton` was causing problems about installing `gitdb` python dependency.
 
-## 1.0.45 (2019-08-20)
+### 1.0.45 (2019-08-20)
 * Fixed intermittent `ImportError: cannot import name '__VERSION__' from 'radish'` problem.
 
-## 1.0.44 (2019-08-16)
+### 1.0.44 (2019-08-16)
 * Fixed a problem where using "" or '' was causing a problem on property definitions within the steps.
 
-## 1.0.43 (2019-08-12)
+### 1.0.43 (2019-08-12)
 * Fixed a problem where some of the filtering values were failing due to some characters.
 
-## 1.0.42 (2019-08-10)
+### 1.0.42 (2019-08-10)
 * Fixed a problem on CI/CD pipeline
 
-## 1.0.41 (2019-08-10)
+### 1.0.41 (2019-08-10)
 * Fixed a problem on CI/CD pipeline
 
-## 1.0.40 (2019-08-10)
+### 1.0.40 (2019-08-10)
 * Fixed a problem on CI/CD pipeline
 
-## 1.0.39 (2019-08-09)
+### 1.0.39 (2019-08-09)
 * Fix installing from source ([[#143](https://github.com/eerkunt/terraform-compliance/issues/143))
 
-## 1.0.38 (2019-08-09)
+### 1.0.38 (2019-08-09)
 * Support for `its value {condition} contain {value}`
 
-## 1.0.37 (2019-08-09)
+### 1.0.37 (2019-08-09)
 * Support for `equal` operator in `I expect the result is {operator} than/to {number}`
 * Support for `its value {condition} be {value}`
 

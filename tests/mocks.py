@@ -236,8 +236,8 @@ class MockedData(object):
     # refined sg_params
     sg_params_ssh_with_2_cidrs = dict(protocol=['tcp'], from_port=22, to_port=22, cidr_blocks=['213.86.221.35/32', '195.99.231.117/32'])
     sg_params_ssh_with_2_cidrs_any_proto = dict(protocol=['tcp', 'udp'], from_port=22, to_port=22, cidr_blocks=['213.86.221.35/32', '195.99.231.117/32'])
-    sg_params_all_port_all_ip = dict(protocol=['tcp'], from_port=0, to_port=65535, cidr_blocks=['0.0.0.0/0'])
-    sg_params_all_port_no_ip = dict(protocol=['tcp', 'udp'], from_port=0, to_port=65535, cidr_blocks=[])
+    sg_params_all_port_all_ip = dict(protocol=['tcp'], from_port=1, to_port=65535, cidr_blocks=['0.0.0.0/0'])
+    sg_params_all_port_no_ip = dict(protocol=['tcp', 'udp'], from_port=1, to_port=65535, cidr_blocks=[])
     sg_params_list_range_public = dict(protocol=['tcp'], from_port=22, to_port=80, cidr_blocks=['0.0.0.0/0'])
     sg_params_list_range_private = dict(protocol=['tcp'], from_port=22, to_port=80, cidr_blocks=['192.168.0.0/23'])
 
@@ -247,6 +247,8 @@ class MockedStep(object):
         self.context = MockedStepContext()
         self.sentence = 'Given I am a step'
         self.context_sensitive_sentence = self.sentence
+        self.state = 'passed'
+        self.id = 0
 
         if no_init is None:
             self.parent = MockedParentStep()
@@ -275,9 +277,17 @@ class MockedWorld(object):
 
 
 class MockedWorldConfig(object):
+    user_data = dict(
+        exit_on_failure=True,
+        no_failure=False
+    )
     def __init__(self):
         self.terraform = MockedWorldConfigTerraform()
         self.formatter = 'gherkin'
+        self.user_data = dict(
+            exit_on_failure=True,
+            no_failure=False
+        )
 
 
 class MockedWorldConfigTerraform(object):
@@ -286,6 +296,7 @@ class MockedWorldConfigTerraform(object):
             'provider_type_id': {
                 'type': 'resource_type_supports_tags',
                 'address': 'provider_type_id',
+                'mode': 'managed',
                 'values': {
                     'tags': {
                         'some': 'tags',
@@ -297,6 +308,7 @@ class MockedWorldConfigTerraform(object):
             'provider_type_id_without_tags': {
                 'type': 'resource_type_without_tags',
                 'address': 'provider_type_id_without_tags',
+                'mode': 'managed',
                 'values': {}
             }
         }
@@ -317,7 +329,7 @@ class MockedWorldConfigTerraform(object):
 
     def find_resources_by_type(self, resource_type):
         for key, value in self.resources.items():
-            if value['type'] == resource_type:
+            if value['type'] == resource_type and value['mode'] == 'managed':
                 return [value]
 
     def get_providers_from_configuration(self, provider_type):

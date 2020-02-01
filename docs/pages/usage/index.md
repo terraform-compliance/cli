@@ -134,3 +134,41 @@ files that has been created. In these cases you can just provide the same versio
 If you are using a [Docker](/pages/installation/docker) version of `terraform-compliance`, `terraform` binary is already
 packaged within the Docker Image. In case, you may need to use another version of `terraform` binary, you can still use 
 `-t` to point the local version.
+
+### -q / --quit-early
+{: .d-inline-block }
+OPTIONAL
+{: .label .label-yellow}
+
+{: .d-inline-block }
+1.1.+
+{: .label .label-blue}
+
+This option will disable default behaviour of `terraform-compliance` where the execution
+of the `Scenario` and `Step` (not `Feature`) will exit immediately upon first failure.
+
+### -n / --no-failures
+{: .d-inline-block }
+OPTIONAL
+{: .label .label-yellow}
+
+{: .d-inline-block }
+1.1.+
+{: .label .label-blue}
+
+This option will enforce to have `0` exit code independent of the test results. It is
+different than passing `--wip` since, that parameter only returns `0` if the test fails. This
+option will make `terarform-compliance` to report all errors, but always return `0`
+exit code.
+
+### -S / --silent
+{: .d-inline-block }
+OPTIONAL
+{: .label .label-yellow}
+
+{: .d-inline-block }
+1.1.+
+{: .label .label-blue}
+
+This option will surpress the output of `Feature`, `Scenario` and `Steps`. Only the
+summary and the Failure messages will be shown - if applicable.

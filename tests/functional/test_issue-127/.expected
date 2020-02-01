@@ -1,1 +1,1 @@
-Failure: tcp\/80-80 ports are defined for \['0\.0\.0\.0\/0'\] network. Must be limited to tcp\/22 and 10\.0\.0\.0\/8
+tcp\/80 port is defined within 10\.0\.0\.0\/8 network in aws_security_group\.elb\.

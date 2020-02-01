@@ -12,12 +12,12 @@ from terraform_compliance.steps.steps import (
     its_value_condition_equal,
     its_value_condition_contain
 )
-from terraform_compliance.common.exceptions import TerraformComplianceNotImplemented, Failure, TerraformComplianceInternalFailure
-from tests.mocks import MockedStep, MockedWorld, MockedTerraformPropertyList, MockedTerraformResourceList, MockedTerraformResource
+from terraform_compliance.common.exceptions import TerraformComplianceNotImplemented, Failure
+from tests.mocks import MockedStep, MockedWorld
 from mock import patch
 
 
-class Test_Step_Cases(TestCase):
+class TestStepCases(TestCase):
 
     def test_i_have_name_section_configured_type_not_found(self):
         step = MockedStep()
@@ -25,7 +25,8 @@ class Test_Step_Cases(TestCase):
             i_have_name_section_configured(step, 'some_name', 'some_invalid_type', 'some_world')
 
         self.assertEqual(str(err.exception), 'some_invalid_type configuration type does not exist or not implemented '
-                                             'yet. Use resource(s), provider(s), variable(s) or data(s) instead.')
+                                             'yet. Use resource(s), provider(s), variable(s), output(s) or data(s) '
+                                             'instead.')
 
     def test_i_have_name_section_configured_resource_that_supports_tags_found(self):
         step = MockedStep()
@@ -103,6 +104,7 @@ class Test_Step_Cases(TestCase):
         self.assertTrue(i_have_name_section_configured(step, name, type_name, world))
 
     @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
+    @patch('terraform_compliance.common.error_handling.world', side_effect=MockedWorld())
     def test_it_condition_contain_something_resource_is_not_dict_failure(self, *args):
         step = MockedStep()
         step.context_sensitive_sentence = 'it must contain something'
@@ -112,6 +114,7 @@ class Test_Step_Cases(TestCase):
             self.assertIsNone(it_condition_contain_something(step, 'something'))
 
     @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
+    @patch('terraform_compliance.common.error_handling.world', side_effect=MockedWorld())
     def test_it_condition_contain_something_resource_not_found(self, *args):
         step = MockedStep()
         step.context_sensitive_sentence = 'it must contain something'
@@ -133,6 +136,7 @@ class Test_Step_Cases(TestCase):
 
     @patch('terraform_compliance.extensions.ext_radish_bdd', return_value=None)
     @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
+    @patch('terraform_compliance.common.error_handling.world', side_effect=MockedWorld())
     def test_it_condition_contain_something_resource_not_found_skip_step(self, *args):
         step = MockedStep()
         step.context_sensitive_sentence = 'it contains something'
@@ -188,6 +192,7 @@ class Test_Step_Cases(TestCase):
 
     @patch('terraform_compliance.steps.steps.seek_key_in_dict', return_value=None)
     @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
+    @patch('terraform_compliance.common.error_handling.world', side_effect=MockedWorld())
     def test_it_condition_contain_something_provider_not_found(self, *args):
         step = MockedStep()
         step.context.type = 'provider'
@@ -204,7 +209,8 @@ class Test_Step_Cases(TestCase):
 
         self.assertTrue(it_condition_contain_something(step, 'something'))
 
-    def test_property_is_enabled_not_implemented(self):
+    @patch('terraform_compliance.common.error_handling.world', side_effect=MockedWorld())
+    def test_property_is_enabled_not_implemented(self, *args):
         step = MockedStep()
         step.context.stash = [
             {
@@ -226,7 +232,8 @@ class Test_Step_Cases(TestCase):
         ]
         self.assertTrue(property_is_enabled(step, 'storage_encrypted'))
 
-    def test_property_is_enabled_failure(self):
+    @patch('terraform_compliance.common.error_handling.world', side_effect=MockedWorld())
+    def test_property_is_enabled_failure(self, *args):
         step = MockedStep()
         step.context.stash = [
             {
@@ -239,18 +246,6 @@ class Test_Step_Cases(TestCase):
         ]
         with self.assertRaises(Failure):
             property_is_enabled(step, 'storage_encrypted')
-
-    def test_it_condition_have_proto_protocol_and_port_port_for_cidr_ports_must_only_fail(self):
-        step = MockedStep()
-        condition = 'only'
-        proto = 'not important'
-        port = '1-2'
-        cidr = 'not important'
-        with self.assertRaises(Failure) as err:
-            it_condition_have_proto_protocol_and_port_port_for_cidr(step, condition, proto, port, cidr)
-
-        self.assertEqual(str(err.exception), '"must only" scenario cases must be used either with individual port '
-                                             'or multiple ports separated with comma.')
 
     def test_it_condition_have_proto_protocol_and_port_port_for_cidr_ports_must_only_success(self):
         step = MockedStep()
@@ -321,7 +316,8 @@ class Test_Step_Cases(TestCase):
         with self.assertRaises(TerraformComplianceNotImplemented):
             i_action_them(step, 'something_else')
 
-    def test_i_expect_the_result_is_operator_than_number_more(self):
+    @patch('terraform_compliance.common.error_handling.world', side_effect=MockedWorld())
+    def test_i_expect_the_result_is_operator_than_number_more(self, *args):
         step = MockedStep()
         step.context.stash = {'values': 42}
         self.assertIsNone(i_expect_the_result_is_operator_than_number(step, 'more', 41))
@@ -329,7 +325,8 @@ class Test_Step_Cases(TestCase):
             i_expect_the_result_is_operator_than_number(step, 'more', 43)
         self.assertTrue('42 is not more than 43' in str(err.exception))
 
-    def test_i_expect_the_result_is_operator_than_number_more_and_equal(self):
+    @patch('terraform_compliance.common.error_handling.world', side_effect=MockedWorld())
+    def test_i_expect_the_result_is_operator_than_number_more_and_equal(self, *args):
         step = MockedStep()
         step.context.stash = {'values': 42}
         self.assertIsNone(i_expect_the_result_is_operator_than_number(step, 'more and equal', 42))
@@ -338,7 +335,8 @@ class Test_Step_Cases(TestCase):
             i_expect_the_result_is_operator_than_number(step, 'more and equal', 43)
         self.assertTrue('42 is not more and equal than 43' in str(err.exception))
 
-    def test_i_expect_the_result_is_operator_than_number_less(self):
+    @patch('terraform_compliance.common.error_handling.world', side_effect=MockedWorld())
+    def test_i_expect_the_result_is_operator_than_number_less(self, *args):
         step = MockedStep()
         step.context.stash = {'values': 42}
         self.assertIsNone(i_expect_the_result_is_operator_than_number(step, 'less', 43))
@@ -346,7 +344,8 @@ class Test_Step_Cases(TestCase):
             i_expect_the_result_is_operator_than_number(step, 'less', 41)
         self.assertTrue('42 is not less than 41' in str(err.exception))
 
-    def test_i_expect_the_result_is_operator_than_number_less_and_equal(self):
+    @patch('terraform_compliance.common.error_handling.world', side_effect=MockedWorld())
+    def test_i_expect_the_result_is_operator_than_number_less_and_equal(self, *args):
         step = MockedStep()
         step.context.stash = {'values': 42}
         self.assertIsNone(i_expect_the_result_is_operator_than_number(step, 'less and equal', 43))
@@ -355,7 +354,8 @@ class Test_Step_Cases(TestCase):
             i_expect_the_result_is_operator_than_number(step, 'less and equal', 41)
         self.assertTrue('42 is not less and equal than 41' in str(err.exception))
 
-    def test_i_expect_the_result_is_operator_than_number_equal(self):
+    @patch('terraform_compliance.common.error_handling.world', side_effect=MockedWorld())
+    def test_i_expect_the_result_is_operator_than_number_equal(self, *args):
         step = MockedStep()
         step.context.stash = {'values': 42}
         self.assertIsNone(i_expect_the_result_is_operator_than_number(step, 'equal', 42))
@@ -370,7 +370,8 @@ class Test_Step_Cases(TestCase):
             self.assertIsNone(i_expect_the_result_is_operator_than_number(step, 'invalid operator', 1))
         self.assertTrue('Invalid operator: invalid operator' in str(err.exception))
 
-    def test_it_fails(self):
+    @patch('terraform_compliance.common.error_handling.world', side_effect=MockedWorld())
+    def test_it_fails(self, *args):
         step = MockedStep()
         step.context.type = 'some_type'
         step.context.name = 'some_name'
@@ -514,7 +515,8 @@ class Test_Step_Cases(TestCase):
         it_condition_contain_something(step, 'some_key')
         self.assertEqual(step.context.stash[0]['values'], 'some_value')
 
-    def test_its_value_condition_match_the_search_regex_regex_null_value_is_parsed(self):
+    @patch('terraform_compliance.common.error_handling.world', side_effect=MockedWorld())
+    def test_its_value_condition_match_the_search_regex_regex_null_value_is_parsed(self, *args):
         step = MockedStep()
         step.context.stash = [
             {
@@ -534,7 +536,8 @@ class Test_Step_Cases(TestCase):
         with self.assertRaises(Failure):
             its_value_condition_equal(step, 'must', 'something')
 
-    def test_its_value_condition_match_the_search_regex_regex_success(self):
+    @patch('terraform_compliance.common.error_handling.world', side_effect=MockedWorld())
+    def test_its_value_condition_match_the_search_regex_regex_success(self, *args):
         step = MockedStep()
         step.context.stash = [
             {
@@ -564,7 +567,8 @@ class Test_Step_Cases(TestCase):
             self.assertEqual(its_value_condition_match_the_search_regex_regex(step, 'must not', 'some_.*'), None)
             self.assertEqual(its_value_condition_match_the_search_regex_regex(step, 'must not', 'some_other.*'), None)
 
-    def test_its_value_condition_equals(self):
+    @patch('terraform_compliance.common.error_handling.world', side_effect=MockedWorld())
+    def test_its_value_condition_equals(self, *args):
         step = MockedStep()
         expected_value = r"https://www.stackoverflow.com[as](.*)\s\t+$"
         step.context.stash = [
@@ -699,7 +703,8 @@ class Test_Step_Cases(TestCase):
         self.assertTrue(type(step.context.stash) is list)
         self.assertEqual(step.context.stash[0]['some_key'], 'some_other_value')
 
-    def test_its_value_condition_contain(self):
+    @patch('terraform_compliance.common.error_handling.world', side_effect=MockedWorld())
+    def test_its_value_condition_contain(self, *args):
         step = MockedStep()
         step.context.stash = [
             {
@@ -707,9 +712,10 @@ class Test_Step_Cases(TestCase):
             }
         ]
         step.context.property_name = 'some_thing'
-        its_value_condition_contain(step, 'must', 'foo')
-        its_value_condition_contain(step, 'must not', 'baz')
-        with self.assertRaises(AssertionError):
+        self.assertEqual({'values': ['foo', 'bar']},
+                         its_value_condition_contain(step, 'must', 'foo'))
+        self.assertEqual({'values': ['foo', 'bar']}, its_value_condition_contain(step, 'must not', 'baz'))
+        with self.assertRaises(Failure):
             its_value_condition_contain(step, 'must', 'baz')
-        with self.assertRaises(AssertionError):
+        with self.assertRaises(Failure):
             its_value_condition_contain(step, 'must not', 'foo')

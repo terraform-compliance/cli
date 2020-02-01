@@ -1,0 +1,1 @@
+{"format_version":"0.1","terraform_version":"0.12.12","variables":{"my_var":{"value":null}},"planned_values":{"root_module":{}},"configuration":{"root_module":{"variables":{"my_var":{"default":null,"description":"My weird characters: “Java” or “Windows”"}}}}}

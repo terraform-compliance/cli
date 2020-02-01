@@ -2,6 +2,7 @@ import colorful
 from radish.utils import console_write
 from radish import custom_type
 from radish import world
+from terraform_compliance.common.defaults import Defaults
 
 
 def skip_step(step, resource=None, message=None):
@@ -9,15 +10,16 @@ def skip_step(step, resource=None, message=None):
         resource = 'any'
 
     if message is None:
-        message = '{} {} {}'.format(colorful.orange('Can not find'),
-                                    colorful.magenta(resource),
-                                    colorful.orange('defined in target terraform plan.'))
+        message = '{} {} {}'.format(Defaults().yellow('Can not find'),
+                                    Defaults().green(resource),
+                                    Defaults().yellow('defined in target terraform plan.'))
     else:
-        message = colorful.orange(message)
+        message = Defaults().yellow(message)
 
     if str(world.config.formatter) in ('gherkin'):
-        console_write("\t{}: {}".format(colorful.bold_purple('SKIPPING'),
-                                        message.format(resource=colorful.magenta(resource)))
+        console_write("\t{} {}: {}".format(Defaults().info_icon,
+                                           Defaults().skip_colour('SKIPPING'),
+                                           message.format(resource=Defaults().green(resource)))
         )
     step.skip()
 
@@ -42,32 +44,22 @@ def step_condition(step):
     return current_condition
 
 
-def write_stdout(level, message):
-
-    prefix = colorful.bold_yellow(u'\u229b INFO :')
-    if level == 'WARNING':
-        prefix = colorful.bold_red(u'\u2757 WARNING :')
-        message = colorful.yellow(message)
-
-
-    added_prefix = u'\n\t\t{}\t{} '.format(colorful.gray(u'\u2502'),' '*len(prefix))
-    message = message.split('\n')
-
-    print(u'\t\t\u251c\u2501\t{} {}'.format(prefix, added_prefix.join(message)).encode('utf-8'))
-
 @custom_type("ANY", r"[\"'\.\/_\-A-Za-z0-9\s:]+")
 def custom_type_any(text):
     return text.replace('"', '').replace('\'', '')
 
+
 @custom_type("PROPERTY", r"[\"'\.\/_\-A-Za-z0-9:\(\)\[\]]+")
 def custom_type_prop(text):
     return text.replace('"', '').replace('\'', '')
+
 
 @custom_type("SECTION", r"[\"'a-z]+")
 def custom_type_section(text):
     if text in ['resource', 'provider', 'data', 'variable',
                 'resources', 'providers', 'datas', 'variables']:
         return text.replace('"', '').replace('\'', '')
+
 
 @custom_type("CONDITION", r"[\"'a-z]+")
 def custom_type_condition(text):

@@ -1,0 +1,1 @@
+Failure: tcp\/22 port is defined within 0\.0\.0\.0\/0 network in module\.mysg\.aws_security_group\.alb\.

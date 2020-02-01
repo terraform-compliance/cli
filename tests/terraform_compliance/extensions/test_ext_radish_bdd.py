@@ -1,5 +1,5 @@
 from unittest import TestCase
-from terraform_compliance.extensions.ext_radish_bdd import skip_step, write_stdout, step_condition
+from terraform_compliance.extensions.ext_radish_bdd import skip_step, step_condition
 from tests.mocks import MockedStep, MockedWorld
 from mock import patch
 
@@ -16,9 +16,6 @@ class TestRadishBddExtension(TestCase):
 
         step.sentence = 'Then I do this'
         self.assertEqual(step_condition(step), 'then')
-
-    def test_write_stdout(self):
-        self.assertEqual(None, write_stdout('info','test'))
 
     @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
     def test_skip_step(self, *args):
