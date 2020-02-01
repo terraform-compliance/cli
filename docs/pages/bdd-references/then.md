@@ -107,7 +107,7 @@ for
 |:---:|:----------|:-|
 | [condition](#){: .p-1 .text-green-200 .fw-700} | defines the conditional search. | Can only be `must`, `must not`, `must only` |
 | [proto](#){: .p-1 .text-blue-100 .fw-700} | defines the network transport protocol | Can only be `tcp` or `udp` |
-| [port](#){: .p-1 .text-purple-000 .fw-700}  | defines the network port or port range. | `80` `443` `8080-8090` |
+| [port](#){: .p-1 .text-purple-000 .fw-700}  | defines the network port, list of ports or a port range. | `80` `443` `8080-8090` `443, 80, 22`|
 | [cidr](#){: .p-1 .text-yellow-300 .fw-700} | defines the network ip cidr | `0.0.0.0/0` `192.168.0.0/24` `8.8.8.8/32` |
 
 This step will execute tests that is applicable for both per rule and per security group, depending on the 
