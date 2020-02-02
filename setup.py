@@ -13,7 +13,8 @@ dependencies = [
     'filetype>=1.0.5',
     'junit-xml>=1.8',
     'lxml>=4.5.0',
-    'emoji>=0.5.4'
+    'emoji>=0.5.4',
+    'mock>=3.0.5'
 ]
 
 setup(

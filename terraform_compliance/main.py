@@ -74,7 +74,7 @@ def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
     commands.extend(radish_arguments)
 
     console_write('{} {} {}{}'.format(Defaults().icon,
-                                      Defaults().yellow('Features\t\t:'),
+                                      Defaults().yellow('Features\t:'),
                                       features_directory,
                                        (' ({})'.format(features_git_repo) if 'features_git_repo' in locals() else '')))
 
@@ -87,12 +87,12 @@ def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
         commands.append('--formatter=dotter')
 
     if args.exit_on_failure is True:
-        console_write('{} {}\t\t\t: Scenario executions will stop on first step {}.'.format(Defaults().info_icon,
+        console_write('{} {}\t\t: Scenario executions will stop on first step {}.'.format(Defaults().info_icon,
                                                                                             Defaults().info_colour('INFO'),
                                                                                             Defaults().failure_colour('failure')))
 
     if args.no_failure is True:
-        console_write('{} {}\t\t: {}ping all {} steps, exit code will always be {}.'.format(Defaults().warning_icon,
+        console_write('{} {}\t: {}ping all {} steps, exit code will always be {}.'.format(Defaults().warning_icon,
                                                                                             Defaults().warning_colour('WARNING'),
                                                                                             Defaults().skip_colour('SKIP'),
                                                                                             Defaults().failure_colour('failure'),
