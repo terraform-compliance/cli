@@ -20,9 +20,11 @@
   <a href="https://pypi.org/project/terraform-compliance/">
     <img src="https://img.shields.io/pypi/v/terraform-compliance.svg" alt="Package Version" />
   </a>
+  
+  <a href="https://pepy.tech/badge/terraform-compliance">
+    <img src="https://pepy.tech/badge/terraform-compliance" alt="Downloads" />
+  </a>
 </div>
-
-[![Downloads](https://pepy.tech/badge/terraform-compliance)](https://pepy.tech/project/terraform-compliance)
 
 <br />
 <br />
