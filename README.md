@@ -11,11 +11,6 @@
     <img src="https://img.shields.io/travis/eerkunt/terraform-compliance/master.svg" alt="Build" />
   </a>
   
-  <!-- Coverage -->
-  <a href="https://coveralls.io/repos/github/eerkunt/terraform-compliance/">
-    <img src="https://coveralls.io/repos/github/eerkunt/terraform-compliance/badge.svg?branch=master" alt="coverage report" />
-  </a>
-  
   
   <!-- Docker Ready -->
   <a href="https://hub.docker.com/r/eerkunt/terraform-compliance/">
@@ -32,6 +27,8 @@
     <img src="https://img.shields.io/pypi/v/terraform-compliance.svg" alt="Package Version" />
   </a>
 </div>
+
+[![Downloads](https://pepy.tech/badge/terraform-compliance)](https://pepy.tech/project/terraform-compliance)
 
 <br />
 <br />
