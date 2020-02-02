@@ -27,6 +27,10 @@ permalink: /
   </a>
 </div>
 
+  <a href="https://pepy.tech/terraform-compliance">
+    <img src="https://pepy.tech/badge/terraform-compliance" alt="Downloads" />
+  </a>
+
 <br />
 
 `terraform-compliance` is a lightweight, security and compliance focused test framework against terraform to enable negative testing capability for your infrastructure-as-code.
