@@ -6,12 +6,6 @@
     <img src="https://img.shields.io/badge/website-https%3A%2F%2Fterraform--compliance.com-blue" alt="Website" />
   </a>
   
-  <!-- Build Status -->
-  <a href="https://travis-ci.org/eerkunt/terraform-compliance">
-    <img src="https://img.shields.io/travis/eerkunt/terraform-compliance/master.svg" alt="Build" />
-  </a>
-  
-  
   <!-- Docker Ready -->
   <a href="https://hub.docker.com/r/eerkunt/terraform-compliance/">
     <img src="https://img.shields.io/badge/docker-ready-blue.svg?longCache=true&style=flat" alt="docker version is ready" />
