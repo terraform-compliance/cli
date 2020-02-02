@@ -21,7 +21,7 @@
     <img src="https://img.shields.io/pypi/v/terraform-compliance.svg" alt="Package Version" />
   </a>
   
-  <a href="https://pepy.tech/terraform-compliance">
+  <a href="https://pepy.tech/project/terraform-compliance">
     <img src="https://pepy.tech/badge/terraform-compliance" alt="Downloads" />
   </a>
 </div>
