@@ -5,6 +5,7 @@ from terraform_compliance.main import Step
 import colorful
 from ast import literal_eval
 from mock import MagicMock
+import os
 
 
 class WrapperError(Exception):
@@ -30,8 +31,9 @@ class Error(Exception):
         else:
             self.exit_on_failure = literal_eval(world.config.user_data['exit_on_failure'])
             self.no_failure = literal_eval(world.config.user_data['no_failure'])
-        self.exception = exception
-        self.exception_name = exception.__name__
+        _TFC_ERROR = os.environ.get('TFC_ERROR')
+        self.exception = exception if _TFC_ERROR is None else type(_TFC_ERROR, (Exception, ), {})
+        self.exception_name = exception.__name__ if _TFC_ERROR is None else _TFC_ERROR
         self.step_obj = step_obj
 
         self._process()

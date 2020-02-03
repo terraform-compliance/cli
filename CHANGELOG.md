@@ -1,12 +1,16 @@
 # CHANGELOG
 
-## 1.1.2 (2020-02-01)
+
+## 1.1.4 (2020-02-03)
+* Added a new environment variable `TFC_ERROR` to change the name of the default `Failure` error message.
+
+### 1.1.2 (2020-02-01)
 * Cosmetic and some dependency fixes.
 
-## 1.1.2 (2020-02-01)
+### 1.1.2 (2020-02-01)
 * Fixed an internal problem where a security group step will fail if there is no `cidr_blocks` definition within the plan. [#198](https://github.com/eerkunt/terraform-compliance/issues/198)
 
-## 1.1.0 (2020-02-01)
+### 1.1.0 (2020-02-01)
 
 * New step: [Then it must have "something" referenced](https://terraform-compliance.com/pages/bdd-references/then.html#then-it-must-have-something-referenced). [#195](https://github.com/eerkunt/terraform-compliance/issues/195))
 * New step: [Then I flatten all values found](https://terraform-compliance.com/pages/bdd-references/then.html#then-i-flatten-all-values-found). [#193](https://github.com/eerkunt/terraform-compliance/issues/193))
