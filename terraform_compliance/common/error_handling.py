@@ -32,10 +32,19 @@ class Error(Exception):
             self.exit_on_failure = literal_eval(world.config.user_data['exit_on_failure'])
             self.no_failure = literal_eval(world.config.user_data['no_failure'])
         _TFC_ERROR = os.environ.get('TFC_ERROR')
-        self.exception = exception if _TFC_ERROR is None else type(_TFC_ERROR, (Exception, ), {})
-        self.exception_name = exception.__name__ if _TFC_ERROR is None else _TFC_ERROR
-        self.step_obj = step_obj
 
+        if step_obj.context.no_failure:
+            self.exception = type(step_obj.context.failure_class, (Exception, ), {})
+            self.exception_name = step_obj.context.failure_class
+            self.no_failure = True
+        elif _TFC_ERROR is None:
+            self.exception = exception
+            self.exception_name = exception.__name__
+        else:
+            self.exception = type(_TFC_ERROR, (Exception, ), {})
+            self.exception_name = _TFC_ERROR
+
+        self.step_obj = step_obj
         self._process()
 
     def _process(self):

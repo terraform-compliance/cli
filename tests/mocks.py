@@ -249,6 +249,7 @@ class MockedStep(object):
         self.context_sensitive_sentence = self.sentence
         self.state = 'passed'
         self.id = 0
+        self.all_tags = [MockedTags()]
 
         if no_init is None:
             self.parent = MockedParentStep()
@@ -269,6 +270,8 @@ class MockedStepContext(object):
         self.name = ''
         self.addresses = 'aws_db_instance.something'
         self.property_name = 'mocked_property'
+        self.no_failure = False
+        self.failure_class = 'no_name'
 
 
 class MockedWorld(object):
@@ -412,3 +415,8 @@ class MockedArgHandling(object):
 class MockedTerraformResource(object):
     def __init__(self):
         self.config = {"count": 2}
+
+
+class MockedTags(object):
+    def __init__(self, name='no_name'):
+        self.name = name

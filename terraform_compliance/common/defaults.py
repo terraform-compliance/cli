@@ -10,6 +10,7 @@ class Defaults(object):
 
     def __init__(self):
         self.interactive_mode = self.detect_term()
+        self.no_failure_tags = ['warning', 'no-failure', 'no-fail', 'info', 'nofailure', 'nofail', 'dontfail']
 
         if '--no-ansi' in sys.argv or not sys.stdout.isatty():
             self.skip_colour = \

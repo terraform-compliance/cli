@@ -1,10 +1,12 @@
 # CHANGELOG
 
+### 1.1.5 (2020-02-03)
+* Added tags support on BDD feature files. As the first use case you can use @warning tag on top of a scenario for making it not failing. ([docs](https://terraform-compliance.com/pages/bdd-references/using_tags.html)) ([#191](https://github.com/eerkunt/terraform-compliance/issues/191))
 
 ## 1.1.4 (2020-02-03)
 * Added a new environment variable `TFC_ERROR` to change the name of the default `Failure` error message. ([docs](https://terraform-compliance.com/pages/usage/environment_variables.html)) ([#191](https://github.com/eerkunt/terraform-compliance/issues/191))
 
-### 1.1.2 (2020-02-01)
+## 1.1.3 (2020-02-01)
 * Cosmetic and some dependency fixes.
 
 ### 1.1.2 (2020-02-01)

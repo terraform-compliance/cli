@@ -18,6 +18,7 @@ from terraform_compliance.common.exceptions import TerraformComplianceInternalFa
 from terraform_compliance.common.error_handling import Error
 from terraform_compliance.main import Step
 from terraform_compliance.common.defaults import Defaults
+from terraform_compliance.common.bdd_tags import look_for_bdd_tags
 
 # TODO: Figure out how the IAM policies/statements shown in the plan.out
 # TODO: Implement an IAM Compliance via https://github.com/Netflix-Skunkworks/policyuniverse
@@ -47,6 +48,9 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
 
     if type_name.endswith('s'):
         type_name = type_name[:-1]
+
+    # Process the tags
+    _step_obj = look_for_bdd_tags(_step_obj)
 
     if name in ('a resource', 'any resource', 'resources'):
         _step_obj.context.type = type_name
