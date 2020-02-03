@@ -15,5 +15,5 @@ parent: Usage
 `terraform-compliance` allows you to override some internals.
 
 | Variable | Description |
-|----------|-------------|
-| TFC_ERROR | This variable will change the `Failure` error that is given by `terraform-compliance` by default. It will not change any functionality other than changing the error message.
+|:--------:|:------------|
+| `TFC_ERROR` | This variable will change the `Failure` error that is given by `terraform-compliance` by default. It will not change any functionality other than changing the error message.

@@ -2,7 +2,7 @@
 
 
 ## 1.1.4 (2020-02-03)
-* Added a new environment variable `TFC_ERROR` to change the name of the default `Failure` error message.
+* Added a new environment variable `TFC_ERROR` to change the name of the default `Failure` error message. ([docs](https://terraform-compliance.com/pages/usage/environment_variables.html)) ([#191](https://github.com/eerkunt/terraform-compliance/issues/191))
 
 ### 1.1.2 (2020-02-01)
 * Cosmetic and some dependency fixes.
@@ -12,11 +12,11 @@
 
 ### 1.1.0 (2020-02-01)
 
-* New step: [Then it must have "something" referenced](https://terraform-compliance.com/pages/bdd-references/then.html#then-it-must-have-something-referenced). [#195](https://github.com/eerkunt/terraform-compliance/issues/195))
-* New step: [Then I flatten all values found](https://terraform-compliance.com/pages/bdd-references/then.html#then-i-flatten-all-values-found). [#193](https://github.com/eerkunt/terraform-compliance/issues/193))
+* New step: [Then it must have "something" referenced](https://terraform-compliance.com/pages/bdd-references/then.html#then-it-must-have-something-referenced). ([#195](https://github.com/eerkunt/terraform-compliance/issues/195))
+* New step: [Then I flatten all values found](https://terraform-compliance.com/pages/bdd-references/then.html#then-i-flatten-all-values-found). ([#193](https://github.com/eerkunt/terraform-compliance/issues/193))
 * New step: [Then its {key} must/must not be {value}](https://terraform-compliance.com/pages/bdd-references/then.html#its-key-condition-be-value).
 
-* Security group revamp, which also addresses the problem defined in [docs](https://terraform-compliance.com/pages/bdd-references/then.html#then--it-must-condition-have-proto-protocol-and-port-port-for-cidr) [#181](https://github.com/eerkunt/terraform-compliance/issues/181))
+* Security group revamp, which also addresses the problem defined in ([docs](https://terraform-compliance.com/pages/bdd-references/then.html#then--it-must-condition-have-proto-protocol-and-port-port-for-cidr)) ([#181](https://github.com/eerkunt/terraform-compliance/issues/181))
     * Security Group related code is rewritten, it is more flexible and extendable right now.
     * Security Group related tests now also have `must` condition where you may want to enforce if some subset of rules are defined in Security Groups.
     * Fixed a problem where `must only` and `must not` was not working properly when Security Groups have multiple rules attached. ([#181](https://github.com/eerkunt/terraform-compliance/issues/181))
