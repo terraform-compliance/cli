@@ -1,6 +1,9 @@
 # CHANGELOG
 
-### 1.1.5 (2020-02-03)
+## 1.1.6 (2020-02-04)
+* Fixed a case sensitivity problem where some of the steps were running unexpectedly. ([#203](https://github.com/eerkunt/terraform-compliance/issues/203))
+
+## 1.1.5 (2020-02-03)
 * Added tags support on BDD feature files. As the first use case you can use @warning tag on top of a scenario for making it not failing. ([docs](https://terraform-compliance.com/pages/bdd-references/using_tags.html)) ([#191](https://github.com/eerkunt/terraform-compliance/issues/191))
 
 ## 1.1.4 (2020-02-03)
@@ -9,10 +12,10 @@
 ## 1.1.3 (2020-02-01)
 * Cosmetic and some dependency fixes.
 
-### 1.1.2 (2020-02-01)
-* Fixed an internal problem where a security group step will fail if there is no `cidr_blocks` definition within the plan. [#198](https://github.com/eerkunt/terraform-compliance/issues/198)
+## 1.1.2 (2020-02-01)
+* Fixed an internal problem where a security group step will fail if there is no `cidr_blocks` definition within the plan. ([#198](https://github.com/eerkunt/terraform-compliance/issues/198))
 
-### 1.1.0 (2020-02-01)
+## 1.1.0 (2020-02-01)
 
 * New step: [Then it must have "something" referenced](https://terraform-compliance.com/pages/bdd-references/then.html#then-it-must-have-something-referenced). ([#195](https://github.com/eerkunt/terraform-compliance/issues/195))
 * New step: [Then I flatten all values found](https://terraform-compliance.com/pages/bdd-references/then.html#then-i-flatten-all-values-found). ([#193](https://github.com/eerkunt/terraform-compliance/issues/193))

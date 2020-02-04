@@ -168,7 +168,6 @@ def its_key_is_value(_step_obj, key, value):
     if key == 'reference':
         key = Defaults.address_pointer
 
-    key = str(key).lower()
     found_list = []
     for obj in _step_obj.context.stash:
         object_key = obj.get(key, Null)
