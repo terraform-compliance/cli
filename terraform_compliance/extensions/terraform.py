@@ -1,5 +1,5 @@
 import json
-from terraform_compliance.common.helper import seek_key_in_dict, flatten_list
+from terraform_compliance.common.helper import seek_key_in_dict, flatten_list, dict_merge
 import sys
 from copy import deepcopy
 
@@ -122,7 +122,7 @@ class TerraformParser(object):
             change = resource.get('change', {})
             actions = change.get('actions', [])
             if actions != ['delete']:
-                resource['values'] = change.get('after', {})
+                resource['values'] = dict_merge(change.get('after', {}), change.get('after_unknown', {}))
                 if 'change' in resource:
                     del resource['change']
 

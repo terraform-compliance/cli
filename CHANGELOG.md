@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.1.7 (2020-02-06)
+* Fixed a case where resource referencing fails when the output is coming from a module and does not registered in terraform plan.
+
 ## 1.1.6 (2020-02-04)
 * Fixed a case sensitivity problem where some of the steps were running unexpectedly. ([#203](https://github.com/eerkunt/terraform-compliance/issues/203))
 

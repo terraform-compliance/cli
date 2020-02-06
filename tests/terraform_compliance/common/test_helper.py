@@ -10,10 +10,9 @@ from terraform_compliance.common.helper import (
     seek_regex_key_in_dict_values,
     jsonify,
     remove_mounted_resources,
-    get_resource_name_from_stash
+    get_resource_name_from_stash,
+    dict_merge
 )
-from terraform_compliance.common.exceptions import Failure
-from tests.mocks import MockedData
 
 
 class TestHelperFunctions(TestCase):
@@ -189,3 +188,74 @@ class TestHelperFunctions(TestCase):
             }
         ]
         self.assertEqual({'address': 'test'}, get_resource_name_from_stash(stash=stash))
+
+    def test_dict_merge_dict_dict(self):
+        source = {
+            'a': 'something',
+            'b': 'something else'
+        }
+        target = {
+            'c': 'completely different something'
+        }
+
+        self.assertEqual(dict_merge(source, target), {
+            'a': 'something',
+            'b': 'something else',
+            'c': 'completely different something'
+        })
+
+    def test_dict_merge_list_list(self):
+        source = {
+            'a': 'something',
+            'b': ['something else']
+        }
+        target = {
+            'b': ['completely different something']
+        }
+
+        self.assertEqual(dict_merge(source, target), {
+            'a': 'something',
+            'b': ['completely different something', 'something else']
+        })
+
+    def test_dict_merge_list_str(self):
+        source = {
+            'a': 'something',
+            'b': ['something else']
+        }
+        target = {
+            'b': 'completely different something'
+        }
+
+        self.assertEqual(dict_merge(source, target), {
+            'a': 'something',
+            'b': ['something else', 'completely different something']
+        })
+
+    def test_dict_merge_str_list(self):
+        source = {
+            'a': 'something',
+            'b': 'something else'
+        }
+        target = {
+            'b': ['completely different something']
+        }
+
+        self.assertEqual(dict_merge(source, target), {
+            'a': 'something',
+            'b': ['completely different something', 'something else']
+        })
+
+    def test_dict_merge_dict_list_failure(self):
+        source = {
+            'a': 'something',
+            'b': {'something': False}
+        }
+        target = {
+            'b': ['completely different something']
+        }
+
+        self.assertEqual(dict_merge(source, target), {
+            'a': 'something',
+            'b': {'something': False}
+        })

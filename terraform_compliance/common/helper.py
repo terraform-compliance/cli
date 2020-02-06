@@ -267,3 +267,29 @@ def seek_value_in_dict(needle, haystack, address=None):
                 findings.extend(seek_value_in_dict(needle, value))
 
     return findings
+
+
+def dict_merge(source, target):
+    update = deepcopy(target)
+    for key, value in source.items():
+        if key not in update:
+            update[key] = value
+        elif isinstance(value, dict) and isinstance(update[key], dict) and remove_empty(update[key]):
+            update[key] = dict_merge(value, update[key])
+        elif isinstance(value, list) and isinstance(update[key], list) and remove_empty(update[key]):
+            update[key].extend(value)
+            update[key] = update[key]
+        elif isinstance(value, list) and isinstance(update[key], (bool, str, int)) and remove_empty(update[key]):
+            value.append(update[key])
+            update[key] = value
+        elif isinstance(value, (bool, str, int)) and isinstance(update[key], list) and remove_empty(update[key]):
+            update[key].append(value)
+            update[key] = update[key]
+        else:
+            update[key] = value
+
+    return update
+
+
+def remove_empty(target_list):
+    return [x for x in target_list if x]
