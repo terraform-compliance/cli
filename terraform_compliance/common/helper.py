@@ -270,26 +270,28 @@ def seek_value_in_dict(needle, haystack, address=None):
 
 
 def dict_merge(source, target):
-    update = deepcopy(target)
-    for key, value in source.items():
-        if key not in update:
-            update[key] = value
-        elif isinstance(value, dict) and isinstance(update[key], dict) and remove_empty(update[key]):
-            update[key] = dict_merge(value, update[key])
-        elif isinstance(value, list) and isinstance(update[key], list) and remove_empty(update[key]):
-            update[key].extend(value)
-            update[key] = update[key]
-        elif isinstance(value, list) and isinstance(update[key], (bool, str, int)) and remove_empty(update[key]):
-            value.append(update[key])
-            update[key] = value
-        elif isinstance(value, (bool, str, int)) and isinstance(update[key], list) and remove_empty(update[key]):
-            update[key].append(value)
-            update[key] = update[key]
-        else:
-            update[key] = value
+    if not isinstance(source, dict) or not isinstance(target, dict):
+        return source
 
-    return update
+    src = deepcopy(source)
+    dst = deepcopy(target)
+    for key, val in src.items():
+        if key in dst and is_list_of_dict(val) and is_list_of_dict(dst[key]):
+            for dst_elem in dst[key]:
+                for each_key in dst_elem.keys():
+                    if not is_key_exist(each_key, val):
+                        src[key].append(dst_elem)
+
+    return src
 
 
-def remove_empty(target_list):
-    return [x for x in target_list if x]
+def is_list_of_dict(target_list):
+    return isinstance(target_list, list) and len(target_list) and isinstance(target_list[0], dict)
+
+
+def is_key_exist(key, target_list_of_dict):
+    for each in target_list_of_dict:
+        if isinstance(each, dict) and key in each.keys():
+            return True
+
+    return False
