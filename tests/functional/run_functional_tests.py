@@ -11,13 +11,15 @@ class Config(object):
         '--no-ansi'
     ]
 
-
 print('Running functional tests in {}.'.format(Config.test_dir))
 
-tests = []
-for x in os.listdir(Config.test_dir):
-    if os.path.isdir('{}/{}'.format(Config.test_dir, x)):
-        tests.append(x)
+if len(sys.argv) == 2:
+    tests = [sys.argv[1]]
+else:
+    tests = []
+    for x in os.listdir(Config.test_dir):
+        if os.path.isdir('{}/{}'.format(Config.test_dir, x)):
+            tests.append(x)
 
 print('Total {} number of tests will be executed.'.format(len(tests)))
 
