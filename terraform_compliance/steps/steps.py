@@ -119,7 +119,6 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
             _step_obj.context.property_name = type_name
             return True
 
-
     elif type_name == 'output':
         found_output = _terraform_config.config.terraform.outputs.get(name, None)
 

@@ -11,7 +11,9 @@ from terraform_compliance.common.helper import (
     jsonify,
     remove_mounted_resources,
     get_resource_name_from_stash,
-    dict_merge
+    dict_merge,
+    is_list_of_dict,
+    is_key_exist
 )
 
 
@@ -189,73 +191,59 @@ class TestHelperFunctions(TestCase):
         ]
         self.assertEqual({'address': 'test'}, get_resource_name_from_stash(stash=stash))
 
-    def test_dict_merge_dict_dict(self):
+    def test_dict_merge_no_change(self):
         source = {
-            'a': 'something',
-            'b': 'something else'
+                'a': [{'a': False}],
+                'b': True
         }
-        target = {
-            'c': 'completely different something'
+        target ={
+                'a': [{'a': True}]
         }
+        self.assertEqual(dict_merge(source, target), source)
 
-        self.assertEqual(dict_merge(source, target), {
-            'a': 'something',
-            'b': 'something else',
-            'c': 'completely different something'
-        })
-
-    def test_dict_merge_list_list(self):
+    def test_dict_merge_no_change_1(self):
         source = {
-            'a': 'something',
-            'b': ['something else']
+            'a': [{'a': False}],
+            'b': True
         }
-        target = {
-            'b': ['completely different something']
-        }
+        target = []
+        self.assertEqual(dict_merge(source, target), source)
 
-        self.assertEqual(dict_merge(source, target), {
-            'a': 'something',
-            'b': ['completely different something', 'something else']
-        })
+    def test_dict_merge_no_change_2(self):
+        self.assertEqual(dict_merge([], []), [])
 
-    def test_dict_merge_list_str(self):
+    def test_dict_merge_success(self):
         source = {
-            'a': 'something',
-            'b': ['something else']
+            'a': [{'a': False}],
+            'b': True
         }
-        target = {
-            'b': 'completely different something'
+        target ={
+            'a': [{'b': 0}]
         }
+        self.assertEqual(dict_merge(source, target), {'a': [{'a': False}, {'b': 0}], 'b': True})
 
-        self.assertEqual(dict_merge(source, target), {
-            'a': 'something',
-            'b': ['something else', 'completely different something']
-        })
+    def test_is_list_of_dict_failures(self):
+        self.assertFalse(is_list_of_dict(['a', 'b', 'c']))
+        self.assertFalse(is_list_of_dict([1, 2, 3]))
+        self.assertFalse(is_list_of_dict(['a', {'b':'c'}]))
+        self.assertFalse(is_list_of_dict([False]))
+        self.assertFalse(is_list_of_dict([]))
 
-    def test_dict_merge_str_list(self):
-        source = {
-            'a': 'something',
-            'b': 'something else'
-        }
-        target = {
-            'b': ['completely different something']
-        }
+    def test_is_list_of_dict_successes(self):
+        self.assertTrue(is_list_of_dict([{}]))
+        self.assertTrue(is_list_of_dict([{'a:': [1]}]))
+        self.assertTrue(is_list_of_dict([{'a:': 'b'}]))
 
-        self.assertEqual(dict_merge(source, target), {
-            'a': 'something',
-            'b': ['completely different something', 'something else']
-        })
+    def test_is_key_exist_failures(self):
+        self.assertFalse(is_key_exist('key', []))
+        self.assertFalse(is_key_exist('key', [{}]))
+        self.assertFalse(is_key_exist('key', [{'something': True}]))
+        self.assertFalse(is_key_exist('key', [1, 2]))
+        self.assertFalse(is_key_exist('key', ['key', 'b']))
+        self.assertFalse(is_key_exist('key', [False]))
+        self.assertFalse(is_key_exist('key', {'key': []}))
 
-    def test_dict_merge_dict_list_failure(self):
-        source = {
-            'a': 'something',
-            'b': {'something': False}
-        }
-        target = {
-            'b': ['completely different something']
-        }
-
-        self.assertEqual(dict_merge(source, target), {
-            'a': 'something',
-            'b': {'something': False}
-        })
+    def test_is_key_exist_successes(self):
+        self.assertTrue(is_key_exist('key', [{'key': 'something'}]))
+        self.assertTrue(is_key_exist('key', [{'something': True}, 2, 3, 4, {'key': True}]))
+        self.assertTrue(is_key_exist('key', [{'something': True}, {'key': True}]))
