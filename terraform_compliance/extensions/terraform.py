@@ -309,7 +309,6 @@ class TerraformParser(object):
             if resource_provider not in self.providers:
                 self.providers[resource_provider] = {}
 
-
             self.providers[resource_provider][resource_name] = resource_data
 
     def parse(self):
