@@ -7,3 +7,4 @@ filetype==1.0.5
 junit-xml==1.8
 emoji==0.5.4
 lxml==4.5.0
+ddt==1.2.2

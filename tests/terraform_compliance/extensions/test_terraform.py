@@ -2,7 +2,10 @@ from unittest import TestCase
 from terraform_compliance.extensions.terraform import TerraformParser, seek_key_in_dict
 from tests.mocks import MockedData
 from mock import patch
+from ddt import ddt, data
 
+
+@ddt
 class TestTerraformParser(TestCase):
 
 
@@ -423,4 +426,64 @@ class TestTerraformParser(TestCase):
 
         self.assertEqual(obj.find_resources_by_type('invalid_resource'),
                          [])
+
+    @patch.object(TerraformParser, '_read_file', return_value={})
+    def test_expand_resource_tags_success(self, *args):
+        obj = TerraformParser('somefile', parse_it=False)
+        obj.resources = {
+            'provider_resource_id': {
+                'type': 'resource_type',
+                'name': 'resource_id',
+                'mode': 'managed',
+                'values': {
+                    'tags': [
+                        {
+                        'key': 'somekey',
+                        'value': 'somevalue',
+                        'someotherkey': True
+                        }
+                    ]
+                }
+            },
+            'other-provider_other_resource_id': {
+                'type': 'other-provider_other_resource_type',
+                'name': 'resource_id',
+                'mode': 'managed',
+                'values': {}
+            }
+        }
+        obj._expand_resource_tags(obj.resources['provider_resource_id'])
+        obj._expand_resource_tags(obj.resources['other-provider_other_resource_id'])
+        self.assertTrue('somekey' in obj.resources['provider_resource_id']['values']['tags'][0])
+        self.assertEqual(obj.resources['provider_resource_id']['values']['tags'][0]['somekey'], 'somevalue')
+        self.assertEqual(obj.resources['provider_resource_id']['values']['tags'][0]['key'], 'somekey')
+        self.assertEqual(obj.resources['provider_resource_id']['values']['tags'][0]['someotherkey'], True)
+        self.assertTrue('tags' not in obj.resources['other-provider_other_resource_id']['values'])
+
+    @patch.object(TerraformParser, '_read_file', return_value={})
+    @data([], {}, '', 123, [dict(a='b')])
+    def test_expand_resource_tags_failures(self, value, *args):
+        obj = TerraformParser('somefile', parse_it=False)
+        obj.resources = {
+            'provider_resource_id': {
+                'type': 'resource_type',
+                'name': 'resource_id',
+                'mode': 'managed',
+                'values': {
+                    'tags': [
+                        value
+                    ]
+                }
+            },
+            'other-provider_other_resource_id': {
+                'type': 'other-provider_other_resource_type',
+                'name': 'resource_id',
+                'mode': 'managed',
+                'values': {}
+            }
+        }
+        obj._expand_resource_tags(obj.resources['provider_resource_id'])
+        obj._expand_resource_tags(obj.resources['other-provider_other_resource_id'])
+        self.assertTrue('tags' not in obj.resources['other-provider_other_resource_id']['values'])
+        self.assertEqual(value, obj.resources['provider_resource_id']['values']['tags'][0])
 

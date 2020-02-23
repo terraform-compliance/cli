@@ -327,7 +327,10 @@ class TerraformParser(object):
 
         self._mount_references()
         self._distribute_providers()
-        return
+
+        for _, resource in self.resources.items():
+            self._expand_resource_tags(resource)
+
 
     def find_resources_by_type(self, resource_type):
         '''
@@ -372,3 +375,11 @@ class TerraformParser(object):
                 providers.append(values)
 
         return providers
+
+    def _expand_resource_tags(self, resource):
+        if isinstance(resource.get('values', {}).get('tags'), list):
+            for tag in resource.get('values', {}).get('tags', {}):
+                if isinstance(tag, dict) and 'key' in tag and 'value' in tag:
+                    tag[tag['key']] = tag['value']
+            return True
+        return False
