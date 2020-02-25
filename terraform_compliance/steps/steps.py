@@ -267,8 +267,10 @@ def its_key_is_not_value(_step_obj, key, value):
 @when(u'it has {something:ANY}')
 @when(u'it contains {something:ANY}')
 @then(u'it must contain {something:ANY}')
-def it_condition_contain_something(_step_obj, something):
+def it_condition_contain_something(_step_obj, something, inherited_values=Null):
     prop_list = []
+
+    _step_obj.context.stash = inherited_values if inherited_values is not Null else _step_obj.context.stash
 
     if _step_obj.context.type in ('resource', 'data'):
         for resource in _step_obj.context.stash:
@@ -315,6 +317,8 @@ def it_condition_contain_something(_step_obj, something):
                                 found_key = found_key[0]
                                 found_value = value.get('value')
                                 break
+                    elif isinstance(value, list):
+                        found_key, found_value = it_condition_contain_something(_step_obj, something, value)
 
                     if found_key is not Null and len(found_key):
                         found_key = found_key[0] if len(found_key) == 1 else found_key
@@ -338,7 +342,7 @@ def it_condition_contain_something(_step_obj, something):
         if prop_list:
             _step_obj.context.stash = prop_list
             _step_obj.context.property_name = something
-            return True
+            return something, prop_list
 
         if _step_obj.state != Step.State.FAILED:
             skip_step(_step_obj,

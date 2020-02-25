@@ -1,8 +1,10 @@
 # CHANGELOG
 
+## 1.1.9 (2020-02-25)
+* Fixed a problem where a property within the terraform plan fails to get parsed if it is list of lists. ([#221](https://github.com/eerkunt/terraform-compliance/issues/221))
+
 ## 1.1.8 (2020-02-23)
 * Fixed a problem where tags are not recognised on Auto-Scaling Groups due to different key/pair structure within the terraform. ([#208](https://github.com/eerkunt/terraform-compliance/issues/208))
-
 
 ## 1.1.7 (2020-02-06)
 * Fixed a case where resource referencing fails when the output is coming from a module and does not registered in terraform plan.
