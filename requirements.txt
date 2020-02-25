@@ -4,7 +4,7 @@ gitpython==3.1.0
 netaddr==0.7.19
 colorful==0.5.4
 filetype==1.0.5
-junit-xml==1.8
+junit-xml==1.9
 emoji==0.5.4
 lxml==4.5.0
 ddt==1.2.2
