@@ -169,23 +169,23 @@ def its_key_is_value(_step_obj, key, value):
 
     found_list = []
     for obj in _step_obj.context.stash:
-        object_key = obj.get(key, Null)
+        object_key = obj.get('values', {})
+        if isinstance(object_key, list):
+            object_keys = []
+            for object_key_element in object_key:
+                if isinstance(object_key_element, dict):
+                    filtered_key = object_key_element.get(key)
+                    if isinstance(filtered_key, str) and filtered_key.lower() == value.lower():
+                        found_list.append(object_key_element)
+                else:
+                    object_keys.append(object_key_element.get(key, Null))
+
+            object_key = [keys for keys in object_keys if keys is not Null]
+        else:
+            object_key = object_key.get(key, Null)
 
         if object_key is Null:
-            object_key = obj.get('values', {})
-            if isinstance(object_key, list):
-                object_keys = []
-                for object_key_element in object_key:
-                    if isinstance(object_key_element, dict):
-                        filtered_key = object_key_element.get(key)
-                        if isinstance(filtered_key, str) and filtered_key.lower() == value.lower():
-                            found_list.append(object_key_element)
-                    else:
-                        object_keys.append(object_key_element.get(key, Null))
-
-                object_key = [keys for keys in object_keys if keys is not Null]
-            else:
-                object_key = object_key.get(key, Null)
+            object_key = obj.get(key, Null)
 
         if isinstance(object_key, str):
             if "[" in object_key:

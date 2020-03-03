@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.1.10 (2020-03-03)
+* Fixed a problem where int, bool and float types was not properly filtered and matched.
+* Fixed a problem where filtering functions does not work properly.
+
 ## 1.1.9 (2020-02-25)
 * Fixed a problem where a property within the terraform plan fails to get parsed if it is list of lists. ([#221](https://github.com/eerkunt/terraform-compliance/issues/221))
 
