@@ -88,7 +88,7 @@ section for more information.
 
 ------------------------
 ### [Then](#){: .p-1 .text-red-200}  it must [condition](#){: .p-1 .text-green-200 .fw-700} have [proto](#){: .p-1 .text-blue-100 .fw-700} protocol and port [port](#){: .p-1 .text-purple-000 .fw-700} for [cidr](#){: .p-1 .text-yellow-300 .fw-700}
-This step is only valid for `aws_security_group` and `aws_security_group_rule` resources. 
+This step is only valid for `aws_security_group` resources. 
 
 > __Possible sentences :__
 >
