@@ -1,7 +1,10 @@
 # CHANGELOG
 
+## 1.1.2 (2020-03-04)
+* Improved `When its <key> contains <value>` step where `<value>` can have space in it. ([docs](https://terraform-compliance.com/pages/bdd-references/when.html#)) ([#226](https://github.com/eerkunt/terraform-compliance/issues/226))
+
 ## 1.1.11 (2020-03-04)
-* Fixed a problem where `Then its <key> is <value>` step was not searching for "exact" matches. ([#225](https://github.com/eerkunt/terraform-compliance/issues/221))
+* Fixed a problem where `Then its <key> is <value>` step was not searching for "exact" matches. ([#225](https://github.com/eerkunt/terraform-compliance/issues/225))
 
 ## 1.1.10 (2020-03-03)
 * Fixed a problem where int, bool and float types was not properly filtered and matched.
