@@ -114,7 +114,7 @@ def seek_regex_key_in_dict_values(haystack, key_name, needle, key_matched=None):
     :param key_matched: Internal use
     :return: list of found keys & values
     '''
-    regex = r'{}'.format(needle)
+    regex = r'^{}$'.format(needle)
     found = list()
     if isinstance(haystack, dict):
         for key, value in haystack.items():

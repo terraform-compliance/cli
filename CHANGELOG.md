@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.1.11 (2020-03-04)
+* Fixed a problem where `Then its <key> is <value>` step was not searching for "exact" matches. ([#225](https://github.com/eerkunt/terraform-compliance/issues/221))
+
 ## 1.1.10 (2020-03-03)
 * Fixed a problem where int, bool and float types was not properly filtered and matched.
 * Fixed a problem where filtering functions does not work properly.
