@@ -114,10 +114,19 @@ its
 consists
 [something](#){: .p-1 .text-blue-100 .fw-700} 
 >
+> ▪
+[When](#){: .p-1 .text-red-200} 
+its 
+[property](#){: .p-1 .text-green-200 .fw-700} 
+includes "
+[some_string](#){: .p-1 .text-blue-100 .fw-700}
+" 
+>
 | key | Description | Examples |
 |:---:|:----------|:-|
 | [property](#){: .p-1 .text-green-200 .fw-700} | any property that resource have (e.g. `name`, `address`, etc. ). Using `address` will give the terraform object name | `address` `name` `size` |
 | [something](#){: .p-1 .text-blue-100 .fw-700} | any string or numeric value that the property has. | `s3_my_bucket` `my-bucket` `50G` |
+| [some_string](#){: .p-1 .text-blue-100 .fw-700} | any string (allows spaces). | `my dictionary key` |
 
 ------------------------
 ### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} has not [something](#){: .p-1 .text-blue-100 .fw-700}

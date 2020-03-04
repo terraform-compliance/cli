@@ -158,10 +158,11 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
     skip_step(_step_obj, name)
 
 
-@when(u'its {key:PROPERTY} is {value:ANY}')
-@when(u'its {key:PROPERTY} has {value:ANY}')
-@when(u'its {key:PROPERTY} includes {value:ANY}')
-@when(u'its {key:PROPERTY} contains {value:ANY}')
+@when(u'its {key:PROPERTY} is {value:PROPERTY}')
+@when(u'its {key:PROPERTY} has {value:PROPERTY}')
+@when(u'its {key:PROPERTY} includes {value:PROPERTY}')
+@when(u'its {key:PROPERTY} contains {value:PROPERTY}')
+@when(u'its {key:PROPERTY} includes "{value:ANY}"')
 def its_key_is_value(_step_obj, key, value):
     orig_key = key
     if key == 'reference':
