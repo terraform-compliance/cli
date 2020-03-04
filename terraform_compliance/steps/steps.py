@@ -216,6 +216,7 @@ def its_key_is_value(_step_obj, key, value):
 @when(u'its {key:PROPERTY} has not {value:PROPERTY}')
 @when(u'its {key:PROPERTY} does not include {value:PROPERTY}')
 @when(u'its {key:PROPERTY} does not contain {value:PROPERTY}')
+@when(u'its {key:PROPERTY} does not include "{value:ANY}"')
 def its_key_is_not_value(_step_obj, key, value):
     orig_key = key
     if key == 'reference':
@@ -236,8 +237,7 @@ def its_key_is_not_value(_step_obj, key, value):
 
                 object_key = [keys for keys in object_keys if keys is not Null]
             else:
-                if object_key.get(key, Null) != value:
-                    object_key = object_key.get(key, Null)
+                object_key = object_key.get(key, Null)
 
         if isinstance(object_key, str):
             if "[" in object_key:
@@ -252,15 +252,15 @@ def its_key_is_not_value(_step_obj, key, value):
         elif isinstance(object_key, list) and value not in object_key:
             found_list.append(obj)
 
-        elif isinstance(object_key, dict) and (value in object_key.keys()):
+        elif isinstance(object_key, dict) and (value not in object_key.keys()):
             found_list.append(obj)
 
     if found_list != []:
         _step_obj.context.stash = found_list
         _step_obj.context.addresses = get_resource_address_list_from_stash(found_list)
     else:
-        skip_step(_step_obj, message='Can not find {} {} in {}.'.format(value, orig_key,
-                                                                        ', '.join(_step_obj.context.addresses)))
+        skip_step(_step_obj, message='Found {} {} in {}.'.format(value, orig_key,
+                                                                 ', '.join(_step_obj.context.addresses)))
 
 
 @when(u'it contain {something:ANY}')
