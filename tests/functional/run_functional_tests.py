@@ -67,16 +67,23 @@ for test_dir in tests:
 
             if test_process.returncode == 0:
                 if expected:
-                    for each in expected:
-                        if re.findall(each, str(test_process.stdout)):
-                            test_result = colorful.green('passed')
-                        else:
-                            print('\nOutput: {}'.format(test_process.stdout))
-                            test_result = colorful.red('failed')
-                            print('Can not find ;')
-                            print('\t{}'.format(colorful.yellow(each)))
-                            print('in the test output.\n')
-                            failure_happened = True
+                    expected_failures = [
+                        exp for exp in expected 
+                        if not re.findall(exp, str(test_process.stdout))
+                    ]
+
+                    if expected_failures:
+                        print('\nOutput: {}'.format(test_process.stdout))
+                        print('Can not find ;')
+                        for failure in expected_failures:
+                            print('\t{}'.format(colorful.yellow(failure)))
+                        print('in the test output.\n')
+
+                        test_result = colorful.red('failed')
+                        failure_happened = True
+                    else:
+                        test_result = colorful.green('passed')
+
                 else:
                     test_result = colorful.green('passed')
             else:
