@@ -1,0 +1,3 @@
+3 scenarios \(0 passed, 1 failed, 2 skipped\)
+\* SKIPPING: Can not find Colour=Green tags in aws_s3_bucket\.bucket\.
+\* SKIPPING: Can not find Experience=Green tags in aws_s3_bucket\.bucket\.
