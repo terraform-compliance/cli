@@ -119,11 +119,11 @@ def seek_regex_key_in_dict_values(haystack, key_name, needle, key_matched=None):
     if isinstance(haystack, dict):
         for key, value in haystack.items():
             if isinstance(value, (bool, int, float)):
-                value = str(value).lower()
+                value = str(value)
 
             if key.lower() == key_name.lower() or key_matched is not None:
                 if isinstance(value, str):
-                    matches = re.match(regex, value)
+                    matches = re.match(regex, value, flags=re.IGNORECASE)
 
                     if matches is not None:
                         found.append(matches.group(0))
