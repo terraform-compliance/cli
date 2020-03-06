@@ -177,6 +177,8 @@ def its_key_is_value(_step_obj, key, value, dict_value=None):
             for object_key_element in object_key:
                 if isinstance(object_key_element, dict):
                     filtered_key = object_key_element.get(key)
+                    filtered_key = str(filtered_key) if isinstance(filtered_key, (int, bool)) else filtered_key
+
                     if isinstance(filtered_key, str) and filtered_key.lower() == value.lower():
                         found_list.append(object_key_element)
                 else:
