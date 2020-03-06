@@ -1,6 +1,10 @@
 # CHANGELOG
 
-## 1.1.2 (2020-03-04)
+## 1.1.13 (unreleased)
+* Fixed a problem where `integer` and `boolean` values where causing comparison problems on `When its <key> contains <value`>. ([#231](https://github.com/eerkunt/terraform-compliance/issues/231))
+* Fixed a problem where `boolean` values where causing a problem on `Then its <key> <condition> be <value>`. ([#232](https://github.com/eerkunt/terraform-compliance/issues/232))
+ 
+## 1.1.12 (2020-03-04)
 * Improved `When its <key> contains <value>` step where `<value>` can have space in it. ([docs](https://terraform-compliance.com/pages/bdd-references/when.html#)) ([#226](https://github.com/eerkunt/terraform-compliance/issues/226))
 
 ## 1.1.11 (2020-03-04)
