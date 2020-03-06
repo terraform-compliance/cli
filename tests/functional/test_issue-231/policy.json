@@ -1,0 +1,75 @@
+{
+  "rules": [
+    {
+      "rulePriority": 10,
+      "description": "For tag with prod, keep last 5 images",
+      "selection": {
+        "tagStatus": "tagged",
+        "tagPrefixList": [
+          "prod"
+        ],
+        "countType": "imageCountMoreThan",
+        "countNumber": 5
+      },
+      "action": {
+        "type": "expire"
+      }
+    },
+    {
+      "rulePriority": 20,
+      "description": "For tag with nonprod, keep last 15 images",
+      "selection": {
+        "tagStatus": "tagged",
+        "tagPrefixList": [
+          "nonprod"
+        ],
+        "countType": "imageCountMoreThan",
+        "countNumber": 15
+      },
+      "action": {
+        "type": "expire"
+      }
+    },
+    {
+      "rulePriority": 30,
+      "description": "For tag with build, keep last 60 images",
+      "selection": {
+        "tagStatus": "tagged",
+        "tagPrefixList": [
+          "build"
+        ],
+        "countType": "imageCountMoreThan",
+        "countNumber": 60
+      },
+      "action": {
+        "type": "expire"
+      }
+    },
+    {
+      "rulePriority": 990,
+      "description": "Keep untagged images for 7 days",
+      "selection": {
+        "tagStatus": "untagged",
+        "countType": "sinceImagePushed",
+        "countUnit": "days",
+        "countNumber": 7
+      },
+      "action": {
+        "type": "expire"
+      }
+    },
+    {
+      "rulePriority": 1000,
+      "description": "Keep tagged images for 30 days",
+      "selection": {
+        "tagStatus": "any",
+        "countType": "sinceImagePushed",
+        "countUnit": "days",
+        "countNumber": 30
+      },
+      "action": {
+        "type": "expire"
+      }
+    }
+  ]
+}
