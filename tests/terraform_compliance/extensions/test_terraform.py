@@ -279,7 +279,7 @@ class TestTerraformParser(TestCase):
                 }
             }
         }
-        obj._mount_resources([source], [target], ref_type)
+        obj._mount_resources([source], {'some_key': [target]}, ref_type)
         self.assertEqual(['a', {'some_key': 'some_value', 'terraform-compliance.mounted': True}], obj.resources[target]['values'][ref_type])
 
     @patch.object(TerraformParser, '_read_file', return_value={})
@@ -298,7 +298,7 @@ class TestTerraformParser(TestCase):
                 }
             }
         }
-        obj._mount_resources([source], [target], ref_type)
+        obj._mount_resources([source], {'some_key': [target]}, ref_type)
         self.assertEqual([{'some_key': 'some_value', 'terraform-compliance.mounted': True}], obj.resources[target]['values'][ref_type])
 
     @patch.object(TerraformParser, '_read_file', return_value={})

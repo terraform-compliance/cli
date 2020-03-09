@@ -6,7 +6,9 @@ from emoji import emojize
 
 class Defaults(object):
 
-    address_pointer = 'terraform-compliance.mounted_resources.addresses'
+    mounted_ptr = 'terraform-compliance.mounted'
+    r_mount_ptr = 'terraform-compliance.mounted_resources'
+    r_mount_addr_ptr = 'terraform-compliance.mounted_resources.addresses'
 
     def __init__(self):
         self.interactive_mode = self.detect_term()
