@@ -4,6 +4,7 @@
 * Fixed a problem where `integer` and `boolean` values where causing comparison problems on `When its <key> contains <value`>. ([#231](https://github.com/eerkunt/terraform-compliance/issues/231))
 * Fixed a problem where `boolean` values where causing a problem on `Then its <key> <condition> be <value>`. ([#232](https://github.com/eerkunt/terraform-compliance/issues/232))
 * Improved `When its <key> is <value>` steps for `reference` usage where you can provide a `key/value` check like `When its security_group_id reference is something`. ([#234](https://github.com/eerkunt/terraform-compliance/issues/234))
+* Improved `When its <key> is not <value>` steps for `reference` usage where you can provide a `key/value` check like `When its security_group_id reference is not something`. ([#234](https://github.com/eerkunt/terraform-compliance/issues/234))
  
 ## 1.1.12 (2020-03-04)
 * Improved `When its <key> contains <value>` step where `<value>` can have space in it. ([docs](https://terraform-compliance.com/pages/bdd-references/when.html#)) ([#226](https://github.com/eerkunt/terraform-compliance/issues/226))

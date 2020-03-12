@@ -172,9 +172,7 @@ class TestHelperFunctions(TestCase):
                     }
                 ]
             },
-            'terraform-compliance.mounted_resources': [
-                'aws_vpc'
-            ]
+            'terraform-compliance.mounted_resources': {'key': 'aws_vpc'}
         }
         output = remove_mounted_resources([resource_list])
         self.assertEqual({'tags': None}, output[0]['values'])

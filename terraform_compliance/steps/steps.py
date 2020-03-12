@@ -162,16 +162,25 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
 @when(u'its {key:PROPERTY} has {value:PROPERTY}')
 @when(u'its {key:PROPERTY} includes {value:PROPERTY}')
 @when(u'its {key:PROPERTY} contains {value:PROPERTY}')
+@when(u'its {key:PROPERTY} is "{value:ANY}"')
+@when(u'its {key:PROPERTY} has "{value:ANY}"')
 @when(u'its {key:PROPERTY} includes "{value:ANY}"')
+@when(u'its {key:PROPERTY} contains "{value:ANY}"')
 @when(u'its {address:PROPERTY} {key:PROPERTY} is {value:PROPERTY}')
 @when(u'its {address:PROPERTY} {key:PROPERTY} has {value:PROPERTY}')
 @when(u'its {address:PROPERTY} {key:PROPERTY} includes {value:PROPERTY}')
 @when(u'its {address:PROPERTY} {key:PROPERTY} contains {value:PROPERTY}')
+@when(u'its {address:PROPERTY} {key:PROPERTY} is "{value:ANY}"')
+@when(u'its {address:PROPERTY} {key:PROPERTY} has "{value:ANY}"')
 @when(u'its {address:PROPERTY} {key:PROPERTY} includes "{value:ANY}"')
+@when(u'its {address:PROPERTY} {key:PROPERTY} contains "{value:ANY}"')
 def its_key_is_value(_step_obj, key, value, address=Null):
     orig_key = key
     if key == 'reference':
-        key = Defaults.r_mount_addr_ptr
+        if address is not Null:
+            key = Defaults.r_mount_addr_ptr
+        elif address is Null:
+            key = Defaults.r_mount_addr_ptr_list
 
     found_list = []
     for obj in _step_obj.context.stash:
@@ -225,11 +234,25 @@ def its_key_is_value(_step_obj, key, value, address=Null):
 @when(u'its {key:PROPERTY} has not {value:PROPERTY}')
 @when(u'its {key:PROPERTY} does not include {value:PROPERTY}')
 @when(u'its {key:PROPERTY} does not contain {value:PROPERTY}')
+@when(u'its {key:PROPERTY} is not "{value:ANY}"')
+@when(u'its {key:PROPERTY} has not "{value:ANY}"')
 @when(u'its {key:PROPERTY} does not include "{value:ANY}"')
-def its_key_is_not_value(_step_obj, key, value):
+@when(u'its {key:PROPERTY} does not contain "{value:ANY}"')
+@when(u'its {address:PROPERTY} {key:PROPERTY} is not {value:PROPERTY}')
+@when(u'its {address:PROPERTY} {key:PROPERTY} has not {value:PROPERTY}')
+@when(u'its {address:PROPERTY} {key:PROPERTY} does not include {value:PROPERTY}')
+@when(u'its {address:PROPERTY} {key:PROPERTY} does not contain {value:PROPERTY}')
+@when(u'its {address:PROPERTY} {key:PROPERTY} is not "{value:ANY}"')
+@when(u'its {address:PROPERTY} {key:PROPERTY} has not "{value:ANY}"')
+@when(u'its {address:PROPERTY} {key:PROPERTY} does not include "{value:ANY}"')
+@when(u'its {address:PROPERTY} {key:PROPERTY} does not contain "{value:ANY}"')
+def its_key_is_not_value(_step_obj, key, value, address=Null):
     orig_key = key
     if key == 'reference':
-        key = Defaults.r_mount_addr_ptr
+        if address is not Null:
+            key = Defaults.r_mount_addr_ptr
+        elif address is Null:
+            key = Defaults.r_mount_addr_ptr_list
 
     key = str(key).lower()
     found_list = []
@@ -247,6 +270,10 @@ def its_key_is_not_value(_step_obj, key, value):
                 object_key = [keys for keys in object_keys if keys is not Null]
             else:
                 object_key = object_key.get(key, Null)
+
+        if address is not Null and isinstance(object_key, dict) and address in object_key:
+            object_key = object_key.get(address, Null)
+
 
         if isinstance(object_key, str):
             if "[" in object_key:
@@ -646,8 +673,8 @@ def it_must_have_reference_address_referenced(_step_obj, reference_address):
     if _step_obj.context.stash:
         for resource in _step_obj.context.stash:
             if isinstance(resource, dict):
-                if Defaults.r_mount_addr_ptr in resource and search_regex_in_list(reference_address,
-                                                                                  resource[Defaults.r_mount_addr_ptr]):
+                if Defaults.r_mount_addr_ptr_list in resource and search_regex_in_list(reference_address,
+                                                                                       resource[Defaults.r_mount_addr_ptr_list]):
                     return True
             else:
                 raise TerraformComplianceInternalFailure('Unexpected resource structure: {}'.format(resource))

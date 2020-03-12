@@ -231,7 +231,7 @@ def remove_mounted_resources(resource_list):
     resources = deepcopy(resource_list)
     for resource in resources:
         if 'terraform-compliance.mounted_resources' in resource:
-            for mounted_resource_type in resource['terraform-compliance.mounted_resources']:
+            for key, mounted_resource_type in resource['terraform-compliance.mounted_resources'].items():
                 if mounted_resource_type in resource['values']:
                     del resource['values'][mounted_resource_type]
 
