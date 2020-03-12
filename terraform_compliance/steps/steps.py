@@ -221,9 +221,8 @@ def its_key_is_value(_step_obj, key, value, dict_value=None, address=Null):
 
         elif isinstance(object_key, dict):
             object_key = {str(k).lower(): str(v).lower() for k, v in object_key.items()}
-            value = str(value).lower()
-            if value in object_key.keys():
-                if dict_value is None or (object_key[value] == str(dict_value).lower()):
+            if str(value).lower() in object_key.keys():
+                if dict_value is None or (object_key[str(value).lower()] == str(dict_value).lower()):
                     found_list.append(obj)
 
     if found_list != []:
