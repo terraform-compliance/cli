@@ -9,6 +9,7 @@ class Defaults(object):
     mounted_ptr = 'terraform-compliance.mounted'
     r_mount_ptr = 'terraform-compliance.mounted_resources'
     r_mount_addr_ptr = 'terraform-compliance.mounted_resources.addresses'
+    r_mount_addr_ptr_list = 'terraform-compliance.mounted_resources.addresses_list'
 
     def __init__(self):
         self.interactive_mode = self.detect_term()

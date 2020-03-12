@@ -220,15 +220,20 @@ class TerraformParser(object):
                     if Defaults.r_mount_addr_ptr not in self.resources[target_resource]:
                         self.resources[target_resource][Defaults.r_mount_addr_ptr] = {}
 
+                    if Defaults.r_mount_addr_ptr_list not in self.resources[target_resource]:
+                        self.resources[target_resource][Defaults.r_mount_addr_ptr_list] = []
+
                     if ref_type not in self.resources[target_resource]['values']:
                         self.resources[target_resource]['values'][ref_type] = []
                         self.resources[target_resource]['values'][ref_type].append(resource)
                         self.resources[target_resource][Defaults.r_mount_ptr][parameter] = ref_type
                         self.resources[target_resource][Defaults.r_mount_addr_ptr][parameter] = source
+                        self.resources[target_resource][Defaults.r_mount_addr_ptr_list].extend(source)
                     else:
                         self.resources[target_resource]['values'][ref_type].append(resource)
                         self.resources[target_resource][Defaults.r_mount_ptr][parameter] = ref_type
                         self.resources[target_resource][Defaults.r_mount_addr_ptr][parameter] = source
+                        self.resources[target_resource][Defaults.r_mount_addr_ptr_list].extend(source)
 
     def _find_resource_from_name(self, resource_name):
         '''
