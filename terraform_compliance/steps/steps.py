@@ -163,11 +163,17 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
 @when(u'its {key:PROPERTY} includes {value:PROPERTY}')
 @when(u'its {key:PROPERTY} contains {value:PROPERTY}')
 @when(u'its {key:PROPERTY} includes "{value:ANY}"')
+@when(u'its {address:PROPERTY} {key:PROPERTY} is {value:PROPERTY}')
+@when(u'its {address:PROPERTY} {key:PROPERTY} has {value:PROPERTY}')
+@when(u'its {address:PROPERTY} {key:PROPERTY} includes {value:PROPERTY}')
+@when(u'its {address:PROPERTY} {key:PROPERTY} contains {value:PROPERTY}')
+@when(u'its {address:PROPERTY} {key:PROPERTY} includes "{value:ANY}"')
 @when(u'its {key:PROPERTY} have an entry where "{value:ANY}" is "{dict_value:ANY}"')
-def its_key_is_value(_step_obj, key, value, dict_value=None):
+def its_key_is_value(_step_obj, key, value, dict_value=None, address=Null):
+
     orig_key = key
     if key == 'reference':
-        key = Defaults.address_pointer
+        key = Defaults.r_mount_addr_ptr
 
     found_list = []
     for obj in _step_obj.context.stash:
@@ -189,6 +195,8 @@ def its_key_is_value(_step_obj, key, value, dict_value=None):
 
         if object_key is Null:
             object_key = obj.get(key, Null)
+            if address is not Null and isinstance(object_key, dict) and address in object_key:
+                object_key = object_key.get(address, Null)
 
         if isinstance(object_key, str):
             if "[" in object_key:
@@ -231,7 +239,7 @@ def its_key_is_value(_step_obj, key, value, dict_value=None):
 def its_key_is_not_value(_step_obj, key, value, dict_value=None):
     orig_key = key
     if key == 'reference':
-        key = Defaults.address_pointer
+        key = Defaults.r_mount_addr_ptr
 
     #key = str(key).lower()
     found_list = []
@@ -652,8 +660,8 @@ def it_must_have_reference_address_referenced(_step_obj, reference_address):
     if _step_obj.context.stash:
         for resource in _step_obj.context.stash:
             if isinstance(resource, dict):
-                if Defaults.address_pointer in resource and search_regex_in_list(reference_address,
-                                                                                 resource[Defaults.address_pointer]):
+                if Defaults.r_mount_addr_ptr in resource and search_regex_in_list(reference_address,
+                                                                                  resource[Defaults.r_mount_addr_ptr]):
                     return True
             else:
                 raise TerraformComplianceInternalFailure('Unexpected resource structure: {}'.format(resource))
