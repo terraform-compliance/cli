@@ -171,7 +171,11 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
 def its_key_is_value(_step_obj, key, value, address=Null):
     orig_key = key
     if key == 'reference':
-        key = Defaults.r_mount_addr_ptr
+        if address is not Null:
+            key = Defaults.r_mount_addr_ptr
+        if address is Null:
+            key = Defaults.r_mount_addr_ptr_list
+
 
     found_list = []
     for obj in _step_obj.context.stash:
@@ -646,8 +650,8 @@ def it_must_have_reference_address_referenced(_step_obj, reference_address):
     if _step_obj.context.stash:
         for resource in _step_obj.context.stash:
             if isinstance(resource, dict):
-                if Defaults.r_mount_addr_ptr in resource and search_regex_in_list(reference_address,
-                                                                                  resource[Defaults.r_mount_addr_ptr]):
+                if Defaults.r_mount_addr_ptr_list in resource and search_regex_in_list(reference_address,
+                                                                                       resource[Defaults.r_mount_addr_ptr_list]):
                     return True
             else:
                 raise TerraformComplianceInternalFailure('Unexpected resource structure: {}'.format(resource))
