@@ -1,0 +1,25 @@
+{
+    "stash": [
+        {
+            "id": "a",
+            "tags": {
+                "foo": "..."
+            }
+        },
+        {
+            "id": "b",
+            "tags": {
+                "not_foo": "..."
+            }
+        },
+        {
+            "id": "c",
+            "tags": {
+                "foo": "...",
+                "not_foo": "..."
+            }
+        }
+    ],
+    "args": ["tags", "foo"],
+    "expected_ids": ["a", "c"]
+}

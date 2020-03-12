@@ -14,3 +14,18 @@ Feature: Allow dictionary entry as value for its_key_is_value filter
     Given I have aws_s3_bucket defined
     When its tags have an entry where "Experience" is "Green"
     Then it must fail
+
+  Scenario: Key and value match (neg)
+    Given I have aws_s3_bucket defined
+    When its tags do not have an entry where "Colour" is "Red"
+    Then it must fail
+
+  Scenario: Value difference (neg)
+    Given I have aws_s3_bucket defined
+    When its tags do not have an entry where "Colour" is "Green"
+    Then it must fail
+
+  Scenario: Key difference (neg)
+    Given I have aws_s3_bucket defined
+    When its tags do not have an entry where "Experience" is "Green"
+    Then it must fail

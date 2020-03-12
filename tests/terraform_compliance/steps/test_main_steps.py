@@ -963,6 +963,35 @@ class TestStepCases(TestCase):
         self.assertEqual(len(step.context.stash), 1)
         self.assertEqual(step.context.stash[0]['some_key'], 'some_other_value')
 
+    def test_its_key_is_not_value_dict_key_case_success(self, *args):
+        step = MockedStep()
+        step.context.stash = [
+            {
+                'type': 'aws_db_instance',
+                'some_key': 'some_value',
+                'values': {
+                    'tags': {
+                        'tag_key_ONE': 'tag_value_one',
+                        'tag_key_TWO': 'tag_value_two'
+                    }
+                }
+            },
+            {
+                'type': 'aws_db_instance',
+                'some_key': 'some_other_value',
+                'values': {
+                    'tags': {
+                        'tag_key_ONE': 'tag_value_one',
+                        'tag_key_THREE': 'tag_value_three'
+                    }
+                }
+            }
+        ]
+        its_key_is_not_value(step, 'tags', 'tag_key_TWO')
+        self.assertTrue(type(step.context.stash) is list)
+        self.assertEqual(len(step.context.stash), 1)
+        self.assertEqual(step.context.stash[0]['some_key'], 'some_other_value')
+
     def test_its_key_is_not_value_dict_key_multi_success(self, *args):
         step = MockedStep()
         step.context.stash = [
@@ -1019,6 +1048,93 @@ class TestStepCases(TestCase):
             }
         ]
         its_key_is_not_value(step, 'tags', 'tag_key_one')
+        self.assertEqual(step.state, 'skipped')
+
+    def test_its_key_is_not_value_dict_kv_success(self, *args):
+        step = MockedStep()
+        step.context.stash = [
+            {
+                'type': 'aws_db_instance',
+                'some_key': 'some_value',
+                'values': {
+                    'tags': {
+                        'tag_key_one': 'tag_value_one',
+                        'tag_key_two': 'tag_value_two'
+                    }
+                }
+            },
+            {
+                'type': 'aws_db_instance',
+                'some_key': 'some_other_value',
+                'values': {
+                    'tags': {
+                        'tag_key_one': 'tag_value_one',
+                        'tag_key_three': 'tag_value_three'
+                    }
+                }
+            }
+        ]
+        its_key_is_not_value(step, 'tags', 'tag_key_two', 'tag_value_two')
+        self.assertTrue(type(step.context.stash) is list)
+        self.assertEqual(len(step.context.stash), 1)
+        self.assertEqual(step.context.stash[0]['some_key'], 'some_other_value')
+
+    def test_its_key_is_not_value_dict_kv_multi_success(self, *args):
+        step = MockedStep()
+        step.context.stash = [
+            {
+                'type': 'aws_db_instance',
+                'some_key': 'some_value',
+                'values': {
+                    'tags': {
+                        'tag_key_one': 'tag_value_one',
+                        'tag_key_two': 'tag_value_two'
+                    }
+                }
+            },
+            {
+                'type': 'aws_db_instance',
+                'some_key': 'some_other_value',
+                'values': {
+                    'tags': {
+                        'tag_key_one': 'tag_value_one',
+                        'tag_key_three': 'tag_value_three'
+                    }
+                }
+            }
+        ]
+        its_key_is_not_value(step, 'tags', 'tag_key_two', 'tag_value_three')
+        self.assertTrue(type(step.context.stash) is list)
+        self.assertEqual(len(step.context.stash), 2)
+        self.assertEqual(step.context.stash[0]['some_key'], 'some_value')
+        self.assertEqual(step.context.stash[1]['some_key'], 'some_other_value')
+
+    @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
+    def test_its_key_is_not_value_dict_kv_failure(self, *args):
+        step = MockedStep()
+        step.context.stash = [
+            {
+                'type': 'aws_db_instance',
+                'some_key': 'some_value',
+                'values': {
+                    'tags': {
+                        'tag_key_one': 'tag_value_one',
+                        'tag_key_two': 'tag_value_two'
+                    }
+                }
+            },
+            {
+                'type': 'aws_db_instance',
+                'some_key': 'some_other_value',
+                'values': {
+                    'tags': {
+                        'tag_key_one': 'tag_value_one',
+                        'tag_key_three': 'tag_value_three'
+                    }
+                }
+            }
+        ]
+        its_key_is_not_value(step, 'tags', 'tag_key_one', 'tag_value_one')
         self.assertEqual(step.state, 'skipped')
 
     @patch('terraform_compliance.common.error_handling.world', side_effect=MockedWorld())
