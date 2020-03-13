@@ -176,29 +176,31 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
 @when(u'its {address:PROPERTY} {key:PROPERTY} contains "{value:ANY}"')
 @when(u'its {key:PROPERTY} have an entry where "{value:ANY}" is "{dict_value:ANY}"')
 def its_key_is_value(_step_obj, key, value, dict_value=None, address=Null):
+    def to_lower_key(d):
+        return {str(k).lower(): v for k, v in d.items()}
+
     orig_key = key
     if key == 'reference':
         if address is not Null:
             key = Defaults.r_mount_addr_ptr
         elif address is Null:
             key = Defaults.r_mount_addr_ptr_list
+    else:
+        key = str(key).lower()
 
     found_list = []
     for obj in _step_obj.context.stash:
+        obj = to_lower_key(obj)
         object_key = obj.get('values', {})
         if isinstance(object_key, list):
-            object_keys = []
-            for object_key_element in object_key:
-                if isinstance(object_key_element, dict):
-                    filtered_key = object_key_element.get(key)
-                    filtered_key = str(filtered_key) if isinstance(filtered_key, (int, bool)) else filtered_key
-                    if isinstance(filtered_key, str) and filtered_key.lower() == str(value).lower():
-                        found_list.append(object_key_element)
-                else:
-                    object_keys.append(object_key_element.get(key, Null))
-
-            object_key = [keys for keys in object_keys if keys is not Null]
+            for el in object_key:
+                if isinstance(el, dict):
+                    el = to_lower_key(el)
+                    filtered_key = el.get(key)
+                    if isinstance(filtered_key, (str, int, bool)) and str(filtered_key).lower() == str(value).lower():
+                        found_list.append(el)
         else:
+            object_key = to_lower_key(object_key)
             object_key = object_key.get(key, Null)
 
         if object_key is Null:
@@ -216,14 +218,19 @@ def its_key_is_value(_step_obj, key, value, dict_value=None, address=Null):
         elif isinstance(object_key, (int, bool)) and object_key == value:
             found_list.append(obj)
 
-        elif isinstance(object_key, list) and value in object_key:
-            found_list.append(obj)
+        elif isinstance(object_key, list):
+            object_key = [str(v).lower() for v in object_key]
+            if str(value).lower() in object_key:
+                found_list.append(obj)
 
         elif isinstance(object_key, dict):
-            object_key = {str(k).lower(): str(v).lower() for k, v in object_key.items()}
-            if str(value).lower() in object_key.keys():
-                if dict_value is None or (object_key[str(value).lower()] == str(dict_value).lower()):
-                    found_list.append(obj)
+            object_key = to_lower_key(object_key)
+            candidate_value = object_key.get(str(value).lower())
+            if candidate_value is not None and (
+                dict_value is None or (
+                str(candidate_value).lower() == str(dict_value).lower())
+            ):
+                found_list.append(obj)
 
     if found_list != []:
         _step_obj.context.stash = found_list
