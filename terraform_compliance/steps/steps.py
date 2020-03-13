@@ -174,7 +174,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
 @when(u'its {address:PROPERTY} {key:PROPERTY} has "{value:ANY}"')
 @when(u'its {address:PROPERTY} {key:PROPERTY} includes "{value:ANY}"')
 @when(u'its {address:PROPERTY} {key:PROPERTY} contains "{value:ANY}"')
-@when(u'its {key:PROPERTY} have an entry where "{value:ANY}" is "{dict_value:ANY}"')
+@when(u'its {key:PROPERTY} includes an entry where "{value:ANY}" is "{dict_value:ANY}"')
 def its_key_is_value(_step_obj, key, value, dict_value=None, address=Null):
     def to_lower_key(d):
         return {str(k).lower(): v for k, v in d.items()}
@@ -260,7 +260,7 @@ def its_key_is_value(_step_obj, key, value, dict_value=None, address=Null):
 @when(u'its {address:PROPERTY} {key:PROPERTY} has not "{value:ANY}"')
 @when(u'its {address:PROPERTY} {key:PROPERTY} does not include "{value:ANY}"')
 @when(u'its {address:PROPERTY} {key:PROPERTY} does not contain "{value:ANY}"')
-@when(u'its {key:PROPERTY} do not have an entry where "{value:ANY}" is "{dict_value:ANY}"')
+@when(u'its {key:PROPERTY} does not include an entry where "{value:ANY}" is "{dict_value:ANY}"')
 def its_key_is_not_value(_step_obj, key, value, dict_value=None, address=Null):
     orig_key = key
     if key == 'reference':
