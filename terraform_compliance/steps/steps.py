@@ -262,7 +262,7 @@ def its_key_is_not_value(_step_obj, key, value, dict_value=None, address=Null):
         elif address is Null:
             key = Defaults.r_mount_addr_ptr_list
 
-    #key = str(key).lower()
+    key = str(key).lower()
     found_list = []
     for obj in _step_obj.context.stash:
         object_key = obj.get(key, Null)
