@@ -23,5 +23,5 @@
         }
     ],
     "args": ["foo", 1000],
-    "expected_ids": []
+    "expected_ids": ["a.a", "a.d"]
 }

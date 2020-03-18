@@ -26,5 +26,5 @@
         }
     ],
     "args": ["tags", "foo foo"],
-    "expected_ids": []
+    "expected_ids": ["a.a", "a.c"]
 }

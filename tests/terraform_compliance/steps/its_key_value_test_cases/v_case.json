@@ -18,5 +18,5 @@
         }
     ],
     "args": ["foo", "bAr"],
-    "expected_ids": ["a", "b", "c"]
+    "expected_ids": ["a", "b", "c", "d"]
 }

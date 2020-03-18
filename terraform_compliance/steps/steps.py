@@ -158,6 +158,74 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
     skip_step(_step_obj, name)
 
 
+def _its_key_is_value(stashed_objects, key, value, dict_value=None, address=Null):
+    def get_candidates(o):
+        yield o
+        # if the object has a 'values' key and it's a list
+        values = o.get('values')
+        if isinstance(values, list):
+            # yield any dictionaries in that list
+            yield from (item for item in values if isinstance(item, dict))
+
+    def case_insensive_equals(x, y):
+        # remove array cruft from string 
+        if isinstance(y, str) and "[" in y:
+            y = y.split('[')[0]
+
+        return str(x).lower() == str(y).lower()
+
+    def case_insensive_find(x, y):
+        if isinstance(y, list):
+            return next(((i for i in y if case_insensive_equals(x, i))), None)
+        if isinstance(y, dict):
+            return next(((k, v) for k, v in y.items() if case_insensive_equals(x, k)), None)
+
+    def test_candidate(candidate):
+        def look_for_key():
+            # does the object have a 'values' key? if so check there first
+            values = candidate.get('values')
+            if isinstance(values, dict):
+                found = case_insensive_find(key, values)
+                if found:
+                    return found[1]
+            
+            # okay, not in 'values', check the root
+            found = case_insensive_find(key, candidate)
+            if found:
+                found_value = found[1]
+                # special check to handle references
+                if address is not Null and isinstance(found_value, dict):
+                    found_reference = case_insensive_find(address, found_value)
+                    if found_reference:
+                        return found_reference[1]
+                
+                return found_value
+
+            return None
+
+        def value_check(candidate_value):
+            if isinstance(candidate_value, (bool, int, str)):
+                return case_insensive_equals(value, candidate_value)
+
+            if isinstance(candidate_value, list):
+                return case_insensive_find(value, candidate_value) is not None
+
+            if isinstance(candidate_value, dict):
+                found_entry = case_insensive_find(value, candidate_value)
+                return found_entry is not None and ((dict_value is None) or case_insensive_equals(dict_value, found_entry[1]))
+
+            return False
+
+        candidate_value = look_for_key()
+        return candidate_value is not None and value_check(candidate_value)
+
+    def all_candidates():
+        for stash_object in stashed_objects:
+            yield from get_candidates(stash_object)
+
+
+    return [(candidate, test_candidate(candidate)) for candidate in all_candidates()]
+
 @when(u'its {key:PROPERTY} is {value:PROPERTY}')
 @when(u'its {key:PROPERTY} has {value:PROPERTY}')
 @when(u'its {key:PROPERTY} includes {value:PROPERTY}')
@@ -176,63 +244,17 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
 @when(u'its {address:PROPERTY} {key:PROPERTY} contains "{value:ANY}"')
 @when(u'its {key:PROPERTY} includes an entry where "{value:ANY}" is "{dict_value:ANY}"')
 def its_key_is_value(_step_obj, key, value, dict_value=None, address=Null):
-    def to_lower_key(d):
-        return {str(k).lower(): v for k, v in d.items()}
-
     orig_key = key
     if key == 'reference':
         if address is not Null:
             key = Defaults.r_mount_addr_ptr
         elif address is Null:
             key = Defaults.r_mount_addr_ptr_list
-    else:
-        key = str(key).lower()
 
-    found_list = []
-    for obj in _step_obj.context.stash:
-        obj = to_lower_key(obj)
-        object_key = obj.get('values', {})
-        if isinstance(object_key, list):
-            for el in object_key:
-                if isinstance(el, dict):
-                    el = to_lower_key(el)
-                    filtered_key = el.get(key)
-                    if isinstance(filtered_key, (str, int, bool)) and str(filtered_key).lower() == str(value).lower():
-                        found_list.append(el)
-        else:
-            object_key = to_lower_key(object_key)
-            object_key = object_key.get(key, Null)
-
-        if object_key is Null:
-            object_key = obj.get(key, Null)
-            if address is not Null and isinstance(object_key, dict) and address in object_key:
-                object_key = object_key.get(address, Null)
-
-        if isinstance(object_key, str):
-            if "[" in object_key:
-                object_key = object_key.split('[')[0]
-
-            if object_key.lower() == value.lower():
-                found_list.append(obj)
-
-        elif isinstance(object_key, (int, bool)) and object_key == value:
-            found_list.append(obj)
-
-        elif isinstance(object_key, list):
-            object_key = [str(v).lower() for v in object_key]
-            if str(value).lower() in object_key:
-                found_list.append(obj)
-
-        elif isinstance(object_key, dict):
-            object_key = to_lower_key(object_key)
-            candidate_value = object_key.get(str(value).lower())
-            if candidate_value is not None and (
-                dict_value is None or (
-                str(candidate_value).lower() == str(dict_value).lower())
-            ):
-                found_list.append(obj)
-
-    if found_list != []:
+    results = _its_key_is_value(_step_obj.context.stash, key, value, dict_value, address)
+    found_list = [candidate for (candidate, is_match) in results if is_match == True]
+    
+    if found_list:
         _step_obj.context.stash = found_list
         _step_obj.context.addresses = get_resource_address_list_from_stash(found_list)
     else:
@@ -242,7 +264,6 @@ def its_key_is_value(_step_obj, key, value, dict_value=None, address=Null):
         else:
             skip_step(_step_obj, message='Can not find {}={} {} in {}.'.format(value, dict_value, orig_key,
                                                                                ', '.join(_step_obj.context.addresses)))
-
 
 @when(u'its {key:PROPERTY} is not {value:PROPERTY}')
 @when(u'its {key:PROPERTY} has not {value:PROPERTY}')
@@ -269,45 +290,10 @@ def its_key_is_not_value(_step_obj, key, value, dict_value=None, address=Null):
         elif address is Null:
             key = Defaults.r_mount_addr_ptr_list
 
-    key = str(key).lower()
-    found_list = []
-    for obj in _step_obj.context.stash:
-        object_key = obj.get(key, Null)
-
-        if object_key is Null:
-            object_key = obj.get('values', {})
-            if isinstance(object_key, list):
-                object_keys = []
-                for object_key_element in object_key:
-                    if object_key_element.get(key, Null) != value:
-                        object_keys.append(object_key_element.get(key, Null))
-
-                object_key = [keys for keys in object_keys if keys is not Null]
-            else:
-                object_key = object_key.get(key, Null)
-
-        if address is not Null and isinstance(object_key, dict) and address in object_key:
-            object_key = object_key.get(address, Null)
-
-
-        if isinstance(object_key, str):
-            if "[" in object_key:
-                object_key = object_key.split('[')[0]
-
-            if object_key != value:
-                found_list.append(obj)
-
-        elif isinstance(object_key, (int, bool)) and object_key != value:
-            found_list.append(obj)
-
-        elif isinstance(object_key, list) and value not in object_key:
-            found_list.append(obj)
-
-        elif isinstance(object_key, dict):
-            if value not in object_key.keys() or (dict_value is not None and (object_key[value] != dict_value)):
-                found_list.append(obj)
-
-    if found_list != []:
+    results = _its_key_is_value(_step_obj.context.stash, key, value, dict_value, address)
+    found_list = [candidate for (candidate, is_match) in results if is_match == False]
+    
+    if found_list:
         _step_obj.context.stash = found_list
         _step_obj.context.addresses = get_resource_address_list_from_stash(found_list)
     else:
