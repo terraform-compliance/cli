@@ -484,7 +484,7 @@ def i_action_them(_step_obj, action_type):
                         _step_obj.context.stash = seek_key_in_dict(_step_obj.context.stash, 'values')
                         count = 0
                         for result in _step_obj.context.stash:
-                            count += len(result.get('values', {})) if result.get('values') else 1
+                            count += len(result.get('values', {})) if result.get('values') and not isinstance(result.get('values'), (int,bool,str)) else 1
 
                         _step_obj.context.stash = dict(values=count)
 
