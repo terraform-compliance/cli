@@ -41,6 +41,7 @@ class TestItsKeyValueStepCases():
             actual_ids = set(o['id'] for o in step.context.stash)
             assert actual_ids == test_case.expected_ids
 
+    @pytest.mark.skip()
     @pytest.mark.parametrize("test_case", list(_get_test_cases()), ids=lambda x: x.name)
     def test_its_key_is_not_value(self, test_case):
         step = MockedStep()
