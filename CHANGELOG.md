@@ -1,6 +1,9 @@
 # CHANGELOG
 
-## 1.1.13 (unreleased)
+## 1.1.14 (2020-03-30)
+* Fixed a problem where `count` step was counting incorrectly and counting characters of strings, integers and bools. (([#242](https://github.com/eerkunt/terraform-compliance/issues/242))
+
+## 1.1.13 (2020-03-30)
 * Fixed a problem where `integer` and `boolean` values where causing comparison problems on `When its <key> contains <value`>. ([#231](https://github.com/eerkunt/terraform-compliance/issues/231))
 * Fixed a problem where `boolean` values where causing a problem on `Then its <key> <condition> be <value>`. ([#232](https://github.com/eerkunt/terraform-compliance/issues/232))
 * Improved `When its <key> is <value>` steps for `reference` usage where you can provide a `key/value` check like `When its security_group_id reference is something`. ([#234](https://github.com/eerkunt/terraform-compliance/issues/234))
