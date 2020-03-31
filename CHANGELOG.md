@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.1.15 (Not Released Yet)
+* Improved `When its <key> is <value>` steps for testing a dictionary property key and value like `When its tags includes an entry where "some key" is "some value"`. ([#228](https://github.com/eerkunt/terraform-compliance/issues/228))
+* Improved `When its <key> is not <value>` steps for for testing a dictionary property key and value like `When its tags does not include an entry where "some key" is "some value"`. ([#228](https://github.com/eerkunt/terraform-compliance/issues/228))
+
 ## 1.1.14 (2020-03-30)
 * Fixed a problem where `count` step was counting incorrectly and counting characters of strings, integers and bools. (([#242](https://github.com/eerkunt/terraform-compliance/issues/242))
 
@@ -8,8 +12,6 @@
 * Fixed a problem where `boolean` values where causing a problem on `Then its <key> <condition> be <value>`. ([#232](https://github.com/eerkunt/terraform-compliance/issues/232))
 * Improved `When its <key> is <value>` steps for `reference` usage where you can provide a `key/value` check like `When its security_group_id reference is something`. ([#234](https://github.com/eerkunt/terraform-compliance/issues/234))
 * Improved `When its <key> is not <value>` steps for `reference` usage where you can provide a `key/value` check like `When its security_group_id reference is not something`. ([#234](https://github.com/eerkunt/terraform-compliance/issues/234))
-* Improved `When its <key> is <value>` steps for testing a dictionary property key and value like `When its tags includes an entry where "some key" is "some value"`. ([#228](https://github.com/eerkunt/terraform-compliance/issues/228))
-* Improved `When its <key> is not <value>` steps for for testing a dictionary property key and value like `When its tags does not include an entry where "some key" is "some value"`. ([#228](https://github.com/eerkunt/terraform-compliance/issues/228))
  
 ## 1.1.12 (2020-03-04)
 * Improved `When its <key> contains <value>` step where `<value>` can have space in it. ([docs](https://terraform-compliance.com/pages/bdd-references/when.html#)) ([#226](https://github.com/eerkunt/terraform-compliance/issues/226))
