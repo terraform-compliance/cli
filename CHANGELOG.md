@@ -1,6 +1,7 @@
 # CHANGELOG
 
-## 1.1.15 (Not Released Yet)
+## 1.1.15 (2020-03-31)
+* Improved `resource that support tags` resource type where Auto-Scaling Group style tags are enabled to be processed. ([#243](https://github.com/eerkunt/terraform-compliance/issues/243))
 * Improved `When its <key> is <value>` steps for testing a dictionary property key and value like `When its tags includes an entry where "some key" is "some value"`. ([#228](https://github.com/eerkunt/terraform-compliance/issues/228))
 * Improved `When its <key> is not <value>` steps for for testing a dictionary property key and value like `When its tags does not include an entry where "some key" is "some value"`. ([#228](https://github.com/eerkunt/terraform-compliance/issues/228))
 
