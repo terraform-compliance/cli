@@ -1,0 +1,134 @@
+{
+  "format_version": "0.1",
+  "terraform_version": "0.12.21",
+  "planned_values": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "aws_s3_bucket.bucket",
+          "mode": "managed",
+          "type": "aws_s3_bucket",
+          "name": "bucket",
+          "provider_name": "aws",
+          "schema_version": 0,
+          "values": {
+            "acl": "private",
+            "bucket": "bucket",
+            "bucket_prefix": null,
+            "cors_rule": [],
+            "force_destroy": false,
+            "lifecycle_rule": [],
+            "logging": [],
+            "object_lock_configuration": [],
+            "policy": null,
+            "replication_configuration": [],
+            "server_side_encryption_configuration": [],
+            "tags": {
+              "Colour": "Red"
+            },
+            "website": []
+          }
+        }
+      ]
+    }
+  },
+  "resource_changes": [
+    {
+      "address": "aws_s3_bucket.bucket",
+      "mode": "managed",
+      "type": "aws_s3_bucket",
+      "name": "bucket",
+      "provider_name": "aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "acl": "private",
+          "bucket": "bucket",
+          "bucket_prefix": null,
+          "cors_rule": [],
+          "force_destroy": false,
+          "lifecycle_rule": [],
+          "logging": [],
+          "object_lock_configuration": [],
+          "policy": null,
+          "replication_configuration": [],
+          "server_side_encryption_configuration": [],
+          "tags": {
+            "Colour": "Red"
+          },
+          "website": []
+        },
+        "after_unknown": {
+          "acceleration_status": true,
+          "arn": true,
+          "bucket_domain_name": true,
+          "bucket_regional_domain_name": true,
+          "cors_rule": [],
+          "hosted_zone_id": true,
+          "id": true,
+          "lifecycle_rule": [],
+          "logging": [],
+          "object_lock_configuration": [],
+          "region": true,
+          "replication_configuration": [],
+          "request_payer": true,
+          "server_side_encryption_configuration": [],
+          "tags": {},
+          "versioning": true,
+          "website": [],
+          "website_domain": true,
+          "website_endpoint": true
+        }
+      }
+    }
+  ],
+  "configuration": {
+    "provider_config": {
+      "aws": {
+        "name": "aws",
+        "expressions": {
+          "access_key": {
+            "constant_value": "foo"
+          },
+          "region": {
+            "constant_value": "eu-west-2"
+          },
+          "secret_key": {
+            "constant_value": "bar"
+          },
+          "skip_credentials_validation": {
+            "constant_value": true
+          },
+          "skip_requesting_account_id": {
+            "constant_value": true
+          }
+        }
+      }
+    },
+    "root_module": {
+      "resources": [
+        {
+          "address": "aws_s3_bucket.bucket",
+          "mode": "managed",
+          "type": "aws_s3_bucket",
+          "name": "bucket",
+          "provider_config_key": "aws",
+          "expressions": {
+            "bucket": {
+              "constant_value": "bucket"
+            },
+            "tags": {
+              "constant_value": {
+                "Colour": "Red"
+              }
+            }
+          },
+          "schema_version": 0
+        }
+      ]
+    }
+  }
+}

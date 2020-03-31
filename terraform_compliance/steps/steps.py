@@ -174,31 +174,33 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
 @when(u'its {address:PROPERTY} {key:PROPERTY} has "{value:ANY}"')
 @when(u'its {address:PROPERTY} {key:PROPERTY} includes "{value:ANY}"')
 @when(u'its {address:PROPERTY} {key:PROPERTY} contains "{value:ANY}"')
-def its_key_is_value(_step_obj, key, value, address=Null):
+@when(u'its {key:PROPERTY} includes an entry where "{value:ANY}" is "{dict_value:ANY}"')
+def its_key_is_value(_step_obj, key, value, dict_value=None, address=Null):
+    def to_lower_key(d):
+        return {str(k).lower(): v for k, v in d.items()}
+
     orig_key = key
     if key == 'reference':
         if address is not Null:
             key = Defaults.r_mount_addr_ptr
         elif address is Null:
             key = Defaults.r_mount_addr_ptr_list
+    else:
+        key = str(key).lower()
 
     found_list = []
     for obj in _step_obj.context.stash:
+        obj = to_lower_key(obj)
         object_key = obj.get('values', {})
         if isinstance(object_key, list):
-            object_keys = []
-            for object_key_element in object_key:
-                if isinstance(object_key_element, dict):
-                    filtered_key = object_key_element.get(key)
-                    filtered_key = str(filtered_key) if isinstance(filtered_key, (int, bool)) else filtered_key
-
-                    if isinstance(filtered_key, str) and filtered_key.lower() == value.lower():
-                        found_list.append(object_key_element)
-                else:
-                    object_keys.append(object_key_element.get(key, Null))
-
-            object_key = [keys for keys in object_keys if keys is not Null]
+            for el in object_key:
+                if isinstance(el, dict):
+                    el = to_lower_key(el)
+                    filtered_key = el.get(key)
+                    if isinstance(filtered_key, (str, int, bool)) and str(filtered_key).lower() == str(value).lower():
+                        found_list.append(el)
         else:
+            object_key = to_lower_key(object_key)
             object_key = object_key.get(key, Null)
 
         if object_key is Null:
@@ -216,18 +218,30 @@ def its_key_is_value(_step_obj, key, value, address=Null):
         elif isinstance(object_key, (int, bool)) and object_key == value:
             found_list.append(obj)
 
-        elif isinstance(object_key, list) and value in object_key:
-            found_list.append(obj)
+        elif isinstance(object_key, list):
+            object_key = [str(v).lower() for v in object_key]
+            if str(value).lower() in object_key:
+                found_list.append(obj)
 
-        elif isinstance(object_key, dict) and (value in object_key.keys()):
-            found_list.append(obj)
+        elif isinstance(object_key, dict):
+            object_key = to_lower_key(object_key)
+            candidate_value = object_key.get(str(value).lower())
+            if candidate_value is not None and (
+                dict_value is None or (
+                str(candidate_value).lower() == str(dict_value).lower())
+            ):
+                found_list.append(obj)
 
     if found_list != []:
         _step_obj.context.stash = found_list
         _step_obj.context.addresses = get_resource_address_list_from_stash(found_list)
     else:
-        skip_step(_step_obj, message='Can not find {} {} in {}.'.format(value, orig_key,
-                                                                        ', '.join(_step_obj.context.addresses)))
+        if dict_value is None:
+            skip_step(_step_obj, message='Can not find {} {} in {}.'.format(value, orig_key,
+                                                                            ', '.join(_step_obj.context.addresses)))
+        else:
+            skip_step(_step_obj, message='Can not find {}={} {} in {}.'.format(value, dict_value, orig_key,
+                                                                               ', '.join(_step_obj.context.addresses)))
 
 
 @when(u'its {key:PROPERTY} is not {value:PROPERTY}')
@@ -246,7 +260,8 @@ def its_key_is_value(_step_obj, key, value, address=Null):
 @when(u'its {address:PROPERTY} {key:PROPERTY} has not "{value:ANY}"')
 @when(u'its {address:PROPERTY} {key:PROPERTY} does not include "{value:ANY}"')
 @when(u'its {address:PROPERTY} {key:PROPERTY} does not contain "{value:ANY}"')
-def its_key_is_not_value(_step_obj, key, value, address=Null):
+@when(u'its {key:PROPERTY} does not include an entry where "{value:ANY}" is "{dict_value:ANY}"')
+def its_key_is_not_value(_step_obj, key, value, dict_value=None, address=Null):
     orig_key = key
     if key == 'reference':
         if address is not Null:
@@ -288,16 +303,20 @@ def its_key_is_not_value(_step_obj, key, value, address=Null):
         elif isinstance(object_key, list) and value not in object_key:
             found_list.append(obj)
 
-        elif isinstance(object_key, dict) and (value not in object_key.keys()):
-            found_list.append(obj)
+        elif isinstance(object_key, dict):
+            if value not in object_key.keys() or (dict_value is not None and (object_key[value] != dict_value)):
+                found_list.append(obj)
 
     if found_list != []:
         _step_obj.context.stash = found_list
         _step_obj.context.addresses = get_resource_address_list_from_stash(found_list)
     else:
-        skip_step(_step_obj, message='Found {} {} in {}.'.format(value, orig_key,
-                                                                 ', '.join(_step_obj.context.addresses)))
-
+        if dict_value is None:
+            skip_step(_step_obj, message='Found {} {} in {}.'.format(value, orig_key,
+                                                                     ', '.join(_step_obj.context.addresses)))
+        else:
+            skip_step(_step_obj, message='Found {}={} {} in {}.'.format(value, dict_value, orig_key,
+                                                                        ', '.join(_step_obj.context.addresses)))
 
 @when(u'it contain {something:ANY}')
 @when(u'they have {something:ANY}')

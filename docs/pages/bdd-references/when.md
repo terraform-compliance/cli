@@ -150,12 +150,28 @@ consists
 [some string with spaces](#){: .p-1 .text-blue-100 .fw-700} 
 "
 >
+> ▪
+[When](#){: .p-1 .text-red-200} 
+its 
+[dictionary](#){: .p-1 .text-green-200 .fw-700} 
+includes an entry where
+"
+[key](#){: .p-1 .text-blue-100 .fw-700} 
+"
+is
+"
+[value](#){: .p-1 .text-blue-100 .fw-700} 
+"
+>
 >
 | key | Description | Examples |
 |:---:|:----------|:-|
 | [property](#){: .p-1 .text-green-200 .fw-700} | any property that resource have (e.g. `name`, `address`, etc. ). Using `address` will give the terraform object name | `address` `name` `size` |
+| [dictionary](#){: .p-1 .text-green-200 .fw-700} | a dictionary property that resource has. | `tags` |
 | [something](#){: .p-1 .text-blue-100 .fw-700} | any string or numeric value that the property has. | `s3_my_bucket` `my-bucket` `50G` |
 | [some string with spaces](#){: .p-1 .text-blue-100 .fw-700} | any string (allows spaces). | `my dictionary key` |
+| [key](#){: .p-1 .text-blue-100 .fw-700} | any dictionary key (allows spaces). | `my dictionary key` |
+| [value](#){: .p-1 .text-blue-100 .fw-700} | any dictionary value (allows spaces). | `my dictionary value` |
 
 ------------------------
 ### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} reference has [something](#){: .p-1 .text-blue-100 .fw-700}
@@ -305,12 +321,28 @@ does not consist
 [some string with spaces](#){: .p-1 .text-blue-100 .fw-700} 
 "
 >
+> ▪
+[When](#){: .p-1 .text-red-200} 
+its 
+[dictionary](#){: .p-1 .text-green-200 .fw-700} 
+does not include an entry where
+"
+[key](#){: .p-1 .text-blue-100 .fw-700} 
+"
+is
+"
+[value](#){: .p-1 .text-blue-100 .fw-700} 
+"
+>
 >
 | key | Description | Examples |
 |:---:|:----------|:-|
 | [property](#){: .p-1 .text-green-200 .fw-700} | any property that resource have (e.g. `name`, `address`, etc. ). Using `address` will give the terraform object name | `address` `name` `size`|
-| [something](#){: .p-1 .text-blue-100 .fw-700} | any string or numeric value that the property has. | `s3_my_bucket` `my-bucket` `50G`|
+| [dictionary](#){: .p-1 .text-green-200 .fw-700} | a dictionary property that resource has. | `tags` |
+| [something](#){: .p-1 .text-blue-100 .fw-700} | any string or numeric value that the property has. | `s3_my_bucket` `my-bucket` `50G` |
 | [some string with spaces](#){: .p-1 .text-blue-100 .fw-700} | any string (allows spaces). | `my dictionary key` |
+| [key](#){: .p-1 .text-blue-100 .fw-700} | any dictionary key (allows spaces). | `my dictionary key` |
+| [value](#){: .p-1 .text-blue-100 .fw-700} | any dictionary value (allows spaces). | `my dictionary value` |
 
 ------------------------
 ### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} reference has [something](#){: .p-1 .text-blue-100 .fw-700}
