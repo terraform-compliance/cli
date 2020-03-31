@@ -6,6 +6,7 @@ from terraform_compliance.common.helper import convert_resource_type, find_root_
 from terraform_compliance.common.helper import search_regex_in_list, seek_regex_key_in_dict_values, jsonify, Null, EmptyStash
 from terraform_compliance.common.helper import get_resource_name_from_stash, get_resource_address_list_from_stash
 from terraform_compliance.common.helper import remove_mounted_resources, search_regex_in_list, seek_value_in_dict
+from terraform_compliance.common.helper import transform_asg_style_tags
 from terraform_compliance.extensions.security_groups import SecurityGroup
 from terraform_compliance.extensions.ext_radish_bdd import skip_step
 from terraform_compliance.extensions.ext_radish_bdd import custom_type_any
@@ -86,6 +87,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
             #            We are removing all mounted resources here for future steps, since we don't need them for
             #            tags checking.
             found_resources = remove_mounted_resources(_terraform_config.config.terraform.find_resources_by_type(resource_type))
+            found_resources = transform_asg_style_tags(found_resources)
             resource_list.extend(found_resources)
 
         if resource_list:

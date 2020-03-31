@@ -88,15 +88,15 @@ def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
 
     if args.exit_on_failure is True:
         console_write('{} {}\t\t: Scenario executions will stop on first step {}.'.format(Defaults().info_icon,
-                                                                                            Defaults().info_colour('INFO'),
-                                                                                            Defaults().failure_colour('failure')))
+                                                                                          Defaults().info_colour('INFO'),
+                                                                                          Defaults().failure_colour('failure')))
 
     if args.no_failure is True:
         console_write('{} {}\t: {}ping all {} steps, exit code will always be {}.'.format(Defaults().warning_icon,
-                                                                                            Defaults().warning_colour('WARNING'),
-                                                                                            Defaults().skip_colour('SKIP'),
-                                                                                            Defaults().failure_colour('failure'),
-                                                                                            Defaults().info_colour(0)))
+                                                                                          Defaults().warning_colour('WARNING'),
+                                                                                          Defaults().skip_colour('SKIP'),
+                                                                                          Defaults().failure_colour('failure'),
+                                                                                          Defaults().info_colour(0)))
 
     if Defaults().interactive_mode is False:
         console_write('{} Running in non-interactive mode.'.format(Defaults().info_icon))

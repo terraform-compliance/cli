@@ -13,7 +13,8 @@ from terraform_compliance.common.helper import (
     get_resource_name_from_stash,
     dict_merge,
     is_list_of_dict,
-    is_key_exist
+    is_key_exist,
+    transform_asg_style_tags
 )
 
 
@@ -245,3 +246,26 @@ class TestHelperFunctions(TestCase):
         self.assertTrue(is_key_exist('key', [{'key': 'something'}]))
         self.assertTrue(is_key_exist('key', [{'something': True}, 2, 3, 4, {'key': True}]))
         self.assertTrue(is_key_exist('key', [{'something': True}, {'key': True}]))
+
+    def test_transform_asg_style_tags_success(self):
+        resource_list = {
+            'address': 'aws_subnet.test',
+            'type': 'aws_subnet',
+            'name': 'test',
+            'values': {
+                'tags': None,
+                'tag': [
+                    {
+                        'key': 'some_key',
+                        'value': 'some_value'
+                    }
+                ],
+            }
+        }
+        output = transform_asg_style_tags([resource_list])
+        self.assertEqual(output[0]['values']['tags']['some_key'], 'some_value')
+
+    def test_transform_asg_style_tags_return_directly(self):
+        resource_list = 'abc'
+        output = transform_asg_style_tags(resource_list)
+        self.assertEqual(output, 'abc')

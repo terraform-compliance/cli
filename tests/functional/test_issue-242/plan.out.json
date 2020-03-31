@@ -1,0 +1,623 @@
+{
+    "configuration": {
+        "provider_config": {
+            "gsuite": {
+                "expressions": {
+                    "oauth_scopes": {
+                        "constant_value": [
+                            "https://www.googleapis.com/auth/admin.directory.group",
+                            "https://www.googleapis.com/auth/admin.directory.user"
+                        ]
+                    }
+                },
+                "name": "gsuite"
+            }
+        },
+        "root_module": {
+            "module_calls": {
+                "team_myteam": {
+                    "expressions": {
+                        "team": {
+                            "constant_value": "myteam"
+                        }
+                    },
+                    "module": {
+                        "outputs": {
+                            "email_level_i": {
+                                "description": "The email created for level I access",
+                                "expression": {
+                                    "references": [
+                                        "gsuite_group.gcp-level-i"
+                                    ]
+                                }
+                            },
+                            "email_level_ii": {
+                                "description": "The email created for level II access",
+                                "expression": {
+                                    "references": [
+                                        "gsuite_group.gcp-level-ii"
+                                    ]
+                                }
+                            },
+                            "email_level_iii": {
+                                "description": "The email created for level III access",
+                                "expression": {
+                                    "references": [
+                                        "gsuite_group.gcp-level-iii"
+                                    ]
+                                }
+                            }
+                        },
+                        "resources": [
+                            {
+                                "address": "gsuite_group.gcp-level-i",
+                                "expressions": {
+                                    "email": {
+                                        "references": [
+                                            "var.team"
+                                        ]
+                                    },
+                                    "name": {
+                                        "references": [
+                                            "var.team"
+                                        ]
+                                    }
+                                },
+                                "mode": "managed",
+                                "name": "gcp-level-i",
+                                "provider_config_key": "team_myteam:gsuite",
+                                "schema_version": 0,
+                                "type": "gsuite_group"
+                            },
+                            {
+                                "address": "gsuite_group.gcp-level-ii",
+                                "expressions": {
+                                    "email": {
+                                        "references": [
+                                            "var.team"
+                                        ]
+                                    },
+                                    "name": {
+                                        "references": [
+                                            "var.team"
+                                        ]
+                                    }
+                                },
+                                "mode": "managed",
+                                "name": "gcp-level-ii",
+                                "provider_config_key": "team_myteam:gsuite",
+                                "schema_version": 0,
+                                "type": "gsuite_group"
+                            },
+                            {
+                                "address": "gsuite_group.gcp-level-iii",
+                                "expressions": {
+                                    "email": {
+                                        "references": [
+                                            "var.team"
+                                        ]
+                                    },
+                                    "name": {
+                                        "references": [
+                                            "var.team"
+                                        ]
+                                    }
+                                },
+                                "mode": "managed",
+                                "name": "gcp-level-iii",
+                                "provider_config_key": "team_myteam:gsuite",
+                                "schema_version": 0,
+                                "type": "gsuite_group"
+                            },
+                            {
+                                "address": "gsuite_group_members.gcp-level-i",
+                                "expressions": {
+                                    "group_email": {
+                                        "references": [
+                                            "gsuite_group.gcp-level-i"
+                                        ]
+                                    }
+                                },
+                                "mode": "managed",
+                                "name": "gcp-level-i",
+                                "provider_config_key": "team_myteam:gsuite",
+                                "schema_version": 0,
+                                "type": "gsuite_group_members"
+                            },
+                            {
+                                "address": "gsuite_group_members.gcp-level-ii",
+                                "expressions": {
+                                    "group_email": {
+                                        "references": [
+                                            "gsuite_group.gcp-level-ii"
+                                        ]
+                                    }
+                                },
+                                "mode": "managed",
+                                "name": "gcp-level-ii",
+                                "provider_config_key": "team_myteam:gsuite",
+                                "schema_version": 0,
+                                "type": "gsuite_group_members"
+                            },
+                            {
+                                "address": "gsuite_group_members.gcp-level-iii",
+                                "expressions": {
+                                    "group_email": {
+                                        "references": [
+                                            "gsuite_group.gcp-level-iii"
+                                        ]
+                                    }
+                                },
+                                "mode": "managed",
+                                "name": "gcp-level-iii",
+                                "provider_config_key": "team_myteam:gsuite",
+                                "schema_version": 0,
+                                "type": "gsuite_group_members"
+                            }
+                        ],
+                        "variables": {
+                            "team": {
+                                "description": "The name of the team"
+                            }
+                        }
+                    },
+                    "source": "./team"
+                }
+            },
+            "outputs": {
+                "emails": {
+                    "expression": {
+                        "references": [
+                            "module.team_myteam.email_level_i",
+                            "module.team_myteam.email_level_ii",
+                            "module.team_myteam.email_level_iii"
+                        ]
+                    }
+                }
+            },
+            "resources": [],
+            "variables": {}
+        }
+    },
+    "format_version": "0.1",
+    "output_changes": {
+        "emails": {
+            "actions": [
+                "create"
+            ],
+            "after": {
+                "myteam": {
+                    "level-i": "myteam.i@my-company.com.br",
+                    "level-ii": "myteam.ii@my-company.com.br",
+                    "level-iii": "myteam.iii@my-company.com.br"
+                }
+            },
+            "after_unknown": false,
+            "before": null
+        }
+    },
+    "planned_values": {
+        "outputs": {
+            "emails": {
+                "sensitive": false,
+                "value": {
+                    "myteam": {
+                        "level-i": "myteam.i@my-company.com.br",
+                        "level-ii": "myteam.ii@my-company.com.br",
+                        "level-iii": "myteam.iii@my-company.com.br"
+                    }
+                }
+            }
+        },
+        "root_module": {
+            "child_modules": [
+                {
+                    "address": "module.team_myteam",
+                    "resources": [
+                        {
+                            "address": "module.team_myteam.gsuite_group.gcp-level-i",
+                            "mode": "managed",
+                            "name": "gcp-level-i",
+                            "provider_name": "gsuite",
+                            "schema_version": 0,
+                            "type": "gsuite_group",
+                            "values": {
+                                "admin_created": true,
+                                "aliases": [],
+                                "description": "",
+                                "direct_members_count": 5,
+                                "email": "myteam.i@my-company.com.br",
+                                "id": "",
+                                "name": "GCP myteam I",
+                                "non_editable_aliases": []
+                            }
+                        },
+                        {
+                            "address": "module.team_myteam.gsuite_group.gcp-level-ii",
+                            "mode": "managed",
+                            "name": "gcp-level-ii",
+                            "provider_name": "gsuite",
+                            "schema_version": 0,
+                            "type": "gsuite_group",
+                            "values": {
+                                "admin_created": true,
+                                "aliases": [],
+                                "description": "",
+                                "direct_members_count": 2,
+                                "email": "myteam.ii@my-company.com.br",
+                                "id": "",
+                                "name": "GCP myteam II",
+                                "non_editable_aliases": []
+                            }
+                        },
+                        {
+                            "address": "module.team_myteam.gsuite_group.gcp-level-iii",
+                            "mode": "managed",
+                            "name": "gcp-level-iii",
+                            "provider_name": "gsuite",
+                            "schema_version": 0,
+                            "type": "gsuite_group",
+                            "values": {
+                                "admin_created": true,
+                                "aliases": [],
+                                "description": "",
+                                "direct_members_count": 1,
+                                "email": "myteam.iii@my-company.com.br",
+                                "id": "",
+                                "name": "GCP myteam III",
+                                "non_editable_aliases": []
+                            }
+                        },
+                        {
+                            "address": "module.team_myteam.gsuite_group_members.gcp-level-i",
+                            "mode": "managed",
+                            "name": "gcp-level-i",
+                            "provider_name": "gsuite",
+                            "schema_version": 0,
+                            "type": "gsuite_group_members",
+                            "values": {
+                                "group_email": "myteam.i@my-company.com.br",
+                                "id": "",
+                                "member": []
+                            }
+                        },
+                        {
+                            "address": "module.team_myteam.gsuite_group_members.gcp-level-ii",
+                            "mode": "managed",
+                            "name": "gcp-level-ii",
+                            "provider_name": "gsuite",
+                            "schema_version": 0,
+                            "type": "gsuite_group_members",
+                            "values": {
+                                "group_email": "myteam.ii@my-company.com.br",
+                                "id": "",
+                                "member": []
+                            }
+                        },
+                        {
+                            "address": "module.team_myteam.gsuite_group_members.gcp-level-iii",
+                            "mode": "managed",
+                            "name": "gcp-level-iii",
+                            "provider_name": "gsuite",
+                            "schema_version": 0,
+                            "type": "gsuite_group_members",
+                            "values": {
+                                "group_email": "myteam.iii@my-company.com.br",
+                                "id": "",
+                                "member": []
+                            }
+                        }
+                    ]
+                }
+            ],
+            "resources": []
+        }
+    },
+    "prior_state": {
+        "format_version": "0.1",
+        "terraform_version": "0.12.24",
+        "values": {
+            "outputs": {
+                "emails": {
+                    "sensitive": false,
+                    "value": {
+                        "myteam": {
+                            "level-i": "myteam.i@my-company.com.br",
+                            "level-ii": "myteam.ii@my-company.com.br",
+                            "level-iii": "myteam.iii@my-company.com.br"
+                        }
+                    }
+                }
+            },
+            "root_module": {
+                "child_modules": [
+                    {
+                        "address": "module.team_myteam",
+                        "resources": [
+                            {
+                                "address": "gsuite_group.gcp-level-i",
+                                "mode": "managed",
+                                "name": "gcp-level-i",
+                                "provider_name": "gsuite",
+                                "schema_version": 0,
+                                "type": "gsuite_group",
+                                "values": {
+                                    "admin_created": true,
+                                    "aliases": [],
+                                    "description": "",
+                                    "direct_members_count": 5,
+                                    "email": "myteam.i@my-company.com.br",
+                                    "id": "",
+                                    "name": "GCP myteam I",
+                                    "non_editable_aliases": []
+                                }
+                            },
+                            {
+                                "address": "gsuite_group.gcp-level-ii",
+                                "mode": "managed",
+                                "name": "gcp-level-ii",
+                                "provider_name": "gsuite",
+                                "schema_version": 0,
+                                "type": "gsuite_group",
+                                "values": {
+                                    "admin_created": true,
+                                    "aliases": [],
+                                    "description": "",
+                                    "direct_members_count": 2,
+                                    "email": "myteam.ii@my-company.com.br",
+                                    "id": "",
+                                    "name": "GCP myteam II",
+                                    "non_editable_aliases": []
+                                }
+                            },
+                            {
+                                "address": "gsuite_group.gcp-level-iii",
+                                "mode": "managed",
+                                "name": "gcp-level-iii",
+                                "provider_name": "gsuite",
+                                "schema_version": 0,
+                                "type": "gsuite_group",
+                                "values": {
+                                    "admin_created": true,
+                                    "aliases": [],
+                                    "description": "",
+                                    "direct_members_count": 1,
+                                    "email": "myteam.iii@my-company.com.br",
+                                    "id": "",
+                                    "name": "GCP myteam III",
+                                    "non_editable_aliases": []
+                                }
+                            },
+                            {
+                                "address": "gsuite_group_members.gcp-level-i",
+                                "depends_on": [
+                                    "module.team_myteam.gsuite_group.gcp-level-i"
+                                ],
+                                "mode": "managed",
+                                "name": "gcp-level-i",
+                                "provider_name": "gsuite",
+                                "schema_version": 0,
+                                "type": "gsuite_group_members",
+                                "values": {
+                                    "group_email": "myteam.i@my-company.com.br",
+                                    "id": "",
+                                    "member": []
+                                }
+                            },
+                            {
+                                "address": "gsuite_group_members.gcp-level-ii",
+                                "depends_on": [
+                                    "module.team_myteam.gsuite_group.gcp-level-ii"
+                                ],
+                                "mode": "managed",
+                                "name": "gcp-level-ii",
+                                "provider_name": "gsuite",
+                                "schema_version": 0,
+                                "type": "gsuite_group_members",
+                                "values": {
+                                    "group_email": "myteam.ii@my-company.com.br",
+                                    "id": "",
+                                    "member": []
+                                }
+                            },
+                            {
+                                "address": "gsuite_group_members.gcp-level-iii",
+                                "depends_on": [
+                                    "module.team_myteam.gsuite_group.gcp-level-iii"
+                                ],
+                                "mode": "managed",
+                                "name": "gcp-level-iii",
+                                "provider_name": "gsuite",
+                                "schema_version": 0,
+                                "type": "gsuite_group_members",
+                                "values": {
+                                    "group_email": "myteam.iii@my-company.com.br",
+                                    "id": "",
+                                    "member": []
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+    "resource_changes": [
+        {
+            "address": "module.team_myteam.gsuite_group.gcp-level-i",
+            "change": {
+                "actions": [
+                    "no-op"
+                ],
+                "after": {
+                    "admin_created": true,
+                    "aliases": [],
+                    "description": "",
+                    "direct_members_count": 5,
+                    "email": "myteam.i@my-company.com.br",
+                    "id": "",
+                    "name": "GCP myteam I",
+                    "non_editable_aliases": []
+                },
+                "after_unknown": {},
+                "before": {
+                    "admin_created": true,
+                    "aliases": [],
+                    "description": "",
+                    "direct_members_count": 5,
+                    "email": "myteam.i@my-company.com.br",
+                    "id": "",
+                    "name": "GCP myteam I",
+                    "non_editable_aliases": []
+                }
+            },
+            "mode": "managed",
+            "module_address": "module.team_myteam",
+            "name": "gcp-level-i",
+            "provider_name": "gsuite",
+            "type": "gsuite_group"
+        },
+        {
+            "address": "module.team_myteam.gsuite_group.gcp-level-ii",
+            "change": {
+                "actions": [
+                    "no-op"
+                ],
+                "after": {
+                    "admin_created": true,
+                    "aliases": [],
+                    "description": "",
+                    "direct_members_count": 2,
+                    "email": "myteam.ii@my-company.com.br",
+                    "id": "",
+                    "name": "GCP myteam II",
+                    "non_editable_aliases": []
+                },
+                "after_unknown": {},
+                "before": {
+                    "admin_created": true,
+                    "aliases": [],
+                    "description": "",
+                    "direct_members_count": 2,
+                    "email": "myteam.ii@my-company.com.br",
+                    "id": "",
+                    "name": "GCP myteam II",
+                    "non_editable_aliases": []
+                }
+            },
+            "mode": "managed",
+            "module_address": "module.team_myteam",
+            "name": "gcp-level-ii",
+            "provider_name": "gsuite",
+            "type": "gsuite_group"
+        },
+        {
+            "address": "module.team_myteam.gsuite_group.gcp-level-iii",
+            "change": {
+                "actions": [
+                    "no-op"
+                ],
+                "after": {
+                    "admin_created": true,
+                    "aliases": [],
+                    "description": "",
+                    "direct_members_count": 1,
+                    "email": "myteam.iii@my-company.com.br",
+                    "id": "",
+                    "name": "GCP myteam III",
+                    "non_editable_aliases": []
+                },
+                "after_unknown": {},
+                "before": {
+                    "admin_created": true,
+                    "aliases": [],
+                    "description": "",
+                    "direct_members_count": 1,
+                    "email": "myteam.iii@my-company.com.br",
+                    "id": "",
+                    "name": "GCP myteam III",
+                    "non_editable_aliases": []
+                }
+            },
+            "mode": "managed",
+            "module_address": "module.team_myteam",
+            "name": "gcp-level-iii",
+            "provider_name": "gsuite",
+            "type": "gsuite_group"
+        },
+        {
+            "address": "module.team_myteam.gsuite_group_members.gcp-level-i",
+            "change": {
+                "actions": [
+                    "no-op"
+                ],
+                "after": {
+                    "group_email": "myteam.i@my-company.com.br",
+                    "id": "",
+                    "member": []
+                },
+                "after_unknown": {},
+                "before": {
+                    "group_email": "myteam.i@my-company.com.br",
+                    "id": "",
+                    "member": []
+                }
+            },
+            "mode": "managed",
+            "module_address": "module.team_myteam",
+            "name": "gcp-level-i",
+            "provider_name": "gsuite",
+            "type": "gsuite_group_members"
+        },
+        {
+            "address": "module.team_myteam.gsuite_group_members.gcp-level-ii",
+            "change": {
+                "actions": [
+                    "no-op"
+                ],
+                "after": {
+                    "group_email": "myteam.ii@my-company.com.br",
+                    "id": "",
+                    "member": []
+                },
+                "after_unknown": {},
+                "before": {
+                    "group_email": "myteam.ii@my-company.com.br",
+                    "id": "",
+                    "member": []
+                }
+            },
+            "mode": "managed",
+            "module_address": "module.team_myteam",
+            "name": "gcp-level-ii",
+            "provider_name": "gsuite",
+            "type": "gsuite_group_members"
+        },
+        {
+            "address": "module.team_myteam.gsuite_group_members.gcp-level-iii",
+            "change": {
+                "actions": [
+                    "no-op"
+                ],
+                "after": {
+                    "group_email": "myteam.iii@my-company.com.br",
+                    "id": "",
+                    "member": []
+                },
+                "after_unknown": {},
+                "before": {
+                    "group_email": "myteam.iii@my-company.com.br",
+                    "id": "",
+                    "member": []
+                }
+            },
+            "mode": "managed",
+            "module_address": "module.team_myteam",
+            "name": "gcp-level-iii",
+            "provider_name": "gsuite",
+            "type": "gsuite_group_members"
+        }
+    ],
+    "terraform_version": "0.12.24",
+    "variables": {}
+}

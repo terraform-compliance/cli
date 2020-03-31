@@ -298,3 +298,21 @@ def is_key_exist(key, target_list_of_dict):
             return True
 
     return False
+
+
+def transform_asg_style_tags(resource_list):
+    if not isinstance(resource_list, list):
+        return resource_list
+
+    for resource in resource_list:
+        tag = resource.get('values', {}).get('tag')
+
+        if not resource.get('values', {}).get('tags'):
+            resource['values']['tags'] = {}
+
+        if tag:
+            for elem in tag:
+                if 'key' in elem and 'value' in elem:
+                    resource['values']['tags'][elem['key']] = elem['value']
+
+    return resource_list
