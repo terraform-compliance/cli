@@ -42,15 +42,32 @@ def check_if_cidr(value):
     if matches is not None:
         return True
 
+    # Check if the CIDR is a regex
+    is_ip_regex = r'^([0-9\.]+)$'
+    if re.match(is_ip_regex, value) is not None:
+        return True
+
     return False
 
 
 def is_ip_in_cidr(ip_cidr, cidr):
-    for ip_network in cidr:
-        if check_if_cidr(ip_cidr) and check_if_cidr(ip_network) and IPNetwork(ip_cidr) in IPNetwork(ip_network):
-            return True
+    is_ip_regex = r'^([0-9\.]+)$'
 
-    return False
+    # IP is a not a regex string
+    if re.match(is_ip_regex, ip_cidr) is None:
+        for ip_network in cidr:
+            if check_if_cidr(ip_cidr) and check_if_cidr(ip_network) and IPNetwork(ip_cidr) in IPNetwork(ip_network):
+                return True
+
+        return False
+
+    # IP is a possible regex string
+    else:
+        # The given regex is matching the CIDR within the plan
+        for elem in cidr:
+            if re.match(ip_cidr, elem) is None:
+                return False
+        return True
 
 
 def are_networks_same(first_network, network_list):

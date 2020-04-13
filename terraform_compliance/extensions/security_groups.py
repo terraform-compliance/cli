@@ -297,3 +297,33 @@ class SecurityGroup(object):
                 sg_array.pop('self')
 
         return sg_array
+
+
+def convert_single_rule_to_a_sg(rule_obj):
+    if not rule_obj.get('values'):
+        return False
+
+    return {
+        'address': '{}'.format(rule_obj.get('address')),
+        'mode': 'managed',
+        'type': 'aws_security_group',
+        'name': '{}'.format(rule_obj.get('address')),
+        'provider_name': rule_obj.get('provider_name'),
+        'values': {
+            'description': rule_obj['values'].get('decription'),
+            'name': '{}'.format(rule_obj.get('address')),
+            rule_obj['values']['type']: [
+                {
+                    'cidr_blocks': rule_obj['values']['cidr_blocks'],
+                    'description': rule_obj['values']['description'],
+                    'from_port': rule_obj['values']['from_port'],
+                    'ipv6_cidr_blocks': rule_obj['values']['ipv6_cidr_blocks'],
+                    'prefix_list_ids': rule_obj['values']['prefix_list_ids'],
+                    'protocol': rule_obj['values']['protocol'],
+                    'self': rule_obj['values']['self'],
+                    'to_port': rule_obj['values']['to_port'],
+                    'type': rule_obj['values']['type']
+                }
+            ]
+        }
+    }
