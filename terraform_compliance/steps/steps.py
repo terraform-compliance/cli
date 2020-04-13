@@ -217,7 +217,7 @@ def its_key_is_value(_step_obj, key, value, dict_value=None, address=Null):
             if object_key.lower() == value.lower():
                 found_list.append(obj)
 
-        elif isinstance(object_key, (int, bool)) and str(object_key) == str(value):
+        elif isinstance(object_key, (int, bool)) and str(object_key).lower() == str(value).lower():
             found_list.append(obj)
 
         elif isinstance(object_key, list):
@@ -281,7 +281,7 @@ def its_key_is_not_value(_step_obj, key, value, dict_value=None, address=Null):
             if isinstance(object_key, list):
                 object_keys = []
                 for object_key_element in object_key:
-                    if str(object_key_element.get(key, Null)) != str(value):
+                    if str(object_key_element.get(key, Null)).lower() != str(value).lower():
                         object_keys.append(object_key_element.get(key, Null))
 
                 object_key = [keys for keys in object_keys if keys is not Null]
@@ -299,14 +299,14 @@ def its_key_is_not_value(_step_obj, key, value, dict_value=None, address=Null):
             if object_key != value:
                 found_list.append(obj)
 
-        elif isinstance(object_key, (int, bool)) and str(object_key) != str(value):
+        elif isinstance(object_key, (int, bool)) and str(object_key).lower() != str(value).lower():
             found_list.append(obj)
 
         elif isinstance(object_key, list) and value not in object_key:
             found_list.append(obj)
 
         elif isinstance(object_key, dict):
-            if value not in object_key.keys() or (dict_value is not None and (str(object_key[value]) != str(dict_value))):
+            if value not in object_key.keys() or (dict_value is not None and (str(object_key[value]).lower() != str(dict_value).lower())):
                 found_list.append(obj)
 
     if found_list != []:
