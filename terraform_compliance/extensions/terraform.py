@@ -204,7 +204,7 @@ class TerraformParser(object):
         '''
         for source_resource in source:
 
-            if 'values' not in self.resources[source_resource]:
+            if 'values' not in self.resources.get(source_resource, {}):
                 continue
             for parameter, target_resources in target.items():
                 for target_resource in target_resources:
