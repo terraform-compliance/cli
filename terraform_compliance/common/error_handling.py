@@ -54,7 +54,7 @@ class Error(Exception):
             if self.exit_on_failure is False:
                 msg_header = '{}{}'.format(self.exception_name,
                                            colorful.bold_white(':')) if msg_index == 0 else ' '*(len(self.exception_name)+1)
-                msg.append('\t\t\t{} {}'.format(colorful.bold_red(msg_header), colorful.red(self.message[msg_index])))
+                msg.append('\t\t{} {}'.format(colorful.bold_red(msg_header), colorful.red(self.message[msg_index])))
             else:
                 msg.append(self.message[msg_index] if msg_index == 0
                                                    else '{}{} {} {}'.format("\t"*2,

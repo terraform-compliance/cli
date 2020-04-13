@@ -609,10 +609,15 @@ def its_value_condition_match_the_search_regex_regex(_step_obj, condition, searc
                 its_value_condition_match_the_search_regex_regex(_step_obj, condition, search_regex, value)
 
 
+@then(u'its value {condition:ANY} be null')
+def its_value_condition_be_null(_step_obj, condition):
+    its_value_condition_match_the_search_regex_regex(_step_obj, condition, u'(\x00|^$|^null|^None)$')
+
+
 @then(u'its value {condition:ANY} be {match:ANY}')
 def its_value_condition_equal(_step_obj, condition, match, _stash=EmptyStash):
-    its_value_condition_match_the_search_regex_regex(_step_obj, condition, "^" + re.escape(match) + "$", _stash)
-
+    if match not in ('null'):
+        its_value_condition_match_the_search_regex_regex(_step_obj, condition, "^" + re.escape(match) + "$", _stash)
 
 @then(u'its value {condition:ANY} contain {value:ANY}')
 def its_value_condition_contain(_step_obj, condition, value, _stash=EmptyStash):
@@ -680,13 +685,6 @@ def it_fails(_step_obj):
     Error(_step_obj, 'Forcefully failing the scenario on {} ({}) {}'.format(_step_obj.context.name,
                                                                             ', '.join(_step_obj.context.addresses),
                                                                             _step_obj.context.type))
-
-
-@then(u'its value {condition:ANY} be null')
-def its_value_condition_be_null(_step_obj, condition):
-    its_value_condition_match_the_search_regex_regex(_step_obj, condition, u'\x00')
-    its_value_condition_match_the_search_regex_regex(_step_obj, condition, u'^$')
-    its_value_condition_match_the_search_regex_regex(_step_obj, condition, u'^null$')
 
 
 @then(u'it must have "{reference_address}" referenced')
