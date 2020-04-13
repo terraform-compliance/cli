@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 1.1.16 (2020-04-13)
+* Enabled resource mounting/referencing for resources within modules. ([#227](https://github.com/eerkunt/terraform-compliance/issues/227))
+* Fixed a problem where `its value must/must not be null` step was not processed properly. ([#247](https://github.com/eerkunt/terraform-compliance/issues/247))
+* Fixed a problem where filtering steps was failed with SKIPPING due to different types (or due to type conversions) are compared. ([#248](https://github.com/eerkunt/terraform-compliance/issues/248))
+* Enabled Security Group related step for Security Group Rules also, it was only supporting Security Group before.
+* Improved Security group processing where a regular expression can also be used while defining CIDRs. ([#216](https://github.com/eerkunt/terraform-compliance/issues/216))
+* Improved `resource that support tags` in functionality in `GIVEN` steps where `tags` can be any property. ([#252](https://github.com/eerkunt/terraform-compliance/issues/252))
+
 ## 1.1.15 (2020-03-31)
 * Improved `resource that support tags` resource type where Auto-Scaling Group style tags are enabled to be processed. ([#243](https://github.com/eerkunt/terraform-compliance/issues/243))
 * Improved `When its <key> is <value>` steps for testing a dictionary property key and value like `When its tags includes an entry where "some key" is "some value"`. ([#228](https://github.com/eerkunt/terraform-compliance/issues/228))
