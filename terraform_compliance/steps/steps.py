@@ -77,9 +77,11 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
         _step_obj.context.property_name = 'variable'
         return True
 
-    elif name == 'resource that supports tags':
+    elif name.startswith('resource that supports'):
+        filter_property = re.match(r'resource that supports (.*)', name).group(1)
+
         resource_types_supports_tags = find_root_by_key(_terraform_config.config.terraform.resources_raw,
-                                                        'tags',
+                                                        filter_property,
                                                         return_key='type')
         resource_list = []
         for resource_type in resource_types_supports_tags:
