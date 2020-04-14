@@ -322,6 +322,7 @@ def its_key_is_not_value(_step_obj, key, value, dict_value=None, address=Null):
             skip_step(_step_obj, message='Found {}={} {} in {}.'.format(value, dict_value, orig_key,
                                                                         ', '.join(_step_obj.context.addresses)))
 
+
 @when(u'it contain {something:ANY}')
 @when(u'they have {something:ANY}')
 @when(u'it has {something:ANY}')
@@ -616,6 +617,7 @@ def its_value_condition_be_null(_step_obj, condition):
 def its_value_condition_equal(_step_obj, condition, match, _stash=EmptyStash):
     if match not in ('null'):
         its_value_condition_match_the_search_regex_regex(_step_obj, condition, "^" + re.escape(match) + "$", _stash)
+
 
 @then(u'its value {condition:ANY} contain {value:ANY}')
 def its_value_condition_contain(_step_obj, condition, value, _stash=EmptyStash):
