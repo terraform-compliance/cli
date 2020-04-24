@@ -3,6 +3,7 @@ from terraform_compliance.common.helper import seek_key_in_dict, flatten_list, d
 import sys
 from copy import deepcopy
 from terraform_compliance.common.defaults import Defaults
+from terraform_compliance.common.exceptions import TerraformComplianceInternalFailure
 
 
 class TerraformParser(object):
@@ -88,7 +89,7 @@ class TerraformParser(object):
         # Resources ( exists in Plan )
         for findings in seek_key_in_dict(self.raw.get('planned_values', {}).get('root_module', {}), 'resources'):
             for resource in findings.get('resources', []):
-                if resource['address'].startswith('data'):
+                if self.is_type(resource, 'data'):
                     self.data[resource['address']] = resource
                 else:
                     self.resources[resource['address']] = resource
@@ -96,7 +97,7 @@ class TerraformParser(object):
         # Resources ( exists in State )
         for findings in seek_key_in_dict(self.raw.get('values', {}).get('root_module', {}), 'resources'):
             for resource in findings.get('resources', []):
-                if resource['address'].startswith('data'):
+                if self.is_type(resource, 'data'):
                     self.data[resource['address']] = resource
                 else:
                     self.resources[resource['address']] = resource
@@ -104,7 +105,7 @@ class TerraformParser(object):
         # Resources ( exists in Prior State )
         for findings in seek_key_in_dict(self.raw.get('prior_state', {}).get('values', {}).get('root_module', {}).get('resources', {}), 'resource'):
             for resource in findings.get('resources', []):
-                if resource['address'].startswith('data'):
+                if self.is_type(resource, 'data'):
                     self.data[resource['address']] = resource
                 else:
                     self.resources[resource['address']] = resource
@@ -112,7 +113,7 @@ class TerraformParser(object):
         # Child Modules Resources ( exists in State )
         for findings in seek_key_in_dict(self.raw.get('values', {}).get('root_module', {}), 'child_modules'):
             for resource in findings.get('resources', []):
-                if resource['address'].startswith('data'):
+                if self.is_type(resource, 'data'):
                     self.data[resource['address']] = resource
                 else:
                     self.resources[resource['address']] = resource
@@ -127,7 +128,7 @@ class TerraformParser(object):
                 if 'change' in resource:
                     del resource['change']
 
-                if resource['address'].startswith('data'):
+                if self.is_type(resource, 'data'):
                     self.data[resource['address']] = resource
                 else:
                     self.resources[resource['address']] = resource
@@ -145,7 +146,7 @@ class TerraformParser(object):
 
         for findings in seek_key_in_dict(self.raw.get('configuration', {}).get('root_module', {}), 'resources'):
             for resource in findings.get('resources', []):
-                if resource['address'].startswith('data'):
+                if self.is_type(resource, 'data'):
                     self.data[resource['address']] = resource
                 else:
                     self.configuration['resources'][resource['address']] = resource
@@ -272,7 +273,7 @@ class TerraformParser(object):
         :return:
         '''
         self.resources_raw = deepcopy(self.resources)
-        invalid_references = ('var')
+        invalid_references = ('var.')
 
         # This section will link resources found in configuration part of the plan output.
         # The reference should be on both ways (A->B, B->A) since terraform sometimes report these references
@@ -294,7 +295,7 @@ class TerraformParser(object):
                                                                                             {}).get('constant_value',
                                                                                                     {})
 
-                    if not ref_type and not resource.startswith(('data')):
+                    if not ref_type and not self.is_type(resource, 'data'):
                         resource_type, resource_id = resource.split('.')
                         ref_type = resource_type
 
@@ -310,7 +311,7 @@ class TerraformParser(object):
                     # Mounting B->A
                     for parameter, target_resources in ref_list.items():
                         for target_resource in target_resources:
-                            if not target_resource.startswith(('var', 'data', 'provider')):
+                            if not self.is_type(resource, 'data') and not self.is_type(resource, 'var') and not self.is_type(resource, 'provider'):
                                 ref_type = target_resource.split('.', maxsplit=1)[0]
 
                                 self._mount_resources(source=[target_resource],
@@ -397,3 +398,12 @@ class TerraformParser(object):
                     tag[tag['key']] = tag['value']
             return True
         return False
+
+    def is_type(self, resource, mode):
+        if isinstance(resource, dict):
+            if 'mode' in resource:
+                return resource['mode'] == mode
+
+            return resource['address'].split('.')[0] == mode
+
+        raise TerraformComplianceInternalFailure('Invalid structure while checking for {}. ({})'.format(mode, resource))
