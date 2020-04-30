@@ -65,13 +65,13 @@ class TestTerraformParser(TestCase):
             'root_module': {
                 'resources': [
                     {
-                        'address': 'data_something'
+                        'address': 'data.something'
                     }
                 ]
             }
         }
         obj._parse_resources()
-        self.assertEqual(obj.data['data_something'], {'address': 'data_something'})
+        self.assertEqual(obj.data['data.something'], {'address': 'data.something'})
 
 
     @patch.object(TerraformParser, '_read_file', return_value={})
@@ -97,13 +97,13 @@ class TestTerraformParser(TestCase):
             'root_module': {
                 'resources': [
                     {
-                        'address': 'data_something'
+                        'address': 'data.something'
                     }
                 ]
             }
         }
         obj._parse_resources()
-        self.assertEqual(obj.data['data_something'], {'address': 'data_something'})
+        self.assertEqual(obj.data['data.something'], {'address': 'data.something'})
 
 
     @patch.object(TerraformParser, '_read_file', return_value={})
@@ -130,14 +130,14 @@ class TestTerraformParser(TestCase):
                 'child_modules': {
                     'resources': [
                         {
-                            'address': 'data_something'
+                            'address': 'data.something'
                         }
                     ]
                 }
             }
         }
         obj._parse_resources()
-        self.assertEqual(obj.data['data_something'], {'address': 'data_something'})
+        self.assertEqual(obj.data['data.something'], {'address': 'data.something'})
 
 
     @patch.object(TerraformParser, '_read_file', return_value={})
@@ -162,7 +162,8 @@ class TestTerraformParser(TestCase):
         obj = TerraformParser('somefile', parse_it=False)
         obj.raw['resource_changes'] = [
             {
-                'address': 'data_something',
+                'mode': 'data',
+                'address': 'data.something',
                 'change': {
                     'actions': ['update'],
                     'before': {
@@ -175,7 +176,7 @@ class TestTerraformParser(TestCase):
             }
         ]
         obj._parse_resources()
-        self.assertEqual(obj.data['data_something'], {'address': 'data_something', 'values': {'key': 'bar'}})
+        self.assertEqual(obj.data['data.something'], {'address': 'data.something', 'mode': 'data', 'values': {'key': 'bar'}})
 
     @patch.object(TerraformParser, '_read_file', return_value={})
     def test_parse_resources_resources_exists_in_the_resource_changes_resource(self, *args):
