@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.1.17 (2020-04-30)
+* Fixed a problem where resources/providers starting with `data` was misinterpreted. ([#257](https://github.com/eerkunt/terraform-compliance/issues/257))
+
 ## 1.1.16 (2020-04-13)
 * Enabled resource mounting/referencing for resources within modules. ([#227](https://github.com/eerkunt/terraform-compliance/issues/227))
 * Fixed a problem where `its value must/must not be null` step was not processed properly. ([#247](https://github.com/eerkunt/terraform-compliance/issues/247))
