@@ -406,4 +406,4 @@ class TerraformParser(object):
 
             return resource['address'].split('.')[0] == mode
 
-        raise TerraformComplianceInternalFailure('Invalid structure while checking for {}. ({})'.format(mode, resource))
+        return False
