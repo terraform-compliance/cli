@@ -9,10 +9,18 @@ from radish.main import main as call_radish
 from radish.utils import console_write
 from terraform_compliance.common.defaults import Defaults
 
+#
+# This is used to override some stuff that does not fit our needs within radish-bdd.
+# Better not to touch anything here.
 from terraform_compliance.extensions.override_radish_step import Step as StepOverride
 from radish.stepmodel import Step
-
 Step.run = StepOverride.run
+
+from terraform_compliance.extensions.override_radish_hookerrors import handle_exception as handle_exception_override
+from radish import errororacle
+errororacle.handle_exception = handle_exception_override
+##
+#
 
 if __version__ == "{{VERSION}}":
     __version__ = "\blocal development version"
@@ -105,7 +113,12 @@ def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
         console_write('\n{} Running tests. {}\n'.format(Defaults().icon,
                                                         Defaults().tada))
 
-    result = call_radish(args=commands[1:])
+    try:
+        result = call_radish(args=commands[1:])
+    except IndexError as e:
+        print(e)
+        print('Yes!')
+
 
     return result
 

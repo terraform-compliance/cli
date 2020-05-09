@@ -3,7 +3,7 @@ from terraform_compliance.steps.steps import (
     i_have_name_section_configured,
     i_action_them,
     i_expect_the_result_is_operator_than_number,
-    it_condition_contain_something,
+    it_contains_something_old,
     property_is_enabled,
     its_value_condition_match_the_search_regex_regex,
     it_condition_have_proto_protocol_and_port_port_for_cidr,
@@ -111,7 +111,7 @@ class TestStepCases(TestCase):
         step.context.type = 'resource'
         step.context.stash = ['some_resource']
         with self.assertRaises(Failure):
-            self.assertIsNone(it_condition_contain_something(step, 'something'))
+            self.assertIsNone(it_contains_something_old(step, 'something'))
 
     @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
     @patch('terraform_compliance.common.error_handling.world', side_effect=MockedWorld())
@@ -129,7 +129,7 @@ class TestStepCases(TestCase):
             }
         ]
         with self.assertRaises(Failure) as err:
-            self.assertIsNone(it_condition_contain_something(step, 'something else'))
+            self.assertIsNone(it_contains_something_old(step, 'something else'))
         self.assertEqual(str(err.exception), '{} ({}) does not have {} property.'.format('some_address',
                                                                                          'resource',
                                                                                          'something else'))
@@ -151,7 +151,7 @@ class TestStepCases(TestCase):
             }
         ]
 
-        self.assertIsNone(it_condition_contain_something(step, 'something else'))
+        self.assertIsNone(it_contains_something_old(step, 'something else'))
 
     @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
     def test_it_condition_contain_something_resource_found(self, *args):
@@ -168,7 +168,7 @@ class TestStepCases(TestCase):
             }
         ]
 
-        self.assertTrue(it_condition_contain_something(step, 'something'))
+        self.assertTrue(it_contains_something_old(step, 'something'))
 
     @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
     def test_it_condition_contain_something_resource_value_is_list(self, *args):
@@ -188,7 +188,7 @@ class TestStepCases(TestCase):
             }
         ]
 
-        self.assertTrue(it_condition_contain_something(step, 'something'))
+        self.assertTrue(it_contains_something_old(step, 'something'))
 
     @patch('terraform_compliance.steps.then.it_condition_contain_something.seek_key_in_dict', return_value=None)
     @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
@@ -198,7 +198,7 @@ class TestStepCases(TestCase):
         step.context.type = 'provider'
         step.context.stash = []
 
-        self.assertIsNone(it_condition_contain_something(step, 'something'))
+        self.assertIsNone(it_contains_something_old(step, 'something'))
 
     @patch('terraform_compliance.steps.then.it_condition_contain_something.seek_key_in_dict', return_value=True)
     @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
@@ -207,7 +207,7 @@ class TestStepCases(TestCase):
         step.context.type = 'provider'
         step.context.stash = [{'name': 'test'}]
 
-        self.assertTrue(it_condition_contain_something(step, 'something'))
+        self.assertTrue(it_contains_something_old(step, 'something'))
 
     @patch('terraform_compliance.common.error_handling.world', side_effect=MockedWorld())
     def test_property_is_enabled_not_implemented(self, *args):
@@ -743,7 +743,7 @@ class TestStepCases(TestCase):
         step.context.name = 'some_name'
         step.context.property_name = 'tags'
         step.context_sensitive_sentence = 'must'
-        it_condition_contain_something(step, 'some_key')
+        it_contains_something_old(step, 'some_key')
         self.assertEqual(step.context.stash[0]['values'], 'some_value')
 
     @patch('terraform_compliance.common.error_handling.world', side_effect=MockedWorld())

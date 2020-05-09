@@ -14,28 +14,35 @@ import re
 from terraform_compliance.common.error_handling import Error
 
 # GIVEN
-from terraform_compliance.steps.given.i_have_name_section_configured import i_have_name_section_configured
+from steps.given.i_have_name_section_configured import i_have_name_section_configured
 
 # WHEN
-from terraform_compliance.steps.when.its_key_is_value import (
+from steps.when.its_key_is_value import (
     its_key_is_value,
     its_key_is_not_value
 )
-from terraform_compliance.steps.when.it_condition_contain_something import it_condition_contain_something
-from terraform_compliance.steps.when.maths import (
+from steps.when.maths import (
     i_action_them,
     i_expect_the_result_is_operator_than_number
 )
+from steps.when.it_contains_something import (
+    it_contains_something_old,
+    it_has_something,
+   it_does_not_have_something
+)
 
 # THEN
-from terraform_compliance.steps.then.it_condition_contain_something import it_condition_contain_something
-from terraform_compliance.steps.then.property_is_enabled import property_is_enabled
-from terraform_compliance.steps.then.security_group_related import it_condition_have_proto_protocol_and_port_port_for_cidr
-from terraform_compliance.steps.then.its_value_condition_match_the_search_regex import its_value_condition_match_the_search_regex_regex
-from terraform_compliance.steps.then.its_value_condition_contain import its_value_condition_contain
-from terraform_compliance.steps.then.it_must_have_reference_address_referenced import it_must_have_reference_address_referenced
-from terraform_compliance.steps.then.its_key_condition_be_value import its_key_condition_be_value
-from terraform_compliance.steps.then.interpolations import i_flatten_everything_found
+from steps.then.it_must_contain_something import (
+    it_must_contain_something,
+    # it_must_not_contain_something,
+)
+from steps.then.property_is_enabled import property_is_enabled
+from steps.then.security_group_related import it_condition_have_proto_protocol_and_port_port_for_cidr
+from steps.then.its_value_condition_match_the_search_regex import its_value_condition_match_the_search_regex_regex
+from steps.then.its_value_condition_contain import its_value_condition_contain
+from steps.then.it_must_have_reference_address_referenced import it_must_have_reference_address_referenced
+from steps.then.its_key_condition_be_value import its_key_condition_be_value
+from steps.then.interpolations import i_flatten_everything_found
 
 
 @given(u'I have {name:ANY} defined')
@@ -86,17 +93,34 @@ def wrapper(_step_obj, key, value, dict_value=None, address=Null):
     return its_key_is_not_value(_step_obj, key, value, dict_value, address)
 
 
-@when(u'it contain {something:ANY}')
-@when(u'they have {something:ANY}')
-@when(u'it has {something:ANY}')
 @when(u'it contains {something:ANY}')
 def wrapper(_step_obj, something, inherited_values=Null):
-    return it_condition_contain_something(_step_obj, something, inherited_values=Null)
+    return it_contains_something_old(_step_obj, something, inherited_values=Null)
+
+
+@when(u'it has {something:ANY}')
+@when(u'they have {something:ANY}')
+def wrapper(_step_obj, something, inherited_values=Null):
+    return it_has_something(_step_obj, something, inherited_values=Null)
+
+
+@when(u'it does not contain {something:ANY}')
+@when(u'it doesnt contain {something:ANY}')
+@when(u'they do not have {something:ANY}')
+@when(u'they dont have {something:ANY}')
+@when(u'it does not have {something:ANY}')
+@when(u'it doesnt have {something:ANY}')
+def wrapper(_step_obj, something, inherited_values=Null):
+    return it_does_not_have_something(_step_obj, something, inherited_values=Null)
 
 
 @then(u'it must contain {something:ANY}')
 def wrapper(_step_obj, something, inherited_values=Null):
-    return it_condition_contain_something(_step_obj, something, inherited_values=Null)
+    return it_must_contain_something(_step_obj, something, inherited_values=Null)
+
+# @then(u'it must not contain {something:ANY}')
+# def wrapper(_step_obj, something, inherited_values=Null):
+#     return it_must_not_contain_something(_step_obj, something, inherited_values=Null)
 
 
 @then(u'{something:ANY} is be enabled')

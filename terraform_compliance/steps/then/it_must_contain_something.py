@@ -11,7 +11,7 @@ from terraform_compliance.common.error_handling import Error
 from terraform_compliance.main import Step
 
 
-def it_condition_contain_something(_step_obj, something, inherited_values=Null):
+def it_must_contain_something(_step_obj, something, inherited_values=Null):
     prop_list = []
 
     _step_obj.context.stash = inherited_values if inherited_values is not Null else _step_obj.context.stash
@@ -78,7 +78,7 @@ def it_condition_contain_something(_step_obj, something, inherited_values=Null):
                                   'values': found_value,
                                   'type': _step_obj.context.name})
 
-            elif 'must' in _step_obj.context_sensitive_sentence:
+            else:
                 Error(_step_obj, '{} ({}) does not have {} property.'.format(resource['address'],
                                                                              resource.get('type', ''),
                                                                              something))
@@ -87,12 +87,6 @@ def it_condition_contain_something(_step_obj, something, inherited_values=Null):
             _step_obj.context.stash = prop_list
             _step_obj.context.property_name = something
             return something, prop_list
-
-        if _step_obj.state != Step.State.FAILED:
-            skip_step(_step_obj,
-                      resource=_step_obj.context.name,
-                      message='Can not find any {} property for {} resource in '
-                              'terraform plan.'.format(something, _step_obj.context.name))
 
     elif _step_obj.context.type == 'provider':
         for provider_data in _step_obj.context.stash:
@@ -104,16 +98,11 @@ def it_condition_contain_something(_step_obj, something, inherited_values=Null):
                 _step_obj.context.address = '{}.{}'.format(provider_data.get('name', _step_obj.context.addresses),
                                                            provider_data.get('alias', "\b"))
                 return True
-            elif 'must' in _step_obj.context_sensitive_sentence:
+            else:
                 Error(_step_obj, '{} {} does not have {} property.'.format(_step_obj.context.addresses,
                                                                            _step_obj.context.type,
                                                                            something))
-        if 'must' in _step_obj.context_sensitive_sentence:
-            Error(_step_obj, '{} {} does not have {} property.'.format(_step_obj.context.addresses,
-                                                                       _step_obj.context.type,
-                                                                       something))
-    if _step_obj.state != Step.State.FAILED:
-        skip_step(_step_obj,
-                  resource=_step_obj.context.name,
-                  message='Skipping the step since {} type does not have {} property.'.format(_step_obj.context.type,
-                                                                                              something))
+
+        Error(_step_obj, '{} {} does not have {} property.'.format(_step_obj.context.addresses,
+                                                                   _step_obj.context.type,
+                                                                   something))
