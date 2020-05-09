@@ -1,5 +1,5 @@
 from unittest import TestCase
-from terraform_compliance.steps.steps import custom_type_any, custom_type_section
+from terraform_compliance.extensions.ext_radish_bdd import custom_type_any, custom_type_section
 
 
 class Test_Steps_Custom_Type(TestCase):

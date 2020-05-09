@@ -190,7 +190,7 @@ class TestStepCases(TestCase):
 
         self.assertTrue(it_condition_contain_something(step, 'something'))
 
-    @patch('terraform_compliance.steps.steps.seek_key_in_dict', return_value=None)
+    @patch('terraform_compliance.steps.then.it_condition_contain_something.seek_key_in_dict', return_value=None)
     @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
     @patch('terraform_compliance.common.error_handling.world', side_effect=MockedWorld())
     def test_it_condition_contain_something_provider_not_found(self, *args):
@@ -200,7 +200,7 @@ class TestStepCases(TestCase):
 
         self.assertIsNone(it_condition_contain_something(step, 'something'))
 
-    @patch('terraform_compliance.steps.steps.seek_key_in_dict', return_value=True)
+    @patch('terraform_compliance.steps.then.it_condition_contain_something.seek_key_in_dict', return_value=True)
     @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
     def test_it_condition_contain_something_provider_found(self, *args):
         step = MockedStep()

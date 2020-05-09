@@ -46,6 +46,8 @@ class Defaults(object):
             self.tada = emojize(':tada:', use_aliases=True)
             self.icon = emojize(':triangular_flag_on_post:', use_aliases=True)
 
+        self.types_list = ['resource', 'variable', 'provider', 'data', 'resource that supports tags']
+
     @staticmethod
     def no_coloured_output(param):
         return param
