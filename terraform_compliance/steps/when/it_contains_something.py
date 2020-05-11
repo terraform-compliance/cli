@@ -289,8 +289,8 @@ def it_does_not_have_something(_step_obj, something, inherited_values=Null):
         if _step_obj.state != Step.State.FAILED:
             skip_step(_step_obj,
                       resource=_step_obj.context.name,
-                      message='Can not find any {} property for {} resource in '
-                              'terraform plan.'.format(something, _step_obj.context.name))
+                      message='All objects ({}) coming from previous step has {} '
+                              'property.'.format(_step_obj.context.name, something))
 
     elif _step_obj.context.type == 'provider':
         stash = []

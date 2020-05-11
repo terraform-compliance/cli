@@ -1,0 +1,2 @@
+Failure: Can not find private in acl property of aws_s3_bucket\.fail, aws_s3_bucket\.success\.
+SKIPPING: All objects \(aws_s3_bucket\) coming from previous step has acl property\.
