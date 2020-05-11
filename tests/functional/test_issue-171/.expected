@@ -1,1 +1,1 @@
-Failure: protocol property in aws_lb_listener.udp-listener-noncompliant resource matches with \.\*\(UDP\|udp\) regex. It is set to UDP.
+Failure: protocol property in aws_lb_listener.udp-listener-noncompliant resource matches with .* regex. It is set to UDP.

@@ -17,8 +17,9 @@ def it_contains_something_old(_step_obj, something, inherited_values=Null):
     console_write("\t{} {}: {}".format(Defaults().warning_icon,
                                        Defaults().warning_colour('WARNING'),
                                        Defaults().info_colour('"When it contains {}" step functionality will be changed'
-                                                              'on future versions and it will be same as "When '
-                                                              'it has {}" step. Please use the latter.'.format(something, something))))
+                                                              ' on future versions and the functionality will be same '
+                                                              'as "When it has {}" step. Please use the '
+                                                              'latter.'.format(something, something))))
     prop_list = []
 
     _step_obj.context.stash = inherited_values if inherited_values is not Null else _step_obj.context.stash
