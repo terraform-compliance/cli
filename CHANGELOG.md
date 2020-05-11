@@ -4,8 +4,9 @@
 * Major code refactoring on the steps for the readability.
 * Handled related radish-bdd exceptions and giving out `terraform-compliance` related error information.
 * __BREAKING CHANGE :__ Changed `When it has <something>` step sentence where it now works as a true filtering function, unlike `When it contains <something`.
-* `When it contains <something>` step still works same with a Warning error, that it will be deprecated (and converted to `When it has <something>`) soon.
-
+* `When it contains <something>` step still works same with a _Warning_. This step will be deprecated (and converted to `When it has <something>`) in future versions.
+* New step: [When it must not have something](https://terraform-compliance.com/pages/bdd-references/when.html#when-it-must-not-have-something). ([#202](https://github.com/eerkunt/terraform-compliance/issues/202))
+* New step: [Then it must not have something](https://terraform-compliance.com/pages/bdd-references/then.html#then-it-must-not-have-something). ([#202](https://github.com/eerkunt/terraform-compliance/issues/202))
 
 ## 1.1.17 (2020-04-30)
 * Fixed a problem where resources/providers starting with `data` was misinterpreted. ([#257](https://github.com/eerkunt/terraform-compliance/issues/257))
