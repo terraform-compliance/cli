@@ -28,7 +28,7 @@ from steps.when.maths import (
 from steps.when.it_contains_something import (
     it_contains_something_old,
     it_has_something,
-   it_does_not_have_something
+    it_does_not_have_something
 )
 
 # THEN

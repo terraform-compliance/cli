@@ -10,7 +10,8 @@ from terraform_compliance.steps.steps import (
     it_fails,
     its_key_is_value, its_key_is_not_value,
     its_value_condition_equal,
-    its_value_condition_contain
+    its_value_condition_contain,
+    it_must_contain_something
 )
 from terraform_compliance.common.exceptions import TerraformComplianceNotImplemented, Failure
 from tests.mocks import MockedStep, MockedWorld
@@ -111,7 +112,7 @@ class TestStepCases(TestCase):
         step.context.type = 'resource'
         step.context.stash = ['some_resource']
         with self.assertRaises(Failure):
-            self.assertIsNone(it_contains_something_old(step, 'something'))
+            self.assertIsNone(it_must_contain_something(step, 'something'))
 
     @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
     @patch('terraform_compliance.common.error_handling.world', side_effect=MockedWorld())
@@ -129,7 +130,7 @@ class TestStepCases(TestCase):
             }
         ]
         with self.assertRaises(Failure) as err:
-            self.assertIsNone(it_contains_something_old(step, 'something else'))
+            self.assertIsNone(it_must_contain_something(step, 'something else'))
         self.assertEqual(str(err.exception), '{} ({}) does not have {} property.'.format('some_address',
                                                                                          'resource',
                                                                                          'something else'))
@@ -190,7 +191,7 @@ class TestStepCases(TestCase):
 
         self.assertTrue(it_contains_something_old(step, 'something'))
 
-    @patch('terraform_compliance.steps.then.it_condition_contain_something.seek_key_in_dict', return_value=None)
+    @patch('terraform_compliance.steps.then.it_must_contain_something.seek_key_in_dict', return_value=None)
     @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
     @patch('terraform_compliance.common.error_handling.world', side_effect=MockedWorld())
     def test_it_condition_contain_something_provider_not_found(self, *args):
@@ -200,14 +201,14 @@ class TestStepCases(TestCase):
 
         self.assertIsNone(it_contains_something_old(step, 'something'))
 
-    @patch('terraform_compliance.steps.then.it_condition_contain_something.seek_key_in_dict', return_value=True)
+    @patch('terraform_compliance.steps.then.it_must_contain_something.seek_key_in_dict', return_value=True)
     @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
     def test_it_condition_contain_something_provider_found(self, *args):
         step = MockedStep()
         step.context.type = 'provider'
         step.context.stash = [{'name': 'test'}]
 
-        self.assertTrue(it_contains_something_old(step, 'something'))
+        self.assertTrue(it_contains_something_old(step, 'name'))
 
     @patch('terraform_compliance.common.error_handling.world', side_effect=MockedWorld())
     def test_property_is_enabled_not_implemented(self, *args):

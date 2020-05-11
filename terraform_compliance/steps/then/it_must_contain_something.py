@@ -6,9 +6,7 @@ from terraform_compliance.common.helper import (
     jsonify,
     Null
 )
-from terraform_compliance.extensions.ext_radish_bdd import skip_step
 from terraform_compliance.common.error_handling import Error
-from terraform_compliance.main import Step
 
 
 def it_must_contain_something(_step_obj, something, inherited_values=Null):
@@ -62,7 +60,7 @@ def it_must_contain_something(_step_obj, something, inherited_values=Null):
                                 found_value = value.get('value')
                                 break
                     elif isinstance(value, list):
-                        found_key, found_value = it_condition_contain_something(_step_obj, something, value)
+                        found_key, found_value = it_must_contain_something(_step_obj, something, value)
 
                     if found_key is not Null and len(found_key):
                         found_key = found_key[0] if len(found_key) == 1 else found_key
