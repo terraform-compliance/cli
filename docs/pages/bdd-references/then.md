@@ -53,10 +53,55 @@ lots of tests.
 > __Possible sentences :__
 >
 > ▪
-[Then](#){: .p-1 .text-red-200} 
-[something](#){: .p-1 .text-green-200 .fw-700} 
-is enabled
+[Then](#){: .p-1 .text-red-200}
+it must contain
+[something](#){: .p-1 .text-green-200 .fw-700}
 >
+> ▪
+[Then](#){: .p-1 .text-red-200}
+it must have
+[something](#){: .p-1 .text-green-200 .fw-700}
+>
+> ▪
+[Then](#){: .p-1 .text-red-200}
+they must contain
+[something](#){: .p-1 .text-green-200 .fw-700}
+>
+> ▪
+[Then](#){: .p-1 .text-red-200}
+they must have
+[something](#){: .p-1 .text-green-200 .fw-700}
+>
+
+| key | Description | Examples |
+|:---:|:----------|:-|
+| [something](#){: .p-1 .text-green-200 .fw-700} | any property within terraform resoruce/provider/etc | `access_key` `ingress` |
+ 
+### [Then](#){: .p-1 .text-red-200} it must not contain [something](#){: .p-1 .text-green-200 .fw-700}
+
+> __Possible sentences :__
+>
+> ▪
+[Then](#){: .p-1 .text-red-200}
+it must not contain
+[something](#){: .p-1 .text-green-200 .fw-700}
+>
+> ▪
+[Then](#){: .p-1 .text-red-200}
+it must not have
+[something](#){: .p-1 .text-green-200 .fw-700}
+>
+> ▪
+[Then](#){: .p-1 .text-red-200}
+they must not have
+[something](#){: .p-1 .text-green-200 .fw-700}
+>
+> ▪
+[Then](#){: .p-1 .text-red-200}
+they must not contain
+[something](#){: .p-1 .text-green-200 .fw-700}
+>
+
 | key | Description | Examples |
 |:---:|:----------|:-|
 | [something](#){: .p-1 .text-green-200 .fw-700} | any property within terraform resoruce/provider/etc | `access_key` `ingress` |
