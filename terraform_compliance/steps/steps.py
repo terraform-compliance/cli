@@ -93,39 +93,39 @@ def wrapper(_step_obj, key, value, dict_value=None, address=Null):
     return its_key_is_not_value(_step_obj, key, value, dict_value, address)
 
 
-@when(u'it contain {something:ANY}') # This is just here for not breaking backward compatibility. I know its wrong.
-@when(u'it contains {something:ANY}')
+@when(u'it contain {something:PROPERTY}') # This is just here for not breaking backward compatibility. I know its wrong.
+@when(u'it contains {something:PROPERTY}')
 def wrapper(_step_obj, something, inherited_values=Null):
     return it_contains_something_old(_step_obj, something, inherited_values=Null)
 
 
-@when(u'it has {something:ANY}')
-@when(u'they have {something:ANY}')
+@when(u'it has {something:PROPERTY}')
+@when(u'they have {something:PROPERTY}')
 def wrapper(_step_obj, something, inherited_values=Null):
     return it_has_something(_step_obj, something, inherited_values=Null)
 
 
-@when(u'it does not contain {something:ANY}')
-@when(u'it doesnt contain {something:ANY}')
-@when(u'they do not have {something:ANY}')
-@when(u'they dont have {something:ANY}')
-@when(u'it does not have {something:ANY}')
-@when(u'it doesnt have {something:ANY}')
+@when(u'it does not contain {something:PROPERTY}')
+@when(u'it doesnt contain {something:PROPERTY}')
+@when(u'they do not have {something:PROPERTY}')
+@when(u'they dont have {something:PROPERTY}')
+@when(u'it does not have {something:PROPERTY}')
+@when(u'it doesnt have {something:PROPERTY}')
 def wrapper(_step_obj, something, inherited_values=Null):
     return it_does_not_have_something(_step_obj, something, inherited_values=Null)
 
 
-@then(u'it must contain {something:ANY}')
-@then(u'it must have {something:ANY}')
-@then(u'they must contain {something:ANY}')
-@then(u'they must have {something:ANY}')
+@then(u'it must contain {something:PROPERTY}')
+@then(u'it must have {something:PROPERTY}')
+@then(u'they must contain {something:PROPERTY}')
+@then(u'they must have {something:PROPERTY}')
 def wrapper(_step_obj, something, inherited_values=Null):
     return it_must_contain_something(_step_obj, something, inherited_values=Null)
 
-@then(u'it must not contain {something:ANY}')
-@then(u'they must not contain {something:ANY}')
-@then(u'it must not have {something:ANY}')
-@then(u'they must not have {something:ANY}')
+@then(u'it must not contain {something:PROPERTY}')
+@then(u'they must not contain {something:PROPERTY}')
+@then(u'it must not have {something:PROPERTY}')
+@then(u'they must not have {something:PROPERTY}')
 def wrapper(_step_obj, something, inherited_values=Null):
     return it_must_not_contain_something(_step_obj, something, inherited_values=Null)
 
@@ -141,9 +141,9 @@ def wrapper(_step_obj, condition, proto, port, cidr):
     return it_condition_have_proto_protocol_and_port_port_for_cidr(_step_obj, condition, proto, port, cidr)
 
 
-@when(u'I {action_type:ANY} it')
-@when(u'I {action_type:ANY} them')
-@when(u'I {action_type:ANY} the value')
+@when(u'I {action_type:PROPERTY} it')
+@when(u'I {action_type:PROPERTY} them')
+@when(u'I {action_type:PROPERTY} the value')
 def wrapper(_step_obj, action_type):
     return i_action_them(_step_obj, action_type)
 
