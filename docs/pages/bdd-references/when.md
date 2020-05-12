@@ -52,6 +52,9 @@ not met with the infrastructure plan.
 
 ### [When](#){: .p-1 .text-red-200} it contains [something](#){: .p-1 .text-green-200 .fw-700}
 
+{: .d-inline-block }
+will be deprecated soon
+{: .label .label-blue}
 
 > __Possible sentences :__
 >
@@ -65,6 +68,21 @@ it contain
 it contains
 [something](#){: .p-1 .text-green-200 .fw-700}
 >
+| key | Description | Examples |
+|:---:|:----------|:-|
+| [something](#){: .p-1 .text-green-200 .fw-700} | any property within Terraform resource/provider/etc | `access_key` `ingress` |
+
+### [When](#){: .p-1 .text-red-200} it has [something](#){: .p-1 .text-green-200 .fw-700}
+
+{: .d-inline-block }
+1.2.+
+{: .label .label-blue}
+
+This is a filtering function where the resources from previous step will be filtered based on the "something" key exist
+in the resource properties.
+
+> __Possible sentences :__
+>
 > ▪
 [When](#){: .p-1 .text-red-200}
 it has
@@ -77,7 +95,52 @@ they have
 >
 | key | Description | Examples |
 |:---:|:----------|:-|
-| [something](#){: .p-1 .text-green-200 .fw-700} | any property within Terraform resoruce/provider/etc | `access_key` `ingress` |
+| [something](#){: .p-1 .text-green-200 .fw-700} | any property within Terraform resource/provider/etc | `access_key` `ingress` |
+
+### [When](#){: .p-1 .text-red-200} it does not have [something](#){: .p-1 .text-green-200 .fw-700}
+
+{: .d-inline-block }
+1.2.+
+{: .label .label-blue}
+
+This is a filtering function where the resources from previous step will be filtered based on the "something" key not existing
+in the resource properties.
+
+> __Possible sentences :__
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+it does not contain
+[something](#){: .p-1 .text-green-200 .fw-700}
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+it doesnt contain
+[something](#){: .p-1 .text-green-200 .fw-700}
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+it does not have
+[something](#){: .p-1 .text-green-200 .fw-700}
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+it doesnt have
+[something](#){: .p-1 .text-green-200 .fw-700}
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+they do not have
+[something](#){: .p-1 .text-green-200 .fw-700}
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+they dont have
+[something](#){: .p-1 .text-green-200 .fw-700}
+>
+| key | Description | Examples |
+|:---:|:----------|:-|
+| [something](#){: .p-1 .text-green-200 .fw-700} | any property within Terraform source/provider/etc | `access_key` `ingress` |
 
 
 ------------------------
