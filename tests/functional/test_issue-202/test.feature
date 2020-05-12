@@ -15,6 +15,10 @@ Feature: Test Scenario
     When it does not have website
     Then its acl must be private
 
+  Scenario: Test Scenario - Failure #2
+    Given I have aws_s3_bucket defined
+    Then it must not have website
+
   Scenario: Test Scenario - Skip #1
     Given I have aws_s3_bucket defined
     When it does not have acl

@@ -34,7 +34,7 @@ from terraform_compliance.steps.when.it_contains_something import (
 # THEN
 from terraform_compliance.steps.then.it_must_contain_something import (
     it_must_contain_something,
-    # it_must_not_contain_something,
+    it_must_not_contain_something,
 )
 from terraform_compliance.steps.then.property_is_enabled import property_is_enabled
 from terraform_compliance.steps.then.security_group_related import it_condition_have_proto_protocol_and_port_port_for_cidr
@@ -116,12 +116,18 @@ def wrapper(_step_obj, something, inherited_values=Null):
 
 
 @then(u'it must contain {something:ANY}')
+@then(u'it must have {something:ANY}')
+@then(u'they must contain {something:ANY}')
+@then(u'they must have {something:ANY}')
 def wrapper(_step_obj, something, inherited_values=Null):
     return it_must_contain_something(_step_obj, something, inherited_values=Null)
 
-# @then(u'it must not contain {something:ANY}')
-# def wrapper(_step_obj, something, inherited_values=Null):
-#     return it_must_not_contain_something(_step_obj, something, inherited_values=Null)
+@then(u'it must not contain {something:ANY}')
+@then(u'they must not contain {something:ANY}')
+@then(u'it must not have {something:ANY}')
+@then(u'they must not have {something:ANY}')
+def wrapper(_step_obj, something, inherited_values=Null):
+    return it_must_not_contain_something(_step_obj, something, inherited_values=Null)
 
 
 @then(u'{something:ANY} is be enabled')

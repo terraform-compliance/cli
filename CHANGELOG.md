@@ -82,7 +82,7 @@
 * New parameter: `-S/--silent` where test execution output will be suppressed. ([docs](https://terraform-compliance.com/pages/usage/#-S--silent))
 * New parameter: `-n/--no-failure` where exit code will always be `0`/successful even there is a failure. ([docs](https://terraform-compliance.com/pages/usage/#-n--no-failure)) [#191](https://github.com/eerkunt/terraform-compliance/issues/191)
 * New parameter: `-q/--quit-early` where the scenario executions will stop on the first failure. ([docs](https://terraform-compliance.com/pages/usage/#-q--quit-early)) [#170](https://github.com/eerkunt/terraform-compliance/issues/170)
-* **CHANGE OF DEFAULT BEHAVIOUR** : `terraform-complinace` __will not__ STOP any test execution by default. 
+* **CHANGE OF DEFAULT BEHAVIOUR** : `terraform-compliance` __will not__ STOP any test execution by default. 
 * New emoticons and a bit of cosmetic make-up is done. All emoticons will be disabled on non-interactive shells (CI/CD pipelines) or if `--no-ansi` is explicitly used.
 
 * Fixed `-h` which was not reporting all parameter properly
