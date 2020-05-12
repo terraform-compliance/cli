@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.0 (unreleased)
+## 1.2.0 (2020-04-12)
 * Major code refactoring on the steps for the readability.
 * Handled related radish-bdd exceptions and giving out `terraform-compliance` related error information.
 * __BREAKING CHANGE :__ Changed `When it has <something>` step sentence where it now works as a true filtering function, unlike `When it contains <something`.
