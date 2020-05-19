@@ -70,7 +70,7 @@ it contains
 >
 | key | Description | Examples |
 |:---:|:----------|:-|
-| [something](#){: .p-1 .text-green-200 .fw-700} | any property within Terraform resource/provider/etc | `access_key` `ingress` |
+| [something](#){: .p-1 .text-green-200 .fw-700} | any property within Terraform resource/provider/etc | `access_key` `ingress` `"something with spaces"` |
 
 ### [When](#){: .p-1 .text-red-200} it has [something](#){: .p-1 .text-green-200 .fw-700}
 
@@ -95,7 +95,7 @@ they have
 >
 | key | Description | Examples |
 |:---:|:----------|:-|
-| [something](#){: .p-1 .text-green-200 .fw-700} | any property within Terraform resource/provider/etc | `access_key` `ingress` |
+| [something](#){: .p-1 .text-green-200 .fw-700} | any property within Terraform resource/provider/etc | `access_key` `ingress` `"something with spaces"` |
 
 ### [When](#){: .p-1 .text-red-200} it does not have [something](#){: .p-1 .text-green-200 .fw-700}
 
@@ -140,7 +140,7 @@ they dont have
 >
 | key | Description | Examples |
 |:---:|:----------|:-|
-| [something](#){: .p-1 .text-green-200 .fw-700} | any property within Terraform source/provider/etc | `access_key` `ingress` |
+| [something](#){: .p-1 .text-green-200 .fw-700} | any property within Terraform source/provider/etc | `access_key` `ingress` `"something with spaces"` |
 
 
 ------------------------
@@ -231,7 +231,7 @@ is
 |:---:|:----------|:-|
 | [property](#){: .p-1 .text-green-200 .fw-700} | any property that resources have. Using `type` will give the Terraform resource type; `address` is the name you have given it | `address` `name` `size` |
 | [dictionary](#){: .p-1 .text-green-200 .fw-700} | a dictionary property that resource has. | `tags` |
-| [something](#){: .p-1 .text-blue-100 .fw-700} | any string or numeric value that the property has. | `s3_my_bucket` `my-bucket` `50G` |
+| [something](#){: .p-1 .text-blue-100 .fw-700} | any string or numeric value that the property has. | `s3_my_bucket` `my-bucket` `50G` `"something with spaces"` |
 | [some string with spaces](#){: .p-1 .text-blue-100 .fw-700} | any string (allows spaces). | `my dictionary key` |
 | [key](#){: .p-1 .text-blue-100 .fw-700} | any dictionary key (allows spaces). | `my dictionary key` |
 | [value](#){: .p-1 .text-blue-100 .fw-700} | any dictionary value (allows spaces). | `my dictionary value` |
@@ -310,8 +310,8 @@ reference consists
 >
 | key | Description | Examples |
 |:---:|:----------|:-|
-| [property](#){: .p-1 .text-green-200 .fw-700} | any property that is used for referencing another resource.  | `security_group_id` `aws_instance` |
-| [something](#){: .p-1 .text-blue-100 .fw-700} | any string or numeric value that the property has. | `s3_my_bucket` `my-bucket` `50G` |
+| [property](#){: .p-1 .text-green-200 .fw-700} | any property that is used for referencing another resource.  | `security_group_id` `aws_instance` `"something with spaces"` |
+| [something](#){: .p-1 .text-blue-100 .fw-700} | any string or numeric value that the property has. | `s3_my_bucket` `my-bucket` `50G` `"something with spaces"` |
 | [some string with spaces](#){: .p-1 .text-blue-100 .fw-700} | any string (allows spaces). | `my dictionary key` |
 
 ------------------------
@@ -402,7 +402,7 @@ is
 |:---:|:----------|:-|
 | [property](#){: .p-1 .text-green-200 .fw-700} | any property that resources have. Using `type` will give the Terraform resource type; `address` is the name you have given it | `address` `name` `size`|
 | [dictionary](#){: .p-1 .text-green-200 .fw-700} | a dictionary property that resource has. | `tags` |
-| [something](#){: .p-1 .text-blue-100 .fw-700} | any string or numeric value that the property has. | `s3_my_bucket` `my-bucket` `50G` |
+| [something](#){: .p-1 .text-blue-100 .fw-700} | any string or numeric value that the property has. | `s3_my_bucket` `my-bucket` `50G` `"something with spaces"` |
 | [some string with spaces](#){: .p-1 .text-blue-100 .fw-700} | any string (allows spaces). | `my dictionary key` |
 | [key](#){: .p-1 .text-blue-100 .fw-700} | any dictionary key (allows spaces). | `my dictionary key` |
 | [value](#){: .p-1 .text-blue-100 .fw-700} | any dictionary value (allows spaces). | `my dictionary value` |
@@ -482,8 +482,8 @@ reference does not consist
 >
 | key | Description | Examples |
 |:---:|:----------|:-|
-| [property](#){: .p-1 .text-green-200 .fw-700} | any property that is used for referencing another resource.  | `security_group_id` `aws_instance` |
-| [something](#){: .p-1 .text-blue-100 .fw-700} | any string or numeric value that the property has. | `s3_my_bucket` `my-bucket` `50G` |
+| [property](#){: .p-1 .text-green-200 .fw-700} | any property that is used for referencing another resource.  | `security_group_id` `aws_instance` `"something with spaces"` |
+| [something](#){: .p-1 .text-blue-100 .fw-700} | any string or numeric value that the property has. | `s3_my_bucket` `my-bucket` `50G` `"something with spaces"` |
 | [some string with spaces](#){: .p-1 .text-blue-100 .fw-700} | any string (allows spaces). | `my dictionary key` |
 
 

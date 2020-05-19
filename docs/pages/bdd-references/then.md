@@ -75,7 +75,7 @@ they must have
 
 | key | Description | Examples |
 |:---:|:----------|:-|
-| [something](#){: .p-1 .text-green-200 .fw-700} | any property within terraform resoruce/provider/etc | `access_key` `ingress` |
+| [something](#){: .p-1 .text-green-200 .fw-700} | any property within terraform resoruce/provider/etc | `access_key` `ingress` `"something with spaces"`|
  
 ### [Then](#){: .p-1 .text-red-200} it must not contain [something](#){: .p-1 .text-green-200 .fw-700}
 
@@ -104,7 +104,7 @@ they must not contain
 
 | key | Description | Examples |
 |:---:|:----------|:-|
-| [something](#){: .p-1 .text-green-200 .fw-700} | any property within terraform resoruce/provider/etc | `access_key` `ingress` |
+| [something](#){: .p-1 .text-green-200 .fw-700} | any property within terraform resoruce/provider/etc | `access_key` `ingress` `"something with spaces"`|
  
 ------------------------
 ### [Then](#){: .p-1 .text-red-200} [something](#){: .p-1 .text-green-200 .fw-700} is enabled
@@ -202,7 +202,7 @@ does not consist
 | key | Description | Examples |
 |:---:|:----------|:-|
 | [property](#){: .p-1 .text-green-200 .fw-700} | any property that resource have (e.g. `name`, `address`, etc. ). Using `address` will give the terraform object name | `address` `name` `size`|
-| [something](#){: .p-1 .text-blue-100 .fw-700} | any string or numeric value that the property has. | `s3_my_bucket` `my-bucket` `50G`|
+| [something](#){: .p-1 .text-blue-100 .fw-700} | any string or numeric value that the property has. | `s3_my_bucket` `my-bucket` `50G`  `"something with spaces"`|
 
 ------------------------
 ### [Then](#){: .p-1 .text-red-200} its value must be [action](#){: .p-1 .text-green-200 .fw-700} than [number](#){: .p-1 .text-blue-100 .fw-700} 
@@ -287,7 +287,7 @@ be
 | key | Description | Examples |
 |:---:|:----------|:-|
 | [condition](#){: .p-1 .text-green-200 .fw-700} | defines positive or negative comparison | Only supports for : <br>▪ `must`<br>▪ `must not` |
-| [something](#){: .p-1 .text-blue-100 .fw-700}  | search value | `some_name` |
+| [something](#){: .p-1 .text-blue-100 .fw-700}  | search value | `some_name`  `"something with spaces"` |
 
 ------------------------
 ### [Then](#){: .p-1 .text-red-200} its value [condition](#){: .p-1 .text-green-200 .fw-700} contain [something](#){: .p-1 .text-blue-100 .fw-700}
@@ -305,7 +305,7 @@ contain
 | key | Description | Examples |
 |:---:|:----------|:-|
 | [condition](#){: .p-1 .text-green-200 .fw-700} | defines positive or negative comparison | Only supports for : <br>▪ `must`<br>▪ `must not` |
-| [something](#){: .p-1 .text-blue-100 .fw-700}  | search value | `some_name` |
+| [something](#){: .p-1 .text-blue-100 .fw-700}  | search value | `some_name`  `"something with spaces"` |
 
 ------------------------
 ### [Then](#){: .p-1 .text-red-200} its value [condition](#){: .p-1 .text-green-200 .fw-700} be null
@@ -373,7 +373,7 @@ referenced
 
 | key | Description | Examples |
 |:---:|:----------|:-|
-| [address](#){: .p-1 .text-green-200 .fw-700} | resource address within terraform | `aws_security_group.my_group` |
+| [address](#){: .p-1 .text-green-200 .fw-700} | resource address within terraform | `aws_security_group.my_group`  `"something with spaces"` |
 
 ------------------------
 ### [Then](#){: .p-1 .text-red-200} its [key](#){: .p-1 .text-green-200 .fw-700} [condition](#){: .p-1 .text-blue-100 .fw-700} be [value](#){: .p-1 .text-blue-100 .fw-700} 
@@ -411,9 +411,9 @@ be
 
 | key | Description | Examples |
 |:---:|:----------|:-|
-| [key](#){: .p-1 .text-green-200 .fw-700} | The key name of the property | `encryption`, `private`, `name`, `id` |
+| [key](#){: .p-1 .text-green-200 .fw-700} | The key name of the property | `encryption`, `private`, `name`, `id`  `"something with spaces"` |
 | [condition](#){: .p-1 .text-blue-100 .fw-700} | Defines if the match will be `=` or `!=` | Only `must` and `must not` |
-| [value](#){: .p-1 .text-blue-100 .fw-700} | The value of the property | `true`, `closed`, `my_bucket` |
+| [value](#){: .p-1 .text-blue-100 .fw-700} | The value of the property | `true`, `closed`, `my_bucket`  `"something with spaces"` |
 
 ------------------------
 ### [Then](#){: .p-1 .text-red-200} I flatten all values found
