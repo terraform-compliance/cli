@@ -35,3 +35,4 @@ with the tag name. It will be `nofail :` in the example above.
 | Tag Name(s) | Description |
 |:-----------:|:------------|
 | `warning`, `no-failure`, `no-fail`, `info`, `nofailure`, `nofail`, `dontfail` | Do not fail the scenario |
+| `case-sensitive`, `case_sensitive`, `case-sensitivity`, `casesensitive` | Use case sensitive matching on regex steps. |
