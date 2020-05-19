@@ -12,7 +12,7 @@ AWS
 * Table of Contents
 {:toc}
 
-# Encyrption-in-flight
+# Encryption-in-flight
 ## TLS Enforcement on ELB resources
 ```gherkin
   Scenario: TLS enforcement on ELB resources
