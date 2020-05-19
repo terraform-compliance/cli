@@ -117,8 +117,6 @@ def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
         result = call_radish(args=commands[1:])
     except IndexError as e:
         print(e)
-        print('Yes!')
-
 
     return result
 
