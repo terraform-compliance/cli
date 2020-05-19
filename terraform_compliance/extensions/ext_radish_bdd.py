@@ -49,12 +49,7 @@ def custom_type_any(text):
     return text.replace('"', '').replace('\'', '')
 
 
-@custom_type("PROPERTY", r"[\*\.\/_\-A-Za-z0-9:\(\)\[\]]+")
-def custom_type_prop(text):
-    return text.replace('"', '').replace('\'', '')
-
-
-@custom_type("PROPERTY_WITH_SPACE", r"[\*\.\/_\-A-Za-z0-9:\(\)\[\]\s]+")
+@custom_type("PROPERTY", r"(\"[\s\*\.\/_\-A-Za-z0-9:\(\)\[\]\']+\")|([\*\.\/_\-A-Za-z0-9:\(\)\[\]\']+)")
 def custom_type_prop(text):
     return text.replace('"', '').replace('\'', '')
 

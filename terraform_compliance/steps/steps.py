@@ -55,19 +55,11 @@ def wrapper(_step_obj, name, type_name='resource', _terraform_config=world):
 @when(u'its {key:PROPERTY} has {value:PROPERTY}')
 @when(u'its {key:PROPERTY} includes {value:PROPERTY}')
 @when(u'its {key:PROPERTY} contains {value:PROPERTY}')
-@when(u'its {key:PROPERTY} is "{value:ANY}"')
-@when(u'its {key:PROPERTY} has "{value:ANY}"')
-@when(u'its {key:PROPERTY} includes "{value:ANY}"')
-@when(u'its {key:PROPERTY} contains "{value:ANY}"')
 @when(u'its {address:PROPERTY} {key:PROPERTY} is {value:PROPERTY}')
 @when(u'its {address:PROPERTY} {key:PROPERTY} has {value:PROPERTY}')
 @when(u'its {address:PROPERTY} {key:PROPERTY} includes {value:PROPERTY}')
 @when(u'its {address:PROPERTY} {key:PROPERTY} contains {value:PROPERTY}')
-@when(u'its {address:PROPERTY} {key:PROPERTY} is "{value:ANY}"')
-@when(u'its {address:PROPERTY} {key:PROPERTY} has "{value:ANY}"')
-@when(u'its {address:PROPERTY} {key:PROPERTY} includes "{value:ANY}"')
-@when(u'its {address:PROPERTY} {key:PROPERTY} contains "{value:ANY}"')
-@when(u'its {key:PROPERTY} includes an entry where "{value:ANY}" is "{dict_value:ANY}"')
+@when(u'its {key:PROPERTY} includes an entry where {value:PROPERTY} is {dict_value:PROPERTY}')
 def wrapper(_step_obj, key, value, dict_value=None, address=Null):
     return its_key_is_value(_step_obj, key, value, dict_value, address)
 
@@ -76,56 +68,48 @@ def wrapper(_step_obj, key, value, dict_value=None, address=Null):
 @when(u'its {key:PROPERTY} has not {value:PROPERTY}')
 @when(u'its {key:PROPERTY} does not include {value:PROPERTY}')
 @when(u'its {key:PROPERTY} does not contain {value:PROPERTY}')
-@when(u'its {key:PROPERTY} is not "{value:ANY}"')
-@when(u'its {key:PROPERTY} has not "{value:ANY}"')
-@when(u'its {key:PROPERTY} does not include "{value:ANY}"')
-@when(u'its {key:PROPERTY} does not contain "{value:ANY}"')
 @when(u'its {address:PROPERTY} {key:PROPERTY} is not {value:PROPERTY}')
 @when(u'its {address:PROPERTY} {key:PROPERTY} has not {value:PROPERTY}')
 @when(u'its {address:PROPERTY} {key:PROPERTY} does not include {value:PROPERTY}')
 @when(u'its {address:PROPERTY} {key:PROPERTY} does not contain {value:PROPERTY}')
-@when(u'its {address:PROPERTY} {key:PROPERTY} is not "{value:ANY}"')
-@when(u'its {address:PROPERTY} {key:PROPERTY} has not "{value:ANY}"')
-@when(u'its {address:PROPERTY} {key:PROPERTY} does not include "{value:ANY}"')
-@when(u'its {address:PROPERTY} {key:PROPERTY} does not contain "{value:ANY}"')
-@when(u'its {key:PROPERTY} does not include an entry where "{value:ANY}" is "{dict_value:ANY}"')
+@when(u'its {key:PROPERTY} does not include an entry where {value:PROPERTY} is {dict_value:PROPERTY}')
 def wrapper(_step_obj, key, value, dict_value=None, address=Null):
     return its_key_is_not_value(_step_obj, key, value, dict_value, address)
 
 
-@when(u'it contain {something:PROPERTY_WITH_SPACE}') # This is just here for not breaking backward compatibility. I know its wrong.
-@when(u'it contains {something:PROPERTY_WITH_SPACE}')
+@when(u'it contain {something:PROPERTY}') # This is just here for not breaking backward compatibility. I know its wrong.
+@when(u'it contains {something:PROPERTY}')
 def wrapper(_step_obj, something, inherited_values=Null):
     return it_contains_something_old(_step_obj, something, inherited_values=Null)
 
 
-@when(u'it has {something:PROPERTY_WITH_SPACE}')
-@when(u'they have {something:PROPERTY_WITH_SPACE}')
+@when(u'it has {something:PROPERTY}')
+@when(u'they have {something:PROPERTY}')
 def wrapper(_step_obj, something, inherited_values=Null):
     return it_has_something(_step_obj, something, inherited_values=Null)
 
 
-@when(u'it does not contain {something:PROPERTY_WITH_SPACE}')
-@when(u'it doesnt contain {something:PROPERTY_WITH_SPACE}')
-@when(u'they do not have {something:PROPERTY_WITH_SPACE}')
-@when(u'they dont have {something:PROPERTY_WITH_SPACE}')
-@when(u'it does not have {something:PROPERTY_WITH_SPACE}')
-@when(u'it doesnt have {something:PROPERTY_WITH_SPACE}')
+@when(u'it does not contain {something:PROPERTY}')
+@when(u'it doesnt contain {something:PROPERTY}')
+@when(u'they do not have {something:PROPERTY}')
+@when(u'they dont have {something:PROPERTY}')
+@when(u'it does not have {something:PROPERTY}')
+@when(u'it doesnt have {something:PROPERTY}')
 def wrapper(_step_obj, something, inherited_values=Null):
     return it_does_not_have_something(_step_obj, something, inherited_values=Null)
 
 
-@then(u'it must contain {something:PROPERTY_WITH_SPACE}')
-@then(u'it must have {something:PROPERTY_WITH_SPACE}')
-@then(u'they must contain {something:PROPERTY_WITH_SPACE}')
-@then(u'they must have {something:PROPERTY_WITH_SPACE}')
+@then(u'it must contain {something:PROPERTY}')
+@then(u'it must have {something:PROPERTY}')
+@then(u'they must contain {something:PROPERTY}')
+@then(u'they must have {something:PROPERTY}')
 def wrapper(_step_obj, something, inherited_values=Null):
     return it_must_contain_something(_step_obj, something, inherited_values=Null)
 
-@then(u'it must not contain {something:PROPERTY_WITH_SPACE}')
-@then(u'they must not contain {something:PROPERTY_WITH_SPACE}')
-@then(u'it must not have {something:PROPERTY_WITH_SPACE}')
-@then(u'they must not have {something:PROPERTY_WITH_SPACE}')
+@then(u'it must not contain {something:PROPERTY}')
+@then(u'they must not contain {something:PROPERTY}')
+@then(u'it must not have {something:PROPERTY}')
+@then(u'they must not have {something:PROPERTY}')
 def wrapper(_step_obj, something, inherited_values=Null):
     return it_must_not_contain_something(_step_obj, something, inherited_values=Null)
 
