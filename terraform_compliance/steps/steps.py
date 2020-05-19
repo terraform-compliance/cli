@@ -93,39 +93,39 @@ def wrapper(_step_obj, key, value, dict_value=None, address=Null):
     return its_key_is_not_value(_step_obj, key, value, dict_value, address)
 
 
-@when(u'it contain {something:PROPERTY}') # This is just here for not breaking backward compatibility. I know its wrong.
-@when(u'it contains {something:PROPERTY}')
+@when(u'it contain {something:PROPERTY_WITH_SPACE}') # This is just here for not breaking backward compatibility. I know its wrong.
+@when(u'it contains {something:PROPERTY_WITH_SPACE}')
 def wrapper(_step_obj, something, inherited_values=Null):
     return it_contains_something_old(_step_obj, something, inherited_values=Null)
 
 
-@when(u'it has {something:PROPERTY}')
-@when(u'they have {something:PROPERTY}')
+@when(u'it has {something:PROPERTY_WITH_SPACE}')
+@when(u'they have {something:PROPERTY_WITH_SPACE}')
 def wrapper(_step_obj, something, inherited_values=Null):
     return it_has_something(_step_obj, something, inherited_values=Null)
 
 
-@when(u'it does not contain {something:PROPERTY}')
-@when(u'it doesnt contain {something:PROPERTY}')
-@when(u'they do not have {something:PROPERTY}')
-@when(u'they dont have {something:PROPERTY}')
-@when(u'it does not have {something:PROPERTY}')
-@when(u'it doesnt have {something:PROPERTY}')
+@when(u'it does not contain {something:PROPERTY_WITH_SPACE}')
+@when(u'it doesnt contain {something:PROPERTY_WITH_SPACE}')
+@when(u'they do not have {something:PROPERTY_WITH_SPACE}')
+@when(u'they dont have {something:PROPERTY_WITH_SPACE}')
+@when(u'it does not have {something:PROPERTY_WITH_SPACE}')
+@when(u'it doesnt have {something:PROPERTY_WITH_SPACE}')
 def wrapper(_step_obj, something, inherited_values=Null):
     return it_does_not_have_something(_step_obj, something, inherited_values=Null)
 
 
-@then(u'it must contain {something:PROPERTY}')
-@then(u'it must have {something:PROPERTY}')
-@then(u'they must contain {something:PROPERTY}')
-@then(u'they must have {something:PROPERTY}')
+@then(u'it must contain {something:PROPERTY_WITH_SPACE}')
+@then(u'it must have {something:PROPERTY_WITH_SPACE}')
+@then(u'they must contain {something:PROPERTY_WITH_SPACE}')
+@then(u'they must have {something:PROPERTY_WITH_SPACE}')
 def wrapper(_step_obj, something, inherited_values=Null):
     return it_must_contain_something(_step_obj, something, inherited_values=Null)
 
-@then(u'it must not contain {something:PROPERTY}')
-@then(u'they must not contain {something:PROPERTY}')
-@then(u'it must not have {something:PROPERTY}')
-@then(u'they must not have {something:PROPERTY}')
+@then(u'it must not contain {something:PROPERTY_WITH_SPACE}')
+@then(u'they must not contain {something:PROPERTY_WITH_SPACE}')
+@then(u'it must not have {something:PROPERTY_WITH_SPACE}')
+@then(u'they must not have {something:PROPERTY_WITH_SPACE}')
 def wrapper(_step_obj, something, inherited_values=Null):
     return it_must_not_contain_something(_step_obj, something, inherited_values=Null)
 
