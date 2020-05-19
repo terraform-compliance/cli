@@ -99,6 +99,11 @@ def wrapper(_step_obj, something, inherited_values=Null):
     return it_does_not_have_something(_step_obj, something, inherited_values=Null)
 
 
+@then(u'it must have "{reference_address}" referenced')
+def wrapper(_step_obj, reference_address):
+    return it_must_have_reference_address_referenced(_step_obj, reference_address)
+
+
 @then(u'it must contain {something:PROPERTY}')
 @then(u'it must have {something:PROPERTY}')
 @then(u'they must contain {something:PROPERTY}')
@@ -185,11 +190,6 @@ def it_fails(_step_obj):
     Error(_step_obj, 'Forcefully failing the scenario on {} ({}) {}'.format(_step_obj.context.name,
                                                                             ', '.join(_step_obj.context.addresses),
                                                                             _step_obj.context.type))
-
-
-@then(u'it must have "{reference_address:ANY}" referenced')
-def wrapper(_step_obj, reference_address):
-    return it_must_have_reference_address_referenced(_step_obj, reference_address)
 
 
 @then('its {key:ANY} {condition:ANY} be {value:ANY}')
