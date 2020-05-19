@@ -1,2 +1,2 @@
 Failure: notexisting could not found in azurerm_servicebus_queue\.sb\["something"\], azurerm_servicebus_queue\.sb\["somethingdifferent"\], azurerm_servicebus_queue\.sb\["somethingelse"\]\.
-Failure: enable_partitioning property in azurerm_servicebus_queue\.sb\["somethingdifferent"\] resource does not match with \^false\$ regex\. It is set to True\.
+Failure: enable_partitioning property in azurerm_servicebus_queue\.sb\["somethingdifferent"\] resource does not match with \^false\$ case-insensitive regex\. It is set to True\.
