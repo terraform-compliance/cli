@@ -49,12 +49,16 @@ def custom_type_any(text):
     return text.replace('"', '').replace('\'', '')
 
 
-@custom_type("PROPERTY", r"([\*\.\/_\-A-Za-z0-9:\(\)\[\]\']+\s[\*\.\/_\-A-Za-z0-9:\(\)\[\]\']+)|"
-                         r"(\"[\s\*\.\/_\-A-Za-z0-9:\(\)\[\]\']+\")|"
+@custom_type("PROPERTY", r"(\"[\s\*\.\/_\-A-Za-z0-9:\(\)\[\]\']+\")|"
                          r"([\*\.\/_\-A-Za-z0-9:\(\)\[\]\']+)")
 def custom_type_prop(text):
     return text.replace('"', '').replace('\'', '')
 
+@custom_type("PROPERTY_COMPAT", r"([\*\.\/_\-A-Za-z0-9:\(\)\[\]\']+\s[\*\.\/_\-A-Za-z0-9:\(\)\[\]\']+)|"
+                                r"(\"[\s\*\.\/_\-A-Za-z0-9:\(\)\[\]\']+\")|"
+                                r"([\*\.\/_\-A-Za-z0-9:\(\)\[\]\']+)")
+def custom_type_prop(text):
+    return text.replace('"', '').replace('\'', '')
 
 @custom_type("SECTION", r"[\"'a-z]+")
 def custom_type_section(text):

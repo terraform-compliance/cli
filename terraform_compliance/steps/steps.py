@@ -104,17 +104,17 @@ def wrapper(_step_obj, reference_address):
     return it_must_have_reference_address_referenced(_step_obj, reference_address)
 
 
-@then(u'it must contain {something:PROPERTY}')
-@then(u'it must have {something:PROPERTY}')
-@then(u'they must contain {something:PROPERTY}')
-@then(u'they must have {something:PROPERTY}')
+@then(u'it must contain {something:PROPERTY_COMPAT}')
+@then(u'it must have {something:PROPERTY_COMPAT}')
+@then(u'they must contain {something:PROPERTY_COMPAT}')
+@then(u'they must have {something:PROPERTY_COMPAT}')
 def wrapper(_step_obj, something, inherited_values=Null):
     return it_must_contain_something(_step_obj, something, inherited_values=Null)
 
-@then(u'it must not contain {something:PROPERTY}')
-@then(u'they must not contain {something:PROPERTY}')
-@then(u'it must not have {something:PROPERTY}')
-@then(u'they must not have {something:PROPERTY}')
+@then(u'it must not contain {something:PROPERTY_COMPAT}')
+@then(u'they must not contain {something:PROPERTY_COMPAT}')
+@then(u'it must not have {something:PROPERTY_COMPAT}')
+@then(u'they must not have {something:PROPERTY_COMPAT}')
 def wrapper(_step_obj, something, inherited_values=Null):
     return it_must_not_contain_something(_step_obj, something, inherited_values=Null)
 
