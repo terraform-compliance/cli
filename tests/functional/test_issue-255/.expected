@@ -1,1 +1,1 @@
-Failure: resource property in .* resource matches with \\\* regex\. It is set to \*\.
+Failure: resource property in .* resource matches with \\\* case insensitive regex\. It is set to \*\.

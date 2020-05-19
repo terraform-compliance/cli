@@ -203,7 +203,7 @@ def it_fails(_step_obj):
                                                                             _step_obj.context.type))
 
 
-@then(u'it must have "{reference_address}" referenced')
+@then(u'it must have "{reference_address:ANY}" referenced')
 def wrapper(_step_obj, reference_address):
     return it_must_have_reference_address_referenced(_step_obj, reference_address)
 

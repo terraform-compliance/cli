@@ -25,7 +25,7 @@ def its_value_condition_match_the_search_regex_regex(_step_obj, condition, searc
     regex = r'{}'.format(search_regex)
     values = _step_obj.context.stash if _stash is EmptyStash else _stash
     regex_flags = re.IGNORECASE if case_insensitive else 0
-    regex_flag_error_text = 'case sensitive' if case_insensitive else 'case insensitive'
+    regex_flag_error_text = 'case insensitive' if case_insensitive else 'case sensitive'
 
     if isinstance(values, (str, int, bool)) or values is None:
         matches = re.match(regex, str(values), flags=regex_flags)

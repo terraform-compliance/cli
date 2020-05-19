@@ -1,1 +1,1 @@
-Failure: enable_key_rotation property in aws_kms_key\.test-fail-key resource does not match with \^true\$ regex. It is set to False.
+Failure: enable_key_rotation property in aws_kms_key\.test-fail-key resource does not match with \^true\$ case insensitive regex. It is set to False.
