@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.2.1 (2020-05-19)
+* Fixed a problem where properties having a space character were not recognised.
+* Optimised key/value (property) definitions on all steps, where all keys or values can also have space characters encapsulated within "".
+
 ## 1.2.0 (2020-05-12)
 * Major code refactoring on the steps for the readability.
 * Handled related radish-bdd exceptions and giving out `terraform-compliance` related error information.
