@@ -1,0 +1,211 @@
+{
+    "format_version": "0.1",
+    "terraform_version": "0.12.24",
+    "planned_values": {
+        "root_module": {
+            "resources": [{
+                    "address": "aws_kms_key.test",
+                    "mode": "managed",
+                    "type": "aws_kms_key",
+                    "name": "test",
+                    "provider_name": "aws",
+                    "schema_version": 0,
+                    "values": {
+                        "customer_master_key_spec": "SYMMETRIC_DEFAULT",
+                        "deletion_window_in_days": null,
+                        "description": "test",
+                        "enable_key_rotation": true,
+                        "is_enabled": true,
+                        "key_usage": "ENCRYPT_DECRYPT",
+                        "tags": null
+                    }
+                },
+                {
+                    "address": "aws_sqs_queue.failure",
+                    "mode": "managed",
+                    "type": "aws_sqs_queue",
+                    "name": "failure",
+                    "provider_name": "aws",
+                    "schema_version": 0,
+                    "values": {
+                        "content_based_deduplication": false,
+                        "delay_seconds": 0,
+                        "fifo_queue": false,
+                        "max_message_size": 262144,
+                        "message_retention_seconds": 345600,
+                        "name_prefix": null,
+                        "receive_wait_time_seconds": 0,
+                        "redrive_policy": null,
+                        "tags": null,
+                        "visibility_timeout_seconds": 30
+                    }
+                },
+                {
+                    "address": "aws_sqs_queue.success",
+                    "mode": "managed",
+                    "type": "aws_sqs_queue",
+                    "name": "success",
+                    "provider_name": "aws",
+                    "schema_version": 0,
+                    "values": {
+                        "content_based_deduplication": false,
+                        "delay_seconds": 0,
+                        "fifo_queue": false,
+                        "kms_master_key_id": "key",
+                        "max_message_size": 262144,
+                        "message_retention_seconds": 345600,
+                        "name_prefix": null,
+                        "receive_wait_time_seconds": 0,
+                        "redrive_policy": null,
+                        "tags": null,
+                        "visibility_timeout_seconds": 30
+                    }
+                }
+            ]
+        }
+    },
+    "resource_changes": [{
+            "address": "aws_kms_key.test",
+            "mode": "managed",
+            "type": "aws_kms_key",
+            "name": "test",
+            "provider_name": "aws",
+            "change": {
+                "actions": [
+                    "create"
+                ],
+                "before": null,
+                "after": {
+                    "customer_master_key_spec": "SYMMETRIC_DEFAULT",
+                    "deletion_window_in_days": null,
+                    "description": "test",
+                    "enable_key_rotation": true,
+                    "is_enabled": true,
+                    "key_usage": "ENCRYPT_DECRYPT",
+                    "tags": null
+                },
+                "after_unknown": {
+                    "arn": true,
+                    "id": true,
+                    "key_id": true,
+                    "policy": true
+                }
+            }
+        },
+        {
+            "address": "aws_sqs_queue.failure",
+            "mode": "managed",
+            "type": "aws_sqs_queue",
+            "name": "failure",
+            "provider_name": "aws",
+            "change": {
+                "actions": [
+                    "create"
+                ],
+                "before": null,
+                "after": {
+                    "content_based_deduplication": false,
+                    "delay_seconds": 0,
+                    "fifo_queue": false,
+                    "max_message_size": 262144,
+                    "message_retention_seconds": 345600,
+                    "name_prefix": null,
+                    "receive_wait_time_seconds": 0,
+                    "redrive_policy": null,
+                    "tags": null,
+                    "visibility_timeout_seconds": 30
+                },
+                "after_unknown": {
+                    "arn": true,
+                    "id": true,
+                    "kms_data_key_reuse_period_seconds": true,
+                    "kms_master_key_id": true,
+                    "name": true,
+                    "policy": true
+                }
+            }
+        },
+        {
+            "address": "aws_sqs_queue.success",
+            "mode": "managed",
+            "type": "aws_sqs_queue",
+            "name": "success",
+            "provider_name": "aws",
+            "change": {
+                "actions": [
+                    "create"
+                ],
+                "before": null,
+                "after": {
+                    "content_based_deduplication": false,
+                    "delay_seconds": 0,
+                    "fifo_queue": false,
+                    "kms_master_key_id": "key",
+                    "max_message_size": 262144,
+                    "message_retention_seconds": 345600,
+                    "name_prefix": null,
+                    "receive_wait_time_seconds": 0,
+                    "redrive_policy": null,
+                    "tags": null,
+                    "visibility_timeout_seconds": 30
+                },
+                "after_unknown": {
+                    "arn": true,
+                    "id": true,
+                    "kms_data_key_reuse_period_seconds": true,
+                    "name": true,
+                    "policy": true
+                }
+            }
+        }
+    ],
+    "configuration": {
+        "root_module": {
+            "resources": [{
+                    "address": "aws_kms_key.test",
+                    "mode": "managed",
+                    "type": "aws_kms_key",
+                    "name": "test",
+                    "provider_config_key": "aws",
+                    "expressions": {
+                        "description": {
+                            "constant_value": "test"
+                        },
+                        "enable_key_rotation": {
+                            "constant_value": true
+                        }
+                    },
+                    "schema_version": 0
+                },
+                {
+                    "address": "aws_sqs_queue.failure",
+                    "mode": "managed",
+                    "type": "aws_sqs_queue",
+                    "name": "failure",
+                    "provider_config_key": "aws",
+                    "expressions": {
+                        "kms_master_key_id": {
+                            "references": [
+                                "aws_kms_key.test"
+                            ]
+                        }
+                    },
+                    "schema_version": 0
+                },
+                {
+                    "address": "aws_sqs_queue.success",
+                    "mode": "managed",
+                    "type": "aws_sqs_queue",
+                    "name": "success",
+                    "provider_config_key": "aws",
+                    "expressions": {
+                        "kms_master_key_id": {
+                            "constant_value": "key"
+                        }
+                    },
+                    "schema_version": 0
+                }
+            ]
+        }
+    }
+}

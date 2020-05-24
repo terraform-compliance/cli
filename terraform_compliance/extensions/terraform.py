@@ -236,6 +236,9 @@ class TerraformParser(object):
                         self.resources[target_resource][Defaults.r_mount_addr_ptr][parameter] = source
                         self.resources[target_resource][Defaults.r_mount_addr_ptr_list].extend(source)
 
+                    if parameter not in self.resources[source_resource]['values']:
+                        self.resources[source_resource]['values'][parameter] = resource
+
     def _find_resource_from_name(self, resource_name):
         '''
         Finds all the resources that is starting with resource_name
