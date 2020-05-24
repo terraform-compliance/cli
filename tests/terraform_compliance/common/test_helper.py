@@ -45,11 +45,10 @@ class TestHelperFunctions(TestCase):
         self.assertTrue(check_if_cidr('10.0.0.7/32'))
 
     def test_check_if_cidr_failure(self):
-        self.assertFalse(check_if_cidr('256.0.0.0/8'))
-        self.assertFalse(check_if_cidr('10.256.0.0/16'))
-        self.assertFalse(check_if_cidr('10.0.256.0/24'))
-        self.assertFalse(check_if_cidr('10.0.0.256/32'))
-        self.assertFalse(check_if_cidr('10.0.0.256/33'))
+        self.assertFalse(check_if_cidr(123))
+        self.assertFalse(check_if_cidr(False))
+        self.assertFalse(check_if_cidr([]))
+        self.assertFalse(check_if_cidr({}))
 
     def test_is_ip_in_cidr_success(self):
         self.assertTrue(is_ip_in_cidr('10.0.0.0/8', ['0.0.0.0/0']))
