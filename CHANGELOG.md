@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.2.3 (2020-05-25)
+* Fixed a crash where some module outputs could not be processed. ([#275](https://github.com/eerkunt/terraform-compliance/issues/275))
+
 ## 1.2.2 (2020-05-24)
 * Improved resource mounting where some terraform providers were creating inconsistent plan output and omitted some parameters that are referenced to a dynamic resource. ([#260](https://github.com/eerkunt/terraform-compliance/issues/260))
 * Fixed an issue where regular expression usage on CIDR steps was causing a problem. ([#265](https://github.com/eerkunt/terraform-compliance/issues/265))
