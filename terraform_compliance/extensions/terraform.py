@@ -237,7 +237,7 @@ class TerraformParser(object):
                         self.resources[target_resource][Defaults.r_mount_addr_ptr_list].extend(source)
 
                     if parameter not in self.resources[source_resource]['values']:
-                        self.resources[source_resource]['values'][parameter] = resource
+                        self.resources[source_resource]['values'][parameter] = target_resource
 
     def _find_resource_from_name(self, resource_name):
         '''
@@ -258,7 +258,9 @@ class TerraformParser(object):
             module = self.raw['configuration']['root_module'].get('module_calls', {}).get(module_name, {})
 
             output_value = module.get('module', {}).get('outputs', {}).get(output_id, {})
-            resources = output_value.get('expression', {}).get('references') if 'expression' in output_value else output_value.get('value', [])
+
+            resources = output_value.get('expression', {}).get('references', []) if 'expression' in output_value else output_value.get('value', [])
+
             resources = ['{}.{}.{}'.format(resource_type, module_name, res) for res in resources]
 
             if resources:
