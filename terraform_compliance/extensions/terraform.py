@@ -258,11 +258,8 @@ class TerraformParser(object):
             module = self.raw['configuration']['root_module'].get('module_calls', {}).get(module_name, {})
 
             output_value = module.get('module', {}).get('outputs', {}).get(output_id, {})
-            if 'expression' in output_value:
-                output_value = output_value.get('expression', {})
-                resources = output_value.get('references') if 'references' in output_value else []
-            else:
-                output_value.get('value', [])
+
+            resources = output_value.get('expression', {}).get('references', []) if 'expression' in output_value else output_value.get('value', [])
 
             resources = ['{}.{}.{}'.format(resource_type, module_name, res) for res in resources]
 
