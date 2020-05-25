@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 1.2.3 (2020-05-25)
+* Fixed a crash where some module outputs could not be processed. ([#275](https://github.com/eerkunt/terraform-compliance/issues/275))
+
+## 1.2.2 (2020-05-24)
+* Improved resource mounting where some terraform providers were creating inconsistent plan output and omitted some parameters that are referenced to a dynamic resource. ([#260](https://github.com/eerkunt/terraform-compliance/issues/260))
+* Fixed an issue where regular expression usage on CIDR steps was causing a problem. ([#265](https://github.com/eerkunt/terraform-compliance/issues/265))
+
 ## 1.2.1 (2020-05-19)
 * Fixed a problem where properties having a space character were not recognised.
 * Optimised key/value (property) definitions on all steps, where all keys or values can also have space characters encapsulated within "". ([#270](https://github.com/eerkunt/terraform-compliance/issues/270))

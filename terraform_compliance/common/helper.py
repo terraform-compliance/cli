@@ -28,33 +28,26 @@ def flatten(items):
 
 
 def check_if_cidr(value):
-    regex = r'(1[0-9][0-9]|2[0-4][0-9]|25[0-5]|[0-9][0-9]|[0-9])' \
-            r'\.' \
-            r'(1[0-9][0-9]|2[0-4][0-9]|25[0-5]|[0-9][0-9]|[0-9])' \
-            r'\.' \
-            r'(1[0-9][0-9]|2[0-4][0-9]|25[0-5]|[0-9][0-9]|[0-9])' \
-            r'\.' \
-            r'(1[0-9][0-9]|2[0-4][0-9]|25[0-5]|[0-9][0-9]|[0-9])' \
-            r'\/' \
-            r'(3[0-2]|2[0-9]|1[0-9]|[0-9])'
-    matches = re.match(regex, value)
-
-    if matches is not None:
+    try:
+        re.compile(value)
         return True
-
-    # Check if the CIDR is a regex
-    is_ip_regex = r'^([0-9\.]+)$'
-    if re.match(is_ip_regex, value) is not None:
-        return True
-
-    return False
+    except TypeError as e:
+        return False
 
 
 def is_ip_in_cidr(ip_cidr, cidr):
-    is_ip_regex = r'^([0-9\.]+)$'
+    is_ip_regex = r'(1[0-9][0-9]|2[0-4][0-9]|25[0-5]|[0-9][0-9]|[0-9])' \
+                  r'\.' \
+                  r'(1[0-9][0-9]|2[0-4][0-9]|25[0-5]|[0-9][0-9]|[0-9])' \
+                  r'\.' \
+                  r'(1[0-9][0-9]|2[0-4][0-9]|25[0-5]|[0-9][0-9]|[0-9])' \
+                  r'\.' \
+                  r'(1[0-9][0-9]|2[0-4][0-9]|25[0-5]|[0-9][0-9]|[0-9])' \
+                  r'\/' \
+                  r'(3[0-2]|2[0-9]|1[0-9]|[0-9])'
 
     # IP is a not a regex string
-    if re.match(is_ip_regex, ip_cidr) is None:
+    if re.match(is_ip_regex, ip_cidr) is not None:
         for ip_network in cidr:
             if check_if_cidr(ip_cidr) and check_if_cidr(ip_network) and IPNetwork(ip_cidr) in IPNetwork(ip_network):
                 return True

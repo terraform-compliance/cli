@@ -338,6 +338,57 @@ class TestTerraformParser(TestCase):
         self.assertEqual(obj._find_resource_from_name('resource_type.resource_id'), ['a'])
 
     @patch.object(TerraformParser, '_read_file', return_value={})
+    def test_find_resource_from_name_resource_name_in_module_outputs_expression_references(self, *args):
+        obj = TerraformParser('somefile', parse_it=False)
+        obj.raw['configuration'] = {
+            "root_module": {
+            "module_calls": {
+                "module_name": {
+                    "source": "../../module-test",
+                    "module": {
+                        "outputs": {
+                            "my_expression": {
+                                "expression": {
+                                    "references": [
+                                        "var.example"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            }
+        }
+        self.assertEqual(obj._find_resource_from_name('module.module_name.my_expression'), ['module.module_name.var.example'])
+
+    @patch.object(TerraformParser, '_read_file', return_value={})
+    def test_find_resource_from_name_resource_name_in_module_outputs_expression(self, *args):
+        obj = TerraformParser('somefile', parse_it=False)
+        obj.raw['configuration'] = {
+            "root_module": {
+            "module_calls": {
+                "module_name": {
+                    "source": "../../module-test",
+                    "module": {
+                        "outputs": {
+                            "my_expression": {
+                                "expression": {
+                                    "constant_value": [
+                                        "10.123.0.0/16"
+                                    ]
+                                },
+                                "description": "List of cidr(s)"
+                            }
+                        }
+                    }
+                }
+            }
+            }
+        }
+        self.assertEqual(obj._find_resource_from_name('module.module_name.my_expression'), [])
+
+    @patch.object(TerraformParser, '_read_file', return_value={})
     def test_distribute_providers(self, *args):
         obj = TerraformParser('somefile', parse_it=False)
         obj.resources = {

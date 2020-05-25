@@ -104,12 +104,18 @@ def wrapper(_step_obj, reference_address):
     return it_must_have_reference_address_referenced(_step_obj, reference_address)
 
 
+@then(u'it {condition:ANY} have {proto} protocol and port {port} for {cidr:ANY}')
+def wrapper(_step_obj, condition, proto, port, cidr):
+    return it_condition_have_proto_protocol_and_port_port_for_cidr(_step_obj, condition, proto, port, cidr)
+
+
 @then(u'it must contain {something:PROPERTY_COMPAT}')
 @then(u'it must have {something:PROPERTY_COMPAT}')
 @then(u'they must contain {something:PROPERTY_COMPAT}')
 @then(u'they must have {something:PROPERTY_COMPAT}')
 def wrapper(_step_obj, something, inherited_values=Null):
     return it_must_contain_something(_step_obj, something, inherited_values=Null)
+
 
 @then(u'it must not contain {something:PROPERTY_COMPAT}')
 @then(u'they must not contain {something:PROPERTY_COMPAT}')
@@ -123,11 +129,6 @@ def wrapper(_step_obj, something, inherited_values=Null):
 @then(u'{something:ANY} must be enabled')
 def wrapper(_step_obj, something):
     return property_is_enabled(_step_obj, something)
-
-
-@then(u'it {condition:ANY} have {proto:ANY} protocol and port {port} for {cidr:ANY}')
-def wrapper(_step_obj, condition, proto, port, cidr):
-    return it_condition_have_proto_protocol_and_port_port_for_cidr(_step_obj, condition, proto, port, cidr)
 
 
 @when(u'I {action_type:PROPERTY} it')

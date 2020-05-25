@@ -44,7 +44,7 @@ def step_condition(step):
     return current_condition
 
 
-@custom_type("ANY", r"[\"'\.\/_\-A-Za-z0-9\s:]+")
+@custom_type("ANY", r".+")
 def custom_type_any(text):
     return text.replace('"', '').replace('\'', '')
 
@@ -54,9 +54,9 @@ def custom_type_any(text):
 def custom_type_prop(text):
     return text.replace('"', '').replace('\'', '')
 
-@custom_type("PROPERTY_COMPAT", r"([\*\.\/_\-A-Za-z0-9:\(\)\[\]\']+\s[\*\.\/_\-A-Za-z0-9:\(\)\[\]\']+)|"
-                                r"(\"[\s\*\.\/_\-A-Za-z0-9:\(\)\[\]\']+\")|"
-                                r"([\*\.\/_\-A-Za-z0-9:\(\)\[\]\']+)")
+@custom_type("PROPERTY_COMPAT", r"([\*\.\/_\-A-Za-z0-9:\(\)\[\]\']+\s[\*\.\/_\-A-Za-z0-9:\(\)\[\]\']+$)|"
+                                r"(\"[\s\*\.\/_\-A-Za-z0-9:\(\)\[\]\']+\"$)|"
+                                r"([\*\.\/_\-A-Za-z0-9:\(\)\[\]\']+$)")
 def custom_type_prop(text):
     return text.replace('"', '').replace('\'', '')
 
