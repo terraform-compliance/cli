@@ -66,6 +66,7 @@ def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
         # Default to master branch and full repository
         if args.features.endswith('.git'):
             features_git_repo = args.features
+            features_git_branch = 'master'
 
         # Optionally allow for directory and branch
         elif '.git//' in args.features and '?ref=' in args.features:
@@ -84,7 +85,7 @@ def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
 
         # Clone repository
         args.features = mkdtemp()
-        Repo.clone_from(url=features_git_repo, to_path=args.features, env=ssh_cmd)
+        Repo.clone_from(url=features_git_repo, to_path=args.features, env=ssh_cmd, depth=1, branch=features_git_branch)
 
     features_directory = os.path.join(os.path.abspath(args.features))
 
