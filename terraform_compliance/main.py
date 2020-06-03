@@ -63,9 +63,27 @@ def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
 
     # A remote repository used here
     if args.features.startswith(('http', 'https', 'ssh')):
-        features_git_repo = args.features
-        args.features = mkdtemp()
+        # Default to master branch and full repository
+        if args.features.endswith('.git'):
+            features_git_repo = args.features
 
+        # Optionally allow for directory and branch
+        elif '.git//' in args.features and '?ref=' in args.features:
+            # Split on .git/
+            features_git_list = args.features.split('.git/', 1)
+            # Everything up to .git is the repository
+            features_git_repo = features_git_list[0] + '.git'
+
+            # Split the directory and branch ref
+            features_git_list = features_git_list[1].split('?ref=', 1)
+            features_git_dir = features_git_list[0]
+            features_git_branch = features_git_list[1]
+
+        else:  # invalid
+            raise ValueError("Bad feature directory:" + args.features)
+
+        # Clone repository
+        args.features = mkdtemp()
         Repo.clone_from(url=features_git_repo, to_path=args.features, env=ssh_cmd)
 
     features_directory = os.path.join(os.path.abspath(args.features))
