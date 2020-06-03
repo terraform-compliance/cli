@@ -70,6 +70,18 @@ or if the repository is a private repository ;
 The authentication to that git repository will be handled via your `~/.ssh/config`. If you are using a different
 ssh key for this repository then you also need to provide `-i` parameter to pointing your private key.
 
+New in `1.2.4`, a repository can be referenced by branch name and directory. This uses syntax similar to Terraform
+[Modules in Package Sub-directories](https://www.terraform.io/docs/modules/sources.html#modules-in-package-sub-directories).
+The reference must include `//` after `.git` and end with `?ref=<branch-name>` or `?ref=<tag>`.
+```
+[~] $ terraform-compliance -f git:ssh://github.com/user/repo.git//directory?ref=v1.0.0 ...
+```
+The directory is optional.
+```
+[~] $ terraform-compliance -f git:ssh://github.com/user/repo.git//?ref=staging ...
+```
+
+
 ### -p / --planfile
 {: .d-inline-block }
 REQUIRED
