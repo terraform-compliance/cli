@@ -61,6 +61,7 @@ def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
     if args.ssh_key:
         ssh_cmd = {'GIT_SSH_COMMAND': 'ssh -l {} -i {}'.format('git', args.ssh_key)}
 
+    features_dir = '/'
     # A remote repository used here
     if args.features.startswith(('http', 'https', 'ssh')):
         # Default to master branch and full repository
@@ -77,7 +78,7 @@ def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
 
             # Split the directory and branch ref
             features_git_list = features_git_list[1].split('?ref=', 1)
-            features_git_dir = features_git_list[0]
+            features_dir = features_git_list[0]
             features_git_branch = features_git_list[1]
 
         else:  # invalid
@@ -87,7 +88,7 @@ def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
         args.features = mkdtemp()
         Repo.clone_from(url=features_git_repo, to_path=args.features, env=ssh_cmd, depth=1, branch=features_git_branch)
 
-    features_directory = os.path.join(os.path.abspath(args.features))
+    features_directory = os.path.join(os.path.abspath(args.features) + features_dir)
 
     commands = ['radish',
                 '--write-steps-once',
