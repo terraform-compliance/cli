@@ -70,6 +70,8 @@ class Error(Exception):
                 self._fail_step(self.step_obj.id)
             else:
                 self.step_obj.state = Step.State.SKIPPED
+                for step in self.step_obj.parent.all_steps:
+                    step.runable = False
             return
 
         if self.no_failure is False:
