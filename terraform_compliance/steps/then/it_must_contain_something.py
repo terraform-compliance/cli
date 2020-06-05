@@ -40,6 +40,7 @@ def it_must_contain_something(_step_obj, something, inherited_values=Null):
 
                     if isinstance(found_key, dict):
                         found_value = jsonify(found_key.get(something, found_key))
+                        found_value = found_value if found_value != [] and found_value != '' else found_key # in case the value would evaluate False 
                     else:
                         found_value = found_key
             elif isinstance(values, list):
@@ -137,6 +138,7 @@ def it_must_not_contain_something(_step_obj, something, inherited_values=Null):
 
                     if isinstance(found_key, dict):
                         found_value = jsonify(found_key.get(something, found_key))
+                        found_value = found_value if found_value != [] and found_value != '' else found_key # in case the value would evaluate False 
                     else:
                         found_value = found_key
             elif isinstance(values, list):
