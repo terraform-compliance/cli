@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.5 (2020-05-25)
+## Unreleased
 * Fixed a bug where some empty found values would be treated as not found. ([#249](https://github.com/eerkunt/terraform-compliance/issues/249))
 
 ## 1.2.4 (2020-06-03)
