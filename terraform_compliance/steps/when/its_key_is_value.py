@@ -69,7 +69,10 @@ def its_key_is_value(_step_obj, key, value, dict_value=None, address=Null):
         _step_obj.context.stash = found_list
         _step_obj.context.addresses = get_resource_address_list_from_stash(found_list)
     else:
-        if dict_value is None:
+        if object_key is Null:
+            skip_step(_step_obj, message='Could not find {} in {}.'.format(key,
+                                                                           ', '.join(_step_obj.context.addresses)))
+        elif dict_value is None:
             skip_step(_step_obj, message='Can not find {} {} in {}.'.format(value, orig_key,
                                                                             ', '.join(_step_obj.context.addresses)))
         else:
@@ -126,7 +129,10 @@ def its_key_is_not_value(_step_obj, key, value, dict_value=None, address=Null):
         _step_obj.context.stash = found_list
         _step_obj.context.addresses = get_resource_address_list_from_stash(found_list)
     else:
-        if dict_value is None:
+        if object_key is Null:
+            skip_step(_step_obj, message='Could not find {} in {}.'.format(key,
+                                                                     ', '.join(_step_obj.context.addresses)))
+        elif dict_value is None:
             skip_step(_step_obj, message='Found {} {} in {}.'.format(value, orig_key,
                                                                      ', '.join(_step_obj.context.addresses)))
         else:

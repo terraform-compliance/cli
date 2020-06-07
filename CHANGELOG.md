@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 1.2.5 (unreleased)
+* Fixed a bug where some empty found values would be treated as not found. ([#249](https://github.com/eerkunt/terraform-compliance/issues/249))
+* Improved some error messages that might create some confusion about the failure results. ([#284](https://github.com/eerkunt/terraform-compliance/issues/284))
+* Fixed a problem where using `@warning` tag was causing a problem where error messages was hidden on `-q` usage.
+
+## 1.2.4 (2020-06-03)
+* Add ability to reference a git repo by branch name and directory via `<repo>.git//<directory>?ref=<branch-name`. ([#218](https://github.com/eerkunt/terraform-compliance/issues/218))
+
 ## 1.2.3 (2020-05-25)
 * Fixed a crash where some module outputs could not be processed. ([#275](https://github.com/eerkunt/terraform-compliance/issues/275))
 
