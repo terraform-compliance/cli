@@ -2,6 +2,7 @@
 
 ## Unreleased
 * Fixed a bug where some empty found values would be treated as not found. ([#249](https://github.com/eerkunt/terraform-compliance/issues/249))
+* Improved some error messages that might create some confusion about the failure results. ([#284](https://github.com/eerkunt/terraform-compliance/issues/284))
 
 ## 1.2.4 (2020-06-03)
 * Add ability to reference a git repo by branch name and directory via `<repo>.git//<directory>?ref=<branch-name`. ([#218](https://github.com/eerkunt/terraform-compliance/issues/218))
