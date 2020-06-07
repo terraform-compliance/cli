@@ -9,6 +9,7 @@ Feature: Resources should be properly tagged
   Scenario: Ensure that waf_policy for ALB/CF tag is defined
     Given I have aws_alb defined
     When it has tags
+    Then it must contain tags
     Then it must contain waf_policy
     And its value must match the "^(internal|external|custom)$" regex
 
