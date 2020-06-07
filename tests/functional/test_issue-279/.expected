@@ -1,0 +1,1 @@
+warning: aws_autoscaling_group.bar \(aws_autoscaling_group\) does not have health_check_type property.

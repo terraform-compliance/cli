@@ -33,6 +33,7 @@ for test_dir in tests:
 
     test_result = ''
     expected = ''
+    unexpected = ''
 
     if not os.path.isfile('{}/plan.out.json'.format(directory)) or not os.path.isfile('{}/test.feature'.format(directory)):
         test_result = colorful.orange('skipped')
@@ -43,6 +44,10 @@ for test_dir in tests:
         if os.path.isfile('{}/.expected'.format(directory)):
             with open('{}/.expected'.format(directory)) as expected_file:
                 expected = expected_file.read().split('\n')
+
+        if os.path.isfile('{}/.unexpected'.format(directory)):
+            with open('{}/.unexpected'.format(directory)) as unexpected_file:
+                unexpected = unexpected_file.read().split('\n')
 
         if not os.path.isfile('{}/.no_early_exit'.format(directory)):
             parameters.append('-q')
@@ -81,11 +86,26 @@ for test_dir in tests:
 
                         test_result = colorful.red('failed')
                         failure_happened = True
-                    else:
-                        test_result = colorful.green('passed')
 
-                else:
+                if unexpected:
+                    unexpected_failures = [
+                        unexp for unexp in unexpected 
+                        if re.findall(unexp, str(test_process.stdout))
+                    ]
+
+                    if unexpected_failures:
+                        print('\nOutput: {}'.format(test_process.stdout))
+                        print('Found;')
+                        for failure in expected_failures:
+                            print('\t{}'.format(colorful.yellow(failure)))
+                        print('in the test output. This was unexpected.\n')
+
+                        test_result = colorful.red('failed')
+                        failure_happened = True
+                
+                if not failure_happened:
                     test_result = colorful.green('passed')
+
             else:
                 print('Output: {}'.format(test_process.stdout))
                 test_result = colorful.red('failed')
