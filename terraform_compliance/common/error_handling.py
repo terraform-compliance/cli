@@ -51,7 +51,7 @@ class Error(Exception):
         # Prepare message
         msg = []
         for msg_index in range(0,len(self.message)):
-            if self.exit_on_failure is False:
+            if self.exit_on_failure is False or self.no_failure is True:
                 msg_header = '{}{}'.format(self.exception_name,
                                            colorful.bold_white(':')) if msg_index == 0 else ' '*(len(self.exception_name)+1)
                 msg.append('\t\t{} {}'.format(colorful.bold_red(msg_header), colorful.red(self.message[msg_index])))
@@ -62,7 +62,7 @@ class Error(Exception):
                                                                             colorful.bold_white(':'),
                                                                             self.message[msg_index]))
 
-        if self.exit_on_failure is False:
+        if self.exit_on_failure is False or (self.no_failure is True and msg):
             for message in msg:
                 console_write(message)
 
