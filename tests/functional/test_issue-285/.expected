@@ -1,1 +1,1 @@
-Failure: the \(^AzureServices$\) regex could not found in azurerm_storage_account.example.
+Failure: the \(\^AzureServices\$\) regex could not found in azurerm_storage_account.example.

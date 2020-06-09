@@ -39,6 +39,8 @@ from terraform_compliance.steps.then.it_must_contain_something import (
 from terraform_compliance.steps.then.property_is_enabled import property_is_enabled
 from terraform_compliance.steps.then.security_group_related import it_condition_have_proto_protocol_and_port_port_for_cidr
 from terraform_compliance.steps.then.its_value_condition_match_the_search_regex import its_value_condition_match_the_search_regex_regex
+from terraform_compliance.steps.then.its_value_condition_match_the_search_regex import its_singular_value_condition_match_the_search_regex_regex
+from terraform_compliance.steps.then.its_value_condition_match_the_search_regex import any_of_its_values_condition_match_the_search_regex_regex
 from terraform_compliance.steps.then.its_value_condition_contain import its_value_condition_contain
 from terraform_compliance.steps.then.it_must_have_reference_address_referenced import it_must_have_reference_address_referenced
 from terraform_compliance.steps.then.its_key_condition_be_value import its_key_condition_be_value
@@ -147,6 +149,7 @@ def wrapper(_step_obj, operator, number, _stash=EmptyStash):
 
 
 @then(u'its value {condition:ANY} match the "{search_regex}" regex')
+@then(u'all of its values {condition:ANY} match the "{search_regex}" regex')
 def wrapper(_step_obj, condition, search_regex, _stash=EmptyStash):
     if not hasattr(_step_obj.context, 'case_insensitivity') or _step_obj.context.case_insensitivity:
         return its_value_condition_match_the_search_regex_regex(_step_obj,
@@ -162,11 +165,45 @@ def wrapper(_step_obj, condition, search_regex, _stash=EmptyStash):
                                                                 case_insensitive=False)
 
 
+@then(u'its singular value {condition:ANY} match the "{search_regex}" regex')
+def wrapper(_step_obj, condition, search_regex, _stash=EmptyStash):
+    if not hasattr(_step_obj.context, 'case_insensitivity') or _step_obj.context.case_insensitivity:
+        return its_singular_value_condition_match_the_search_regex_regex(_step_obj,
+                                                                condition,
+                                                                search_regex,
+                                                                _stash=EmptyStash,
+                                                                case_insensitive=True)
+    else:
+        return its_singular_value_condition_match_the_search_regex_regex(_step_obj,
+                                                                condition,
+                                                                search_regex,
+                                                                _stash=EmptyStash,
+                                                                case_insensitive=False)
+
+
+@then(u'any of its values {condition:ANY} match the "{search_regex}" regex')
+def wrapper(_step_obj, condition, search_regex, _stash=EmptyStash):
+    if not hasattr(_step_obj.context, 'case_insensitivity') or _step_obj.context.case_insensitivity:
+        return any_of_its_values_condition_match_the_search_regex_regex(_step_obj,
+                                                                condition,
+                                                                search_regex,
+                                                                _stash=EmptyStash,
+                                                                case_insensitive=True)
+    else:
+        return any_of_its_values_condition_match_the_search_regex_regex(_step_obj,
+                                                                condition,
+                                                                search_regex,
+                                                                _stash=EmptyStash,
+                                                                case_insensitive=False)
+
+
+# TODO think about this later
 @then(u'its value {condition:ANY} be null')
 def wrapper(_step_obj, condition):
     return its_value_condition_match_the_search_regex_regex(_step_obj, condition, u'(\x00|^$|^null|^None)$')
 
 
+# TODO think about this later
 @then(u'its value {condition:ANY} be {match:ANY}')
 def its_value_condition_equal(_step_obj, condition, match, _stash=EmptyStash):
     if match not in ('null'):
