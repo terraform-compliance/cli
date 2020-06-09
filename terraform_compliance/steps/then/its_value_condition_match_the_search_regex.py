@@ -130,16 +130,3 @@ def its_singular_value_condition_match_the_search_regex_regex(_step_obj, conditi
         return
 
     its_value_condition_match_the_search_regex_regex(_step_obj, condition, search_regex, _stash, case_insensitive)
-
-"""
-Later, when all is done
-
-make any/all a variable and use the func for both
-
-quantifier and etc.
-
-don't worry about that and code quality for now. Just write stuff.
-
-veya birlestirme for debugging purposes
-
-"""

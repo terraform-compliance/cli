@@ -197,13 +197,11 @@ def wrapper(_step_obj, condition, search_regex, _stash=EmptyStash):
                                                                 case_insensitive=False)
 
 
-# TODO think about this later
 @then(u'its value {condition:ANY} be null')
 def wrapper(_step_obj, condition):
     return its_value_condition_match_the_search_regex_regex(_step_obj, condition, u'(\x00|^$|^null|^None)$')
 
 
-# TODO think about this later
 @then(u'its value {condition:ANY} be {match:ANY}')
 def its_value_condition_equal(_step_obj, condition, match, _stash=EmptyStash):
     if match not in ('null'):
