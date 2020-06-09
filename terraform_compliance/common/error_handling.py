@@ -12,7 +12,7 @@ class WrapperError(Exception):
     def __init__(self, exception):
         self.exception = exception
         self.reason = str(exception)
-        self.traceback = None
+        self.traceback = "No Traceback"
         self.name = exception.__class__.__name__
         self.filename = None
         self.line = 0
@@ -82,3 +82,6 @@ class Error(Exception):
             if step.id == step_id:
                 step.state = Step.State.FAILED
                 step.failure = WrapperError(self.exception('\r{}'.format(' '*len(self.exception_name))))
+
+        if self.message:
+            self.step_obj.failure.traceback = '{}: {}'.format(self.exception_name, '\n'.join(self.message))
