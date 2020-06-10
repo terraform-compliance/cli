@@ -27,7 +27,7 @@ def its_value_condition_match_the_search_regex_regex(_step_obj, condition, searc
     regex_flags = re.IGNORECASE if case_insensitive else 0
     regex_flag_error_text = 'case insensitive' if case_insensitive else 'case sensitive'
 
-    if isinstance(values, (str, int, bool)) or values is None:
+    if isinstance(values, (str, int, bool, float)) or values is None:
         matches = re.match(regex, str(values), flags=regex_flags)
 
         if (condition == 'must' and matches is None) or (condition == "must not" and matches is not None):

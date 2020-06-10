@@ -257,7 +257,7 @@ def search_regex_in_list(regex, target_list):
 
 def seek_value_in_dict(needle, haystack, address=None):
     findings = []
-    if isinstance(haystack, (str, int, bool, float)) and needle in haystack:
+    if isinstance(haystack, (str, int, bool, float)) and str(needle) in str(haystack):
         findings.append(dict(values=needle, address=None))
 
     elif isinstance(haystack, dict):

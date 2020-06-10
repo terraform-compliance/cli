@@ -248,6 +248,8 @@ to
 This step requires fundamental knowledge about regular expressions due the pattern matching algorithm. It is highly
 recommended to check for your patterns in [regex101](https://regex101.com/) before you implement your tests.
 
+All values are compared with the regex. If the value referred by "it" on the plan is a dictionary or list, this step will fail if any element in the value fails the [condition](#){: .p-1 .text-green-200 .fw-700} match.
+
 > __Possible sentences :__
 >
 > ▪
