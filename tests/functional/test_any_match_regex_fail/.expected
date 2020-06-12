@@ -1,0 +1,1 @@
+Failure: bypass property in azurerm_storage_account.example resource does not match with \(\^AzureServicesBad\$\) case insensitive regex. It is set to \[\{\'address\': \'azurerm_storage_account.example\', \'values\': \[\[\'AzureServices\', \'Logging\', \'Metrics\'\], \[False, False, False\]\], \'type\': \'azurerm_storage_account\'\}\].

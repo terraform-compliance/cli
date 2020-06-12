@@ -260,6 +260,69 @@ match the
 "[search_regex](#){: .p-1 .text-blue-100 .fw-700}" 
 regex
 >
+[Then](#){: .p-1 .text-red-200} 
+all of its values
+[condition](#){: .p-1 .text-green-200 .fw-700} 
+match the  
+"[search_regex](#){: .p-1 .text-blue-100 .fw-700}" 
+regex
+>
+| key | Description | Examples |
+|:---:|:----------|:-|
+| [condition](#){: .p-1 .text-green-200 .fw-700} | defines positive or negative comparison | Only supports for : <br>▪ Leave it empty for positive comparison<br>▪ Use `must not` for negative comparison |
+| [search_regex](#){: .p-1 .text-blue-100 .fw-700}  | any valid regular expression | `^some_name$` `^(you|can|use|or|like|this)$` `\d+` |
+
+__Please note that__, in case you are using a [Scenario Outline instead of a Scenario](/pages/bdd-references/#scenario)
+and if you need to use `|` (or) regular expression operator within your [search_regex](#){: .p-1 .text-blue-100 .fw-700} 
+regex, then you must use escape characters (`\`) for not to interfere with Scenario Outline structure. In these situations
+use `\|` instead of `|`.
+
+__Warning:__ Terraform plan files may not always match the corresponding .tf files 1:1. In those cases, this step will match with the plan file and not the .tf file.
+
+------------------------
+### [Then](#){: .p-1 .text-red-200} any of its values [condition](#){: .p-1 .text-green-200 .fw-700} match the "[search regex](#){: .p-1 .text-blue-100 .fw-700}" regex
+This step requires fundamental knowledge about regular expressions due the pattern matching algorithm. It is highly
+recommended to check for your patterns in [regex101](https://regex101.com/) before you implement your tests.
+
+All values are compared with the regex. If the value referred by "it" on the plan is a dictionary or list, this step will pass if any element in the value passes the [condition](#){: .p-1 .text-green-200 .fw-700} match.
+
+> __Possible sentences :__
+>
+> ▪
+[Then](#){: .p-1 .text-red-200} 
+any of its values
+[condition](#){: .p-1 .text-green-200 .fw-700} 
+match the  
+"[search_regex](#){: .p-1 .text-blue-100 .fw-700}" 
+regex
+>
+| key | Description | Examples |
+|:---:|:----------|:-|
+| [condition](#){: .p-1 .text-green-200 .fw-700} | defines positive or negative comparison | Only supports for : <br>▪ Leave it empty for positive comparison<br>▪ Use `must not` for negative comparison |
+| [search_regex](#){: .p-1 .text-blue-100 .fw-700}  | any valid regular expression | `^some_name$` `^(you|can|use|or|like|this)$` `\d+` |
+
+__Please note that__, in case you are using a [Scenario Outline instead of a Scenario](/pages/bdd-references/#scenario)
+and if you need to use `|` (or) regular expression operator within your [search_regex](#){: .p-1 .text-blue-100 .fw-700} 
+regex, then you must use escape characters (`\`) for not to interfere with Scenario Outline structure. In these situations
+use `\|` instead of `|`.
+
+------------------------
+### [Then](#){: .p-1 .text-red-200} its singular value [condition](#){: .p-1 .text-green-200 .fw-700} match the "[search regex](#){: .p-1 .text-blue-100 .fw-700}" regex
+This step requires fundamental knowledge about regular expressions due the pattern matching algorithm. It is highly
+recommended to check for your patterns in [regex101](https://regex101.com/) before you implement your tests.
+
+Very similar to [Then its value condition match the "search regex" regex](/pages/bdd-references/then.html#then-its-value-condition-match-the-search-regex-regex), but fail if the corresponding value is not one of (bool, int, float, str).
+
+> __Possible sentences :__
+>
+> ▪
+[Then](#){: .p-1 .text-red-200} 
+its singular value
+[condition](#){: .p-1 .text-green-200 .fw-700} 
+match the  
+"[search_regex](#){: .p-1 .text-blue-100 .fw-700}" 
+regex
+>
 | key | Description | Examples |
 |:---:|:----------|:-|
 | [condition](#){: .p-1 .text-green-200 .fw-700} | defines positive or negative comparison | Only supports for : <br>▪ Leave it empty for positive comparison<br>▪ Use `must not` for negative comparison |
