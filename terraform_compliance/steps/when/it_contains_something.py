@@ -178,10 +178,8 @@ def it_has_something(_step_obj, something, inherited_values=Null):
             if isinstance(found_value, dict) and 'constant_value' in found_value:
                 found_value = found_value['constant_value']
 
-            if found_value is not Null and found_value != [] and found_value != '' and found_value != {}:
-                prop_list.append({'address': resource['address'],
-                                  'values': resource,
-                                  'type': _step_obj.context.name})
+            if found_value not in (Null, [], '', {}):
+                prop_list.append(resource)
 
         if prop_list:
             _step_obj.context.stash = prop_list
