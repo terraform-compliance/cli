@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 1.2.6 (2020-06-12)
+* Fixed a bug where failures would break --junit-xml dump. ([#271](https://github.com/eerkunt/terraform-compliance/issues/271))
+* Fixed a bug where searching some haystacks would raise an error in seek_value_in_dict. ([#285](https://github.com/eerkunt/terraform-compliance/issues/285))
+* New step: [Then all of its values condition match the "search_regex" regex](https://terraform-compliance.com/pages/bdd-references/then.html#then-its-value-condition-match-the-search-regex-regex). ([#285](https://github.com/eerkunt/terraform-compliance/issues/285), [#293](https://github.com/eerkunt/terraform-compliance/issues/293))
+* New step: [Then any of its values condition match the "search_regex" regex](https://terraform-compliance.com/pages/bdd-references/then.html#then-any-of-its-values-condition-match-the-search-regex-regex). ([#285](https://github.com/eerkunt/terraform-compliance/issues/285), [#293](https://github.com/eerkunt/terraform-compliance/issues/293))
+* New step: [Then its singular value condition match the "search_regex" regex](https://terraform-compliance.com/pages/bdd-references/then.html#then-its-singular-value-condition-match-the-search-regex-regex). ([#285](https://github.com/eerkunt/terraform-compliance/issues/285), [#293](https://github.com/eerkunt/terraform-compliance/issues/293))
+
 ## 1.2.5 (2020-06-07)
 * Fixed a bug where some empty found values would be treated as not found. ([#249](https://github.com/eerkunt/terraform-compliance/issues/249))
 * Improved some error messages that might create some confusion about the failure results. ([#284](https://github.com/eerkunt/terraform-compliance/issues/284))
