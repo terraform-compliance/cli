@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## Unreleased
+* Fixed faulty over restriction in [Then its singular value condition match the "search_regex" regex](https://terraform-compliance.com/pages/bdd-references/then.html#then-its-singular-value-condition-match-the-search-regex-regex).
+
 ## 1.2.6 (2020-06-12)
 * Fixed a bug where failures would break --junit-xml dump. ([#271](https://github.com/eerkunt/terraform-compliance/issues/271))
 * Fixed a bug where searching some haystacks would raise an error in seek_value_in_dict. ([#285](https://github.com/eerkunt/terraform-compliance/issues/285))

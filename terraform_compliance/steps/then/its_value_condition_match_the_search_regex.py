@@ -123,10 +123,22 @@ def any_of_its_values_condition_match_the_search_regex_regex(_step_obj, conditio
 
 
 def its_singular_value_condition_match_the_search_regex_regex(_step_obj, condition, search_regex, _stash=EmptyStash, case_insensitive=True):
-    values = _step_obj.context.stash if _stash is EmptyStash else _stash
+    resources = _step_obj.context.stash if _stash is EmptyStash else _stash
 
-    if isinstance(values, (dict, list)):
-        Error(_step_obj, '{} is multivalued! Please use any/all versions of this step instead.'.format(_step_obj.context.property_name,))
-        return
+    if isinstance(resources, dict): 
+        if 'values' in resources: # in case the object is in 'address', 'values', 'type' format
+            resources = resources['values']
+        else:
+            Error(_step_obj, '{} is multivalued! Please use any/all versions of this step instead.'.format(_step_obj.context.property_name,))
+            return
+
+    elif isinstance(resources, list):
+        for resource in resources:
+            if isinstance(resource, dict):
+                resource = resource.get('values', resource)
+
+            if isinstance(resource, (dict, list)) and len(resource) > 1:
+                Error(_step_obj, '{} is multivalued! Please use any/all versions of this step instead.'.format(_step_obj.context.property_name,))
+                return
 
     its_value_condition_match_the_search_regex_regex(_step_obj, condition, search_regex, _stash, case_insensitive)
