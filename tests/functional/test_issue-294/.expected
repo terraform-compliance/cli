@@ -1,0 +1,2 @@
+Failure: module.linuxservers-fail.azurerm_virtual_machine.vm-linux\[0\] \(azurerm_virtual_machine\) does not have backmeup property.
+Failure: module.linuxservers-fail.azurerm_virtual_machine.vm-linux\[0\] \(azurerm_virtual_machine\) does not have terraform property.
