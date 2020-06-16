@@ -15,6 +15,7 @@ class Defaults(object):
         self.interactive_mode = self.detect_term()
         self.no_failure_tags = ['warning', 'no-failure', 'no-fail', 'info', 'nofailure', 'nofail', 'dontfail']
         self.case_sensitive_tags = ['case-sensitive', 'case_sensitive', 'casesensitive', 'case-sensitivity']
+        self.no_skip_tags = ['noskip', 'no-skip', 'dontskip', 'failonskip', 'fail-on-skip']
 
         if '--no-ansi' in sys.argv or not sys.stdout.isatty():
             self.skip_colour = \

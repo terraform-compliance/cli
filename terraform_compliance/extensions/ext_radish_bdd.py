@@ -3,6 +3,7 @@ from radish.utils import console_write
 from radish import custom_type
 from radish import world
 from terraform_compliance.common.defaults import Defaults
+from terraform_compliance.common.error_handling import Error
 
 
 def skip_step(step, resource=None, message=None):
@@ -13,10 +14,18 @@ def skip_step(step, resource=None, message=None):
         message = '{} {} {}'.format(Defaults().yellow('Can not find'),
                                     Defaults().green(resource),
                                     Defaults().yellow('defined in target terraform plan.'))
+        e_message = 'Can not find {} defined in target terraform plan.'.format(resource)
     else:
+        e_message = message
         message = Defaults().yellow(message)
 
-    if str(world.config.formatter) in ('gherkin'):
+
+    # return from this and assume the rest is handled in error handling for now
+    if hasattr(step.context, 'no_skip') and step.context.no_skip:
+        message = Defaults().failure_colour(message)
+        Error(step, e_message)
+        return
+    elif str(world.config.formatter) in ('gherkin'):
         console_write("\t{} {}: {}".format(Defaults().info_icon,
                                            Defaults().skip_colour('SKIPPING'),
                                            message.format(resource=Defaults().green(resource)))
