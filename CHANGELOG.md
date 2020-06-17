@@ -2,6 +2,7 @@
 
 ## Unreleased
 * Fixed faulty over restriction in [Then its singular value condition match the "search_regex" regex](https://terraform-compliance.com/pages/bdd-references/then.html#then-its-singular-value-condition-match-the-search-regex-regex).
+* Added [noskip](https://terraform-compliance.com/pages/bdd-references/using_tags.html#supported-tags) tags
 
 ## 1.2.6 (2020-06-12)
 * Fixed a bug where failures would break --junit-xml dump. ([#271](https://github.com/eerkunt/terraform-compliance/issues/271))
