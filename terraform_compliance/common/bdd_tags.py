@@ -1,11 +1,14 @@
 from terraform_compliance.common.defaults import Defaults
 from terraform_compliance.common.error_handling import Error
+import re
 
 
 def look_for_bdd_tags(_step_obj):
     _step_obj.context.no_failure = False
     _step_obj.context.failure_class = None
-    _step_obj.context.skip_class = None
+    _step_obj.context.no_skip = False
+    _step_obj.context.skip_class = None # to pick a tagname that user used
+    _step_obj.context.lines_to_noskip = []
 
     if hasattr(_step_obj, 'all_tags') and len(_step_obj.all_tags) > 0:
         _step_obj.context.case_insensitivity = True
@@ -19,8 +22,28 @@ def look_for_bdd_tags(_step_obj):
             elif tag.name.lower() in Defaults().no_skip_tags:
                 _step_obj.context.no_skip = True
                 _step_obj.context.skip_class = tag.name
+                _step_obj.context.lines_to_noskip = [-1]
+            elif re.search(r'({})_at_lines?_.*'.format('|'.join(Defaults().no_skip_tags)), tag.name.lower()):
+                # check for '@noskip at line x'
+                regex = r'({})_at_lines?((_\d*)*)'.format('|'.join(Defaults().no_skip_tags))
+                
+                m = re.search(regex, tag.name.lower())
+                if m is not None:
+                    _step_obj.context.no_skip = True
+                    _step_obj.context.skip_class = tag.name
 
-    if hasattr(_step_obj.context, 'no_failure') and hasattr(_step_obj.context, 'no_skip') and _step_obj.context.no_failure:
+                    line_numbers_string = m.group(2)
+
+                    try:
+                        line_numbers = map(int, line_numbers_string.strip('_').split('_'))
+                        if _step_obj.context.lines_to_noskip != [-1]: # no need to worry about this tag if we already have a general noskip
+                            _step_obj.context.lines_to_noskip.extend(line_numbers)
+                    
+                    except Exception as e:
+                        Error(_step_obj, f'A tag was determined to be a noskip, but line numbers could not be grouped by the regex {regex}\n{e}')
+
+
+    if _step_obj.context.no_failure and _step_obj.context.no_skip:
         _step_obj.context.no_failure = False
         Error(_step_obj, f'@{_step_obj.context.failure_class} and @{_step_obj.context.skip_class} tags can not be used at the same time.')
 

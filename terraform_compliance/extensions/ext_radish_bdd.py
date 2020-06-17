@@ -20,12 +20,13 @@ def skip_step(step, resource=None, message=None):
         message = Defaults().yellow(message)
 
 
-    # return from this and assume the rest is handled in error handling for now
-    if hasattr(step.context, 'no_skip') and step.context.no_skip:
-        message = Defaults().failure_colour(message)
-        Error(step, e_message)
-        return
-    elif str(world.config.formatter) in ('gherkin'):
+    if step.context.no_skip:
+        if -1 in step.context.lines_to_noskip or step.line in step.context.lines_to_noskip:
+            message = Defaults().failure_colour(message)
+            Error(step, e_message)
+            return
+    
+    if str(world.config.formatter) in ('gherkin'):
         console_write("\t{} {}: {}".format(Defaults().info_icon,
                                            Defaults().skip_colour('SKIPPING'),
                                            message.format(resource=Defaults().green(resource)))
