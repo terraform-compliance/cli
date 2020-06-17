@@ -32,10 +32,11 @@ def its_key_condition_be_value(_step_obj, key, condition, value, stash=Null, dep
             found_value = seek_regex_key_in_dict_values(entity, key, value)
             if not found_value and condition:
                 Error(_step_obj, 'Can not find {} in {} property of {}.'.format(value, key, entity.get('address', obj_address)))
+                Error(_step_obj, 'Can not find {} in {} property of {}.'.format(value, key, obj_address)) # legacy error message
             elif found_value and not condition:
                 Error(_step_obj, 'Found {}({}) in {} property of {}.'.format(value, ', '.join(found_values), key, obj_address))
 
-            found_values.extend(found_value[:1]) # only extend by the first element
+            found_values.extend(found_value)
 
         elif isinstance(entity, list):
             dict_entity = {f'not_{str(key)}': entity}
@@ -45,8 +46,7 @@ def its_key_condition_be_value(_step_obj, key, condition, value, stash=Null, dep
             elif found_value and not condition:
                 Error(_step_obj, 'Found {}({}) in {} property of {}.'.format(value, ', '.join(found_values), key, obj_address))
 
-
-            found_values.extend(found_value[:1]) # only extend by the first element
+            found_values.extend(found_value)
 
         elif isinstance(entity ,(str, int, bool)):
             # raise error because you don't have a {key: value}
@@ -57,10 +57,5 @@ def its_key_condition_be_value(_step_obj, key, condition, value, stash=Null, dep
 
 
     _step_obj.context.stash = found_values
-
-    if found_values and not condition:
-        Error(_step_obj, 'Found {}({}) in {} property of {}.'.format(value, ', '.join(found_values), key, obj_address))
-    elif len(found_values) != len(stash) and condition:
-        Error(_step_obj, 'Can not find {} in {} property of {}.'.format(value, key, obj_address))
 
     return True
