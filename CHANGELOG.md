@@ -2,6 +2,8 @@
 
 ## Unreleased
 * Fixed faulty over restriction in [Then its singular value condition match the "search_regex" regex](https://terraform-compliance.com/pages/bdd-references/then.html#then-its-singular-value-condition-match-the-search-regex-regex).
+- its_key_condition_be_value now abides the two rules: drills down to the value and fails if any resource fails. This could introduce slight backwards incompatibility, but in essence this is a bugfix and not a change.
+- Note: (don't put this line into the release) Release with @noskip.
 
 ## 1.2.6 (2020-06-12)
 * Fixed a bug where failures would break --junit-xml dump. ([#271](https://github.com/eerkunt/terraform-compliance/issues/271))
