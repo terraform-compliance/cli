@@ -271,6 +271,7 @@ class MockedStepContext(object):
         self.addresses = 'aws_db_instance.something'
         self.property_name = 'mocked_property'
         self.no_failure = False
+        self.no_skip = False
         self.failure_class = 'no_name'
 
 
