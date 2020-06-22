@@ -14,47 +14,11 @@ class Null(object):
     pass
 
 
-"""
-Can rename this to helper, search, match etc.
-
-Have all seek, match functions here
-
-They will always have the case_sensitive flag, and thus won't additional parameters.
-
-"""
 class Match(object):
     def __init__(self, case_sensitive):
         self.case_sensitive = case_sensitive
 
-    # for now, assume no dicts, list and whatsoever
-    # maybe throw good errors here
-    # def __call__(self, left, right):
-    #     if self.case_sensitive:
-    #         return str(left) == str(right)
-    #     else:
-    #         return str(left).lower() == str(right).lower()
 
-
-    # might also want to handle things like value.get(something) buy adding an if statement for dictionary. (lower the dictionary first etc.)
-
-    """
-    things to consider
-
-        done:
-            regular matches
-
-        not handled:
-            dictionary.get(something)
-            regex
-    
-    """
-    """
-        checks if two non-dict/list type are equal
-
-        edge cases:
-            What if one type is bool and the other is str and it's case sensitive?
-            
-    """
     def equals(self, left, right):
         if not isinstance(left, (bool, int, float, str)) or not isinstance(right, (bool, int, float, str)):
             raise TypeError
@@ -88,6 +52,11 @@ class Match(object):
             return False
 
         raise TypeError
+
+    # re.match. overwrites the previous flag
+    def match(self, *args, **kwargs):
+        regex_flag = 0 if self.case_sensitive else re.IGNORECASE
+        return re.match(*args, **kwargs, flags=regex_flag)
 
     
     # seek key in dict but with case_sensitivity
@@ -150,7 +119,7 @@ class Match(object):
 
 
     # ...
-    # case sensitivity orredies regex (if case insensitive, there is always re.IGNORECASE)
+    # case sensitivity overwrites regex (if case insensitive, there is always re.IGNORECASE)
         # this's admittedly weird but convention/backwards compatibility...
     def seek_regex_key_in_dict_values(self, haystack, key_name, needle, key_matched=None):
         '''
@@ -198,9 +167,6 @@ class Match(object):
             return []
 
         return found
-
-# def seek_specializer(seek_function, match):
-#     return lambda *args, **kwargs: seek_function(match, *args, **kwargs)
 
 
 def flatten_list(input):
@@ -300,12 +266,7 @@ def seek_key_in_dict(haystack, needle):
 
     return found
 
-# doesn't need the new match since this's regex matching
-# but some non-regex matching functinos use this so think about that case later
-"""
-important note, this function is used exclusively by non regex steps
-There is only one regex step and it manually looks for regexes, not from this.
-"""
+
 def seek_regex_key_in_dict_values(haystack, key_name, needle, key_matched=None):
     '''
     Searches needle in haystack ( could be dict, list, list of dicts, nested dicts, etc. ) and returns all findings
