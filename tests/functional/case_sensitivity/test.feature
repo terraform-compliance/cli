@@ -135,3 +135,33 @@ Feature: Feature for #291 continued
 
 
 	# what I would test for maths is already tested in current tests
+
+	@noskip
+	@case_sensitive
+	Scenario: Given I have resource defined (passes)
+	        Given I have azurerm_postgresql_server defined
+
+
+
+	@noskip
+	@case_sensitive
+	Scenario: Given I have resource defined (fails)
+	        Given I have azurerm_postgresql_serveR defined
+
+
+	@noskip
+	Scenario: Given I have resource defined (just making sure this passes)
+	        Given I have azurerm_postgresql_serveR defined
+
+
+
+	@noskip
+	@case_sensitive
+	Scenario: Given I have provider configured (passes)
+	        Given I have azurerm provider configured
+
+
+	@noskip
+	@case_sensitive
+	Scenario: Given I have provider configured (fails)
+	        Given I have azurerM provider configured
