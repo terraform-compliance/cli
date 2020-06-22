@@ -1,3 +1,5 @@
+from terraform_compliance.common.helper import Match
+
 
 class MockedData(object):
 
@@ -273,6 +275,7 @@ class MockedStepContext(object):
         self.no_failure = False
         self.no_skip = False
         self.failure_class = 'no_name'
+        self.match = Match(case_sensitive=False)
 
 
 class MockedWorld(object):
