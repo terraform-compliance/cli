@@ -22,6 +22,7 @@ def its_value_condition_match_the_search_regex_regex(_step_obj, condition, searc
                                                    regex_flag_error_text,
                                                    values))
 
+    match = _step_obj.context.match
     regex = r'{}'.format(search_regex)
     values = _step_obj.context.stash if _stash is EmptyStash else _stash
     regex_flags = re.IGNORECASE if case_insensitive else 0

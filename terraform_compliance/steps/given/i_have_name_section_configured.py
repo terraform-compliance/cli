@@ -36,6 +36,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
 
     # Process the tags
     _step_obj = look_for_bdd_tags(_step_obj)
+    match = _step_obj.context.match
 
     if name in ('a resource', 'any resource', 'resources'):
         _step_obj.context.type = type_name

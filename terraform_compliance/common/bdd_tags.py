@@ -1,4 +1,5 @@
 from terraform_compliance.common.defaults import Defaults
+from terraform_compliance.common.helper import Match
 from terraform_compliance.common.error_handling import Error
 import re
 
@@ -46,5 +47,9 @@ def look_for_bdd_tags(_step_obj):
     if _step_obj.context.no_failure and _step_obj.context.no_skip:
         _step_obj.context.no_failure = False
         Error(_step_obj, f'@{_step_obj.context.failure_class} and @{_step_obj.context.skip_class} tags can not be used at the same time.')
+
+    ## set the match here
+    case_sensitive = True if hasattr(_step_obj.context, 'case_insensitivity') and not _step_obj.context.case_insensitivity else False
+    _step_obj.context.match = Match(case_sensitive=case_sensitive)
 
     return _step_obj

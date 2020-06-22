@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from terraform_compliance.common.helper import (
-    seek_value_in_dict,
     EmptyStash,
     get_resource_name_from_stash
 )
@@ -11,6 +10,9 @@ from terraform_compliance.common.exceptions import TerraformComplianceInternalFa
 
 
 def its_value_condition_contain(_step_obj, condition, value, _stash=EmptyStash):
+    match = _step_obj.context.match
+    seek_value_in_dict = match.seek_value_in_dict
+
     if condition not in ('must', 'must not'):
         raise TerraformComplianceNotImplemented('Condition should be one of: `must`, `must not`')
 

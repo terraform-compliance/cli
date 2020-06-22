@@ -2,13 +2,15 @@
 
 from terraform_compliance.common.helper import (
     Null,
-    seek_regex_key_in_dict_values
 )
 from terraform_compliance.common.error_handling import Error
 from terraform_compliance.common.exceptions import TerraformComplianceNotImplemented
 
 
 def its_key_condition_be_value(_step_obj, key, condition, value, stash=Null, depth=0):
+    match = _step_obj.context.match
+    seek_regex_key_in_dict_values = match.seek_regex_key_in_dict_values
+
     if condition not in ('must', 'must not'):
         raise TerraformComplianceNotImplemented('This step only accepts "must" and "must not" as a condition.')
     condition = condition == 'must'
@@ -31,7 +33,7 @@ def its_key_condition_be_value(_step_obj, key, condition, value, stash=Null, dep
         if isinstance(entity, dict):
             found_value = seek_regex_key_in_dict_values(entity, key, value)
             if not found_value and condition:
-                Error(_step_obj, 'Can not find {} in {} property of {}.'.format(value, key, entity.get('address', obj_address)))
+                Error(_step_obj, 'Can not find {} in {} property of {}.'.format(value, key, match.get(entity, 'address', obj_address)))                
                 Error(_step_obj, 'Can not find {} in {} property of {}.'.format(value, key, obj_address)) # legacy error message
             elif found_value and not condition:
                 Error(_step_obj, 'Found {}({}) in {} property of {}.'.format(value, ', '.join(found_values), key, obj_address))
@@ -48,9 +50,9 @@ def its_key_condition_be_value(_step_obj, key, condition, value, stash=Null, dep
 
             found_values.extend(found_value)
 
-        elif isinstance(entity ,(str, int, bool)):
+        elif isinstance(entity, (str, int, bool)):
             # raise error because you don't have a {key: value}
-            if (str(entity).lower == key.lower or str(entity) == value.lower) and condition:
+            if (match.equals(entity, key) or match.equals(entity, value)) and condition:
                 Error(_step_obj, 'Value {} found in {} property of {}, but is not in {{key: value}} format.'.format(value, key, obj_address))
             if condition:
                 Error(_step_obj, 'Can not find {} in {} property of {}.'.format(value, key, obj_address))
