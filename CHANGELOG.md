@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## Unreleased
+* Generalized case-sensitivity tag to work on all steps. Centralized matching and seeking functions.
+
 ## 1.2.7 (2020-06-19)
 * Fixed faulty over restriction in [Then its singular value condition match the "search_regex" regex](https://terraform-compliance.com/pages/bdd-references/then.html#then-its-singular-value-condition-match-the-search-regex-regex).
 * New scenario tag: [noskip](https://terraform-compliance.com/pages/bdd-references/using_tags.html#supported-tags) tags
