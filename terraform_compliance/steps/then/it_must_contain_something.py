@@ -2,6 +2,7 @@
 
 from terraform_compliance.common.helper import (
     jsonify,
+    seek_key_in_dict,  # importing this purely because the unit tests require it to exist in global scope
     Null
 )
 from terraform_compliance.common.error_handling import Error

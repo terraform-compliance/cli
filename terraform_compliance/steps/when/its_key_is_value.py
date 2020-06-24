@@ -106,10 +106,10 @@ def its_key_is_not_value(_step_obj, key, value, dict_value=None, address=Null):
             if "[" in object_key:
                 object_key = object_key.split('[')[0]
 
-            if object_key != value:
+            if not match.equals(object_key, value):
                 found_list.append(obj)
 
-        elif isinstance(object_key, (int, bool)) and not match.get(object_key, value):
+        elif isinstance(object_key, (int, bool)) and not match.equals(object_key, value):
             found_list.append(obj)
 
         elif isinstance(object_key, list) and not match.contains(object_key, value):

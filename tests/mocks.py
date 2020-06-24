@@ -334,12 +334,12 @@ class MockedWorldConfigTerraform(object):
             }
         }
 
-    def find_resources_by_type(self, resource_type):
+    def find_resources_by_type(self, resource_type, match=None):
         for key, value in self.resources.items():
             if value['type'] == resource_type and value['mode'] == 'managed':
                 return [value]
 
-    def get_providers_from_configuration(self, provider_type):
+    def get_providers_from_configuration(self, provider_type, match=None):
         if provider_type == 'some_provider':
             return ['some_provider']
 

@@ -1,5 +1,5 @@
 import json
-from terraform_compliance.common.helper import seek_key_in_dict, flatten_list, dict_merge
+from terraform_compliance.common.helper import seek_key_in_dict, flatten_list, dict_merge, Match
 import sys
 from copy import deepcopy
 from terraform_compliance.common.defaults import Defaults
@@ -352,7 +352,7 @@ class TerraformParser(object):
         for _, resource in self.resources.items():
             self._expand_resource_tags(resource)
 
-    def find_resources_by_type(self, resource_type, match):
+    def find_resources_by_type(self, resource_type, match=Match(case_sensitive=False)):
         '''
         Finds all resources matching with the resource_type
 
@@ -367,7 +367,7 @@ class TerraformParser(object):
 
         return resource_list
 
-    def find_data_by_type(self, resource_type, match):
+    def find_data_by_type(self, resource_type, match=Match(case_sensitive=False)):
         '''
         Finds all data matching with the resource_type
 
@@ -382,7 +382,7 @@ class TerraformParser(object):
 
         return resource_list
 
-    def get_providers_from_configuration(self, provider_type, match):
+    def get_providers_from_configuration(self, provider_type, match=Match(case_sensitive=False)):
         '''
         Returns all providers as a list for the given provider type
 
