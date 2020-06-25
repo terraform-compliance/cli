@@ -1,0 +1,1 @@
+Failure: Can not find azurerm_postgresql_configuration in type property of azurerm_postgresql_server.example.

@@ -34,5 +34,9 @@ with the tag name. It will be `nofail :` in the example above.
 
 | Tag Name(s) | Description |
 |:-----------:|:------------|
-| `warning`, `no-failure`, `no-fail`, `info`, `nofailure`, `nofail`, `dontfail` | Do not fail the scenario |
+| `warning`, `no-failure`, `no-fail`, `info`, `nofailure`, `nofail`, `dontfail` | Do not fail the scenario. |
+| `noskip`, `no-skip`, `dontskip`, `failonskip`, `fail-on-skip` | Fail if any part of the scenario skips. |
+| `noskip_at_line_8`, `no-skip_at_lines_10_22_23`,  | Fail if any of the indicated lines skips. __Note:__ only GIVEN and WHEN steps can be skipped |
 | `case-sensitive`, `case_sensitive`, `case-sensitivity`, `casesensitive` | Use case sensitive matching on regex steps. |
+
+__Please note that__, nofail and noskip tags can not be used within the same scenario.
