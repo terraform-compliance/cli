@@ -28,7 +28,7 @@ def its_value_condition_match_the_search_regex_regex(_step_obj, condition, searc
     regex_flag_error_text = 'case insensitive' if not match.case_sensitive else 'case sensitive'
 
     if isinstance(values, (str, int, bool, float)) or values is None:
-        matches = match.match(regex, str(values))
+        matches = match.regex_match(regex, str(values))
 
         if (condition == 'must' and matches is None) or (condition == "must not" and matches is not None):
             _stash = get_resource_name_from_stash(_step_obj.context.stash, _stash, _step_obj.context.address)
@@ -87,7 +87,7 @@ def any_of_its_values_condition_match_the_search_regex_regex(_step_obj, conditio
             return True
 
         if isinstance(values, (str, int, bool, float)) or values is None:
-            matches = match.match(regex, str(values))
+            matches = match.regex_match(regex, str(values))
 
             if (condition == 'must' and matches is not None) or (condition == "must not" and matches is None):
                 found = True

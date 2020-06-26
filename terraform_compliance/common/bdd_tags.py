@@ -11,22 +11,24 @@ def look_for_bdd_tags(_step_obj):
     _step_obj.context.skip_class = None # to pick a tagname that user used
     _step_obj.context.lines_to_noskip = []
 
+    defaults = Defaults()
+
     if hasattr(_step_obj, 'all_tags') and len(_step_obj.all_tags) > 0:
         _step_obj.context.case_insensitivity = True
 
         for tag in _step_obj.all_tags:
-            if tag.name.lower() in Defaults().no_failure_tags:
+            if tag.name.lower() in defaults.no_failure_tags:
                 _step_obj.context.no_failure = True
                 _step_obj.context.failure_class = tag.name
-            elif tag.name.lower() in Defaults().case_sensitive_tags:
+            elif tag.name.lower() in defaults.case_sensitive_tags:
                 _step_obj.context.case_insensitivity = False
-            elif tag.name.lower() in Defaults().no_skip_tags:
+            elif tag.name.lower() in defaults.no_skip_tags:
                 _step_obj.context.no_skip = True
                 _step_obj.context.skip_class = tag.name
                 _step_obj.context.lines_to_noskip = [-1]
-            elif re.search(r'({})_at_lines?_.*'.format('|'.join(Defaults().no_skip_tags)), tag.name.lower()):
+            elif re.search(r'({})_at_lines?_.*'.format('|'.join(defaults.no_skip_tags)), tag.name.lower()):
                 # check for '@noskip at line x'
-                regex = r'({})_at_lines?((_\d*)*)'.format('|'.join(Defaults().no_skip_tags))
+                regex = r'({})_at_lines?((_\d*)*)'.format('|'.join(defaults.no_skip_tags))
                 
                 m = re.search(regex, tag.name.lower())
                 if m is not None:

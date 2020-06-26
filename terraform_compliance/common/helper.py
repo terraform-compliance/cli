@@ -54,7 +54,7 @@ class Match(object):
         raise TypeError
 
     # re.match. overwrites the previous flag
-    def match(self, *args, **kwargs):
+    def regex_match(self, *args, **kwargs):
         regex_flag = 0 if self.case_sensitive else re.IGNORECASE
         return re.match(*args, **kwargs, flags=regex_flag)
 
@@ -142,7 +142,7 @@ class Match(object):
 
                 if self.equals(key, key_name) or key_matched is not None:
                     if isinstance(value, str):
-                        matches = re.match(regex, value, flags=re.IGNORECASE) if not self.case_sensitive else re.match(regex, value) # else 0
+                        matches = self.regex_match(regex, value)
 
                         if matches is not None:
                             found.append(matches.group(0))
