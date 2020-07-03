@@ -205,6 +205,22 @@ def jsonify(string):
         return string
 
 
+def recursive_jsonify(haystack):
+    if isinstance(haystack, str):
+        haystack = jsonify(haystack)
+        if isinstance(haystack, (list, dict)):
+            return recursive_jsonify(haystack)
+        return haystack
+
+    if isinstance(haystack, dict):
+        haystack = {key: recursive_jsonify(value) for key, value in haystack.items()}
+    
+    if isinstance(haystack, list):
+        haystack = [recursive_jsonify(value) for value in haystack]
+
+    return haystack
+
+
 def get_resource_name_from_stash(stash, alternative_stash=None, address=None):
     if address is not None:
         return {'address': address}
