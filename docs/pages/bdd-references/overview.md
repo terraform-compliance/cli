@@ -1,6 +1,6 @@
 ---
 layout: default
-title: GIVEN Directives
+title: Overview of Scenario Flow
 nav_order: 0
 has_children: false
 parent: BDD Reference
