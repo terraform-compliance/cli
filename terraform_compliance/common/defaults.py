@@ -11,6 +11,8 @@ class Defaults(object):
     r_mount_addr_ptr = 'terraform-compliance.mounted_resources.addresses'
     r_mount_addr_ptr_list = 'terraform-compliance.mounted_resources.addresses_list'
 
+    supported_min_python_versions = '3.6.0'
+
     def __init__(self):
         self.interactive_mode = self.detect_term()
         self.no_failure_tags = ['warning', 'no-failure', 'no-fail', 'info', 'nofailure', 'nofail', 'dontfail']

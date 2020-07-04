@@ -14,7 +14,8 @@ from terraform_compliance.common.helper import (
     dict_merge,
     is_list_of_dict,
     is_key_exist,
-    transform_asg_style_tags
+    transform_asg_style_tags,
+    python_version_check
 )
 
 
@@ -268,3 +269,6 @@ class TestHelperFunctions(TestCase):
         resource_list = 'abc'
         output = transform_asg_style_tags(resource_list)
         self.assertEqual(output, 'abc')
+
+    def test_python_version_check_success(self):
+        self.assertEqual(python_version_check(), 1)
