@@ -59,10 +59,6 @@ def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
 
     python_version_check()
 
-
-
-
-    
     # SSH Key is given for git authentication
     ssh_cmd = {}
     if args.ssh_key:
