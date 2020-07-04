@@ -2,6 +2,7 @@
 
 ## Unreleased
 * Jsonfiy the stash on creation to prevent bugs related to jsonification.
+* Added python version check for invalid Python versions. Minimum python version is set to 3.6.0
 
 ## 1.2.7 (2020-06-19)
 * Fixed faulty over restriction in [Then its singular value condition match the "search_regex" regex](https://terraform-compliance.com/pages/bdd-references/then.html#then-its-singular-value-condition-match-the-search-regex-regex).
