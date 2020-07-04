@@ -8,6 +8,7 @@ from terraform_compliance.common.readable_plan import ReadablePlan
 from radish.main import main as call_radish
 from radish.utils import console_write
 from terraform_compliance.common.defaults import Defaults
+from terraform_compliance.common.helper import python_version_check
 
 #
 # This is used to override some stuff that does not fit our needs within radish-bdd.
@@ -56,6 +57,8 @@ def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
 
     steps_directory = os.path.join(os.path.split(os.path.abspath(__file__))[0], 'steps')
 
+    python_version_check()
+    
     # SSH Key is given for git authentication
     ssh_cmd = {}
     if args.ssh_key:
