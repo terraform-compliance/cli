@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from terraform_compliance.common.helper import (
-    jsonify,
     Null
 )
 from terraform_compliance.extensions.ext_radish_bdd import skip_step
@@ -51,7 +50,7 @@ def it_contains_something_old(_step_obj, something, inherited_values=Null):
                     found_key = found_key[0] if len(found_key) == 1 and match.contains(found_key[0], something) else found_key
 
                     if isinstance(found_key, dict):
-                        found_value = jsonify(match.get(found_key, something, found_key))
+                        found_value = match.get(found_key, something, found_key)
                     else:
                         found_value = found_key
             elif isinstance(values, list):
@@ -78,7 +77,7 @@ def it_contains_something_old(_step_obj, something, inherited_values=Null):
                         found_key = found_key[0] if len(found_key) == 1 else found_key
 
                         if isinstance(found_key, dict):
-                            found_value.append(jsonify(match.get(found_key, something, found_key)))
+                            found_value.append(match.get(found_key, something, found_key))
 
             if isinstance(found_value, dict) and 'constant_value' in found_value:
                 found_value = found_value['constant_value']
@@ -152,7 +151,7 @@ def it_has_something(_step_obj, something, inherited_values=Null):
                     found_key = found_key[0] if len(found_key) == 1 and match.contains(found_key[0], something) else found_key
 
                     if isinstance(found_key, dict):
-                        found_value = jsonify(match.get(found_key, something, found_key))
+                        found_value = match.get(found_key, something, found_key)
                     else:
                         found_value = found_key
             elif isinstance(values, list):
@@ -179,7 +178,7 @@ def it_has_something(_step_obj, something, inherited_values=Null):
                         found_key = found_key[0] if len(found_key) == 1 else found_key
 
                         if isinstance(found_key, dict):
-                            found_value.append(jsonify(match.get(found_key, something, found_key)))
+                            found_value.append(match.get(found_key, something, found_key))
 
             if isinstance(found_value, dict) and 'constant_value' in found_value:
                 found_value = found_value['constant_value']
@@ -251,7 +250,7 @@ def it_does_not_have_something(_step_obj, something, inherited_values=Null):
                     found_key = found_key[0] if len(found_key) == 1 and match.contains(found_key[0], something) else found_key
 
                     if isinstance(found_key, dict):
-                        found_value = jsonify(match.get(found_key, something, found_key))
+                        found_value = match.get(found_key, something, found_key)
                     else:
                         found_value = found_key
             elif isinstance(values, list):
@@ -278,7 +277,7 @@ def it_does_not_have_something(_step_obj, something, inherited_values=Null):
                         found_key = found_key[0] if len(found_key) == 1 else found_key
 
                         if isinstance(found_key, dict):
-                            found_value.append(jsonify(match.get(found_key, something, found_key)))
+                            found_value.append(match.get(found_key, something, found_key))
 
             if isinstance(found_value, dict) and 'constant_value' in found_value:
                 found_value = found_value['constant_value']

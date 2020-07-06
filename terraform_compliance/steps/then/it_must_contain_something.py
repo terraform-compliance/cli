@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from terraform_compliance.common.helper import (
-    jsonify,
     seek_key_in_dict,  # importing this purely because the unit tests require it to exist in global scope
     Null
 )
@@ -42,7 +41,7 @@ def it_must_contain_something(_step_obj, something, inherited_values=Null):
                     found_key = found_key[0] if len(found_key) == 1 and something in found_key[0] else found_key
 
                     if isinstance(found_key, dict):
-                        found_value = jsonify(match.get(found_key, something, found_key))
+                        found_value = match.get(found_key, something, found_key)
                         found_value = found_value if found_value not in ([], '') else found_key
                     else:
                         found_value = found_key
@@ -76,7 +75,7 @@ def it_must_contain_something(_step_obj, something, inherited_values=Null):
                         found_key = found_key[0] if len(found_key) == 1 else found_key
 
                         if isinstance(found_key, dict):
-                            found_value.append(jsonify(found_key.get(something, found_key)))
+                            found_value.append(found_key.get(something, found_key))
 
             if isinstance(found_value, dict) and 'constant_value' in found_value:
                 found_value = found_value['constant_value']
@@ -149,7 +148,7 @@ def it_must_not_contain_something(_step_obj, something, inherited_values=Null):
                     found_key = found_key[0] if len(found_key) == 1 and something in found_key[0] else found_key
 
                     if isinstance(found_key, dict):
-                        found_value = jsonify(match.get(found_key, something, found_key))
+                        found_value = match.get(found_key, something, found_key)
                         found_value = found_value if found_value not in ([], '') else found_key
                     else:
                         found_value = found_key
@@ -182,7 +181,7 @@ def it_must_not_contain_something(_step_obj, something, inherited_values=Null):
                         found_key = found_key[0] if len(found_key) == 1 else found_key
 
                         if isinstance(found_key, dict):
-                            found_value.append(jsonify(found_key.get(something, found_key)))
+                            found_value.append(found_key.get(something, found_key))
 
             if isinstance(found_value, dict) and 'constant_value' in found_value:
                 found_value = found_value['constant_value']
