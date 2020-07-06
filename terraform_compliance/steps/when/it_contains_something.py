@@ -199,11 +199,12 @@ def it_has_something(_step_obj, something, inherited_values=Null):
                               'terraform plan.'.format(something, _step_obj.context.name))
 
     elif _step_obj.context.type == 'provider':
+        _step_obj.context.stash = []
         for provider_data in _step_obj.context.stash:
             values = seek_key_in_dict(provider_data, something)
 
             if values:
-                _step_obj.context.stash = provider_data
+                _step_obj.context.stash.append(provider_data)
                 _step_obj.context.property_name = something
                 _step_obj.context.address = '{}.{}'.format(provider_data.get('name', _step_obj.context.addresses),
                                                            provider_data.get('alias', "\b"))

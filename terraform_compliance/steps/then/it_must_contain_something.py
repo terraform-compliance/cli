@@ -96,11 +96,12 @@ def it_must_contain_something(_step_obj, something, inherited_values=Null):
             return something, prop_list
 
     elif _step_obj.context.type == 'provider':
+        _step_obj.context.stash = []
         for provider_data in _step_obj.context.stash:
             values = seek_key_in_dict(provider_data, something)
 
             if values:
-                _step_obj.context.stash = values
+                _step_obj.context.stash.append(values)
                 _step_obj.context.property_name = something
                 _step_obj.context.address = '{}.{}'.format(provider_data.get('name', _step_obj.context.addresses),
                                                            provider_data.get('alias', "\b"))
