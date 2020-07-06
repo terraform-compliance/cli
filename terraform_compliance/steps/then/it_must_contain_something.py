@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
 
 from terraform_compliance.common.helper import (
-    seek_key_in_dict,
-    seek_regex_key_in_dict_values,
     jsonify,
+    seek_key_in_dict,  # importing this purely because the unit tests require it to exist in global scope
     Null
 )
 from terraform_compliance.common.error_handling import Error
 
 
 def it_must_contain_something(_step_obj, something, inherited_values=Null):
+    match = _step_obj.context.match
+    seek_key_in_dict, seek_regex_key_in_dict_values = match.seek_key_in_dict, match.seek_regex_key_in_dict_values
+
     prop_list = []
 
     _step_obj.context.stash = inherited_values if inherited_values is not Null else _step_obj.context.stash
@@ -24,6 +26,7 @@ def it_must_contain_something(_step_obj, something, inherited_values=Null):
                             'address': resource,
                             'type': _step_obj.context.name}
 
+            # not going to use match.get here because the following line is an edge case
             values = resource.get('values', resource.get('expressions', {}))
             if not values:
                 values = seek_key_in_dict(resource, something)
@@ -31,7 +34,7 @@ def it_must_contain_something(_step_obj, something, inherited_values=Null):
             found_value = Null
             found_key = Null
             if isinstance(values, dict):
-                found_key = values.get(something, seek_key_in_dict(values, something))
+                found_key = match.get(values, something, seek_key_in_dict(values, something))
                 if not isinstance(found_key, list):
                     found_key = [{something: found_key}]
 
@@ -39,7 +42,7 @@ def it_must_contain_something(_step_obj, something, inherited_values=Null):
                     found_key = found_key[0] if len(found_key) == 1 and something in found_key[0] else found_key
 
                     if isinstance(found_key, dict):
-                        found_value = jsonify(found_key.get(something, found_key))
+                        found_value = jsonify(match.get(found_key, something, found_key))
                         found_value = found_value if found_value not in ([], '') else found_key
                     else:
                         found_value = found_key
@@ -58,6 +61,7 @@ def it_must_contain_something(_step_obj, something, inherited_values=Null):
 
                             if found_key:
                                 found_key = found_key[0]
+                                # not going to use match.get here because the following line is an edge case
                                 found_value = value.get('value')
                                 break
                     elif isinstance(value, list):
@@ -108,6 +112,9 @@ def it_must_contain_something(_step_obj, something, inherited_values=Null):
 
 
 def it_must_not_contain_something(_step_obj, something, inherited_values=Null):
+    match = _step_obj.context.match
+    seek_key_in_dict, seek_regex_key_in_dict_values = match.seek_key_in_dict, match.seek_regex_key_in_dict_values
+
     prop_list = []
 
     _step_obj.context.stash = inherited_values if inherited_values is not Null else _step_obj.context.stash
@@ -129,7 +136,7 @@ def it_must_not_contain_something(_step_obj, something, inherited_values=Null):
             found_value = Null
             found_key = Null
             if isinstance(values, dict):
-                found_key = values.get(something, seek_key_in_dict(values, something))
+                found_key = match.get(values, something, seek_key_in_dict(values, something))
                 if not isinstance(found_key, list):
                     found_key = [{something: found_key}]
 
@@ -137,7 +144,7 @@ def it_must_not_contain_something(_step_obj, something, inherited_values=Null):
                     found_key = found_key[0] if len(found_key) == 1 and something in found_key[0] else found_key
 
                     if isinstance(found_key, dict):
-                        found_value = jsonify(found_key.get(something, found_key))
+                        found_value = jsonify(match.get(found_key, something, found_key))
                         found_value = found_value if found_value not in ([], '') else found_key
                     else:
                         found_value = found_key

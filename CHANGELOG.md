@@ -1,6 +1,7 @@
 # CHANGELOG
 
 ## Unreleased
+* Generalized case-sensitivity tag to work on all steps. Centralized matching and seeking functions.
 * Jsonfiy the stash on creation to prevent bugs related to jsonification.
 
 ## 1.2.7 (2020-06-19)
