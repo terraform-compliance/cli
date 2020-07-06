@@ -70,6 +70,44 @@ change something in the `terraform_compliance/steps`, then the tests must exist 
 `terraform-compliance` uses [radish](http://radish-bdd.io/) for the BDD framework, with lots of [extensions](https://github.com/eerkunt/terraform-compliance/tree/master/terraform_compliance/extensions) written to parse and process 
 terraform files. Most of the functionality is described in https://terraform-compliance.com. 
 
+## How to write tests
+
+You will usually want to only write functional tests. 
+
+Structure
+
+```
+.
+├── terraform_compliance
+│  
+├── docs
+│
+└── tests
+    └── terraform_compliance (unit tests)
+    └── functional (integration tests)
+        ├── ...
+        └── your_test_directory
+            ├── main.tf
+	        ├── plan.out.json
+	        ├── test.feature
+	        └── Dotfiles (optional)
+```
+
+### Dotfiles
+
+All dotfiles are optional.
+
+* .failure
+	- if this file exists, the test will be expected to fail
+* .expected
+	- Expected output. The tests will fail if scenarios in test.feature won't produce every line (output) in .expected. A common use case is to check if a specific error happens in the test.
+* .unexpected
+	- Unexpected output. Similar to .expected, but the test fails if any of the tests produces any of the lines in .unexpected
+
+### Test your changes
+`tox -e unit` to runs unit tests <br>
+`tox -e integration` to runs integration tests
+
 ## Updating Website
 
 `terraform-compliance` uses Jekyll for templating and Github Pages for serving its website. https://terraform-compliance.com

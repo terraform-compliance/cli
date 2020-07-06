@@ -4,6 +4,11 @@ from terraform_compliance.steps import resource_name
 from collections.abc import Iterable
 import json
 from copy import deepcopy
+import sys
+from terraform_compliance.common.exceptions import TerraformComplianceInternalFailure
+from semver import VersionInfo, compare
+from terraform_compliance.common.defaults import Defaults
+from radish.utils import console_write
 
 
 class EmptyStash(object):
@@ -497,3 +502,22 @@ def transform_asg_style_tags(resource_list):
                     resource['values']['tags'][elem['key']] = elem['value']
 
     return resource_list
+
+
+def python_version_check():
+    python_version = sys.version.split(' ')[0]
+
+    if not python_version:
+        raise TerraformComplianceInternalFailure('Could not determine python version. '
+                                                 'Please post this to issues: '.format(sys.version))
+
+    python_version = VersionInfo.parse(python_version)
+
+    if compare(str(python_version), Defaults.supported_min_python_versions) < 0:
+        console_write('ERROR: Python version {} is not supported. '
+                      'You must have minimum {} version.'.format(python_version,
+                                                                 Defaults.supported_min_python_versions[0]))
+        sys.exit(1)
+
+
+    return True

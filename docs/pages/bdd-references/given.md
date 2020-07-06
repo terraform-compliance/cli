@@ -11,6 +11,9 @@ parent: BDD Reference
 `GIVEN` directive is use to set the initial standard about the type of the entity that you are searching for.
 Every Scenario must have a `GIVEN` as the first step defining the context.
 
+If the scenario starts with `Given I have aws_s3_bucket defined`, the step below will have all the aws_s3_bucket resources defined in its context.
+
+
 Few examples can be ;
 
 ```gherkin
@@ -18,7 +21,7 @@ Given I have AWS S3 Bucket defined
 ```
 
 ```gherkin
-Given I have aws provider configured
+Given I have aws_s3_bucket defined
 ```
 
 ```gherkin
@@ -54,6 +57,16 @@ configured
 |:---:|:----------|:-|
 | [name](#){: .text-green-200 .fw-700}  | name of the key in terraform. | `aws_security_group` `ingress`<br><br>In order to define all resources, you can also use ;<br><br>`a resource` `any resource` `a` `any` `anything` |
 | [type](#){: .text-blue-100 .fw-700}  | The type of the key. | It can be one of these ;<br>`resource` `resources` `provider` `providers` `data` `datas` `variable` `variables` |
+
+__Please note__, `Given I have any resource` can be used to capture all resources.
+```
+Given I have any resource defined
+When its provider_name is aws
+...
+```
+Will run following steps on all aws resources.
+
+
 
 ----------------------
 ### [Given](#){: .p-1 .text-red-200} I have [name](#){: .text-green-200 .fw-700} defined

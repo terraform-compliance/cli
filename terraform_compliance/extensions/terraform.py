@@ -32,9 +32,7 @@ class TerraformParser(object):
 
         self.providers = {}
 
-        self.configuration = dict(resources={}
-                                  , variables={}
-                                  )
+        self.configuration = dict(resources={}, variables={})
         self.file_type = "plan"
         self.resources_raw = {}
 

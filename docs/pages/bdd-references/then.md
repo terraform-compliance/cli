@@ -166,45 +166,6 @@ Please not that `must not` condition is executed per every Security Group Rule, 
 executed for ALL rules exist in a Security Group.
 
 ------------------------
-### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} has not [something](#){: .p-1 .text-blue-100 .fw-700}
-This is a filtering function. Thus, found resources from previous step will be filtered based on these values.
-
-> __Possible sentences :__
->
-> ▪
-[When](#){: .p-1 .text-red-200} 
-its 
-[property](#){: .p-1 .text-green-200 .fw-700} 
-is not
-[something](#){: .p-1 .text-blue-100 .fw-700} 
->
-> ▪
-[When](#){: .p-1 .text-red-200} 
-its 
-[property](#){: .p-1 .text-green-200 .fw-700} 
-has not 
-[something](#){: .p-1 .text-blue-100 .fw-700} 
->
-> ▪
-[When](#){: .p-1 .text-red-200} 
-its 
-[property](#){: .p-1 .text-green-200 .fw-700} 
-does not include
-[something](#){: .p-1 .text-blue-100 .fw-700} 
->
-> ▪
-[When](#){: .p-1 .text-red-200} 
-its 
-[property](#){: .p-1 .text-green-200 .fw-700} 
-does not consist
-[something](#){: .p-1 .text-blue-100 .fw-700} 
->
-| key | Description | Examples |
-|:---:|:----------|:-|
-| [property](#){: .p-1 .text-green-200 .fw-700} | any property that resource have (e.g. `name`, `address`, etc. ). Using `address` will give the terraform object name | `address` `name` `size`|
-| [something](#){: .p-1 .text-blue-100 .fw-700} | any string or numeric value that the property has. | `s3_my_bucket` `my-bucket` `50G`  `"something with spaces"`|
-
-------------------------
 ### [Then](#){: .p-1 .text-red-200} its value must be [action](#){: .p-1 .text-green-200 .fw-700} than [number](#){: .p-1 .text-blue-100 .fw-700} 
 This step is for mathematical comparison. It requires to have a [specific `WHEN` directive](/pages/bdd-references/when.html#when-i-action-them) above this line.
 
