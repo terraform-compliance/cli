@@ -7,7 +7,8 @@ from terraform_compliance.common.helper import (
     find_root_by_key,
     remove_mounted_resources,
     transform_asg_style_tags,
-    convert_resource_type
+    convert_resource_type,
+    recursive_jsonify
 )
 from terraform_compliance.extensions.ext_radish_bdd import skip_step
 import re
@@ -41,7 +42,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
     if name in ('a resource', 'any resource', 'resources'):
         _step_obj.context.type = type_name
         _step_obj.context.name = name
-        _step_obj.context.stash = [obj for key, obj in _terraform_config.config.terraform.resources_raw.items()]
+        _step_obj.context.stash = recursive_jsonify([obj for key, obj in _terraform_config.config.terraform.resources_raw.items()])
         _step_obj.context.addresses = get_resource_address_list_from_stash(_step_obj.context.stash)
         _step_obj.context.property_name = type_name
         return True
@@ -49,7 +50,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
     elif name in ('an output', 'any output', 'outputs'):
         _step_obj.context.type = 'output'
         _step_obj.context.name = name
-        _step_obj.context.stash = [obj for key, obj in _terraform_config.config.terraform.configuration['outputs'].items()]
+        _step_obj.context.stash = recursive_jsonify([obj for key, obj in _terraform_config.config.terraform.configuration['outputs'].items()])
         _step_obj.context.addresses = get_resource_address_list_from_stash(_terraform_config.config.terraform.configuration['outputs'])
         _step_obj.context.property_name = 'output'
         return True
@@ -57,7 +58,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
     elif name in ('a variable', 'any variable', 'variables'):
         _step_obj.context.type = 'variable'
         _step_obj.context.name = name
-        _step_obj.context.stash = [obj for key, obj in _terraform_config.config.terraform.configuration['variables'].items()]
+        _step_obj.context.stash = recursive_jsonify([obj for key, obj in _terraform_config.config.terraform.configuration['variables'].items()])
         _step_obj.context.addresses = 'variable'
         _step_obj.context.property_name = 'variable'
         return True
@@ -80,7 +81,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
         if resource_list:
             _step_obj.context.type = type_name
             _step_obj.context.name = name
-            _step_obj.context.stash = resource_list
+            _step_obj.context.stash = recursive_jsonify(resource_list)
             _step_obj.context.addresses = get_resource_address_list_from_stash(resource_list)
             _step_obj.context.property_name = type_name
             return True
@@ -92,7 +93,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
         if resource_list:
             _step_obj.context.type = type_name
             _step_obj.context.name = name
-            _step_obj.context.stash = resource_list
+            _step_obj.context.stash = recursive_jsonify(resource_list)
             _step_obj.context.addresses = get_resource_address_list_from_stash(resource_list)
             _step_obj.context.property_name = type_name
             return True
@@ -103,7 +104,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
         if found_variable:
             _step_obj.context.type = type_name
             _step_obj.context.name = name
-            _step_obj.context.stash = found_variable
+            _step_obj.context.stash = recursive_jsonify(found_variable)
             _step_obj.context.addresses = name
             _step_obj.context.property_name = type_name
             return True
@@ -114,7 +115,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
         if found_output:
             _step_obj.context.type = type_name
             _step_obj.context.name = name
-            _step_obj.context.stash = found_output
+            _step_obj.context.stash = recursive_jsonify(found_output)
             _step_obj.context.addresses = name
             _step_obj.context.property_name = type_name
             return True
@@ -125,7 +126,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
         if found_provider:
             _step_obj.context.type = type_name
             _step_obj.context.name = name
-            _step_obj.context.stash = found_provider
+            _step_obj.context.stash = recursive_jsonify(found_provider)
             _step_obj.context.addresses = name
             _step_obj.context.address = name
             _step_obj.context.property_name = type_name
@@ -138,7 +139,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
         if data_list:
             _step_obj.context.type = type_name
             _step_obj.context.name = name
-            _step_obj.context.stash = data_list
+            _step_obj.context.stash = recursive_jsonify(data_list)
             _step_obj.context.addresses = name
             _step_obj.context.address = name
             _step_obj.context.property_name = type_name

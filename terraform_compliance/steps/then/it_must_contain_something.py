@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from terraform_compliance.common.helper import (
-    jsonify,
     seek_key_in_dict,  # importing this purely because the unit tests require it to exist in global scope
     Null
 )
@@ -42,7 +41,7 @@ def it_must_contain_something(_step_obj, something, inherited_values=Null):
                     found_key = found_key[0] if len(found_key) == 1 and something in found_key[0] else found_key
 
                     if isinstance(found_key, dict):
-                        found_value = jsonify(match.get(found_key, something, found_key))
+                        found_value = match.get(found_key, something, found_key)
                         found_value = found_value if found_value not in ([], '') else found_key
                     else:
                         found_value = found_key
@@ -62,21 +61,26 @@ def it_must_contain_something(_step_obj, something, inherited_values=Null):
                             if found_key:
                                 found_key = found_key[0]
                                 # not going to use match.get here because the following line is an edge case
-                                found_value = value.get('value')
+                                found_value.extend(value.get('value'))
                                 break
                     elif isinstance(value, list):
-                        found_key, found_value = it_must_contain_something(_step_obj, something, value)
+                        found_key, temp_found_value = it_must_contain_something(_step_obj, something, value)
+                        found_value.extend(temp_found_value)
+
+                    elif isinstance(value, (str, bool, int, float)):
+                        if match.equals(value, something):
+                            found_value.append(value)
 
                     if found_key is not Null and len(found_key):
                         found_key = found_key[0] if len(found_key) == 1 else found_key
 
                         if isinstance(found_key, dict):
-                            found_value.append(jsonify(found_key.get(something, found_key)))
+                            found_value.append(found_key.get(something, found_key))
 
             if isinstance(found_value, dict) and 'constant_value' in found_value:
                 found_value = found_value['constant_value']
 
-            if found_value is not Null and found_value != [] and found_value != '' and found_value != {}:
+            if found_value not in (Null, [], '', {}):
                 prop_list.append({'address': resource['address'],
                                   'values': found_value,
                                   'type': _step_obj.context.name})
@@ -144,7 +148,7 @@ def it_must_not_contain_something(_step_obj, something, inherited_values=Null):
                     found_key = found_key[0] if len(found_key) == 1 and something in found_key[0] else found_key
 
                     if isinstance(found_key, dict):
-                        found_value = jsonify(match.get(found_key, something, found_key))
+                        found_value = match.get(found_key, something, found_key)
                         found_value = found_value if found_value not in ([], '') else found_key
                     else:
                         found_value = found_key
@@ -163,24 +167,28 @@ def it_must_not_contain_something(_step_obj, something, inherited_values=Null):
 
                             if found_key:
                                 found_key = found_key[0]
-                                found_value = value.get('value')
+                                found_value.append(value.get('value'))
                                 break
                     elif isinstance(value, list):
-                        found_key, found_value = it_must_contain_something(_step_obj, something, value)
+                        found_key, temp_found_value = it_must_contain_something(_step_obj, something, value)
+                        found_value.extend(temp_found_value)
+
+                    elif isinstance(value, (str, bool, int, float)):
+                        if match.equals(value, something):
+                            found_value.append(value)
 
                     if found_key is not Null and len(found_key):
                         found_key = found_key[0] if len(found_key) == 1 else found_key
 
                         if isinstance(found_key, dict):
-                            found_value.append(jsonify(found_key.get(something, found_key)))
+                            found_value.append(found_key.get(something, found_key))
 
             if isinstance(found_value, dict) and 'constant_value' in found_value:
                 found_value = found_value['constant_value']
 
-            if found_value is not Null and found_value != [] and found_value != '' and found_value != {}:
-                Error(_step_obj, '{} property exists in {} ({}).'.format(something,
-                                                                         resource['address'],
-                                                                         resource.get('type', '')))
+            # if found_value is not Null and found_value != [] and found_value != '' and found_value != {}:
+            if found_value not in (Null, [], '', {}):
+                Error(_step_obj, '{} property exists in {} ({}).'.format(something, resource['address'], resource.get('type', '')))
 
     elif _step_obj.context.type == 'provider':
         for provider_data in _step_obj.context.stash:
