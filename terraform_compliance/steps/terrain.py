@@ -1,5 +1,6 @@
 import curses
 import json
+from IPython import embed
 from radish import before, after, world
 from terraform_compliance.extensions.terraform import TerraformParser
 from terraform_compliance.main import cli_arguments
@@ -17,8 +18,6 @@ def wait_for_user_input(step):
         return
 
     cmd = 'cmd'
-
-    # pythonify this later
     while cmd != '':
         try:
             cmd = input(">> Press enter to continue")
@@ -27,23 +26,16 @@ def wait_for_user_input(step):
             return
         
         if cmd == 'd':
-            try:
-                from IPython import embed
-            except ImportError as e:
-                raise RadishError(
-                'if you want to use the failure inspector extension you have to "pip install radish-bdd[ipython-debugger]"'
-                )
-
             embed()
         elif cmd == 's':
-            # print(step.context.stash)
             print(json.dumps(step.context.stash, indent=4))
         elif cmd != '':
             print(
                 """
 Commands
 - s: prints stash
-- d: opens interactive python
+- d: opens Interactive Python
+- h: prints commands
                 """
             )
 
