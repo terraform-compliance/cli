@@ -1,6 +1,7 @@
 # CHANGELOG
 
 ## Unreleased
+* Generalized case-sensitivity tag to work on all steps. Centralized matching and seeking functions.
 * Jsonfiy the stash on creation to prevent bugs related to jsonification.
 * Added python version check for invalid Python versions. Minimum python version is set to 3.6.0
 

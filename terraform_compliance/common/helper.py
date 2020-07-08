@@ -19,6 +19,161 @@ class Null(object):
     pass
 
 
+class Match(object):
+    def __init__(self, case_sensitive):
+        self.case_sensitive = case_sensitive
+
+
+    def equals(self, left, right):
+        if not isinstance(left, (bool, int, float, str)) or not isinstance(right, (bool, int, float, str)):
+            raise TypeError
+
+        if self.case_sensitive:
+            return str(left) == str(right)
+        else:
+            return str(left).lower() == str(right).lower()
+
+
+    # gets something from a dictionary
+    # needle == key
+    def get(self, haystack, needle, default=None):
+        if not isinstance(haystack, dict):
+            return TypeError
+        
+        for key, value in haystack.items():
+            if self.equals(key, needle):
+                return value
+        
+        return default
+
+    # checks if the collection (list, dict (key)) contains the element (only in first level, no seek)
+    # needle should be a simple type
+    # returns True for True in ['True']
+    def contains(self, haystack, needle):
+        if isinstance(haystack, (dict, list)):
+            for key in haystack:
+                if self.equals(key, needle):
+                    return True
+            return False
+
+        raise TypeError
+
+    # re.match. overwrites the previous flag
+    def regex_match(self, *args, **kwargs):
+        regex_flag = 0 if self.case_sensitive else re.IGNORECASE
+        return re.match(*args, **kwargs, flags=regex_flag)
+
+    
+    # seek key in dict but with case_sensitivity
+    def seek_key_in_dict(self, haystack, needle):
+        '''
+        Searches needle in haystack ( could be dict, list, list of dicts, nested dicts, etc. ) and returns all findings
+        as a list
+
+        :param haystack: dict, list
+        :param needle: search key
+        :return: list of found keys & values
+        '''
+        found = list()
+        if isinstance(haystack, dict):
+            for key, value in haystack.items():
+                if self.equals(key, needle):
+                    found.append({key: value})
+                else:
+                    found.extend(self.seek_key_in_dict(value, needle))
+
+        elif isinstance(haystack, list):
+            for value in haystack:
+                found.extend(self.seek_key_in_dict(value, needle))
+
+        else:
+            return []
+
+        return found
+
+    # ...
+    # needle == value
+    def seek_value_in_dict(self, needle, haystack, address=None):
+        findings = []
+        # if isinstance(haystack, (str, int, bool, float)) and str(needle) in str(haystack):  # this shouldn't be in but == instead
+        #     findings.append(dict(values=needle, address=None))
+        if isinstance(haystack, (str, int, bool, float)) and self.equals(needle, haystack):
+            findings.append(dict(values=needle, address=None))
+
+        elif isinstance(haystack, dict):
+            address = haystack.get('address') if address is None else address
+
+            for key, value in haystack.items():
+                if isinstance(value, (dict, list)):
+                    findings.extend(self.seek_value_in_dict(needle, value))
+                
+                elif isinstance(value, (str, bool, int, float)) and self.equals(needle, value):
+                    findings.append(dict(values=needle, address=address))
+
+        elif isinstance(haystack, list):
+            # Check if this is a list of strings
+            if all(isinstance(elem, str) for elem in haystack):
+                findings.extend([elem for elem in haystack if self.equals(elem, needle)])
+
+            # Otherwise, there are more stuff, so go recursive
+            else:
+                for value in haystack:
+                    findings.extend(self.seek_value_in_dict(needle, value))
+
+        return findings
+
+
+    # ...
+    # case sensitivity overwrites regex (if case insensitive, there is always re.IGNORECASE)
+        # this's admittedly weird but convention/backwards compatibility...
+    def seek_regex_key_in_dict_values(self, haystack, key_name, needle, key_matched=None):
+        '''
+        Searches needle in haystack ( could be dict, list, list of dicts, nested dicts, etc. ) and returns all findings
+        as a list. The only difference from seek_key_in_dict is, we are assuming needle is in regex format here and we
+        are searching for values instead.
+
+        :param haystack: dict, list
+        :param key_name: string of the key
+        :param needle: regex search for the value
+        :param key_matched: Internal use
+        :return: list of found keys & values
+        '''
+        regex = r'^{}$'.format(needle)
+        found = list()
+        if isinstance(haystack, dict):
+            for key, value in haystack.items():
+                if isinstance(value, (bool, int, float)):
+                    value = str(value)
+
+                if self.equals(key, key_name) or key_matched is not None:
+                    if isinstance(value, str):
+                        matches = self.regex_match(regex, value)
+
+                        if matches is not None:
+                            found.append(matches.group(0))
+                        else:
+                            found.extend(self.seek_regex_key_in_dict_values(value, key_name, needle, True))
+
+                    elif isinstance(value, dict):
+                        found.extend(self.seek_regex_key_in_dict_values(value, key_name, needle, True))
+
+                    elif isinstance(value, list):
+                        for v in value:
+                            found.extend(self.seek_regex_key_in_dict_values(v, key_name, needle, True))
+
+                else:
+                    found.extend(self.seek_regex_key_in_dict_values(value, key_name, needle, key_matched))
+
+        elif isinstance(haystack, list):
+            for value in haystack:
+                found.extend(self.seek_regex_key_in_dict_values(value, key_name, needle, key_matched))
+
+        else:
+            return []
+
+        return found
+
+
 def flatten_list(input):
     return list(flatten(input))
 
