@@ -31,8 +31,9 @@ print('{} v{} initiated\n'.format(__app_name__, Defaults().yellow(__version__)))
 class ArgHandling(object):
     pass
 
+cli_arguments = ArgHandling() # make this global?
 
-def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
+def cli(arghandling=cli_arguments, argparser=ArgumentParser(prog=__app_name__,
                                                             description='BDD Test Framework for Hashicorp terraform')):
     args = arghandling
     parser = argparser
@@ -50,6 +51,7 @@ def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
                         help='Do not output any scenarios, just write results or failures', required=False)
     parser.add_argument('--identity', '-i', dest='ssh_key', metavar='ssh private key', type=str, nargs='?',
                         help='SSH Private key that will be use on git authentication.', required=False)
+    parser.add_argument('--debug', '-d', dest='debug', action='store_true', help='Turns on debugging mode', required=False)
 
     parser.add_argument('--version', '-v', action='version', version=__version__)
 
@@ -94,6 +96,7 @@ def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
     features_directory = os.path.join(os.path.abspath(args.features) + features_dir)
 
     commands = ['radish',
+                # '--inspect-after-failure',
                 '--write-steps-once',
                 features_directory,
                 '--basedir', steps_directory,
