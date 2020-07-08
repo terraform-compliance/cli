@@ -1,5 +1,5 @@
 import json
-from terraform_compliance.common.helper import seek_key_in_dict, flatten_list, dict_merge
+from terraform_compliance.common.helper import seek_key_in_dict, flatten_list, dict_merge, Match
 import sys
 from copy import deepcopy
 from terraform_compliance.common.defaults import Defaults
@@ -350,7 +350,7 @@ class TerraformParser(object):
         for _, resource in self.resources.items():
             self._expand_resource_tags(resource)
 
-    def find_resources_by_type(self, resource_type):
+    def find_resources_by_type(self, resource_type, match=Match(case_sensitive=False)):
         '''
         Finds all resources matching with the resource_type
 
@@ -359,13 +359,13 @@ class TerraformParser(object):
         '''
         resource_list = []
 
-        for _, resource_data in self.resources.items():
-            if resource_type == 'any' or (resource_data['type'] == resource_type.lower() and resource_data['mode'] == 'managed'):
+        for resource_data in self.resources.values():
+            if resource_type == 'any' or (match.equals(resource_data['type'], resource_type) and resource_data['mode'] == 'managed'):
                 resource_list.append(resource_data)
 
         return resource_list
 
-    def find_data_by_type(self, resource_type):
+    def find_data_by_type(self, resource_type, match=Match(case_sensitive=False)):
         '''
         Finds all data matching with the resource_type
 
@@ -374,13 +374,13 @@ class TerraformParser(object):
         '''
         resource_list = []
 
-        for _, resource_data in self.data.items():
-            if resource_data['type'] == resource_type.lower():
+        for resource_data in self.data.values():
+            if match.equals(resource_data['type'], resource_type):
                 resource_list.append(resource_data)
 
         return resource_list
 
-    def get_providers_from_configuration(self, provider_type):
+    def get_providers_from_configuration(self, provider_type, match=Match(case_sensitive=False)):
         '''
         Returns all providers as a list for the given provider type
 
@@ -389,7 +389,7 @@ class TerraformParser(object):
         '''
         providers = []
         for provider_alias, values in self.configuration['providers'].items():
-            if isinstance(values, dict) and values.get('name') == provider_type:
+            if isinstance(values, dict) and match.equals(values.get('name'), provider_type):
                 providers.append(values)
 
         return providers

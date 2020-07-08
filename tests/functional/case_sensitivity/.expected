@@ -1,0 +1,13 @@
+Failure: azurerm_postgresql_server.example \(azurerm_postgresql_server\) does not have SKU_NAME property.
+Failure: B_GEN5_2 could not found in azurerm_postgresql_server.example.
+Failure: Can not find azurerm_postgresql_configuratioN in type property of azurerm_postgresql_configuration.connection_throttling.
+Failure: Can not find B_Gen5_2 in sku_Name property of azurerm_postgresql_configuration.connection_throttling.
+Failure: sku_name property in azurerm_postgresql_configuration.connection_throttling resource does not match with B_GeN5_2 case sensitive regex. It is set to B_Gen5_2.
+Failure: Resource azurerm_postgresql_configuration.connection_throttling does not have sku_namE property enabled
+Failure: Can not find any sku_namE property for azurerm_postgresql_configuration resource in terraform plan.
+Failure: Can not find any sku_namE property for azurerm_postgresql_configuration resource in terraform plan.
+Failure: All objects \(azurerm_postgresql_configuration\) coming from previous step has sku_name property.
+Failure: Could not find sku_namE in azurerm_postgresql_server.example.
+Failure: Can not find B_GeN5_2 sku_name in azurerm_postgresql_server.example.
+Failure: Can not find azurerm_postgresql_serveR defined in target terraform plan.
+Failure: Can not find azurerM defined in target terraform plan.

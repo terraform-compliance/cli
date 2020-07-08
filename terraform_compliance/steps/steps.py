@@ -151,50 +151,26 @@ def wrapper(_step_obj, operator, number, _stash=EmptyStash):
 @then(u'its value {condition:ANY} match the "{search_regex}" regex')
 @then(u'all of its values {condition:ANY} match the "{search_regex}" regex')
 def wrapper(_step_obj, condition, search_regex, _stash=EmptyStash):
-    if not hasattr(_step_obj.context, 'case_insensitivity') or _step_obj.context.case_insensitivity:
-        return its_value_condition_match_the_search_regex_regex(_step_obj,
+    return its_value_condition_match_the_search_regex_regex(_step_obj,
                                                                 condition,
                                                                 search_regex,
-                                                                _stash=EmptyStash,
-                                                                case_insensitive=True)
-    else:
-        return its_value_condition_match_the_search_regex_regex(_step_obj,
-                                                                condition,
-                                                                search_regex,
-                                                                _stash=EmptyStash,
-                                                                case_insensitive=False)
+                                                                _stash=EmptyStash)
 
 
 @then(u'its singular value {condition:ANY} match the "{search_regex}" regex')
 def wrapper(_step_obj, condition, search_regex, _stash=EmptyStash):
-    if not hasattr(_step_obj.context, 'case_insensitivity') or _step_obj.context.case_insensitivity:
-        return its_singular_value_condition_match_the_search_regex_regex(_step_obj,
+    return its_singular_value_condition_match_the_search_regex_regex(_step_obj,
                                                                 condition,
                                                                 search_regex,
-                                                                _stash=EmptyStash,
-                                                                case_insensitive=True)
-    else:
-        return its_singular_value_condition_match_the_search_regex_regex(_step_obj,
-                                                                condition,
-                                                                search_regex,
-                                                                _stash=EmptyStash,
-                                                                case_insensitive=False)
+                                                                _stash=EmptyStash)
 
 
 @then(u'any of its values {condition:ANY} match the "{search_regex}" regex')
 def wrapper(_step_obj, condition, search_regex, _stash=EmptyStash):
-    if not hasattr(_step_obj.context, 'case_insensitivity') or _step_obj.context.case_insensitivity:
-        return any_of_its_values_condition_match_the_search_regex_regex(_step_obj,
+    return any_of_its_values_condition_match_the_search_regex_regex(_step_obj,
                                                                 condition,
                                                                 search_regex,
-                                                                _stash=EmptyStash,
-                                                                case_insensitive=True)
-    else:
-        return any_of_its_values_condition_match_the_search_regex_regex(_step_obj,
-                                                                condition,
-                                                                search_regex,
-                                                                _stash=EmptyStash,
-                                                                case_insensitive=False)
+                                                                _stash=EmptyStash)
 
 
 @then(u'its value {condition:ANY} be null')

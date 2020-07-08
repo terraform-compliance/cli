@@ -37,6 +37,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
 
     # Process the tags
     _step_obj = look_for_bdd_tags(_step_obj)
+    match = _step_obj.context.match
 
     if name in ('a resource', 'any resource', 'resources'):
         _step_obj.context.type = type_name
@@ -73,7 +74,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
             # Issue-168: Mounted resources causes problem on recursive searching for resources that supports tags
             #            We are removing all mounted resources here for future steps, since we don't need them for
             #            tags checking.
-            found_resources = remove_mounted_resources(_terraform_config.config.terraform.find_resources_by_type(resource_type))
+            found_resources = remove_mounted_resources(_terraform_config.config.terraform.find_resources_by_type(resource_type, match))
             found_resources = transform_asg_style_tags(found_resources)
             resource_list.extend(found_resources)
 
@@ -87,7 +88,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
 
     elif type_name == 'resource':
         name = convert_resource_type(name)
-        resource_list = _terraform_config.config.terraform.find_resources_by_type(name)
+        resource_list = _terraform_config.config.terraform.find_resources_by_type(name, match)
 
         if resource_list:
             _step_obj.context.type = type_name
@@ -98,7 +99,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
             return True
 
     elif type_name == 'variable':
-        found_variable = _terraform_config.config.terraform.variables.get(name, None)
+        found_variable = match.get(_terraform_config.config.terraform.variables, name, None)
 
         if found_variable:
             _step_obj.context.type = type_name
@@ -109,7 +110,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
             return True
 
     elif type_name == 'output':
-        found_output = _terraform_config.config.terraform.outputs.get(name, None)
+        found_output = match.get(_terraform_config.config.terraform.outputs, name, None)
 
         if found_output:
             _step_obj.context.type = type_name
@@ -120,7 +121,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
             return True
 
     elif type_name == 'provider':
-        found_provider = _terraform_config.config.terraform.get_providers_from_configuration(name)
+        found_provider = _terraform_config.config.terraform.get_providers_from_configuration(name, match)
 
         if found_provider:
             _step_obj.context.type = type_name
@@ -133,7 +134,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
 
     elif type_name == 'data':
         name = convert_resource_type(name)
-        data_list = _terraform_config.config.terraform.find_data_by_type(name)
+        data_list = _terraform_config.config.terraform.find_data_by_type(name, match)
 
         if data_list:
             _step_obj.context.type = type_name

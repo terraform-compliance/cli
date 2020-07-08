@@ -2,7 +2,6 @@
 
 from terraform_compliance.common.defaults import Defaults
 from terraform_compliance.common.helper import (
-    seek_key_in_dict,
     EmptyStash,
     Null
 )
@@ -11,13 +10,16 @@ from terraform_compliance.common.error_handling import Error
 
 
 def i_action_them(_step_obj, action_type):
+    match = _step_obj.context.match
+    seek_key_in_dict = match.seek_key_in_dict
+
     if action_type == "count":
         # WARNING: Only case where we set stash as a dictionary, instead of a list.
         if isinstance(_step_obj.context.stash, list):
 
             # This means we are directly started counting without drilling down any property
             # Thus, our target for the count is stash itself.
-            if _step_obj.context.property_name in Defaults().types_list:
+            if match.contains(Defaults().types_list, _step_obj.context.property_name):
                 _step_obj.context.stash = dict(values=len(_step_obj.context.stash))
 
             else:
