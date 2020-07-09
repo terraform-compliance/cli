@@ -12,13 +12,13 @@ Noskip tag fails the scenario or step if it skips. Using this tag lets us use `G
 ## Then I must have resource defined
 Since `THEN` steps exclusively drill down the resource passed from the previous step, we could not write the `THEN` step below, which checks the existence of something outside of its context.
 
-``` Gherkin
+```
 Given I have azurerm_postgresql_server defined
 Then I must have azurerm_postgresql_configuration defined
 ```
 
 With `@noskip`, we can:
-``` Gherkin
+```
 @noskip_at_line_3
 Scenario: resource A implies resource B
     Given I have azurerm_postgresql_server defined
@@ -28,7 +28,7 @@ Note that the scenario doesn't fail if azurerm_postgresql_server doesn't exist. 
 
 
 ## Filtering Then
-Since `THEN` steps exlusively drill down, we can't write consecutive `THEN` steps that check the properties of the same resource within ta resource and stay on the same level. 
+Since `THEN` steps exlusively drill down, we can't write consecutive `THEN` steps that check the properties of the same resource within that resource and stay on the same level. 
 
 we would need to write a new scenario if we wanted to check a property that was lost during the "drill"
 
@@ -58,7 +58,7 @@ If I have azurerm_postgresql_server
 Using `THEN its name bust be log_connections` would drill down to `log_connections` and we wouldn't be able check if the value is on or not.
 
 With `@noskip`, we can:
-``` Gherkin
+```
 @noskip_at_lines_4_5
 Scenario Outline: Filtering then
     Given I have azurerm_postgresql_server defined

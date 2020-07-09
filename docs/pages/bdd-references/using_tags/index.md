@@ -2,7 +2,7 @@
 layout: default
 title: Using Tags
 nav_order: 7
-has_children: false
+has_children: true
 parent: BDD Reference
 ---
 

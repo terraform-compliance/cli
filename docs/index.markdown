@@ -40,8 +40,9 @@ permalink: /
 - __behaviour driven development:__ We have BDD for nearly everything, why not for IaC ?
 - __portable:__ just install it from `pip` or run it via `docker`. See [Installation](/pages/installation/)
 - __pre-deploy:__ it validates your code before it is deployed
-- __easy to integrate:__ it can run in your pipeline (or in git hooks) to ensure all deployments are validated.
-- __segregation of duty:__ you can keep your tests in a different repository where a separate team is responsible.
+- __provider agnostic:__ it works with any provider
+- __easy to integrate:__ it can run in your pipeline (or in git hooks) to ensure all deployments are validated
+- __segregation of duty:__ you can keep your tests in a different repository where a separate team is responsible
 - __why ?:__ why not ?
 
 ## Idea
