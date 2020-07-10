@@ -1,15 +1,16 @@
 # CHANGELOG
 
 ## Unreleased
-* Generalized case-sensitivity tag to work on all steps. Centralized matching and seeking functions.
-* Jsonfiy the stash on creation to prevent bugs related to jsonification.
-* Added python version check for invalid Python versions. Minimum python version is set to 3.6.0
-* Added `--debug/-d` option
+* Improved (centralized) matching and seeking functions. ([#304](https://github.com/eerkunt/terraform-compliance/pull/304))
+* Improved case-sensitivity tag. Generalized case-sensitivity to work on all steps, using matching changes implemented on this patch. ([#304](https://github.com/eerkunt/terraform-compliance/pull/304))
+* Fixed jsonification. Now jsonifies the stash on creation to prevent bugs related to jsonification. ([#308](https://github.com/eerkunt/terraform-compliance/pull/308))
+* New python version check for invalid Python versions. Minimum python version is set to 3.6.0 ([#312](https://github.com/eerkunt/terraform-compliance/pull/312))
+* New `--debug/-d` option ([#315](https://github.com/eerkunt/terraform-compliance/pull/315))
 
 ## 1.2.7 (2020-06-19)
-* Fixed faulty over restriction in [Then its singular value condition match the "search_regex" regex](https://terraform-compliance.com/pages/bdd-references/then.html#then-its-singular-value-condition-match-the-search-regex-regex).
-* New scenario tag: [noskip](https://terraform-compliance.com/pages/bdd-references/using_tags.html#supported-tags) tags
-* Improved `its key condition value` that now abides the two rules: drills down to found values and fails if any resource fails. This could introduce slight backwards incompatibility, but in essence this is a bugfix and not a change.
+* Fixed faulty over restriction in [Then its singular value condition match the "search_regex" regex](https://terraform-compliance.com/pages/bdd-references/then.html#then-its-singular-value-condition-match-the-search-regex-regex). ([#299](https://github.com/eerkunt/terraform-compliance/pull/299))
+* New scenario tag: [noskip](https://terraform-compliance.com/pages/bdd-references/using_tags.html#supported-tags) tags ([#301](https://github.com/eerkunt/terraform-compliance/pull/301))
+* Improved `its key condition be value` that now abides the two rules: drills down to found values and fails if any resource fails. This could introduce slight backwards incompatibility, but in essence this is a bugfix and not a change. ([#300](https://github.com/eerkunt/terraform-compliance/pull/300))
 
 ## 1.2.6 (2020-06-12)
 * Fixed a bug where failures would break --junit-xml dump. ([#271](https://github.com/eerkunt/terraform-compliance/issues/271))
