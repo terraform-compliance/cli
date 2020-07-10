@@ -90,6 +90,13 @@ class TestHelperFunctions(TestCase):
 
         self.assertEqual(seek_key_in_dict(dictionary, search_key), expected)
 
+    def test_seek_in_dict_for_root_and_non_root_values(self):
+        dictionary = dict(a=dict(b=dict(something=dict(test=[]))), something=["b"])
+        search_key = "something"
+        expected = [{'something':{'test': []}}, {'something':['b']}]
+
+        self.assertEqual(seek_key_in_dict(dictionary, search_key), expected)
+
     def test_seek_in_dict_finding_values_in_non_dicts_on_root(self):
         dictionary = 'something_else'
         search_key = 'something_else'

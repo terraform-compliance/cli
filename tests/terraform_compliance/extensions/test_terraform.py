@@ -261,6 +261,36 @@ class TestTerraformParser(TestCase):
         obj._parse_configurations()
         self.assertEqual(obj.configuration['providers'], {'some_provider': 'some_provider_data'})
 
+    @patch.object(TerraformParser, '_read_file', return_value={})
+    def test_parse_configurations_nested_resources(self, *args):
+        obj = TerraformParser('somefile', parse_it=False)
+        obj.raw['configuration'] = {
+            'root_module': {
+                'module_calls': {
+                    'a_module':{
+                        'expressions': {
+                            'cluster_role_rules': {
+                                'constant_values': [
+                                    {
+                                        "resources": [
+                                            "namespaces",
+                                            "pods"
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                'resources': [
+                    {
+                        'address': 'something'
+                    }
+                ]
+            }
+        }
+        obj._parse_configurations()
+        self.assertEqual(obj.configuration['resources']['something'], {'address': 'something'})
 
     @patch.object(TerraformParser, '_read_file', return_value={})
     def test_mount_resources_with_ref_type(self, *args):
