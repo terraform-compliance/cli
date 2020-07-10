@@ -96,7 +96,6 @@ def cli(arghandling=cli_arguments, argparser=ArgumentParser(prog=__app_name__,
     features_directory = os.path.join(os.path.abspath(args.features) + features_dir)
 
     commands = ['radish',
-                # '--inspect-after-failure',
                 '--write-steps-once',
                 features_directory,
                 '--basedir', steps_directory,
