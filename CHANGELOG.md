@@ -3,7 +3,7 @@
 ## Unreleased
 * TBD
 
-## 1.2.8
+## 1.2.8 (2020-07-10)
 * Improved (centralized) matching and seeking functions. ([#304](https://github.com/eerkunt/terraform-compliance/pull/304))
 * Improved case-sensitivity tag. Generalized case-sensitivity to work on all steps, using matching changes implemented on this patch. ([#304](https://github.com/eerkunt/terraform-compliance/pull/304))
 * Fixed jsonification. Now jsonifies the stash on creation to prevent bugs related to jsonification. ([#308](https://github.com/eerkunt/terraform-compliance/pull/308))
