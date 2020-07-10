@@ -15,7 +15,8 @@ dependencies = [
     'lxml>=4.5.0',
     'emoji>=0.5.4',
     'mock>=3.0.5',
-    'semver>=2.10.2'
+    'semver>=2.10.2',
+    'IPython==7.16.1',
 ]
 
 setup(

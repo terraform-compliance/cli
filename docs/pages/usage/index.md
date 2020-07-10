@@ -184,3 +184,23 @@ OPTIONAL
 
 This option will surpress the output of `Feature`, `Scenario` and `Steps`. Only the
 summary and the Failure messages will be shown - if applicable.
+
+### -d / --debug
+{: .d-inline-block }
+OPTIONAL
+{: .label .label-yellow}
+
+{: .d-inline-block }
+1.2.+
+{: .label .label-blue}
+
+This option will let you peek in the stash or run IPython on the current step.
+
+**Commands**
+- s: prints stash
+- d: opens Interactive Python.
+- h: prints commands
+
+In Python shell, context can be accessed via `step.context.stash`. Note that modifications to step object will carry over to the steps below.
+
+It is usually a better idea to inspect the stash *before* the step being debugged.
