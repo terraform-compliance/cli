@@ -3,6 +3,9 @@
 ## Unreleased
 * TBD
 
+## 1.2.9 (2020-07-10)
+* Improve the code quality of live debugging. Use `world.config.user_data` instead of global variables. ([#320](https://github.com/eerkunt/terraform-compliance/pull/320))
+
 ## 1.2.8 (2020-07-10)
 * Improved (centralized) matching and seeking functions. ([#304](https://github.com/eerkunt/terraform-compliance/pull/304))
 * Improved case-sensitivity tag. Generalized case-sensitivity to work on all steps, using matching changes implemented on this patch. ([#304](https://github.com/eerkunt/terraform-compliance/pull/304))
