@@ -5,6 +5,8 @@
 
 ## 1.2.9 (2020-07-10)
 * Improved the code quality of live debugging. Used `world.config.user_data` instead of global variables. ([#320](https://github.com/eerkunt/terraform-compliance/pull/320))
+* Fixed a problem where some nested resource structures were not able to be get parsed properly and causing a crash. ([#316](https://github.com/eerkunt/terraform-compliance/pull/316))
+* Fixed a problem where `curses` library was not found and causing a crash. ([#323](https://github.com/eerkunt/terraform-compliance/issues/323))
 
 ## 1.2.8 (2020-07-10)
 * Improved (centralized) matching and seeking functions. ([#304](https://github.com/eerkunt/terraform-compliance/pull/304))
