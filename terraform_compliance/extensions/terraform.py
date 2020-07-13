@@ -142,12 +142,20 @@ class TerraformParser(object):
         # Resources
         self.configuration['resources'] = {}
 
-        for findings in seek_key_in_dict(self.raw.get('configuration', {}).get('root_module', {}), 'resources'):
-            for resource in findings.get('resources', []):
-                if self.is_type(resource, 'data'):
-                    self.data[resource['address']] = resource
-                else:
-                    self.configuration['resources'][resource['address']] = resource
+        resources = []
+
+        # root resources
+        resources = self.raw.get('configuration', {}).get('root_module', {}).get('resources', [])
+
+        # Append module resources
+        for module in seek_key_in_dict(self.raw.get('configuration', {}).get('root_module', {}).get("module_calls", {}), "module"):
+            resources += module.get('module',{}).get("resources", [])
+
+        for resource in resources:
+            if self.is_type(resource, 'data'):
+                self.data[resource['address']] = resource
+            else:
+                self.configuration['resources'][resource['address']] = resource
 
         # Variables
         self.configuration['variables'] = {}
