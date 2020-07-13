@@ -31,9 +31,8 @@ print('{} v{} initiated\n'.format(__app_name__, Defaults().yellow(__version__)))
 class ArgHandling(object):
     pass
 
-cli_arguments = ArgHandling() # make this global?
 
-def cli(arghandling=cli_arguments, argparser=ArgumentParser(prog=__app_name__,
+def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
                                                             description='BDD Test Framework for Hashicorp terraform')):
     args = arghandling
     parser = argparser
@@ -103,7 +102,9 @@ def cli(arghandling=cli_arguments, argparser=ArgumentParser(prog=__app_name__,
                 '--user-data=exit_on_failure={}'.format(args.exit_on_failure),
                 '--user-data=terraform_executable={}'.format(args.terraform_file),
                 '--user-data=no_failure={}'.format(args.no_failure),
-                '--user-data=silence_mode_enabled={}'.format(args.silence)]
+                '--user-data=silence_mode_enabled={}'.format(args.silence),
+                '--user-data=debugging_mode_enabled={}'.format(args.debug),
+                ]
     commands.extend(radish_arguments)
 
     console_write('{} {} {}{}'.format(Defaults().icon,
