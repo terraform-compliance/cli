@@ -1,6 +1,8 @@
 # CHANGELOG
 
 ## Unreleased
+
+## 1.2.10 (2020-07-15)
 * Fixed `Then it must contain` to properly drill down and split into multiple resources if need be. ([#327](https://github.com/eerkunt/terraform-compliance/pull/327))
 * Fixed When it contains to accomodate singular values in a list. ([#327](https://github.com/eerkunt/terraform-compliance/pull/327))
 
