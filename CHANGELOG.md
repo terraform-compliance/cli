@@ -1,7 +1,8 @@
 # CHANGELOG
 
 ## Unreleased
-* TBD
+* Fixed `Then it must contain` to properly drill down and split into multiple resources if need be. ([#327](https://github.com/eerkunt/terraform-compliance/pull/327))
+* Fixed When it contains to accomodate singular values in a list. ([#327](https://github.com/eerkunt/terraform-compliance/pull/327))
 
 ## 1.2.9 (2020-07-13)
 * Improved the code quality of live debugging. Used `world.config.user_data` instead of global variables. ([#320](https://github.com/eerkunt/terraform-compliance/pull/320))

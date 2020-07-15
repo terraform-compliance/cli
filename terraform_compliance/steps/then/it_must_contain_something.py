@@ -30,7 +30,7 @@ def it_must_contain_something(_step_obj, something, inherited_values=Null, child
             if not values:
                 values = seek_key_in_dict(resource, something)
 
-            found_values = [] # assume found_values is found_valuess and change the name later
+            found_values = []
             found_key = Null # this could also become a list
             resource_passed = False
             # set this to True if you get anything from the resource, don't set it to False if you get empty values as there could be other values as well
@@ -71,28 +71,23 @@ def it_must_contain_something(_step_obj, something, inherited_values=Null, child
                                 # not going to use match.get here because the following line is an edge case
                                 found_values.extend(value.get('value'))
                                 resource_passed = True
-                                # break # shouldn't break? continue instead
                                 continue
                     elif isinstance(value, list):
-                        # found_key, temp_found_values = it_must_contain_something(_step_obj, something, value, child=True)
                         _, temp_found_values = it_must_contain_something(_step_obj, something, value, child=True)
                         prop_list.extend(temp_found_values)
                         found_values.append('added_to_proplist')
                         resource_passed = True
 
                     elif isinstance(value, (str, bool, int, float)):
-                        if match.equals(value, something): # don't need to check here
+                        if match.equals(value, something):
                             found_values.append(value)
 
-                    # don't ignore the other values?
                     if found_key is not Null and len(found_key):
-                        # found_key = found_key[0] if len(found_key) == 1 else found_key
 
                         for found_key_instance in found_key:
                             if isinstance(found_key_instance, dict):
-                                # found_values.append(found_key.get(something, found_key)) # fallback value shouldn't be found_key, what's the fromatting here?
-                                found_values.append(match.get(found_key_instance, something, Null))
-                                if found_values[-1] not in (Null, [], '', {}, 'added_to_proplist'): # bad practice, inconcsistent
+                                if match.get(found_key_instance, something, Null) not in (Null, [], '', {}, 'added_to_proplist'):
+                                    found_values.append(match.get(found_key_instance, something))
                                     resource_passed = True
 
             for i, found_val in enumerate(found_values):
@@ -213,8 +208,8 @@ def it_must_not_contain_something(_step_obj, something, inherited_values=Null):
 
                         for found_key_instance in found_key:
                             if isinstance(found_key_instance, dict):
-                                found_values.append(match.get(found_key_instance, something, Null))
-                                if found_values[-1] not in (Null, [], '', {}, 'added_to_proplist'): # bad practice, inconcsistent
+                                if match.get(found_key_instance, something, Null) not in (Null, [], '', {}, 'added_to_proplist'):
+                                    found_values.append(match.get(found_key_instance, something))
                                     resource_passed = True
 
             for i, found_val in enumerate(found_values):
