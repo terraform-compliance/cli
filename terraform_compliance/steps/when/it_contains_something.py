@@ -173,6 +173,9 @@ def it_has_something(_step_obj, something, inherited_values=Null):
                                 break
                     elif isinstance(value, list):
                         found_key, found_value = it_has_something(_step_obj, something, value)
+                    elif isinstance(value, (str, bool, int, float)) and match.equals(value, something):
+                        found_key = value
+                        found_value.append(found_key)
 
                     if found_key is not Null and len(found_key):
                         found_key = found_key[0] if len(found_key) == 1 else found_key
