@@ -1,6 +1,8 @@
 # CHANGELOG
 
 ## Unreleased
+
+## 1.2.11 (2020-07-20)
 * Fixed an issue where [When it has something](https://terraform-compliance.com/pages/bdd-references/when.html#when-it-has-something) formats the search value incorrectly. ([#330](https://github.com/eerkunt/terraform-compliance/pull/330))
 
 ## 1.2.10 (2020-07-15)
