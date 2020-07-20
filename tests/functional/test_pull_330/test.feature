@@ -1,4 +1,4 @@
-Feature: hi
+Feature: Test #330
 
 	Scenario: No 0.0.0.0/0 for ingress on rule
         Given I have aws_security_group_rule defined
