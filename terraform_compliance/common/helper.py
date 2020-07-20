@@ -58,6 +58,22 @@ class Match(object):
 
         raise TypeError
 
+    
+    # Assumes all incoming sets are sets of strings
+    def issubset(self, set1, set2):
+        if not isinstance(set1, Iterable) or isinstance(set1, str):
+            raise TypeError('{} should be a non-str iterable'.format(set1))
+        
+        if not isinstance(set2, Iterable) or isinstance(set2, str):
+            raise TypeError('{} should be a non-str iterable'.format(set2))
+
+        if not self.case_sensitive:
+            set1 = set(str(e).lower() for e in set1)
+            set2 = set(str(e).lower() for e in set2)
+        
+        return set1 <= set2
+
+
     # re.match. overwrites the previous flag
     def regex_match(self, *args, **kwargs):
         regex_flag = 0 if self.case_sensitive else re.IGNORECASE
