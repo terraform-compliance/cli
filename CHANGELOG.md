@@ -2,9 +2,9 @@
 
 ## Unreleased
 * Fixed an issue where [When it has something](https://terraform-compliance.com/pages/bdd-references/when.html#when-it-has-something) formats the search value incorrectly. ([#330](https://github.com/eerkunt/terraform-compliance/pull/330))
-* New cumulative stash and `in step variables` functionality for steps to directly access stash content
-* New step: [Then it must be in haystack]() 
-* New step: [Then it must cover haystack]()
+* New cumulative stash and [in step variables](http://terraform-compliance.com/pages/bdd-references/then.html#in-step-variables) functionality for steps to directly access stash content ([#329](https://github.com/eerkunt/terraform-compliance/pull/329))
+* New step: [Then it must be in haystack](http://terraform-compliance.com/pages/bdd-references/then.html#then-it-must-be-in-haystack) ([#329](https://github.com/eerkunt/terraform-compliance/pull/329))
+* New step: [Then it must cover haystack](http://terraform-compliance.com/pages/bdd-references/then.html#then-it-must-cover-haystack) ([#329](https://github.com/eerkunt/terraform-compliance/pull/329))
 
 
 ## 1.2.10 (2020-07-15)
