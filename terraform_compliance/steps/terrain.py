@@ -11,11 +11,8 @@ def load_terraform_data(feature):
 
 
 @before.each_step
-def parse_curly_braces(step):
-
-    # BEFORE START
+def parse_in_step_variables(step):
     # ignore given steps (doesn't support match, would need to do something else for them, also there's no second stash)
-    # ignore steps that doesn't use this feature
     if step.context_class == 'given':
         return
 
@@ -26,7 +23,6 @@ def parse_curly_braces(step):
     if step.context.bad_tags:
         return
 
-    # name_fields = step.argument_match.match.parser._named_fields
     groupindex = dict(step.argument_match.match.match.re.groupindex)
     regs = step.argument_match.match.match.regs
     sentence = step.context_sensitive_sentence
@@ -38,7 +34,6 @@ def parse_curly_braces(step):
 
     in_step_variables = {}
     match = step.context.match
-    # regex = r'{(.*)}'
     regex = r'(.*){(.*)}(.*)'
 
     for field, field_val in field_map.items():
@@ -51,15 +46,12 @@ def parse_curly_braces(step):
             continue # do something here
         
         resource_type = query.pop(0)
-
-        # query_result = match.get(step.cumulative_stash, resource_type)
         query_result = [resource for resource in step.context.cumulative_stash if match.equals(resource['type'], resource_type)]
         for q in query:
             if not query_result:
                 break
             query_result = [match.get(resource, q) for resource in query_result if match.contains(resource, q)]
         
-
         if matches.group(1) or matches.group(3):
             if not all(isinstance(resource, (str, bool, int, float)) for resource in query_result):
                 raise TypeError("Improper in step variable usage. Can't mix affixes with non-str in step variabes.")
@@ -68,19 +60,6 @@ def parse_curly_braces(step):
 
         in_step_variables[field] = query_result
 
-        '''
-        if {} in field_val:
-            regex match field_val
-            enforce that there're only 2 groups (1 {}) (ignoring filtering for now)
-            get the string that represents aws_lambda_function.name
-            split it from .'s
-            dereference the second_stash
-
-            (enforce JSON vs string?)            
-            add the result into in_step_variables
-
-        '''
-        
     step.context.in_step_variables = in_step_variables
 
 

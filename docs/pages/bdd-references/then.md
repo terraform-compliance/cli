@@ -44,6 +44,25 @@ will be deemed to fail. If `terraform-compliance` is used with `--early-exit` pa
 other scenarios - if exists - won't be executed. This is useful on use cases where you have
 lots of tests. 
 
+## In step variables
+As a scenario calls `GIVEN` steps, all resources that was once assigned to the scenario by `GIVEN` steps are accumulated in "cumulative stash." Steps that support in step variables can access cumulative stash directly within the step definition.
+
+In step variables can be accessed by surrounding curly braces around the related statement.
+
+**Example:**
+```gherkin
+Scenario: Lambda functions must have a matching Cloudwatch Log Group
+    Given I have aws_cloudwatch_log_group defined
+    Given I have aws_lambda_function defined
+    Then it must have function_name
+    And it must be in {aws_cloudwatch_log_group.values.name}
+```
+Since two `GIVEN` steps were called, the cumulative stash contains all `aws_cloudwatch_log_group` and `aws_lambda_function` resources that were defined within the plan. 
+
+On the final step, the resources in stash (`function_name`s that were collected via previous steps) are compared with properties under `{aws_cloudwatch_log_group.values.name}`. 
+
+The path to the desired value can be found through parsing the stash on [debugging](/pages/usage/#-d--debug) mode. Usually, the path will be in the format `resource_name.value.value_name`
+
 ## Reference
 * Table of Contents
 {:toc}
@@ -453,3 +472,43 @@ example, checking a specific `name` that has been created by a `for_each` of res
 [Then](#){: .p-1 .text-red-200} 
 I flatten all values found
 >
+
+------------------------
+### [Then](#){: .p-1 .text-red-200} it must be in [haystack](#){: .p-1 .text-green-200 .fw-700}
+This step compares the contents of the current stash to the [in step variables](/pages/bdd-references/then.html#in-step-variables). The test passes resources from the previous step form a subset of the resources within the in step variables.
+> __Possible sentences :__
+>
+> ▪
+[Then](#){: .p-1 .text-red-200} 
+it must be in
+[haystack](#){: .p-1 .text-green-200 .fw-700}
+>
+> ▪
+[Then](#){: .p-1 .text-red-200} 
+it must be a subset of
+[haystack](#){: .p-1 .text-green-200 .fw-700}
+>
+
+| key | Description | Examples |
+|:---:|:----------|:-|
+| [haystack](#){: .p-1 .text-green-200 .fw-700} | The resources to be accessed via in step variables | `{aws_lambda_function.values.function_name}`, `{aws_cloudwatch_log_group.values.name}`, `{resource_name.path.to.property}` |
+
+------------------------
+### [Then](#){: .p-1 .text-red-200} it must cover [haystack](#){: .p-1 .text-green-200 .fw-700}
+This step compares the contents of the current stash to the [in step variables](/pages/bdd-references/then.html#in-step-variables). The test passes resources from the previous step form a superset for the resources within the in step variables.
+> __Possible sentences :__
+>
+> ▪
+[Then](#){: .p-1 .text-red-200} 
+it must be in
+[haystack](#){: .p-1 .text-green-200 .fw-700}
+>
+> ▪
+[Then](#){: .p-1 .text-red-200} 
+it must be a subset of
+[haystack](#){: .p-1 .text-green-200 .fw-700}
+>
+
+| key | Description | Examples |
+|:---:|:----------|:-|
+| [haystack](#){: .p-1 .text-green-200 .fw-700} | The resources to be accessed via in step variables | `{aws_lambda_function.values.function_name}`, `{aws_cloudwatch_log_group.values.name}`, `{resource_name.path.to.property}` |
