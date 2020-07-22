@@ -112,7 +112,7 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
         if found_variable:
             _step_obj.context.type = type_name
             _step_obj.context.name = name
-            _step_obj.context.stash = recursive_jsonify(found_variable)
+            _step_obj.context.stash = [recursive_jsonify(found_variable)]
             _step_obj.context.cumulative_stash.extend(_step_obj.context.stash)
             _step_obj.context.addresses = name
             _step_obj.context.property_name = type_name
