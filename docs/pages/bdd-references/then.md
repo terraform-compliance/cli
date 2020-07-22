@@ -61,6 +61,18 @@ Since two `GIVEN` steps were called, the cumulative stash contains all `aws_clou
 
 On the final step, the resources in stash (`function_name`s that were collected via previous steps) are compared with properties under `{aws_cloudwatch_log_group.values.name}`. 
 
+List values can be indexed or sliced using `{path_to_value.[0]}`, `{path_to_value.[:]}` similar to how indexing rules works in python. (e.g. {path_to_value.[4:2]} would return an empty list)
+
+**Example**
+```gherkin
+Scenario: slicing 1
+    Given I have azurerm_postgresql_server defined
+    Then it must have azurerm_postgresql_configuration
+    Then it must have name
+    Then it must be in {azurerm_postgresql_server.values.azurerm_postgresql_configuration.[:].name}
+```
+In this scenario, `in step variables` would contain the name of every element under `values.azurerm_postgresql_configuration` for every `azurerm_postgresql_server` resource.
+
 The path to the desired value can be found through parsing the stash on [debugging](/pages/usage/#-d--debug) mode. Usually, the path will be in the format `resource_name.value.value_name`
 
 ## Reference
@@ -181,7 +193,7 @@ This step will execute tests that is applicable for both per rule and per securi
 * **must not**: The port(s) given must not exist in ANY rule of the Security Group.
 * **must only**: The port(s) given must be exactly same like the ones defined in Security Group.
 
-Please not that `must not` condition is executed per every Security Group Rule, while `must not` and `must only` is 
+Please note that `must not` condition is executed per every Security Group Rule, while `must not` and `must only` is 
 executed for ALL rules exist in a Security Group.
 
 ------------------------
@@ -475,7 +487,7 @@ I flatten all values found
 
 ------------------------
 ### [Then](#){: .p-1 .text-red-200} it must be in [haystack](#){: .p-1 .text-green-200 .fw-700}
-This step compares the contents of the current stash to the [in step variables](/pages/bdd-references/then.html#in-step-variables). The test passes resources from the previous step form a subset of the resources within the in step variables.
+This step compares the contents of the current stash to the [in step variables](/pages/bdd-references/then.html#in-step-variables). Passes if resources from the previous step form a subset of the resources within the in step variables. Only sets of bool, int, float, and string values are supported.
 > __Possible sentences :__
 >
 > ▪
@@ -495,7 +507,7 @@ it must be a subset of
 
 ------------------------
 ### [Then](#){: .p-1 .text-red-200} it must cover [haystack](#){: .p-1 .text-green-200 .fw-700}
-This step compares the contents of the current stash to the [in step variables](/pages/bdd-references/then.html#in-step-variables). The test passes resources from the previous step form a superset for the resources within the in step variables.
+This step compares the contents of the current stash to the [in step variables](/pages/bdd-references/then.html#in-step-variables). Passes if resources from the previous step form a superset of the resources within the in step variables. Only sets of bool, int, float, and string values are supported.
 > __Possible sentences :__
 >
 > ▪

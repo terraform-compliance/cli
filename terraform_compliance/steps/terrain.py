@@ -47,10 +47,29 @@ def parse_in_step_variables(step):
         
         resource_type = query.pop(0)
         query_result = [resource for resource in step.context.cumulative_stash if match.equals(resource['type'], resource_type)]
+
+        list_indexing_regex = r'\[([0-9]*)(:)?([0-9]*)\]' # accepts []
         for q in query:
             if not query_result:
                 break
-            query_result = [match.get(resource, q) for resource in query_result if match.contains(resource, q)]
+            
+            list_indexing_match = match.regex_match(list_indexing_regex, q)
+            if list_indexing_match and q != '[]':
+                if not list_indexing_match.group(2):
+                    # index from the first group
+                    index = int(list_indexing_match.group(1))
+                    query_result = [resource[index] for resource in query_result]
+                else:
+                    # slice
+                    temp_query_result = query_result[:]
+                    index1 = int(list_indexing_match.group(1)) if list_indexing_match.group(1) else 0
+                    index2 = int(list_indexing_match.group(3)) if list_indexing_match.group(3) else len(temp_query_result)
+                    temp_query_result = temp_query_result[index1:index2]
+
+                    query_result = [item for resource in temp_query_result for item in resource]
+                    
+            else:
+                query_result = [match.get(resource, q) for resource in query_result if match.contains(resource, q)]
         
         if matches.group(1) or matches.group(3):
             if not all(isinstance(resource, (str, bool, int, float)) for resource in query_result):
