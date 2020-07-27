@@ -516,7 +516,7 @@ the value
 | [action](#){: .p-1 .text-green-200 .fw-700} | mathematical operation | currently only supports for `count` |
 
 ------------------------
-### [When](#){: .p-1 .text-red-200} its value [condition](#){: .p-1 .text-green-200 .fw-700} matches the "[search regex](#){: .p-1 .text-blue-100 .fw-700}" regex
+### [When](#){: .p-1 .text-red-200} its value [condition](#){: .p-1 .text-green-200 .fw-700} the "[search regex](#){: .p-1 .text-blue-100 .fw-700}" regex
 This step requires fundamental knowledge about regular expressions due the pattern matching algorithm. It is highly
 recommended to check for your patterns in [regex101](https://regex101.com/) before you implement your tests.
 
@@ -554,7 +554,7 @@ regex, then you must use escape characters (`\`) for not to interfere with Scena
 use `\|` instead of `|`.
 
 ------------------------
-### [When](#){: .p-1 .text-red-200} any of its values [condition](#){: .p-1 .text-green-200 .fw-700} matches the "[search regex](#){: .p-1 .text-blue-100 .fw-700}" regex
+### [When](#){: .p-1 .text-red-200} any of its values [condition](#){: .p-1 .text-green-200 .fw-700} the "[search regex](#){: .p-1 .text-blue-100 .fw-700}" regex
 This step requires fundamental knowledge about regular expressions due the pattern matching algorithm. It is highly
 recommended to check for your patterns in [regex101](https://regex101.com/) before you implement your tests.
 
