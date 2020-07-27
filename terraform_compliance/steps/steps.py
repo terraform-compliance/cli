@@ -30,6 +30,7 @@ from terraform_compliance.steps.when.it_contains_something import (
     it_has_something,
     it_does_not_have_something
 )
+from terraform_compliance.steps.when.its_value_condition_match_the_search_regex import when_its_value_condition_match_the_search_regex_regex
 
 # THEN
 from terraform_compliance.steps.then.it_must_contain_something import (
@@ -99,6 +100,17 @@ def wrapper(_step_obj, something, inherited_values=Null):
 @when(u'it doesnt have {something:PROPERTY}')
 def wrapper(_step_obj, something, inherited_values=Null):
     return it_does_not_have_something(_step_obj, something, inherited_values=Null)
+
+
+@when(u'its value {condition:ANY} the "{search_regex}" regex')
+@when(u'all of its values {condition:ANY} the "{search_regex}" regex')
+def wrapper(_step_obj, condition, search_regex):
+    return when_its_value_condition_match_the_search_regex_regex(_step_obj, condition, search_regex)
+
+
+@when(u'any of its values {condition:ANY} the "{search_regex}" regex')
+def wrapper(_step_obj, condition, search_regex):
+    return when_its_value_condition_match_the_search_regex_regex(_step_obj, condition, search_regex, any_values=True)
 
 
 @then(u'it must have "{reference_address}" referenced')
