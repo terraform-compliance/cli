@@ -46,7 +46,7 @@ from terraform_compliance.steps.then.its_value_condition_contain import its_valu
 from terraform_compliance.steps.then.it_must_have_reference_address_referenced import it_must_have_reference_address_referenced
 from terraform_compliance.steps.then.its_key_condition_be_value import its_key_condition_be_value
 from terraform_compliance.steps.then.interpolations import i_flatten_everything_found
-
+from terraform_compliance.steps.then.it_must_be_in import it_must_be_in
 
 @given(u'I have {name:ANY} defined')
 @given(u'I have {name:ANY} {type_name:SECTION} configured')
@@ -226,3 +226,13 @@ def wrapper(_step_obj, key, condition, value, stash=Null, depth=0):
 @then('I flatten all values found')
 def wrapper(_step_obj):
     return i_flatten_everything_found(_step_obj)
+
+@then('it must be a subset of {haystack:ANY}')
+@then('it must be in {haystack:ANY}')
+def wrapper(_step_obj, haystack):
+    return it_must_be_in(_step_obj, haystack)
+
+@then('it must be a superset of {haystack:ANY}')
+@then('it must cover {haystack:ANY}')
+def wrapper(_step_obj, haystack):
+    return it_must_be_in(_step_obj, haystack, cover=True)

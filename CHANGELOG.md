@@ -3,9 +3,13 @@
 ## Unreleased
 * New step: [When its value condition the "search regex" regex](https://terraform-compliance.com/pages/bdd-references/when.html#when-its-value-condition-the-search-regex-regex). ([#333](https://github.com/eerkunt/terraform-compliance/issues/333))
 * New step: [When any of its values condition the “search regex” regex](https://terraform-compliance.com/pages/bdd-references/when.html#when-any-of-its-values-condition-the-search-regex-regex). ([#333](https://github.com/eerkunt/terraform-compliance/issues/333))
+* New cumulative stash and [in step variables](http://terraform-compliance.com/pages/bdd-references/then.html#in-step-variables) functionality for steps to directly access stash content ([#329](https://github.com/eerkunt/terraform-compliance/pull/329))
+* New step: [Then it must be in haystack](http://terraform-compliance.com/pages/bdd-references/then.html#then-it-must-be-in-haystack) ([#329](https://github.com/eerkunt/terraform-compliance/pull/329))
+* New step: [Then it must cover haystack](http://terraform-compliance.com/pages/bdd-references/then.html#then-it-must-cover-haystack) ([#329](https://github.com/eerkunt/terraform-compliance/pull/329))
 
 ## 1.2.11 (2020-07-20)
 * Fixed an issue where [When it has something](https://terraform-compliance.com/pages/bdd-references/when.html#when-it-has-something) formats the search value incorrectly. ([#330](https://github.com/eerkunt/terraform-compliance/pull/330))
+
 
 ## 1.2.10 (2020-07-15)
 * Fixed `Then it must contain` to properly drill down and split into multiple resources if need be. ([#327](https://github.com/eerkunt/terraform-compliance/pull/327))
