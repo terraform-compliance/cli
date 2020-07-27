@@ -1,0 +1,5 @@
+Failure: All instances of permissions property of aws_s3_bucket.bucket resource match with \(\^WRITE\$\)|\(\^WRITE_ACP\$\)|\(\^FULL_CONTROL\$\) case insensitive regex. They are set to:
+Failure: No instance of permissions property of aws_s3_bucket.bucket resource matches with \(\^WRITE\$\) case insensitive regex. They are set to:
+Failure: All instances of permissions property of aws_s3_bucket.bucket resource match with \(\^READ\$\)|\(\^WRITE\$\)|\(\^FULL_CONTROL\$\) case insensitive regex. They are set to:
+Failure: No instance of permissions property of aws_s3_bucket.bucket resource matches with \(\^WRITE_ACP\$\) case insensitive regex. They are set to:
+Failure: No value in given stash supports regex comparison.

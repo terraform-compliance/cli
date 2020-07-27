@@ -221,6 +221,7 @@ match the
 "[search_regex](#){: .p-1 .text-blue-100 .fw-700}" 
 regex
 >
+> ▪
 [Then](#){: .p-1 .text-red-200} 
 all of its values
 [condition](#){: .p-1 .text-green-200 .fw-700} 

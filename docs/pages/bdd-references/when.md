@@ -514,3 +514,70 @@ the value
 | key | Description | Examples |
 |:---:|:----------|:-|
 | [action](#){: .p-1 .text-green-200 .fw-700} | mathematical operation | currently only supports for `count` |
+
+------------------------
+### [When](#){: .p-1 .text-red-200} its value [condition](#){: .p-1 .text-green-200 .fw-700} matches the "[search regex](#){: .p-1 .text-blue-100 .fw-700}" regex
+This step requires fundamental knowledge about regular expressions due the pattern matching algorithm. It is highly
+recommended to check for your patterns in [regex101](https://regex101.com/) before you implement your tests.
+
+All values are compared with the regex. If the value referred by "it" on the plan is a dictionary or list, this step will filter the resource out if any element in the value fails the [condition](#){: .p-1 .text-green-200 .fw-700} match. If no resources remain, the step will skip.
+
+Values that do not support regex comparison are ignored. (e.g. lists, dictionaries) If a resource does not contain any elements that support regex comparison, it will be filtered out. 
+
+
+> __Possible sentences :__
+>
+> ▪
+[When](#){: .p-1 .text-red-200} 
+its value
+[condition](#){: .p-1 .text-green-200 .fw-700} 
+the
+"[search_regex](#){: .p-1 .text-blue-100 .fw-700}" 
+regex
+> 
+> ▪
+[When](#){: .p-1 .text-red-200} 
+all of its values
+[condition](#){: .p-1 .text-green-200 .fw-700} 
+the 
+"[search_regex](#){: .p-1 .text-blue-100 .fw-700}" 
+regex
+>
+| key | Description | Examples |
+|:---:|:----------|:-|
+| [condition](#){: .p-1 .text-green-200 .fw-700} | defines positive or negative comparison | <br>▪ `match`, `matches`, and `does match` for positive comparison<br>▪ `doesn't match`, `does not match`, `don't match`, and `do not match` for negative comparison |
+| [search_regex](#){: .p-1 .text-blue-100 .fw-700}  | any valid regular expression | `^some_name$` `^(you|can|use|or|like|this)$` `\d+` |
+
+__Please note that__, in case you are using a [Scenario Outline instead of a Scenario](/pages/bdd-references/#scenario)
+and if you need to use `|` (or) regular expression operator within your [search_regex](#){: .p-1 .text-blue-100 .fw-700} 
+regex, then you must use escape characters (`\`) for not to interfere with Scenario Outline structure. In these situations
+use `\|` instead of `|`.
+
+------------------------
+### [When](#){: .p-1 .text-red-200} any of its values [condition](#){: .p-1 .text-green-200 .fw-700} matches the "[search regex](#){: .p-1 .text-blue-100 .fw-700}" regex
+This step requires fundamental knowledge about regular expressions due the pattern matching algorithm. It is highly
+recommended to check for your patterns in [regex101](https://regex101.com/) before you implement your tests.
+
+All values are compared with the regex. If the value referred by "it" on the plan is a dictionary or list, this step will filter the resource out if no element in the value satisfies the [condition](#){: .p-1 .text-green-200 .fw-700} match. If no resources remain, the step will skip.
+
+Values that do not support regex comparison are ignored. (e.g. lists, dictionaries) If a resource does not contain any elements that support regex comparison, it will be filtered out.
+
+> __Possible sentences :__
+>
+> ▪
+[When](#){: .p-1 .text-red-200} 
+its value
+[condition](#){: .p-1 .text-green-200 .fw-700} 
+the
+"[search_regex](#){: .p-1 .text-blue-100 .fw-700}" 
+regex
+>
+| key | Description | Examples |
+|:---:|:----------|:-|
+| [condition](#){: .p-1 .text-green-200 .fw-700} | defines positive or negative comparison | <br>▪ `match`, `matches`, and `does match` for positive comparison<br>▪ `doesn't match`, `does not match`, `don't match`, and `do not match` for negative comparison |
+| [search_regex](#){: .p-1 .text-blue-100 .fw-700}  | any valid regular expression | `^some_name$` `^(you|can|use|or|like|this)$` `\d+` |
+
+__Please note that__, in case you are using a [Scenario Outline instead of a Scenario](/pages/bdd-references/#scenario)
+and if you need to use `|` (or) regular expression operator within your [search_regex](#){: .p-1 .text-blue-100 .fw-700} 
+regex, then you must use escape characters (`\`) for not to interfere with Scenario Outline structure. In these situations
+use `\|` instead of `|`.

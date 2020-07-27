@@ -1,6 +1,8 @@
 # CHANGELOG
 
 ## Unreleased
+* New step: [When its value condition match the "search regex" regex](https://terraform-compliance.com/pages/bdd-references/when.html#when-its-value-condition-matches-the-search-regex-regex). ([#333](https://github.com/eerkunt/terraform-compliance/issues/333))
+* New step: [When any of its values condition matches the “search regex” regex](https://terraform-compliance.com/pages/bdd-references/when.html#when-any-of-its-values-condition-matches-the-search-regex-regex). ([#333](https://github.com/eerkunt/terraform-compliance/issues/333))
 
 ## 1.2.11 (2020-07-20)
 * Fixed an issue where [When it has something](https://terraform-compliance.com/pages/bdd-references/when.html#when-it-has-something) formats the search value incorrectly. ([#330](https://github.com/eerkunt/terraform-compliance/pull/330))
