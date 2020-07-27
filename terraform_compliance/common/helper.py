@@ -62,10 +62,10 @@ class Match(object):
     # Assumes all incoming sets are sets of strings
     def issubset(self, set1, set2):
         if not isinstance(set1, Iterable) or isinstance(set1, str):
-            raise TypeError('{} should be a non-str iterable'.format(set1))
+            raise TerraformComplianceInternalFailure('{} should be a non-str iterable'.format(set1))
         
         if not isinstance(set2, Iterable) or isinstance(set2, str):
-            raise TypeError('{} should be a non-str iterable'.format(set2))
+            raise TerraformComplianceInternalFailure('{} should be a non-str iterable'.format(set2))
 
         if not self.case_sensitive:
             set1 = set(str(e).lower() for e in set1)

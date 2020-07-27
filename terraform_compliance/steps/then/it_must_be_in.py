@@ -11,7 +11,6 @@ def it_must_be_in(_step_obj, haystack, cover=False):
 
     if 'haystack' not in _step_obj.context.in_step_variables:
         Error(_step_obj, 'Could not resolve haystack: {}'.format(haystack))       
-        return
     parsed_haystack = _step_obj.context.in_step_variables['haystack']
 
     if not cover and not match.issubset(values, parsed_haystack):
