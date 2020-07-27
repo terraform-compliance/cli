@@ -44,6 +44,37 @@ will be deemed to fail. If `terraform-compliance` is used with `--early-exit` pa
 other scenarios - if exists - won't be executed. This is useful on use cases where you have
 lots of tests. 
 
+## In step variables
+As a scenario calls `GIVEN` steps, all resources that was once assigned to the scenario by `GIVEN` steps are accumulated in "cumulative stash." Steps that support in step variables can access cumulative stash directly within the step definition.
+
+In step variables can be accessed by surrounding curly braces around the related statement.
+
+**Example:**
+```gherkin
+Scenario: Lambda functions must have a matching Cloudwatch Log Group
+    Given I have aws_cloudwatch_log_group defined
+    Given I have aws_lambda_function defined
+    Then it must have function_name
+    And it must be in {aws_cloudwatch_log_group.values.name}
+```
+Since two `GIVEN` steps were called, the cumulative stash contains all `aws_cloudwatch_log_group` and `aws_lambda_function` resources that were defined within the plan. 
+
+On the final step, the resources in stash (`function_name`s that were collected via previous steps) are compared with properties under `{aws_cloudwatch_log_group.values.name}`. 
+
+List values can be indexed or sliced using `{path_to_value.[0]}`, `{path_to_value.[:]}` similar to how indexing rules works in python. (e.g. {path_to_value.[4:2]} would return an empty list)
+
+**Example**
+```gherkin
+Scenario: slicing 1
+    Given I have azurerm_postgresql_server defined
+    Then it must have azurerm_postgresql_configuration
+    Then it must have name
+    Then it must be in {azurerm_postgresql_server.values.azurerm_postgresql_configuration.[:].name}
+```
+In this scenario, `in step variables` would contain the name of every element under `values.azurerm_postgresql_configuration` for every `azurerm_postgresql_server` resource.
+
+The path to the desired value can be found through parsing the stash on [debugging](/pages/usage/#-d--debug) mode. Usually, the path will be in the format `resource_name.value.value_name`
+
 ## Reference
 * Table of Contents
 {:toc}
@@ -162,7 +193,7 @@ This step will execute tests that is applicable for both per rule and per securi
 * **must not**: The port(s) given must not exist in ANY rule of the Security Group.
 * **must only**: The port(s) given must be exactly same like the ones defined in Security Group.
 
-Please not that `must not` condition is executed per every Security Group Rule, while `must not` and `must only` is 
+Please note that `must not` condition is executed per every Security Group Rule, while `must not` and `must only` is 
 executed for ALL rules exist in a Security Group.
 
 ------------------------
@@ -453,3 +484,43 @@ example, checking a specific `name` that has been created by a `for_each` of res
 [Then](#){: .p-1 .text-red-200} 
 I flatten all values found
 >
+
+------------------------
+### [Then](#){: .p-1 .text-red-200} it must be in [haystack](#){: .p-1 .text-green-200 .fw-700}
+This step compares the contents of the current stash to the [in step variables](/pages/bdd-references/then.html#in-step-variables). Passes if resources from the previous step form a subset of the resources within the in step variables. Only sets of bool, int, float, and string values are supported.
+> __Possible sentences :__
+>
+> ▪
+[Then](#){: .p-1 .text-red-200} 
+it must be in
+[haystack](#){: .p-1 .text-green-200 .fw-700}
+>
+> ▪
+[Then](#){: .p-1 .text-red-200} 
+it must be a subset of
+[haystack](#){: .p-1 .text-green-200 .fw-700}
+>
+
+| key | Description | Examples |
+|:---:|:----------|:-|
+| [haystack](#){: .p-1 .text-green-200 .fw-700} | The resources to be accessed via in step variables | `{aws_lambda_function.values.function_name}`, `{aws_cloudwatch_log_group.values.name}`, `{resource_name.path.to.property}` |
+
+------------------------
+### [Then](#){: .p-1 .text-red-200} it must cover [haystack](#){: .p-1 .text-green-200 .fw-700}
+This step compares the contents of the current stash to the [in step variables](/pages/bdd-references/then.html#in-step-variables). Passes if resources from the previous step form a superset of the resources within the in step variables. Only sets of bool, int, float, and string values are supported.
+> __Possible sentences :__
+>
+> ▪
+[Then](#){: .p-1 .text-red-200} 
+it must be in
+[haystack](#){: .p-1 .text-green-200 .fw-700}
+>
+> ▪
+[Then](#){: .p-1 .text-red-200} 
+it must be a subset of
+[haystack](#){: .p-1 .text-green-200 .fw-700}
+>
+
+| key | Description | Examples |
+|:---:|:----------|:-|
+| [haystack](#){: .p-1 .text-green-200 .fw-700} | The resources to be accessed via in step variables | `{aws_lambda_function.values.function_name}`, `{aws_cloudwatch_log_group.values.name}`, `{resource_name.path.to.property}` |

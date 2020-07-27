@@ -10,6 +10,7 @@ def look_for_bdd_tags(_step_obj):
     _step_obj.context.no_skip = False
     _step_obj.context.skip_class = None # to pick a tagname that user used
     _step_obj.context.lines_to_noskip = []
+    _step_obj.context.bad_tags = False
 
     defaults = Defaults()
 
@@ -48,6 +49,7 @@ def look_for_bdd_tags(_step_obj):
 
     if _step_obj.context.no_failure and _step_obj.context.no_skip:
         _step_obj.context.no_failure = False
+        _step_obj.context.bad_tags = True
         Error(_step_obj, f'@{_step_obj.context.failure_class} and @{_step_obj.context.skip_class} tags can not be used at the same time.')
 
     ## set the match here

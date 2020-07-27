@@ -1,0 +1,2 @@
+Failure: Selected resources does not cover \{aws_cloudwatch_log_group.values.name\}.
+Failure: Selected resources does not cover \{aws_cloudwatch_log_group.values.name\}.
