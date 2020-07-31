@@ -1,6 +1,9 @@
 # CHANGELOG
 
 ## Unreleased
+
+## 1.3.0 (2020-07-31)
+* Added cache capability and optimised the resource mounting a bit since it might trigger OOM kernel signalling and can be killed unexpectedly.
 * New cumulative stash and [in step variables](http://terraform-compliance.com/pages/bdd-references/then.html#in-step-variables) functionality for steps to directly access stash content ([#329](https://github.com/eerkunt/terraform-compliance/pull/329))
 * New step: [Then it must be in haystack](http://terraform-compliance.com/pages/bdd-references/then.html#then-it-must-be-in-haystack) ([#329](https://github.com/eerkunt/terraform-compliance/pull/329))
 * New step: [Then it must cover haystack](http://terraform-compliance.com/pages/bdd-references/then.html#then-it-must-cover-haystack) ([#329](https://github.com/eerkunt/terraform-compliance/pull/329))
