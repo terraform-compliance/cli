@@ -2,6 +2,7 @@ import sys
 import os
 import colorful
 from emoji import emojize
+import tempfile
 
 
 class Defaults(object):
@@ -12,6 +13,7 @@ class Defaults(object):
     r_mount_addr_ptr_list = 'terraform-compliance.mounted_resources.addresses_list'
 
     supported_min_python_versions = '3.6.0'
+    cache_dir = tempfile.mkdtemp(prefix='terraform-compliance')
 
     def __init__(self):
         self.interactive_mode = self.detect_term()

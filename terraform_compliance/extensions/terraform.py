@@ -375,10 +375,12 @@ class TerraformParser(object):
 
         cache = self.cache.get('mounted_resources')
         if cache:
-            print('Read from cache, instead of re-mounting')
+            # print('Read from cache, instead of re-mounting.')
             self.resources = cache
         else:
+            # print('Building cache for mounted resources at {}'.format(Defaults.cache_dir))
             self._mount_references()
+            self.cache.set('mounted_resources', self.resources)
 
         self._distribute_providers()
 
