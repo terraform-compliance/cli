@@ -3,8 +3,7 @@ from terraform_compliance.common.helper import seek_key_in_dict, flatten_list, d
 import sys
 from copy import deepcopy
 from terraform_compliance.common.defaults import Defaults
-from terraform_compliance.common.exceptions import TerraformComplianceInternalFailure
-
+from terraform_compliance.extensions.cache import Cache
 
 class TerraformParser(object):
     def __init__(self, filename, parse_it=True):
@@ -35,6 +34,8 @@ class TerraformParser(object):
         self.configuration = dict(resources={}, variables={})
         self.file_type = "plan"
         self.resources_raw = {}
+
+        self.cache = Cache()
 
         if parse_it:
             self.parse()
@@ -84,6 +85,12 @@ class TerraformParser(object):
         :return: none
         '''
 
+        # Read Cache
+        cache = self.cache.get('resources')
+        if cache:
+            self.resources = cache
+            return
+
         # Resources ( exists in Plan )
         for findings in seek_key_in_dict(self.raw.get('planned_values', {}).get('root_module', {}), 'resources'):
             for resource in findings.get('resources', []):
@@ -131,6 +138,8 @@ class TerraformParser(object):
                 else:
                     self.resources[resource['address']] = resource
 
+        self.cache.set('resources', self.resources)
+
     def _parse_configurations(self):
         '''
         Assigns all configuration related data defined in the terraform plan. This is mostly used for
@@ -138,6 +147,12 @@ class TerraformParser(object):
 
         :return: none
         '''
+
+        # Read Cache
+        cache = self.cache.get('configuration')
+        if cache:
+            self.configuration = cache
+            return
 
         # Resources
         self.configuration['resources'] = {}
@@ -192,6 +207,8 @@ class TerraformParser(object):
 
                 self.configuration['outputs'][key] = tmp_output
 
+        self.cache.set('configuration', self.configuration)
+
     def _mount_resources(self, source, target, ref_type):
         '''
         Mounts values of the source resource to the target resource's values with ref_type key
@@ -227,12 +244,16 @@ class TerraformParser(object):
                         self.resources[target_resource]['values'][ref_type].append(resource)
                         self.resources[target_resource][Defaults.r_mount_ptr][parameter] = ref_type
                         self.resources[target_resource][Defaults.r_mount_addr_ptr][parameter] = source
-                        self.resources[target_resource][Defaults.r_mount_addr_ptr_list].extend(source)
+                        target_set = set(self.resources[target_resource][Defaults.r_mount_addr_ptr_list])
+                        source_set = set(source)
+                        self.resources[target_resource][Defaults.r_mount_addr_ptr_list] = list(target_set | source_set)
                     else:
                         self.resources[target_resource]['values'][ref_type].append(resource)
                         self.resources[target_resource][Defaults.r_mount_ptr][parameter] = ref_type
                         self.resources[target_resource][Defaults.r_mount_addr_ptr][parameter] = source
-                        self.resources[target_resource][Defaults.r_mount_addr_ptr_list].extend(source)
+                        target_set = set(self.resources[target_resource][Defaults.r_mount_addr_ptr_list])
+                        source_set = set(source)
+                        self.resources[target_resource][Defaults.r_mount_addr_ptr_list] = list(target_set | source_set)
 
                     if parameter not in self.resources[source_resource]['values']:
                         self.resources[source_resource]['values'][parameter] = target_resource
@@ -344,7 +365,13 @@ class TerraformParser(object):
             self._parse_variables()
             self._parse_configurations()
 
-        self._mount_references()
+        cache = self.cache.get('mounted_resources')
+        if cache:
+            print('Read from cache, instead of re-mounting')
+            self.resources = cache
+        else:
+            self._mount_references()
+
         self._distribute_providers()
 
         for _, resource in self.resources.items():
