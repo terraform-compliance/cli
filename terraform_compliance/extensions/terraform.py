@@ -34,10 +34,10 @@ class TerraformParser(object):
         self.configuration = dict(resources={}, variables={})
         self.file_type = "plan"
         self.resources_raw = {}
-
-        self.cache = Cache()
+        self.parse_it = parse_it
 
         if parse_it:
+            self.cache = Cache()
             self.parse()
 
     def _version_check(self):
@@ -86,10 +86,11 @@ class TerraformParser(object):
         '''
 
         # Read Cache
-        cache = self.cache.get('resources')
-        if cache:
-            self.resources = cache
-            return
+        if self.parse_it:
+            cache = self.cache.get('resources')
+            if cache:
+                self.resources = cache
+                return
 
         # Resources ( exists in Plan )
         for findings in seek_key_in_dict(self.raw.get('planned_values', {}).get('root_module', {}), 'resources'):
@@ -138,7 +139,8 @@ class TerraformParser(object):
                 else:
                     self.resources[resource['address']] = resource
 
-        self.cache.set('resources', self.resources)
+        if self.parse_it:
+            self.cache.set('resources', self.resources)
 
     def _parse_configurations(self):
         '''
@@ -149,10 +151,11 @@ class TerraformParser(object):
         '''
 
         # Read Cache
-        cache = self.cache.get('configuration')
-        if cache:
-            self.configuration = cache
-            return
+        if self.parse_it:
+            cache = self.cache.get('configuration')
+            if cache:
+                self.configuration = cache
+                return
 
         # Resources
         self.configuration['resources'] = {}
@@ -215,7 +218,8 @@ class TerraformParser(object):
 
                 self.configuration['outputs'][key] = tmp_output
 
-        self.cache.set('configuration', self.configuration)
+        if self.parse_it:
+            self.cache.set('configuration', self.configuration)
 
     def _mount_resources(self, source, target, ref_type):
         '''
@@ -373,14 +377,17 @@ class TerraformParser(object):
             self._parse_variables()
             self._parse_configurations()
 
-        cache = self.cache.get('mounted_resources')
+        cache = self.cache.get('mounted_resources') if self.parse_it else None
+
         if cache:
             # print('Read from cache, instead of re-mounting.')
             self.resources = cache
         else:
             # print('Building cache for mounted resources at {}'.format(Defaults.cache_dir))
             self._mount_references()
-            self.cache.set('mounted_resources', self.resources)
+
+            if self.parse_it:
+                self.cache.set('mounted_resources', self.resources)
 
         self._distribute_providers()
 
