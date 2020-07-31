@@ -7,7 +7,7 @@ from terraform_compliance.common.helper import (
 from terraform_compliance.common.error_handling import Error
 
 
-def it_must_contain_something(_step_obj, something, inherited_values=Null):
+def it_must_contain_something(_step_obj, something, inherited_values=Null, child=False):
     match = _step_obj.context.match
     seek_key_in_dict, seek_regex_key_in_dict_values = match.seek_key_in_dict, match.seek_regex_key_in_dict_values
 
@@ -30,23 +30,30 @@ def it_must_contain_something(_step_obj, something, inherited_values=Null):
             if not values:
                 values = seek_key_in_dict(resource, something)
 
-            found_value = Null
-            found_key = Null
+            found_values = []
+            found_key = Null # this could also become a list
+            resource_passed = False
+            # set this to True if you get anything from the resource, don't set it to False if you get empty values as there could be other values as well
             if isinstance(values, dict):
-                found_key = match.get(values, something, seek_key_in_dict(values, something))
-                if not isinstance(found_key, list):
+
+                found_key = match.get(values, something, Null)
+                if found_key is not Null:
                     found_key = [{something: found_key}]
+                else:
+                    found_key = seek_key_in_dict(values, something)
 
-                if len(found_key):
-                    found_key = found_key[0] if len(found_key) == 1 and something in found_key[0] else found_key
+                for kv_pair in found_key:
+                    # kv_pair must be in {something: found_key} format.
+                    if not isinstance(kv_pair, dict):
+                        continue # should raise exception
+                    # ignore the values that correspond to Null 
+                    # Following line could be problematic, how to determine if something is set to be empty or not set? Behavior is provider dependent. 
+                    # For now, allow '' and don't allow [] as per user cases.
+                    if match.get(kv_pair, something) not in ([],):
+                        found_values.append(match.get(kv_pair, something))
+                        resource_passed = True
 
-                    if isinstance(found_key, dict):
-                        found_value = match.get(found_key, something, found_key)
-                        found_value = found_value if found_value not in ([], '') else found_key
-                    else:
-                        found_value = found_key
             elif isinstance(values, list):
-                found_value = []
 
                 for value in values:
 
@@ -54,6 +61,7 @@ def it_must_contain_something(_step_obj, something, inherited_values=Null):
                         # First search in the keys
                         found_key = seek_key_in_dict(value, something)
 
+                        # The following is an edge case that covers things like aws asg tags (https://www.terraform.io/docs/providers/aws/r/autoscaling_group.html)
                         # Then search in the values with 'key'
                         if not found_key:
                             found_key = seek_regex_key_in_dict_values(value, 'key', something)
@@ -61,31 +69,39 @@ def it_must_contain_something(_step_obj, something, inherited_values=Null):
                             if found_key:
                                 found_key = found_key[0]
                                 # not going to use match.get here because the following line is an edge case
-                                found_value.extend(value.get('value'))
-                                break
+                                found_values.extend(value.get('value'))
+                                resource_passed = True
+                                continue
                     elif isinstance(value, list):
-                        found_key, temp_found_value = it_must_contain_something(_step_obj, something, value)
-                        found_value.extend(temp_found_value)
+                        _, temp_found_values = it_must_contain_something(_step_obj, something, value, child=True)
+                        prop_list.extend(temp_found_values)
+                        found_values.append('added_to_proplist')
+                        resource_passed = True
 
                     elif isinstance(value, (str, bool, int, float)):
                         if match.equals(value, something):
-                            found_value.append(value)
+                            found_values.append(value)
 
                     if found_key is not Null and len(found_key):
-                        found_key = found_key[0] if len(found_key) == 1 else found_key
 
-                        if isinstance(found_key, dict):
-                            found_value.append(found_key.get(something, found_key))
+                        for found_key_instance in found_key:
+                            if isinstance(found_key_instance, dict):
+                                if match.get(found_key_instance, something, Null) not in (Null, [], '', {}, 'added_to_proplist'):
+                                    found_values.append(match.get(found_key_instance, something))
+                                    resource_passed = True
 
-            if isinstance(found_value, dict) and 'constant_value' in found_value:
-                found_value = found_value['constant_value']
+            for i, found_val in enumerate(found_values):
+                if isinstance(found_val, dict) and 'constant_value' in found_val:
+                    found_values[i] = found_val['constant_value']
 
-            if found_value not in (Null, [], '', {}):
-                prop_list.append({'address': resource['address'],
-                                  'values': found_value,
-                                  'type': _step_obj.context.name})
+            for found_val in found_values:
+                if found_val not in (Null, [], '', {}, 'added_to_proplist'): # slightly redundant now.
+                    prop_list.append({'address': resource['address'],
+                                    'values': found_val,
+                                    'type': _step_obj.context.name})
 
-            else:
+            # do not check prop list here because every resource should contain it.
+            if not resource_passed and not child: # if nothing was found in this resource, don't error if you're a child
                 Error(_step_obj, '{} ({}) does not have {} property.'.format(resource['address'],
                                                                              resource.get('type', ''),
                                                                              something))
@@ -138,23 +154,30 @@ def it_must_not_contain_something(_step_obj, something, inherited_values=Null):
             if not values:
                 values = seek_key_in_dict(resource, something)
 
-            found_value = Null
+            found_values = []
             found_key = Null
+            resource_passed = False
+            # set this to True if you get anything from the resource, don't set it to False if you get empty values as there could be other values as well
             if isinstance(values, dict):
-                found_key = match.get(values, something, seek_key_in_dict(values, something))
-                if not isinstance(found_key, list):
+
+                found_key = match.get(values, something, Null)
+                if found_key is not Null:
                     found_key = [{something: found_key}]
+                else:
+                    found_key = seek_key_in_dict(values, something)
 
-                if len(found_key):
-                    found_key = found_key[0] if len(found_key) == 1 and something in found_key[0] else found_key
+                for kv_pair in found_key:
+                    # kv_pair must be in {something: found_key} format.
+                    if not isinstance(kv_pair, dict):
+                        continue # could raise an exception
+                    # ignore the values that correspond to Null 
+                    # Following line could be problematic, how to determine if something is set to be empty or not set? Behavior is provider dependent. 
+                    # For now, allow '' and don't allow [] as per user cases.
+                    if match.get(kv_pair, something) not in ([],):
+                        found_values.append(match.get(kv_pair, something))
+                        resource_passed = True
 
-                    if isinstance(found_key, dict):
-                        found_value = match.get(found_key, something, found_key)
-                        found_value = found_value if found_value not in ([], '') else found_key
-                    else:
-                        found_value = found_key
             elif isinstance(values, list):
-                found_value = []
 
                 for value in values:
 
@@ -168,27 +191,32 @@ def it_must_not_contain_something(_step_obj, something, inherited_values=Null):
 
                             if found_key:
                                 found_key = found_key[0]
-                                found_value.append(value.get('value'))
-                                break
+                                found_values.extend(value.get('value'))
+                                resource_passed = True
+                                continue
                     elif isinstance(value, list):
-                        found_key, temp_found_value = it_must_contain_something(_step_obj, something, value)
-                        found_value.extend(temp_found_value)
+                        _, temp_found_values = it_must_contain_something(_step_obj, something, value, child=True)
+                        prop_list.extend(temp_found_values)
+                        found_values.append('added_to_proplist')
+                        resource_passed = True
 
                     elif isinstance(value, (str, bool, int, float)):
                         if match.equals(value, something):
-                            found_value.append(value)
+                            found_values.append(value)
 
                     if found_key is not Null and len(found_key):
-                        found_key = found_key[0] if len(found_key) == 1 else found_key
 
-                        if isinstance(found_key, dict):
-                            found_value.append(found_key.get(something, found_key))
+                        for found_key_instance in found_key:
+                            if isinstance(found_key_instance, dict):
+                                if match.get(found_key_instance, something, Null) not in (Null, [], '', {}, 'added_to_proplist'):
+                                    found_values.append(match.get(found_key_instance, something))
+                                    resource_passed = True
 
-            if isinstance(found_value, dict) and 'constant_value' in found_value:
-                found_value = found_value['constant_value']
+            for i, found_val in enumerate(found_values):
+                if isinstance(found_val, dict) and 'constant_value' in found_val:
+                    found_values[i] = found_val['constant_value']
 
-            # if found_value is not Null and found_value != [] and found_value != '' and found_value != {}:
-            if found_value not in (Null, [], '', {}):
+            if resource_passed:
                 Error(_step_obj, '{} property exists in {} ({}).'.format(something, resource['address'], resource.get('type', '')))
 
     elif _step_obj.context.type == 'provider':

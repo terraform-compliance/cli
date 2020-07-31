@@ -44,7 +44,7 @@ resource "azurerm_postgresql_configuration" "log_connections" {
 
 To do so, we need to filter to the correct `azurerm_postgresql_configuration`, fail if it doesn't exist, then drill to its `value` to finally check whether it's on or not.
 
-```
+```gherkin
 @noskip
 Scenario: log checkpoints must exist and must be set to on. 
     Given I have azurerm_postgresql_configuration defined
@@ -56,7 +56,7 @@ Scenario: log checkpoints must exist and must be set to on.
 
 
 If we used
-```
+```gherkin
     Given I have azurerm_postgresql_configuration defined
     When its name is not log_checkpoints
     Then it must fail
@@ -65,7 +65,7 @@ We wouldn't filter to the correct resources, since the `WHEN` step would capture
 
 
 If we tried the following instead,
-```
+```gherkin
     Given I have azurerm_postgresql_configuration defined
     Then its name must be log_checkpoints
 ```
@@ -78,7 +78,7 @@ We would end up drilling to the `name`'s value `log_checkpoints`, which would pr
 
 Say we wanted the following to hold: if azurerm_postgresql_server is defined, then azurerm_postgresql_configuration must be defined.
 The scenario should skip if there are no `azurerm_postgresql_server` defined but fail if it exists without any `azurerm_postgresql_configuration` defined.
-```
+```gherkin
 @noskip_at_line_4
 Scenario: Ensure azurerm_postgresql_configuration is defined if a PostgreSQL Database Server exists.
     Given I have azurerm_postgresql_server defined
@@ -87,7 +87,7 @@ Scenario: Ensure azurerm_postgresql_configuration is defined if a PostgreSQL Dat
 
 Following also accomplishes the same.
 
-```
+```gherkin
 @noskip_at_line_5
 Scenario: Ensure azurerm_postgresql_configuration is defined if a PostgreSQL Database Server exists.
     Given I have azurerm_postgresql_server defined
@@ -128,7 +128,7 @@ resource "azurerm_postgresql_configuration" "log_retention_days" {
 ```
 
 
-```
+```gherkin
 @noskip_at_lines_22_23_24
 Scenario Outline: Scenario for issue #291
     Given I have azurerm_postgresql_configuration defined

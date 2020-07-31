@@ -143,9 +143,11 @@ def it_has_something(_step_obj, something, inherited_values=Null):
             found_value = Null
             found_key = Null
             if isinstance(values, dict):
-                found_key = match.get(values, something, seek_key_in_dict(values, something))
-                if not isinstance(found_key, list):
+                found_key = match.get(values, something, Null)
+                if found_key is not Null:
                     found_key = [{something: found_key}]
+                else:
+                    found_key = seek_key_in_dict(values, something)
 
                 if len(found_key):
                     found_key = found_key[0] if len(found_key) == 1 and match.contains(found_key[0], something) else found_key
@@ -173,6 +175,9 @@ def it_has_something(_step_obj, something, inherited_values=Null):
                                 break
                     elif isinstance(value, list):
                         found_key, found_value = it_has_something(_step_obj, something, value)
+                    elif isinstance(value, (str, bool, int, float)) and match.equals(value, something):
+                        found_key = value
+                        found_value.append(found_key)
 
                     if found_key is not Null and len(found_key):
                         found_key = found_key[0] if len(found_key) == 1 else found_key
@@ -243,9 +248,11 @@ def it_does_not_have_something(_step_obj, something, inherited_values=Null):
             found_value = Null
             found_key = Null
             if isinstance(values, dict):
-                found_key = match.get(values, something, seek_key_in_dict(values, something))
-                if not isinstance(found_key, list):
+                found_key = match.get(values, something, Null)
+                if found_key is not Null:
                     found_key = [{something: found_key}]
+                else:
+                    found_key = seek_key_in_dict(values, something)
 
                 if len(found_key):
                     found_key = found_key[0] if len(found_key) == 1 and match.contains(found_key[0], something) else found_key

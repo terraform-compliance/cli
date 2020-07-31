@@ -1,7 +1,22 @@
 # CHANGELOG
 
 ## Unreleased
-* TBD
+* New cumulative stash and [in step variables](http://terraform-compliance.com/pages/bdd-references/then.html#in-step-variables) functionality for steps to directly access stash content ([#329](https://github.com/eerkunt/terraform-compliance/pull/329))
+* New step: [Then it must be in haystack](http://terraform-compliance.com/pages/bdd-references/then.html#then-it-must-be-in-haystack) ([#329](https://github.com/eerkunt/terraform-compliance/pull/329))
+* New step: [Then it must cover haystack](http://terraform-compliance.com/pages/bdd-references/then.html#then-it-must-cover-haystack) ([#329](https://github.com/eerkunt/terraform-compliance/pull/329))
+
+## 1.2.11 (2020-07-20)
+* Fixed an issue where [When it has something](https://terraform-compliance.com/pages/bdd-references/when.html#when-it-has-something) formats the search value incorrectly. ([#330](https://github.com/eerkunt/terraform-compliance/pull/330))
+
+
+## 1.2.10 (2020-07-15)
+* Fixed `Then it must contain` to properly drill down and split into multiple resources if need be. ([#327](https://github.com/eerkunt/terraform-compliance/pull/327))
+* Fixed When it contains to accomodate singular values in a list. ([#327](https://github.com/eerkunt/terraform-compliance/pull/327))
+
+## 1.2.9 (2020-07-13)
+* Improved the code quality of live debugging. Used `world.config.user_data` instead of global variables. ([#320](https://github.com/eerkunt/terraform-compliance/pull/320))
+* Fixed a problem where some nested resource structures were not able to be get parsed properly and causing a crash. ([#316](https://github.com/eerkunt/terraform-compliance/pull/316))
+* Fixed a problem where `curses` library was not found and causing a crash. ([#323](https://github.com/eerkunt/terraform-compliance/issues/323))
 
 ## 1.2.8 (2020-07-10)
 * Improved (centralized) matching and seeking functions. ([#304](https://github.com/eerkunt/terraform-compliance/pull/304))
