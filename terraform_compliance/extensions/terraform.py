@@ -5,6 +5,11 @@ from copy import deepcopy
 from terraform_compliance.common.defaults import Defaults
 from terraform_compliance.extensions.cache import Cache
 
+class IdObject(object):
+    def __init__(self, num):
+        self.id = num
+
+
 class TerraformParser(object):
     def __init__(self, filename, parse_it=True):
         '''
@@ -239,7 +244,8 @@ class TerraformParser(object):
                     if target_resource not in self.resources or 'values' not in self.resources[target_resource]:
                         continue
 
-                    resource = deepcopy(self.resources[source_resource]['values'])
+                    # resource = deepcopy(self.resources[source_resource]['values'])
+                    resource = self.resources[source_resource]['values']
                     resource[Defaults.mounted_ptr] = True
 
                     if Defaults.r_mount_ptr not in self.resources[target_resource]:
@@ -254,6 +260,7 @@ class TerraformParser(object):
                     if ref_type not in self.resources[target_resource]['values']:
                         self.resources[target_resource]['values'][ref_type] = []
                         self.resources[target_resource]['values'][ref_type].append(resource)
+                        # self.resources[target_resource]['values'][ref_type].append(IdObject(1))
                         self.resources[target_resource][Defaults.r_mount_ptr][parameter] = ref_type
                         self.resources[target_resource][Defaults.r_mount_addr_ptr][parameter] = source
                         target_set = set(self.resources[target_resource][Defaults.r_mount_addr_ptr_list])
@@ -261,6 +268,7 @@ class TerraformParser(object):
                         self.resources[target_resource][Defaults.r_mount_addr_ptr_list] = list(target_set | source_set)
                     else:
                         self.resources[target_resource]['values'][ref_type].append(resource)
+                        # self.resources[target_resource]['values'][ref_type].append(IdObject(1))
                         self.resources[target_resource][Defaults.r_mount_ptr][parameter] = ref_type
                         self.resources[target_resource][Defaults.r_mount_addr_ptr][parameter] = source
                         target_set = set(self.resources[target_resource][Defaults.r_mount_addr_ptr_list])
@@ -336,7 +344,7 @@ class TerraformParser(object):
                         ref_type = resource_type
 
                     for k, v in ref_list.items():
-                        v = flatten_list(v)
+                        v = flatten_list(v) # what??
 
                     # Mounting A->B
                     source_resources = self._find_resource_from_name(self.configuration['resources'][resource]['address'])
