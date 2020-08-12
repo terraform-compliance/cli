@@ -5,6 +5,7 @@ from mock import patch
 from ddt import ddt, data
 from copy import deepcopy
 
+
 @ddt
 class TestTerraformParser(TestCase):
 
