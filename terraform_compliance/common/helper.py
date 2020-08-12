@@ -80,13 +80,8 @@ class Match(object):
         return re.match(*args, **kwargs, flags=regex_flag)
 
     
-    def seek_key_in_dict(self, haystack, needle):
-        haystacks = set()
-        return self.seek_key_in_dict_helper(haystack, needle, haystacks)
-
-
     # seek key in dict but with case_sensitivity
-    def seek_key_in_dict_helper(self, haystack, needle, haystacks):
+    def seek_key_in_dict(self, haystack, needle):
         '''
         Searches needle in haystack ( could be dict, list, list of dicts, nested dicts, etc. ) and returns all findings
         as a list
@@ -95,24 +90,17 @@ class Match(object):
         :param needle: search key
         :return: list of found keys & values
         '''
-
-        if id(haystack) in haystacks:
-            return []
-        
-        haystacks.add(id(haystack))
-
-
         found = list()
         if isinstance(haystack, dict):
             for key, value in haystack.items():
                 if self.equals(key, needle):
                     found.append({key: value})
                 else:
-                    found.extend(self.seek_key_in_dict_helper(value, needle, haystacks))
+                    found.extend(self.seek_key_in_dict(value, needle))
 
         elif isinstance(haystack, list):
             for value in haystack:
-                found.extend(self.seek_key_in_dict_helper(value, needle, haystacks))
+                found.extend(self.seek_key_in_dict(value, needle))
 
         else:
             return []
@@ -122,18 +110,6 @@ class Match(object):
     # ...
     # needle == value
     def seek_value_in_dict(self, needle, haystack, address=None):
-        haystacks = set()
-        return self.seek_value_in_dict_helper(needle, haystack, haystacks, address)
-
-
-    def seek_value_in_dict_helper(self, needle, haystack, haystacks, address=None):
-
-        if id(haystack) in haystacks:
-            return list()
-        
-        haystacks.add(id(haystack))
-
-
         findings = []
         # if isinstance(haystack, (str, int, bool, float)) and str(needle) in str(haystack):  # this shouldn't be in but == instead
         #     findings.append(dict(values=needle, address=None))
@@ -145,7 +121,7 @@ class Match(object):
 
             for key, value in haystack.items():
                 if isinstance(value, (dict, list)):
-                    findings.extend(self.seek_value_in_dict_helper(needle, value, haystacks))
+                    findings.extend(self.seek_value_in_dict(needle, value))
                 
                 elif isinstance(value, (str, bool, int, float)) and self.equals(needle, value):
                     findings.append(dict(values=needle, address=address))
@@ -158,7 +134,7 @@ class Match(object):
             # Otherwise, there are more stuff, so go recursive
             else:
                 for value in haystack:
-                    findings.extend(self.seek_value_in_dict_helper(needle, value, haystacks))
+                    findings.extend(self.seek_value_in_dict(needle, value))
 
         return findings
 
@@ -167,11 +143,6 @@ class Match(object):
     # case sensitivity overwrites regex (if case insensitive, there is always re.IGNORECASE)
         # this's admittedly weird but convention/backwards compatibility...
     def seek_regex_key_in_dict_values(self, haystack, key_name, needle, key_matched=None):
-        haystacks = set()
-        return self.seek_regex_key_in_dict_values_helper(haystack, key_name, needle, haystacks, key_matched)
-
-
-    def seek_regex_key_in_dict_values_helper(self, haystack, key_name, needle, haystacks, key_matched=None):
         '''
         Searches needle in haystack ( could be dict, list, list of dicts, nested dicts, etc. ) and returns all findings
         as a list. The only difference from seek_key_in_dict is, we are assuming needle is in regex format here and we
@@ -183,12 +154,6 @@ class Match(object):
         :param key_matched: Internal use
         :return: list of found keys & values
         '''
-        if id(haystack) in haystacks:
-            return list()
-        
-        haystacks.add(id(haystack))
-
-
         regex = r'^{}$'.format(needle)
         found = list()
         if isinstance(haystack, dict):
@@ -203,21 +168,21 @@ class Match(object):
                         if matches is not None:
                             found.append(matches.group(0))
                         else:
-                            found.extend(self.seek_regex_key_in_dict_values_helper(value, key_name, needle, haystacks, True))
+                            found.extend(self.seek_regex_key_in_dict_values(value, key_name, needle, True))
 
                     elif isinstance(value, dict):
-                        found.extend(self.seek_regex_key_in_dict_values_helper(value, key_name, needle, haystacks, True))
+                        found.extend(self.seek_regex_key_in_dict_values(value, key_name, needle, True))
 
                     elif isinstance(value, list):
                         for v in value:
-                            found.extend(self.seek_regex_key_in_dict_values_helper(v, key_name, needle, haystacks, True))
+                            found.extend(self.seek_regex_key_in_dict_values(v, key_name, needle, True))
 
                 else:
-                    found.extend(self.seek_regex_key_in_dict_values_helper(value, key_name, needle, haystacks, key_matched))
+                    found.extend(self.seek_regex_key_in_dict_values(value, key_name, needle, key_matched))
 
         elif isinstance(haystack, list):
             for value in haystack:
-                found.extend(self.seek_regex_key_in_dict_values_helper(value, key_name, needle, haystacks, key_matched))
+                found.extend(self.seek_regex_key_in_dict_values(value, key_name, needle, key_matched))
 
         else:
             return []
@@ -297,11 +262,6 @@ def convert_resource_type(resource_type):
 
 
 def seek_key_in_dict(haystack, needle):
-    haystacks = set()
-    return seek_key_in_dict_helper(haystack, needle, haystacks)
-
-def seek_key_in_dict_helper(haystack, needle, haystacks):
-
     '''
     Searches needle in haystack ( could be dict, list, list of dicts, nested dicts, etc. ) and returns all findings
     as a list
@@ -310,24 +270,17 @@ def seek_key_in_dict_helper(haystack, needle, haystacks):
     :param needle: search key
     :return: list of found keys & values
     '''
-
-    if id(haystack) in haystacks:
-        return []
-    
-    haystacks.add(id(haystack))
-
-
     found = list()
     if isinstance(haystack, dict):
         for key, value in haystack.items():
             if key.lower() == needle.lower():
                 found.append({key: value})
             else:
-                found.extend(seek_key_in_dict_helper(value, needle, haystacks))
+                found.extend(seek_key_in_dict(value, needle))
 
     elif isinstance(haystack, list):
         for value in haystack:
-            found.extend(seek_key_in_dict_helper(value, needle, haystacks))
+            found.extend(seek_key_in_dict(value, needle))
 
     else:
         return []
@@ -336,11 +289,6 @@ def seek_key_in_dict_helper(haystack, needle, haystacks):
 
 
 def seek_regex_key_in_dict_values(haystack, key_name, needle, key_matched=None):
-    haystacks = set()
-    return seek_regex_key_in_dict_values_helper(haystack, key_name, needle, haystacks, key_matched)
-
-
-def seek_regex_key_in_dict_values_helper(haystack, key_name, needle, haystacks, key_matched=None):
     '''
     Searches needle in haystack ( could be dict, list, list of dicts, nested dicts, etc. ) and returns all findings
     as a list. The only difference from seek_key_in_dict is, we are assuming needle is in regex format here and we
@@ -352,12 +300,6 @@ def seek_regex_key_in_dict_values_helper(haystack, key_name, needle, haystacks, 
     :param key_matched: Internal use
     :return: list of found keys & values
     '''
-    if id(haystack) in haystacks:
-        return list()
-    
-    haystacks.add(id(haystack))
-
-
     regex = r'^{}$'.format(needle)
     found = list()
     if isinstance(haystack, dict):
@@ -372,21 +314,21 @@ def seek_regex_key_in_dict_values_helper(haystack, key_name, needle, haystacks, 
                     if matches is not None:
                         found.append(matches.group(0))
                     else:
-                        found.extend(seek_regex_key_in_dict_values_helper(value, key_name, needle, haystacks, True))
+                        found.extend(seek_regex_key_in_dict_values(value, key_name, needle, True))
 
                 elif isinstance(value, dict):
-                    found.extend(seek_regex_key_in_dict_values_helper(value, key_name, needle, haystacks, True))
+                    found.extend(seek_regex_key_in_dict_values(value, key_name, needle, True))
 
                 elif isinstance(value, list):
                     for v in value:
-                        found.extend(seek_regex_key_in_dict_values_helper(v, key_name, needle, haystacks, True))
+                        found.extend(seek_regex_key_in_dict_values(v, key_name, needle, True))
 
             else:
-                found.extend(seek_regex_key_in_dict_values_helper(value, key_name, needle, haystacks, key_matched))
+                found.extend(seek_regex_key_in_dict_values(value, key_name, needle, key_matched))
 
     elif isinstance(haystack, list):
         for value in haystack:
-            found.extend(seek_regex_key_in_dict_values_helper(value, key_name, needle, haystacks, key_matched))
+            found.extend(seek_regex_key_in_dict_values(value, key_name, needle, key_matched))
 
     else:
         return []
@@ -439,31 +381,18 @@ def jsonify(string):
         return string
 
 
-# use helpers first, move to decorators later
-# maybe use an implicit variable to keep track of if you're the first call or a child call
-
 def recursive_jsonify(haystack):
-    haystacks = set()
-    return recursive_jsonify_helper(haystack, haystacks)
-
-
-def recursive_jsonify_helper(haystack, haystacks):
-    if id(haystack) in haystacks:
-        return haystack
-    
-    haystacks.add(id(haystack))
-
     if isinstance(haystack, str):
         haystack = jsonify(haystack)
         if isinstance(haystack, (list, dict)):
-            return recursive_jsonify_helper(haystack, haystacks)
+            return recursive_jsonify(haystack)
         return haystack
 
     if isinstance(haystack, dict):
-        haystack = {key: recursive_jsonify_helper(value, haystacks) for key, value in haystack.items()}
+        haystack = {key: recursive_jsonify(value) for key, value in haystack.items()}
     
     if isinstance(haystack, list):
-        haystack = [recursive_jsonify_helper(value, haystacks) for value in haystack]
+        haystack = [recursive_jsonify(value) for value in haystack]
 
     return haystack
 
