@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## 1.3.1 (2020-08-12)
 * Improved mounting references to accomodate large plan files. ([#346](https://github.com/eerkunt/terraform-compliance/pull/346))
 
 ## 1.3.0 (2020-07-31)
