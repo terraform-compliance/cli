@@ -1,6 +1,7 @@
 # CHANGELOG
 
 ## Unreleased
+* Improved mounting references to accomodate large plan files. ([#346](https://github.com/eerkunt/terraform-compliance/pull/346))
 
 ## 1.3.0 (2020-07-31)
 * Added cache capability and optimised the resource mounting a bit since it might trigger OOM kernel signalling and can be killed unexpectedly.
