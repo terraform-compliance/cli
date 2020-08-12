@@ -245,7 +245,7 @@ class TerraformParser(object):
                         continue
 
                     # resource = deepcopy(self.resources[source_resource]['values'])
-                    resource = self.resources[source_resource]['values']
+                    resource = self.resources_raw[source_resource]['values']
                     resource[Defaults.mounted_ptr] = True
 
                     if Defaults.r_mount_ptr not in self.resources[target_resource]:
