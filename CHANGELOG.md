@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## Unreleased
+* Fixed an issue where the null character in step definition break --junit-xml dump. ([#347](https://github.com/eerkunt/terraform-compliance/pull/347))
+
 ## 1.3.1 (2020-08-12)
 * Improved mounting references to accomodate large plan files. ([#346](https://github.com/eerkunt/terraform-compliance/pull/346))
 
@@ -11,7 +14,6 @@
 
 ## 1.2.11 (2020-07-20)
 * Fixed an issue where [When it has something](https://terraform-compliance.com/pages/bdd-references/when.html#when-it-has-something) formats the search value incorrectly. ([#330](https://github.com/eerkunt/terraform-compliance/pull/330))
-
 
 ## 1.2.10 (2020-07-15)
 * Fixed `Then it must contain` to properly drill down and split into multiple resources if need be. ([#327](https://github.com/eerkunt/terraform-compliance/pull/327))
