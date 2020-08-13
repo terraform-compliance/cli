@@ -2,6 +2,7 @@
 
 ## Unreleased
 * Fixed an issue where the null character in step definition break --junit-xml dump. ([#347](https://github.com/eerkunt/terraform-compliance/pull/347))
+* Fixed an issue where [When its property has something](https://terraform-compliance.com/pages/bdd-references/when.html#when-its-property-has-something) were not preserving the resource structure. ([#349](https://github.com/eerkunt/terraform-compliance/pull/349))
 
 ## 1.3.1 (2020-08-12)
 * Improved mounting references to accomodate large plan files. ([#346](https://github.com/eerkunt/terraform-compliance/pull/346))
