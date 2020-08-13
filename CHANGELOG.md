@@ -2,6 +2,7 @@
 
 ## Unreleased
 * Fixed an issue where the null character in step definition break --junit-xml dump. ([#347](https://github.com/eerkunt/terraform-compliance/pull/347))
+* New Terraform 0.13 support ([#351](https://github.com/eerkunt/terraform-compliance/pull/351))
 
 ## 1.3.1 (2020-08-12)
 * Improved mounting references to accomodate large plan files. ([#346](https://github.com/eerkunt/terraform-compliance/pull/346))

@@ -18,8 +18,8 @@ class TerraformParser(object):
         :return: None
         '''
         self.supported_terraform_versions = (
-            '0.12', # This is here because this tuple must have multiple values.
-            '0.12.'
+            '0.12.',
+            '0.13.'
         )
         self.supported_format_versions = ['0.1']
 
