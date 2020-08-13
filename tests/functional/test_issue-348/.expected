@@ -1,0 +1,1 @@
+Failure: Principal property in aws_kms_key.test-key resource matches with \\\* case insensitive regex. It is set to \*.

@@ -1,0 +1,170 @@
+{
+    "format_version": "0.1",
+    "terraform_version": "0.12.28",
+    "planned_values": {
+        "root_module": {
+            "resources": [
+                {
+                    "address": "aws_kms_key.test-key",
+                    "mode": "managed",
+                    "type": "aws_kms_key",
+                    "name": "test-key",
+                    "provider_name": "aws",
+                    "schema_version": 0,
+                    "values": {
+                        "customer_master_key_spec": "SYMMETRIC_DEFAULT",
+                        "deletion_window_in_days": 7,
+                        "description": "KMS Key for test",
+                        "enable_key_rotation": true,
+                        "is_enabled": true,
+                        "key_usage": "ENCRYPT_DECRYPT",
+                        "policy": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"\",\n      \"Effect\": \"Allow\",\n      \"Action\": \"*\",\n      \"Principal\": {\n        \"AWS\": \"*\"\n      }\n    }\n  ]\n}",
+                        "tags": null
+                    }
+                }
+            ]
+        }
+    },
+    "resource_changes": [
+        {
+            "address": "aws_kms_key.test-key",
+            "mode": "managed",
+            "type": "aws_kms_key",
+            "name": "test-key",
+            "provider_name": "aws",
+            "change": {
+                "actions": [
+                    "create"
+                ],
+                "before": null,
+                "after": {
+                    "customer_master_key_spec": "SYMMETRIC_DEFAULT",
+                    "deletion_window_in_days": 7,
+                    "description": "KMS Key for test",
+                    "enable_key_rotation": true,
+                    "is_enabled": true,
+                    "key_usage": "ENCRYPT_DECRYPT",
+                    "policy": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"\",\n      \"Effect\": \"Allow\",\n      \"Action\": \"*\",\n      \"Principal\": {\n        \"AWS\": \"*\"\n      }\n    }\n  ]\n}",
+                    "tags": null
+                },
+                "after_unknown": {
+                    "arn": true,
+                    "id": true,
+                    "key_id": true
+                }
+            }
+        }
+    ],
+    "prior_state": {
+        "format_version": "0.1",
+        "terraform_version": "0.12.28",
+        "values": {
+            "root_module": {
+                "resources": [
+                    {
+                        "address": "data.aws_iam_policy_document.over_permissive_access",
+                        "mode": "data",
+                        "type": "aws_iam_policy_document",
+                        "name": "over_permissive_access",
+                        "provider_name": "aws",
+                        "schema_version": 0,
+                        "values": {
+                            "id": "2925669512",
+                            "json": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"\",\n      \"Effect\": \"Allow\",\n      \"Action\": \"*\",\n      \"Principal\": {\n        \"AWS\": \"*\"\n      }\n    }\n  ]\n}",
+                            "override_json": null,
+                            "policy_id": null,
+                            "source_json": null,
+                            "statement": [
+                                {
+                                    "actions": [
+                                        "*"
+                                    ],
+                                    "condition": [],
+                                    "effect": "Allow",
+                                    "not_actions": [],
+                                    "not_principals": [],
+                                    "not_resources": [],
+                                    "principals": [
+                                        {
+                                            "identifiers": [
+                                                "*"
+                                            ],
+                                            "type": "AWS"
+                                        }
+                                    ],
+                                    "resources": [],
+                                    "sid": ""
+                                }
+                            ],
+                            "version": "2012-10-17"
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    "configuration": {
+        "root_module": {
+            "resources": [
+                {
+                    "address": "aws_kms_key.test-key",
+                    "mode": "managed",
+                    "type": "aws_kms_key",
+                    "name": "test-key",
+                    "provider_config_key": "aws",
+                    "expressions": {
+                        "deletion_window_in_days": {
+                            "constant_value": 7
+                        },
+                        "description": {
+                            "constant_value": "KMS Key for test"
+                        },
+                        "enable_key_rotation": {
+                            "constant_value": true
+                        },
+                        "policy": {
+                            "references": [
+                                "data.aws_iam_policy_document.over_permissive_access"
+                            ]
+                        }
+                    },
+                    "schema_version": 0
+                },
+                {
+                    "address": "data.aws_iam_policy_document.over_permissive_access",
+                    "mode": "data",
+                    "type": "aws_iam_policy_document",
+                    "name": "over_permissive_access",
+                    "provider_config_key": "aws",
+                    "expressions": {
+                        "statement": [
+                            {
+                                "actions": {
+                                    "constant_value": [
+                                        "*"
+                                    ]
+                                },
+                                "effect": {
+                                    "constant_value": "Allow"
+                                },
+                                "principals": [
+                                    {
+                                        "identifiers": {
+                                            "constant_value": [
+                                                "*"
+                                            ]
+                                        },
+                                        "type": {
+                                            "constant_value": "AWS"
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "schema_version": 0
+                }
+            ]
+        }
+    }
+}

@@ -26,7 +26,7 @@ def its_key_is_value(_step_obj, key, value, dict_value=None, address=Null):
                 if isinstance(el, dict):
                     filtered_key = match.get(el, key)
                     if isinstance(filtered_key, (str, int, bool)) and match.equals(filtered_key, value):
-                        found_list.append(el)
+                        found_list.append({**obj, 'values': el})
         else:
             object_key = match.get(object_key, key, Null)
 
