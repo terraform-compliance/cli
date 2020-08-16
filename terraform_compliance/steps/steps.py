@@ -46,6 +46,7 @@ from terraform_compliance.steps.then.it_must_have_reference_address_referenced i
 from terraform_compliance.steps.then.its_key_condition_be_value import its_key_condition_be_value
 from terraform_compliance.steps.then.interpolations import i_flatten_everything_found
 from terraform_compliance.steps.then.it_must_be_in import it_must_be_in
+from terraform_compliance.steps.then.its_value_condition_be_null import its_value_condition_be_null
 
 @given(u'I have {name:ANY} defined')
 @given(u'I have {name:ANY} {type_name:SECTION} configured')
@@ -175,7 +176,7 @@ def wrapper(_step_obj, condition, search_regex, _stash=EmptyStash):
 
 @then(u'its value {condition:ANY} be null')
 def wrapper(_step_obj, condition):
-    return its_value_condition_match_the_search_regex_regex(_step_obj, condition, u'(\x00|^$|^null|^None)$')
+    return its_value_condition_be_null(_step_obj, condition)
 
 
 @then(u'its value {condition:ANY} be {match:ANY}')
