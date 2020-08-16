@@ -28,7 +28,7 @@ def its_value_condition_be_null(_step_obj, condition):
 
         values_is_null = is_null(values)
         if (values_is_null and not condition_must) or (not values_is_null and condition_must):
-            Error(_step_obj, '{} property in {} is considered to be {}. It is set to {}'.format(_step_obj.context.property_name, 
+            Error(_step_obj, '{} property in {} is considered to be {}. It is set to {}.'.format(_step_obj.context.property_name, 
                                                                                                 resource.get('address', _step_obj.context.name),
                                                                                                 # _step_obj.context.name, 
                                                                                                 # resource.get('address', 'address could not be resolved'),
@@ -50,7 +50,7 @@ def its_value_condition_be_null(_step_obj, condition):
             all_null = all(map(is_null, list_of_inner_values))
 
             if (all_null and not condition_must) or (not all_null and condition_must):
-                Error(_step_obj, 'Multivalued {} property in {} is considered to be {}. It is set to {}'.format(_step_obj.context.property_name, 
+                Error(_step_obj, 'Multivalued {} property in {} is considered to be {}. It is set to {}.'.format(_step_obj.context.property_name, 
                                                                                                 resource.get('address', _step_obj.context.name), 
                                                                                                 'Null' if all_null else 'not Null',
                                                                                                 values))
