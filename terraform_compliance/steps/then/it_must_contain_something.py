@@ -75,7 +75,6 @@ def it_must_contain_something(_step_obj, something, inherited_values=Null, child
                     elif isinstance(value, list):
                         _, temp_found_values = it_must_contain_something(_step_obj, something, value, child=True)
                         prop_list.extend(temp_found_values)
-                        found_values.append('added_to_proplist')
                         resource_passed = True
 
                     elif isinstance(value, (str, bool, int, float)):
@@ -86,7 +85,7 @@ def it_must_contain_something(_step_obj, something, inherited_values=Null, child
 
                         for found_key_instance in found_key:
                             if isinstance(found_key_instance, dict):
-                                if match.get(found_key_instance, something, Null) not in (Null, [], '', {}, 'added_to_proplist'):
+                                if match.get(found_key_instance, something, Null) not in (Null, [], '', {}):
                                     found_values.append(match.get(found_key_instance, something))
                                     resource_passed = True
 
@@ -95,10 +94,9 @@ def it_must_contain_something(_step_obj, something, inherited_values=Null, child
                     found_values[i] = found_val['constant_value']
 
             for found_val in found_values:
-                if found_val not in (Null, [], '', {}, 'added_to_proplist'): # slightly redundant now.
-                    prop_list.append({'address': resource['address'],
-                                    'values': found_val,
-                                    'type': _step_obj.context.name})
+                prop_list.append({'address': resource['address'],
+                                'values': found_val,
+                                'type': _step_obj.context.name})
 
             # do not check prop list here because every resource should contain it.
             if not resource_passed and not child: # if nothing was found in this resource, don't error if you're a child
@@ -197,7 +195,6 @@ def it_must_not_contain_something(_step_obj, something, inherited_values=Null):
                     elif isinstance(value, list):
                         _, temp_found_values = it_must_contain_something(_step_obj, something, value, child=True)
                         prop_list.extend(temp_found_values)
-                        found_values.append('added_to_proplist')
                         resource_passed = True
 
                     elif isinstance(value, (str, bool, int, float)):
@@ -208,7 +205,7 @@ def it_must_not_contain_something(_step_obj, something, inherited_values=Null):
 
                         for found_key_instance in found_key:
                             if isinstance(found_key_instance, dict):
-                                if match.get(found_key_instance, something, Null) not in (Null, [], '', {}, 'added_to_proplist'):
+                                if match.get(found_key_instance, something, Null) not in (Null, [], '', {}):
                                     found_values.append(match.get(found_key_instance, something))
                                     resource_passed = True
 
