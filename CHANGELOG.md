@@ -1,11 +1,11 @@
 # CHANGELOG
 
-## Unreleased
+## 1.3.2 (2020-08-18)
 * Fixed an issue where the null character in step definition break --junit-xml dump. ([#347](https://github.com/eerkunt/terraform-compliance/pull/347))
 * New Terraform 0.13 support ([#351](https://github.com/eerkunt/terraform-compliance/pull/351))
 * Fixed [Then it must contain something](https://terraform-compliance.com/pages/bdd-references/then.html#then-it-must-contain-something) where found but empty properties were not passed to the stash. ([#352](https://github.com/eerkunt/terraform-compliance/pull/352))
 * Improved [Then it must contain something](https://terraform-compliance.com/pages/bdd-references/then.html#then-it-must-contain-something) and [Then it must not contain something](https://terraform-compliance.com/pages/bdd-references/then.html#then-it-must-not-contain-something) by removing legacy code. ([#352](https://github.com/eerkunt/terraform-compliance/pull/352))
-* Improved [Then it condition be be null]() to have a dedicated function with better classification of what is considered to be null. ([#352](https://github.com/eerkunt/terraform-compliance/pull/352))
+* Improved [Then it condition be be null](https://terraform-compliance.com/pages/bdd-references/then.html#then-its-value-condition-be-null) to have a dedicated function with better classification of what is considered to be null. ([#352](https://github.com/eerkunt/terraform-compliance/pull/352))
 
 ## 1.3.1 (2020-08-12)
 * Improved mounting references to accomodate large plan files. ([#346](https://github.com/eerkunt/terraform-compliance/pull/346))
