@@ -377,17 +377,20 @@ class TerraformParser(object):
             self._parse_variables()
             self._parse_configurations()
 
-        cache = self.cache.get('mounted_resources') if self.parse_it else None
+        cache_mounted_resources = self.cache.get('mounted_resources') if self.parse_it else None
+        cache_raw_resources = self.cache.get('resources_raw') if self.parse_it else None
 
-        if cache:
+        if cache_mounted_resources and cache_raw_resources:
             # print('Read from cache, instead of re-mounting.')
-            self.resources = cache
+            self.resources = cache_mounted_resources
+            self.resources_raw = cache_raw_resources
         else:
             # print('Building cache for mounted resources at {}'.format(Defaults.cache_dir))
             self._mount_references()
 
             if self.parse_it:
                 self.cache.set('mounted_resources', self.resources)
+                self.cache.set('resources_raw', self.resources)
 
         self._distribute_providers()
 
