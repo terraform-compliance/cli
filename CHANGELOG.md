@@ -1,5 +1,8 @@
 # CHANGELOG
 
+# Unreleased
+* Fixed resource_raw not getting read from the cache. ([#356](https://github.com/eerkunt/terraform-compliance/pull/356))
+
 ## 1.3.2 (2020-08-18)
 * Fixed an issue where the null character in step definition break --junit-xml dump. ([#347](https://github.com/eerkunt/terraform-compliance/pull/347))
 * New Terraform 0.13 support ([#351](https://github.com/eerkunt/terraform-compliance/pull/351))
