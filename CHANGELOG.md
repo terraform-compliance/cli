@@ -1,6 +1,8 @@
 # CHANGELOG
 
 # Unreleased
+
+# 1.3.3 (2020-08-22)
 * Fixed resource_raw not getting read from the cache. ([#356](https://github.com/eerkunt/terraform-compliance/pull/356))
 
 ## 1.3.2 (2020-08-18)
