@@ -390,7 +390,7 @@ class TerraformParser(object):
 
             if self.parse_it:
                 self.cache.set('mounted_resources', self.resources)
-                self.cache.set('resources_raw', self.resources)
+                self.cache.set('resources_raw', self.resources_raw)
 
         self._distribute_providers()
 
