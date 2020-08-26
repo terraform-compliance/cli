@@ -30,8 +30,13 @@ Scenario Outline: Restrict creation of specific resources
 
 ## Ensure some resource types are always created
 ```gherkin
-  Scenario: Ensure some resource types are always created
-    Given I have any resource defined
-    When its type is not some_resource_type
-    Then the scenario should fail
+@noskip
+Scenario: Ensure some resource types are always created (with Given)
+	Given I have some_resource_type defined
+
+
+@noskip_at_line_9
+Scenario: Ensure some resource types are always created (with When)
+	Given I have any resource defined
+	When its type is some_resource_type  # line 9
 ```
