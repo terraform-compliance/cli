@@ -33,10 +33,11 @@ Scenario Outline: Restrict creation of specific resources
 @noskip
 Scenario: Ensure some resource types are always created (with Given)
 	Given I have some_resource_type defined
+```
 
-
-@noskip_at_line_9
+```gherkin
+@noskip_at_line_4
 Scenario: Ensure some resource types are always created (with When)
 	Given I have any resource defined
-	When its type is some_resource_type  # line 9
+	When its type is some_resource_type  # line 4
 ```
