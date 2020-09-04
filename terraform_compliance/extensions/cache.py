@@ -1,5 +1,4 @@
 import diskcache
-import tempfile
 from terraform_compliance.common.defaults import Defaults
 
 
