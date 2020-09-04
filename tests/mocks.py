@@ -237,9 +237,9 @@ class MockedData(object):
 
     # refined sg_params
     sg_params_ssh_with_2_cidrs = dict(protocol=['tcp'], from_port=22, to_port=22, cidr_blocks=['213.86.221.35/32', '195.99.231.117/32'])
-    sg_params_ssh_with_2_cidrs_any_proto = dict(protocol=['tcp', 'udp'], from_port=22, to_port=22, cidr_blocks=['213.86.221.35/32', '195.99.231.117/32'])
+    sg_params_ssh_with_2_cidrs_any_proto = dict(protocol=['tcp', 'udp', 'icmp'], from_port=22, to_port=22, cidr_blocks=['213.86.221.35/32', '195.99.231.117/32'])
     sg_params_all_port_all_ip = dict(protocol=['tcp'], from_port=1, to_port=65535, cidr_blocks=['0.0.0.0/0'])
-    sg_params_all_port_no_ip = dict(protocol=['tcp', 'udp'], from_port=1, to_port=65535, cidr_blocks=[])
+    sg_params_all_port_no_ip = dict(protocol=['tcp', 'udp', 'icmp'], from_port=1, to_port=65535, cidr_blocks=[])
     sg_params_list_range_public = dict(protocol=['tcp'], from_port=22, to_port=80, cidr_blocks=['0.0.0.0/0'])
     sg_params_list_range_private = dict(protocol=['tcp'], from_port=22, to_port=80, cidr_blocks=['192.168.0.0/23'])
 
