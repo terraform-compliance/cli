@@ -1,8 +1,11 @@
 # CHANGELOG
 
-# Unreleased
+## Unreleased
 
-# 1.3.3 (2020-08-22)
+## 1.3.4 (2020-09-04)
+* Improved [Then it must condition have proto protocol and port port for cidr](https://terraform-compliance.com/pages/bdd-references/then.html#then--it-must-condition-have-proto-protocol-and-port-port-for-cidr) where now it supports "any" and "icmp" protocols. ([#360](https://github.com/eerkunt/terraform-compliance/pull/360))
+
+## 1.3.3 (2020-08-22)
 * Fixed resource_raw not getting read from the cache. ([#356](https://github.com/eerkunt/terraform-compliance/pull/356))
 
 ## 1.3.2 (2020-08-18)
