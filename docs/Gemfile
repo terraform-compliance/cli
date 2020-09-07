@@ -7,4 +7,4 @@ end
 # Performance-booster for watching directories on Windows
 gem "wdm", "~> 0.1.1", :install_if => Gem.win_platform?
 gem "just-the-docs", "0.2.7"
-
+gem "kramdown", ">= 2.3.0"

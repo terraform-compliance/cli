@@ -5,6 +5,7 @@ from copy import deepcopy
 from terraform_compliance.common.defaults import Defaults
 from terraform_compliance.extensions.cache import Cache
 
+
 class TerraformParser(object):
     def __init__(self, filename, parse_it=True):
         '''
@@ -253,19 +254,13 @@ class TerraformParser(object):
 
                     if ref_type not in self.resources[target_resource]['values']:
                         self.resources[target_resource]['values'][ref_type] = []
-                        self.resources[target_resource]['values'][ref_type].append(resource)
-                        self.resources[target_resource][Defaults.r_mount_ptr][parameter] = ref_type
-                        self.resources[target_resource][Defaults.r_mount_addr_ptr][parameter] = source
-                        target_set = set(self.resources[target_resource][Defaults.r_mount_addr_ptr_list])
-                        source_set = set(source)
-                        self.resources[target_resource][Defaults.r_mount_addr_ptr_list] = list(target_set | source_set)
-                    else:
-                        self.resources[target_resource]['values'][ref_type].append(resource)
-                        self.resources[target_resource][Defaults.r_mount_ptr][parameter] = ref_type
-                        self.resources[target_resource][Defaults.r_mount_addr_ptr][parameter] = source
-                        target_set = set(self.resources[target_resource][Defaults.r_mount_addr_ptr_list])
-                        source_set = set(source)
-                        self.resources[target_resource][Defaults.r_mount_addr_ptr_list] = list(target_set | source_set)
+
+                    self.resources[target_resource]['values'][ref_type].append(resource)
+                    self.resources[target_resource][Defaults.r_mount_ptr][parameter] = ref_type
+                    self.resources[target_resource][Defaults.r_mount_addr_ptr][parameter] = source
+                    target_set = set(self.resources[target_resource][Defaults.r_mount_addr_ptr_list])
+                    source_set = set(source)
+                    self.resources[target_resource][Defaults.r_mount_addr_ptr_list] = list(target_set | source_set)
 
                     if parameter not in self.resources[source_resource]['values']:
                         self.resources[source_resource]['values'][parameter] = target_resource
