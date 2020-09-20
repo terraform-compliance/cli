@@ -101,6 +101,8 @@ This policy ( Scenario ) will allow all S3 buckets newly created or updated must
 
 See [Examples](https://terraform-compliance.com/pages/Examples/) for more sample use cases.
 
+Regarding the feature file format - `radish` is used to parse files with extension `.feature` - https://radish.readthedocs.io/en/stable/tutorial.html
+
 ![Example Run](https://github.com/eerkunt/terraform-compliance/blob/master/terraform-compliance-demo.gif?raw=true)
 
 ## Supporting / Requirements
