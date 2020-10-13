@@ -1,0 +1,43 @@
+# action.yml
+name: "terraform-compliance"
+description: "Official terraform-compliance github action"
+author: "Emre Erkunt <emre.erkunt@gmail.com>"
+
+inputs:
+  plan:
+    description: "The output of terraform plan (in json)"
+    required: true
+  features:
+    description: "The URL that is used for terraform-compliance features (without 'git:' prefix)"
+    required: true
+  quit-early:
+    description: "Stops executing any more steps in a scenario on first failure."
+    required: false
+  no-failure:
+    description: "Skip all the tests that is failed, but giving proper failure message"
+    required: false
+  silent:
+    description: "Do not output any scenarios, just write results or failures"
+    required: false
+  identity:
+    description: "SSH Private key that will be use on git authentication."
+    required: false
+  version:
+    description: "Speficic terraform-compliance version to be used."
+    required: false
+
+outputs:
+  result:
+    description: "The output of the terraform-compliance"
+
+runs:
+  using: "composite"
+  steps:
+    - run: ./install.sh "${{ inputs.version }}"
+      shell: bash
+    - id: run
+      run: ./run "${{ inputs.plan }}" "${{ inputs.features }}" "${{ inputs.quit-early }}" "${{ inputs.no-failure}}" "${{ inputs.silent }}" "${{ inputs.identity }}"
+
+branding:
+  color: black
+  icon: shield
