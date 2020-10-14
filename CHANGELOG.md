@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+## 1.3.5 (2020-10-14)
+* Fixed a problem where using terraform-compliance with hashicorp/setup-terraform github action was causing problems due to the terraform wrapper. ([#334](https://github.com/eerkunt/terraform-compliance/issues/334) [#336](https://github.com/eerkunt/terraform-compliance/issues/366))
+
 ## 1.3.4 (2020-09-04)
 * Improved [Then it must condition have proto protocol and port port for cidr](https://terraform-compliance.com/pages/bdd-references/then.html#then--it-must-condition-have-proto-protocol-and-port-port-for-cidr) where now it supports "any" (tcp, udp, icmp) and "icmp" protocols. ([#360](https://github.com/eerkunt/terraform-compliance/pull/360))
 * Improved [Then it must condition have proto protocol and port port for cidr](https://terraform-compliance.com/pages/bdd-references/then.html#then--it-must-condition-have-proto-protocol-and-port-port-for-cidr) where now it supports "any" port definition (0-65535). ([#360](https://github.com/eerkunt/terraform-compliance/pull/360))
