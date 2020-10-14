@@ -42,16 +42,19 @@ class ReadablePlan(Action):
 
             # Some Github Actions (hashicorp/setup-terraform) has internal wrappers which is
             # breaking the json file that is read by the terraform-compliance
+            file_change_required = False
             if len(plan_lines) > 1:
                 plan_lines = plan_lines[1]
+                file_change_required = True
             else:
                 plan_lines = plan_lines[0]
 
             data = json.loads(plan_lines)
 
             # Write the changed plan file to the same file, since it is used in other places.
-            with open(values, 'w', encoding='utf-8') as plan_file:
-                plan_file.write(plan_lines)
+            if file_change_required:
+                with open(values, 'w', encoding='utf-8') as plan_file:
+                    plan_file.write(plan_lines)
 
         except json.decoder.JSONDecodeError:
             print('ERROR: {} is not a valid JSON file'.format(values))
