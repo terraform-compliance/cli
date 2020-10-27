@@ -54,7 +54,13 @@ class Error(Exception):
             if self.exit_on_failure is False or self.no_failure is True:
                 msg_header = '{}{}'.format(self.exception_name,
                                            colorful.bold_white(':')) if msg_index == 0 else ' '*(len(self.exception_name)+1)
-                msg.append('\t\t{} {}'.format(colorful.bold_red(msg_header), colorful.red(self.message[msg_index])))
+                if str(world.config.formatter) in ('gherkin'):
+                    # this line could be improved by letting radish handle the printing
+                    msg.append('\t\t{} {}'.format(colorful.bold_red(msg_header), colorful.red(self.message[msg_index])))
+                elif str(world.config.formatter) in ('silent_formatter'):
+                    msg.append('{} '.format(colorful.bold_red(msg_header)))
+                    msg.append('{}'.format(colorful.red(self.message[msg_index])))
+
             else:
                 msg.append(self.message[msg_index] if msg_index == 0
                                                    else '{}{} {} {}'.format("\t"*2,
@@ -62,17 +68,15 @@ class Error(Exception):
                                                                             colorful.bold_white(':'),
                                                                             self.message[msg_index]))
 
-        # need to be careful about the logic here
-        # direct to silent_formatter
         if self.exit_on_failure is False or (self.no_failure is True and msg):
 
             if str(world.config.formatter) in ('gherkin'):
                 for message in msg:
                     console_write(message)
-            # need slightly better if else statements than this but whatever for now
             elif str(world.config.formatter) in ('silent_formatter'):
-                # not sure if this should be in context or just in step_obj
-                self.step_obj.context.failure_msg = msg[:]
+                if not hasattr(self.step_obj.context, 'failure_msg'): # where to put this
+                    self.step_obj.context.failure_msg = []
+                self.step_obj.context.failure_msg.extend(msg)
 
 
             if self.no_failure is False:
