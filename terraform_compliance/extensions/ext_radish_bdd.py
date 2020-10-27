@@ -26,6 +26,7 @@ def skip_step(step, resource=None, message=None):
             Error(step, e_message)
             return
     
+    # This's good enough. We don't want to output anything on silent_formatting mode anyways
     if str(world.config.formatter) in ('gherkin'):
         console_write("\t{} {}: {}".format(Defaults().info_icon,
                                            Defaults().skip_colour('SKIPPING'),

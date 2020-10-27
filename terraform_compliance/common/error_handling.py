@@ -62,9 +62,18 @@ class Error(Exception):
                                                                             colorful.bold_white(':'),
                                                                             self.message[msg_index]))
 
+        # need to be careful about the logic here
+        # direct to silent_formatter
         if self.exit_on_failure is False or (self.no_failure is True and msg):
-            for message in msg:
-                console_write(message)
+
+            if str(world.config.formatter) in ('gherkin'):
+                for message in msg:
+                    console_write(message)
+            # need slightly better if else statements than this but whatever for now
+            elif str(world.config.formatter) in ('silent_formatter'):
+                # not sure if this should be in context or just in step_obj
+                self.step_obj.context.failure_msg = msg[:]
+
 
             if self.no_failure is False:
                 self._fail_step(self.step_obj.id)
