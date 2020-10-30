@@ -1,6 +1,7 @@
 # CHANGELOG
 
 ## Unreleased
+* Fixed an issue where some found values were not recorded on [Then it must contain something](https://terraform-compliance.com/pages/bdd-references/then.html#then-it-must-contain-something). ([#400]((https://github.com/eerkunt/terraform-compliance/issues/400)))
 
 ## 1.3.5 (2020-10-14)
 * Fixed a problem where using terraform-compliance with hashicorp/setup-terraform github action was causing problems due to the terraform wrapper. ([#334](https://github.com/eerkunt/terraform-compliance/issues/334) [#336](https://github.com/eerkunt/terraform-compliance/issues/366))
