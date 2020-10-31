@@ -1,6 +1,7 @@
 # CHANGELOG
 
 ## Unreleased
+* Fixed a problem where [When its property has something](https://terraform-compliance.com/pages/bdd-references/when.html#when-its-property-has-something) ignored `None` values. ([#401](https://github.com/eerkunt/terraform-compliance/issues/401))
 
 ## 1.3.5 (2020-10-14)
 * Fixed a problem where using terraform-compliance with hashicorp/setup-terraform github action was causing problems due to the terraform wrapper. ([#334](https://github.com/eerkunt/terraform-compliance/issues/334) [#336](https://github.com/eerkunt/terraform-compliance/issues/366))
