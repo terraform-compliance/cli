@@ -7,6 +7,7 @@ from terraform_compliance.common.readable_dir import ReadableDir
 from terraform_compliance.common.readable_plan import ReadablePlan
 from radish.main import main as call_radish
 from radish.utils import console_write
+from radish.loader import load_module
 from terraform_compliance.common.defaults import Defaults
 from terraform_compliance.common.helper import python_version_check
 
@@ -118,7 +119,8 @@ def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
 
     if args.silence is True:
         console_write('{} Suppressing output enabled.'.format(Defaults().icon))
-        commands.append('--formatter=dotter')
+        commands.append('--formatter=silent_formatter')
+        load_module(os.path.join(os.path.dirname(__file__), "extensions/silent_formatter.py"))
 
     if args.exit_on_failure is True:
         console_write('{} {}\t\t: Scenario executions will stop on first step {}.'.format(Defaults().info_icon,
