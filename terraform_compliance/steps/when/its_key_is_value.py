@@ -58,6 +58,9 @@ def its_key_is_value(_step_obj, key, value, dict_value=None, address=Null):
             ):
                 found_list.append(obj)
 
+        elif object_key is None and match.equals('None', value):
+            found_list.append(obj)
+
     if found_list != []:
         _step_obj.context.stash = found_list
         _step_obj.context.addresses = get_resource_address_list_from_stash(found_list)
@@ -118,6 +121,9 @@ def its_key_is_not_value(_step_obj, key, value, dict_value=None, address=Null):
         elif isinstance(object_key, dict):
             if not match.contains(object_key, value) or (dict_value is not None and not match.equals(str(match.get(object_key, value)), dict_value)):
                 found_list.append(obj)
+
+        elif object_key is None and not match.equals('None', value):
+            found_list.append(obj)
 
     if found_list != []:
         _step_obj.context.stash = found_list
