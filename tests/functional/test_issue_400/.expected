@@ -1,0 +1,1 @@
+Failure: 0.0.0.0/0 property exists in aws_security_group_rule.example_rule_22 \(aws_security_group_rule\).
