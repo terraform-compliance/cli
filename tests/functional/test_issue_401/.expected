@@ -1,0 +1,2 @@
+Failure: storage_encrypted property in aws_db_instance.default resource does not match with \^true\$ case insensitive regex. It is set to None.
+Failure: Forcefully failing the scenario on aws_db_instance \(aws_db_instance.default\) resource

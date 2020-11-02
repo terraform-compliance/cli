@@ -54,7 +54,13 @@ class Error(Exception):
             if self.exit_on_failure is False or self.no_failure is True:
                 msg_header = '{}{}'.format(self.exception_name,
                                            colorful.bold_white(':')) if msg_index == 0 else ' '*(len(self.exception_name)+1)
-                msg.append('\t\t{} {}'.format(colorful.bold_red(msg_header), colorful.red(self.message[msg_index])))
+                if str(world.config.formatter) in ('gherkin'):
+                    # this line could be improved by letting radish handle the printing
+                    msg.append('\t\t{} {}'.format(colorful.bold_red(msg_header), colorful.red(self.message[msg_index])))
+                elif str(world.config.formatter) in ('silent_formatter'):
+                    msg.append('{} '.format(colorful.bold_red(msg_header)))
+                    msg.append('{}'.format(colorful.red(self.message[msg_index])))
+
             else:
                 msg.append(self.message[msg_index] if msg_index == 0
                                                    else '{}{} {} {}'.format("\t"*2,
@@ -63,8 +69,15 @@ class Error(Exception):
                                                                             self.message[msg_index]))
 
         if self.exit_on_failure is False or (self.no_failure is True and msg):
-            for message in msg:
-                console_write(message)
+
+            if str(world.config.formatter) in ('gherkin'):
+                for message in msg:
+                    console_write(message)
+            elif str(world.config.formatter) in ('silent_formatter'):
+                if not hasattr(self.step_obj.context, 'failure_msg'): # where to put this
+                    self.step_obj.context.failure_msg = []
+                self.step_obj.context.failure_msg.extend(msg)
+
 
             if self.no_failure is False:
                 self._fail_step(self.step_obj.id)
