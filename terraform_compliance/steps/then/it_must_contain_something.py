@@ -80,6 +80,7 @@ def it_must_contain_something(_step_obj, something, inherited_values=Null, child
                     elif isinstance(value, (str, bool, int, float)):
                         if match.equals(value, something):
                             found_values.append(value)
+                            resource_passed = True
 
                     if found_key is not Null and len(found_key):
 
@@ -200,6 +201,7 @@ def it_must_not_contain_something(_step_obj, something, inherited_values=Null):
                     elif isinstance(value, (str, bool, int, float)):
                         if match.equals(value, something):
                             found_values.append(value)
+                            resource_passed = True
 
                     if found_key is not Null and len(found_key):
 
