@@ -17,7 +17,7 @@ dependencies = [
     'mock>=3.0.5',
     'semver>=2.10.2',
     'IPython==7.16.1',
-    'diskcache==4.1.0'
+    'diskcache==5.1.0'
 ]
 
 setup(
