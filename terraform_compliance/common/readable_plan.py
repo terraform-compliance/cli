@@ -38,7 +38,23 @@ class ReadablePlan(Action):
         # Check if the given file is a json file.
         try:
             with open(values, 'r', encoding='utf-8') as plan_file:
-                data = json.load(plan_file)
+                plan_lines = plan_file.read().splitlines()
+
+            # Some Github Actions (hashicorp/setup-terraform) has internal wrappers which is
+            # breaking the json file that is read by the terraform-compliance
+            file_change_required = False
+            if len(plan_lines) > 1:
+                plan_lines = plan_lines[1]
+                file_change_required = True
+            else:
+                plan_lines = plan_lines[0]
+
+            data = json.loads(plan_lines)
+
+            # Write the changed plan file to the same file, since it is used in other places.
+            if file_change_required:
+                with open(values, 'w', encoding='utf-8') as plan_file:
+                    plan_file.write(plan_lines)
 
         except json.decoder.JSONDecodeError:
             print('ERROR: {} is not a valid JSON file'.format(values))
