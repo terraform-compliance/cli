@@ -1,0 +1,44 @@
+name: CD
+on:
+  release:
+    types: [created]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.6'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements_dev.txt
+
+      - name: Run unit tests
+        run: |
+          pytest tests/terraform_compliance
+
+      - name: Version Imprintment
+        run: |
+          - echo "Released version is {{ github.ref }}"
+
+#      - name: Build
+#        run: |
+#          python setup.py sdist bdist_wheel
+#          pip install dist/terraform_compliance-0.0.0-*.whl
+#
+#      - name: Run integration tests
+#        run: |
+#          python tests/functional/run_functional_tests.py
+#
+#      - name: Publish to PyPI
+#        env:
+#          TWINE_USERNAME: ${{ secrets.PYPI_USER }}
+#          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+#        run: |
+#          twine upload dist/*
