@@ -11,11 +11,13 @@ class Config(object):
         '--no-ansi'
     ]
 
-print('Running functional tests in {}.'.format(Config.test_dir))
+
 
 if len(sys.argv) == 2:
+    print('Running functional tests in {}.'.format(sys.argv[1]))
     tests = [sys.argv[1]]
 else:
+    print('Running functional tests in {}.'.format(Config.test_dir))
     tests = []
     for x in os.listdir(Config.test_dir):
         if os.path.isdir('{}/{}'.format(Config.test_dir, x)):
@@ -74,7 +76,7 @@ for test_dir in tests:
                 if expected:
                     expected_failures = [
                         exp for exp in expected 
-                        if not re.findall(exp, str(test_process.stdout))
+                        if not re.findall(exp, str(test_process.stdout), re.A)
                     ]
 
                     if expected_failures:
