@@ -13,3 +13,6 @@ nose==1.3.7
 semver==2.13.0
 IPython==7.16.1
 diskcache==5.1.0
+setuptools
+wheel
+twine
