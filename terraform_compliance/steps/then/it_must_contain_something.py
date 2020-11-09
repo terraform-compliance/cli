@@ -111,20 +111,24 @@ def it_must_contain_something(_step_obj, something, inherited_values=Null, child
             return something, prop_list
 
     elif _step_obj.context.type == 'provider':
-        _step_obj.context.stash = []
+        prop_list = []
         for provider_data in _step_obj.context.stash:
             values = seek_key_in_dict(provider_data, something)
 
             if values:
-                _step_obj.context.stash.append(values)
+                prop_list.extend(values)
                 _step_obj.context.property_name = something
                 _step_obj.context.address = '{}.{}'.format(provider_data.get('name', _step_obj.context.addresses),
                                                            provider_data.get('alias', "\b"))
-                return True
+
             else:
                 Error(_step_obj, '{} {} does not have {} property.'.format(_step_obj.context.addresses,
                                                                            _step_obj.context.type,
                                                                            something))
+
+        if prop_list:
+            _step_obj.context.stash = prop_list
+            return True
 
         Error(_step_obj, '{} {} does not have {} property.'.format(_step_obj.context.addresses,
                                                                    _step_obj.context.type,
