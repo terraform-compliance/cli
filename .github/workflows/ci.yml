@@ -33,6 +33,11 @@ jobs:
         run: |
           pytest tests/terraform_compliance
 
+      - name: Build
+        run: |
+          python setup.py install sdist bdist_wheel
+          ls -al dist/ build/
+
       - name: Run integration tests
         run: |
           python tests/functional/run_functional_tests.py
