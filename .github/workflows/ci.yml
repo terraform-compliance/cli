@@ -7,6 +7,7 @@ on:
       - "tox.ini"
       - "Dockerfile"
       - "requirements.txt"
+      - "requirements_dev.txt"
 
 jobs:
   build:
@@ -14,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        python-version: [3.5, 3.6, 3.7, 3.8]
+        python-version: [3.6, 3.7, 3.8]
 
     steps:
       - uses: actions/checkout@v2
