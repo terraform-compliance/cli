@@ -1,6 +1,9 @@
 # CHANGELOG
 
 ## Unreleased
+* Fixed [When it has something](https://terraform-compliance.com/pages/bdd-references/when.html#when-it-has-something) steps for `provider`s. ([#371](https://github.com/eerkunt/terraform-compliance/issues/371))
+* Fixed [Then it must contain something](https://terraform-compliance.com/pages/bdd-references/then.html#then-it-must-contain-something) steps for `provider`s. ([#371](https://github.com/eerkunt/terraform-compliance/issues/371))
+
 
 ## 1.3.4 (2020-09-04)
 * Improved [Then it must condition have proto protocol and port port for cidr](https://terraform-compliance.com/pages/bdd-references/then.html#then--it-must-condition-have-proto-protocol-and-port-port-for-cidr) where now it supports "any" (tcp, udp, icmp) and "icmp" protocols. ([#360](https://github.com/eerkunt/terraform-compliance/pull/360))
