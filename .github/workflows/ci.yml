@@ -35,7 +35,7 @@ jobs:
 
       - name: Build
         run: |
-          python setup.py install sdist bdist_wheel
+          python setup.py sdist bdist_wheel
           ls -al dist/ build/
 
       - name: Run integration tests
