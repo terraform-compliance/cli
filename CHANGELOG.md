@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## 1.3.7 (2020-11-09)
 * Fixed [When it has something](https://terraform-compliance.com/pages/bdd-references/when.html#when-it-has-something) steps for `provider`s. ([#371](https://github.com/eerkunt/terraform-compliance/issues/371))
 * Fixed [Then it must contain something](https://terraform-compliance.com/pages/bdd-references/then.html#then-it-must-contain-something) steps for `provider`s. ([#371](https://github.com/eerkunt/terraform-compliance/issues/371))
 
