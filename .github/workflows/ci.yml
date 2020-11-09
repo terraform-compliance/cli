@@ -36,7 +36,7 @@ jobs:
       - name: Build
         run: |
           python setup.py sdist bdist_wheel
-          pip install dist/terraform_compliance-0.0.0.tar.gz
+          pip install dist/terraform_compliance-0.0.0-*.whl
 
       - name: Run integration tests
         run: |
