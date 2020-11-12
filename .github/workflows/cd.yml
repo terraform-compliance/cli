@@ -29,7 +29,7 @@ jobs:
 
       - name: Version Imprintment
         run: |
-          sudo apt-get install -y jinja2
+#          sudo apt-get install -y jinja2
           echo "Released version is ${{ steps.strip-tag.outputs.tag }}"
           jinja2 -D VERSION=${{ steps.strip-tag.outputs.tag }} terraform_compliance/__init__.py -o terraform_compliance/__init__.py.templated
           cat terraform_compliance/__init__.py.templated
