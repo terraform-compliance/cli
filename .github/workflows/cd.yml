@@ -6,12 +6,15 @@ on:
   branches:
     - 1.3.7a5
 
+
 jobs:
   release:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
+      - id: strip-tag
+        uses: yuya-takeyama/docker-tag-from-github-ref-action@v1
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
@@ -23,8 +26,18 @@ jobs:
           pip install -r requirements_dev.txt
 
       - name: Run unit tests
+        run: pytest tests/terraform_compliance
+
+      - name: Version Imprintment
         run: |
-          pytest tests/terraform_compliance
+          echo "Released version is ${{ steps.strip-tag.outputs.tag }}"
+          cat terraform_compliance/__init__.py | sed s/{{VERSION}}/${{ steps.strip-tag.outputs.tag }}/g  > terraform_compliance/__init__.py.templated
+          cat terraform_compliance/__init__.py.templated
+          cp terraform_compliance/__init__.py.templated terraform_compliance/__init__.py
+          echo "export RELEASE_VERSION=$(cat terraform_compliance/__init__.py | grep __version__ | cut -d "'" -f2)" > reqs.sh
+          source reqs.sh
+          if [[ "${{ steps.strip-tag.outputs.tag }}" != "$RELEASE_VERSION" ]]; then echo "Released version (${{ steps.strip-tag.outputs.tag }}) does not match with RELEASE_VERSION ($RELEASE_VERSION)"; exit 1; fi
+          python setup.py install_egg_info
 
       - name: Build & Test & Publish to PyPI
         env:
@@ -32,8 +45,10 @@ jobs:
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
         run: |
           python setup.py sdist bdist_wheel
+          ls -al dist/*
           pip install dist/terraform_compliance-${{ steps.strip-tag.outputs.tag }}-*.whl
           sleep 5
+          python tests/functional/run_functional_tests.py
           python tests/functional/run_functional_tests.py
           twine upload dist/*
 
