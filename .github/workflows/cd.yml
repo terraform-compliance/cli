@@ -39,18 +39,21 @@ jobs:
           if [[ "${{ steps.strip-tag.outputs.tag }}" != "$RELEASE_VERSION" ]]; then echo "Released version (${{ steps.strip-tag.outputs.tag }}) does not match with RELEASE_VERSION ($RELEASE_VERSION)"; exit 1; fi
           python setup.py install_egg_info
 
-      - name: Build & Test & Publish to PyPI
+      - name: Build
+        run: |
+          python setup.py sdist bdist_wheel && \
+          ls -al dist/* && \
+          pip install dist/terraform_compliance-${{ steps.strip-tag.outputs.tag }}-*.whl
+
+      - name: Integration Tests
+        run: |
+          python tests/functional/run_functional_tests.py
+
+      - name: Publish to PyPI
         env:
           TWINE_USERNAME: ${{ secrets.PYPI_USER }}
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-        run: |
-          python setup.py sdist bdist_wheel
-          ls -al dist/*
-          pip install dist/terraform_compliance-${{ steps.strip-tag.outputs.tag }}-*.whl
-          sleep 5
-          python tests/functional/run_functional_tests.py
-          python tests/functional/run_functional_tests.py
-          twine upload dist/*
+        run: twine upload dist/*
 
       - name: Publish to Docker Hub
         env:
