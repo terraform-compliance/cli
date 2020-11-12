@@ -43,7 +43,7 @@ jobs:
         run: |
           python setup.py sdist bdist_wheel && \
           ls -al dist/* && \
-          pip install dist/terraform_compliance-${{ steps.strip-tag.outputs.tag }}-*.whl && \
+          pip install --force-reinstall dist/terraform_compliance-${{ steps.strip-tag.outputs.tag }}-*.whl && \
           ls -al /usr/local/bin && which terraform-compliance
 
 
