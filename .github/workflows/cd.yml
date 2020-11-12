@@ -1,7 +1,10 @@
 name: CD
 on:
-  release:
-    types: [created]
+#  release:
+#    types: [created]
+  push:
+    branches:
+      - github-actions-test
 
 jobs:
   release:
@@ -9,6 +12,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - id: strip-tag
+        uses: yuya-takeyama/docker-tag-from-github-ref-action@v1
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
@@ -20,25 +25,47 @@ jobs:
           pip install -r requirements_dev.txt
 
       - name: Run unit tests
-        run: |
-          pytest tests/terraform_compliance
+        run: pytest tests/terraform_compliance
 
       - name: Version Imprintment
         run: |
-          - echo "Released version is ${{ github.ref }}"
+          - apt-get install -y jinja2
+          - echo "Released version is ${{ steps.strip-tag.outputs.tag }}"
+          - jinja2 -D VERSION=${{ steps.strip-tag.outputs.tag }} terraform_compliance/__init__.py -o terraform_compliance/__init__.py.templated
+          - cat terraform_compliance/__init__.py.templated
+          - cp terraform_compliance/__init__.py.templated terraform_compliance/__init__.py
+          - echo "export RELEASE_VERSION=$(cat terraform_compliance/__init__.py | grep __version__ | cut -d "'" -f2)" > reqs.sh
+          - source reqs.sh
+          - if [[ "${{ steps.strip-tag.outputs.tag }}" != "$RELEASE_VERSION" ]]; then echo "Released version (${{ steps.strip-tag.outputs.tag }}) does not match with RELEASE_VERSION ($RELEASE_VERSION)"; exit 1; fi
+          - python setup.py install_egg_info
 
-#      - name: Build
-#        run: |
-#          python setup.py sdist bdist_wheel
-#          pip install dist/terraform_compliance-0.0.0-*.whl
-#
-#      - name: Run integration tests
-#        run: |
-#          python tests/functional/run_functional_tests.py
-#
+      - name: Build
+        run: |
+          python setup.py sdist bdist_wheel
+          pip install dist/terraform_compliance-${{ steps.strip-tag.outputs.tag }}-*.whl
+
+      - name: Run integration tests
+        run: python tests/functional/run_functional_tests.py
+
 #      - name: Publish to PyPI
 #        env:
 #          TWINE_USERNAME: ${{ secrets.PYPI_USER }}
 #          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-#        run: |
-#          twine upload dist/*
+#        run: twine upload dist/*
+#
+#      - name: Publish to Docker Hub
+#        env:
+#          IMAGE_NAME: 'eerkunt/terraform-compliance'
+#          DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
+#          DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+#        run : |
+#          - echo "Getting the latest terraform version from Hashicorp"
+#          - echo "export LATEST_TERRAFORM_VERSION=$(curl https://checkpoint-api.hashicorp.com/v1/check/terraform | jq -r .current_version)" > terraform_version.sh
+#          - source terraform_version.sh
+#          - if [ -z "$LATEST_TERRAFORM_VERSION" ]; then echo "Can not identify latest terraform version!"; travis_terminate 1; fi
+#          -                                       docker build --compress --no-cache -t "$IMAGE_NAME" --build-arg VERSION=$RELEASE_VERSION --build-arg LATEST_TERRAFORM_VERSION=$LATEST_TERRAFORM_VERSION --build-arg HASHICORP_PGP_KEY="$(cat hashicorp-pgp-key.pub)" . || travis_terminate 1
+#          - docker login -u "$DOCKER_HUB_USER" -p "$DOCKER_HUB_PASSWORD"
+#          - docker tag "$IMAGE_NAME" $IMAGE_NAME:latest
+#          - docker tag "$IMAGE_NAME" "$IMAGE_NAME":"$RELEASE_VERSION"
+#          - docker push "$IMAGE_NAME":latest
+#          - docker push "$IMAGE_NAME":"$RELEASE_VERSION"
