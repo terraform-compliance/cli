@@ -3,7 +3,6 @@ on:
   release:
     types: [created]
 
-
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -38,11 +37,13 @@ jobs:
 
       - name: Build
         run: |
-          python setup.py sdist bdist_wheel
-          pip install dist/terraform_compliance-${{ steps.strip-tag.outputs.tag }}-*.whl
+          python setup.py sdist bdist_wheel && \
+          ls -al dist/* && \
+          pip install --force-reinstall dist/terraform_compliance-${{ steps.strip-tag.outputs.tag }}-*.whl
 
-      - name: Run integration tests
-        run: python tests/functional/run_functional_tests.py
+      - name: Integration Tests
+        run: |
+          python tests/functional/run_functional_tests.py
 
       - name: Publish to PyPI
         env:
@@ -56,13 +57,17 @@ jobs:
           DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
           DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
         run : |
-          - echo "Getting the latest terraform version from Hashicorp"
-          - echo "export LATEST_TERRAFORM_VERSION=$(curl https://checkpoint-api.hashicorp.com/v1/check/terraform | jq -r .current_version)" > terraform_version.sh
-          - source terraform_version.sh
-          - if [ -z "$LATEST_TERRAFORM_VERSION" ]; then echo "Can not identify latest terraform version!"; travis_terminate 1; fi
-          -                                       docker build --compress --no-cache -t "$IMAGE_NAME" --build-arg VERSION=$RELEASE_VERSION --build-arg LATEST_TERRAFORM_VERSION=$LATEST_TERRAFORM_VERSION --build-arg HASHICORP_PGP_KEY="$(cat hashicorp-pgp-key.pub)" . || travis_terminate 1
-          - docker login -u "$DOCKER_HUB_USER" -p "$DOCKER_HUB_PASSWORD"
-          - docker tag "$IMAGE_NAME" $IMAGE_NAME:latest
-          - docker tag "$IMAGE_NAME" "$IMAGE_NAME":"$RELEASE_VERSION"
-          - docker push "$IMAGE_NAME":latest
-          - docker push "$IMAGE_NAME":"$RELEASE_VERSION"
+          sleep 15
+          echo "Getting the latest terraform version from Hashicorp"
+          echo "export LATEST_TERRAFORM_VERSION=$(curl https://checkpoint-api.hashicorp.com/v1/check/terraform | jq -r .current_version)" > terraform_version.sh
+          source terraform_version.sh
+          if [ -z "$LATEST_TERRAFORM_VERSION" ]; then echo "Can not identify latest terraform version!"; travis_terminate 1; fi
+          docker build --compress --no-cache -t "$IMAGE_NAME" \
+                       --build-arg VERSION=${{ steps.strip-tag.outputs.tag }} \
+                       --build-arg LATEST_TERRAFORM_VERSION=$LATEST_TERRAFORM_VERSION \
+                       --build-arg HASHICORP_PGP_KEY="$(cat hashicorp-pgp-key.pub)" .
+          docker login -u "$DOCKER_HUB_USER" -p "$DOCKER_HUB_PASSWORD"
+          docker tag "$IMAGE_NAME" $IMAGE_NAME:latest
+          docker tag "$IMAGE_NAME" "$IMAGE_NAME":"${{ steps.strip-tag.outputs.tag }}"
+          docker push "$IMAGE_NAME":latest
+          docker push "$IMAGE_NAME":"${{ steps.strip-tag.outputs.tag }}"
