@@ -4,7 +4,7 @@ on:
 #    types: [created]
  push:
   branches:
-    - 1.3.7
+    - 1.3.7a5
 
 jobs:
   release:
