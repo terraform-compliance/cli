@@ -30,7 +30,7 @@ jobs:
       - name: Version Imprintment
         run: |
           echo "Released version is ${{ steps.strip-tag.outputs.tag }}"
-          jinja2 -D VERSION=${{ steps.strip-tag.outputs.tag }} terraform_compliance/__init__.py -o terraform_compliance/__init__.py.templated
+          cat terraform_compliance/__init__.py | sed s/{{VERSION}}/${{ steps.strip-tag.outputs.tag }}/g  > terraform_compliance/__init__.py.templated
           cat terraform_compliance/__init__.py.templated
           cp terraform_compliance/__init__.py.templated terraform_compliance/__init__.py
           echo "export RELEASE_VERSION=$(cat terraform_compliance/__init__.py | grep __version__ | cut -d "'" -f2)" > reqs.sh
