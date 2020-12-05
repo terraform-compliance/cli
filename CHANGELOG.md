@@ -2,6 +2,7 @@
 
 ## Unreleased
 * Removed some `after_unknown` values (a.k.a "known after apply" values) being added to the evaluated resources. ([#417])
+* New [tag](https://terraform-compliance.com/pages/bdd-references/using_tags/#supported-tags) to exclude resources from tagged scenario. ([#414](https://github.com/eerkunt/terraform-compliance/issues/414))
 
 ## 1.3.7 (2020-11-09)
 * Fixed [When it has something](https://terraform-compliance.com/pages/bdd-references/when.html#when-it-has-something) steps for `provider`s. ([#371](https://github.com/eerkunt/terraform-compliance/issues/371))

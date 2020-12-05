@@ -11,6 +11,7 @@ def look_for_bdd_tags(_step_obj):
     _step_obj.context.skip_class = None # to pick a tagname that user used
     _step_obj.context.lines_to_noskip = []
     _step_obj.context.bad_tags = False
+    _step_obj.context.resources_to_exclude = {}
 
     defaults = Defaults()
 
@@ -45,6 +46,25 @@ def look_for_bdd_tags(_step_obj):
                     
                     except Exception as e:
                         Error(_step_obj, f'A tag was determined to be a noskip, but line numbers could not be grouped by the regex {regex}\n{e}')
+            elif re.search(r'({})_.+\..+'.format('|'.join(defaults.exclude_resources_tags)), tag.name.lower()):
+                regex = r'({})_(.+)\.(.+)'.format('|'.join(defaults.exclude_resources_tags))
+                
+                m = re.search(regex, tag.name.lower())
+                if m is not None:
+                    resource_type = m.group(2)
+                    resource_name = m.group(3)
+
+                    if resource_type not in _step_obj.context.resources_to_exclude:
+                        _step_obj.context.resources_to_exclude[resource_type] = []
+                    
+                    _step_obj.context.resources_to_exclude[resource_type].append('{}.{}'.format(resource_type, resource_name))
+
+            '''
+            elif starts with exclude
+                parse the rest of the line
+                
+                add the resource type and resource name to the dictionary
+            '''
 
 
     if _step_obj.context.no_failure and _step_obj.context.no_skip:
