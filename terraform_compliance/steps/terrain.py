@@ -81,9 +81,28 @@ def parse_in_step_variables(step):
 
     step.context.in_step_variables = in_step_variables
 
+@after.each_step
+def exclude_resources(step):
+    if not hasattr(step.context, 'resources_to_exclude') or not step.context.resources_to_exclude:
+        return 
+
+    if step.context_class != 'given':
+        return
+    
+    match = step.context.match
+    resources_to_exclude = match.get(step.context.resources_to_exclude, step.context.name, {})
+    bad_resource_indices = []
+    # note O(n^2) runtime, but shouldn't be a problem at this scale
+    for address in resources_to_exclude:
+        for i, resource in enumerate(step.context.stash):
+            if match.equals(resource['address'], address):
+                bad_resource_indices.append(i)
+    
+    step.context.stash = [step.context.stash[i] for i in range(len(step.context.stash)) if i not in bad_resource_indices]
+
 
 # debugging step should be always the last hooker
-@after.each_step
+@after.each_step(order=1)
 def wait_for_user_input(step):
     if world.config.user_data['debugging_mode_enabled'] == 'False':
         return

@@ -1,0 +1,1 @@
+Failure: aws_s3_bucket.mybucket2 \(aws_s3_bucket\) does not have server_side_encryption_configuration property.
