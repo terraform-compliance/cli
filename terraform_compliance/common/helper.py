@@ -23,7 +23,6 @@ class Match(object):
     def __init__(self, case_sensitive):
         self.case_sensitive = case_sensitive
 
-
     def equals(self, left, right):
         if not isinstance(left, (bool, int, float, str)) or not isinstance(right, (bool, int, float, str)):
             raise TypeError
@@ -33,17 +32,16 @@ class Match(object):
         else:
             return str(left).lower() == str(right).lower()
 
-
     # gets something from a dictionary
     # needle == key
     def get(self, haystack, needle, default=None):
         if not isinstance(haystack, dict):
             return TypeError
-        
+
         for key, value in haystack.items():
             if self.equals(key, needle):
                 return value
-        
+
         return default
 
     # checks if the collection (list, dict (key)) contains the element (only in first level, no seek)
@@ -58,28 +56,25 @@ class Match(object):
 
         raise TypeError
 
-    
     # Assumes all incoming sets are sets of strings
     def issubset(self, set1, set2):
         if not isinstance(set1, Iterable) or isinstance(set1, str):
             raise TerraformComplianceInternalFailure('{} should be a non-str iterable'.format(set1))
-        
+
         if not isinstance(set2, Iterable) or isinstance(set2, str):
             raise TerraformComplianceInternalFailure('{} should be a non-str iterable'.format(set2))
 
         if not self.case_sensitive:
             set1 = set(str(e).lower() for e in set1)
             set2 = set(str(e).lower() for e in set2)
-        
-        return set1 <= set2
 
+        return set1 <= set2
 
     # re.match. overwrites the previous flag
     def regex_match(self, *args, **kwargs):
         regex_flag = 0 if self.case_sensitive else re.IGNORECASE
         return re.match(*args, **kwargs, flags=regex_flag)
 
-    
     # seek key in dict but with case_sensitivity
     def seek_key_in_dict(self, haystack, needle):
         '''
@@ -122,7 +117,7 @@ class Match(object):
             for key, value in haystack.items():
                 if isinstance(value, (dict, list)):
                     findings.extend(self.seek_value_in_dict(needle, value))
-                
+
                 elif isinstance(value, (str, bool, int, float)) and self.equals(needle, value):
                     findings.append(dict(values=needle, address=address))
 
@@ -138,10 +133,9 @@ class Match(object):
 
         return findings
 
-
     # ...
     # case sensitivity overwrites regex (if case insensitive, there is always re.IGNORECASE)
-        # this's admittedly weird but convention/backwards compatibility...
+    # this's admittedly weird but convention/backwards compatibility...
     def seek_regex_key_in_dict_values(self, haystack, key_name, needle, key_matched=None):
         '''
         Searches needle in haystack ( could be dict, list, list of dicts, nested dicts, etc. ) and returns all findings
@@ -359,11 +353,11 @@ def find_root_by_key(haystack, needle, return_key=None, _inherited_key=None, _de
             if key.lower() == needle.lower():
                 found.append(_return_value)
             else:
-                found.extend(find_root_by_key(value, needle, return_key, _inherited_key, _depth+1, _return_value))
+                found.extend(find_root_by_key(value, needle, return_key, _inherited_key, _depth + 1, _return_value))
 
     elif isinstance(haystack, list) and _inherited_key is not None:
         for value in haystack:
-            found.extend(find_root_by_key(value, needle, return_key, _inherited_key, _depth+1, _return_value))
+            found.extend(find_root_by_key(value, needle, return_key, _inherited_key, _depth + 1, _return_value))
 
     else:
         return []
@@ -390,7 +384,7 @@ def recursive_jsonify(haystack):
 
     if isinstance(haystack, dict):
         haystack = {key: recursive_jsonify(value) for key, value in haystack.items()}
-    
+
     if isinstance(haystack, list):
         haystack = [recursive_jsonify(value) for value in haystack]
 
@@ -406,7 +400,7 @@ def get_resource_name_from_stash(stash, alternative_stash=None, address=None):
 
             # Get the first number, since this is usually due to `count` usage in terraform
             if 'address' in stash[0] and stash[0]['address'] is not None:
-                return {'address': stash[0]['address'].replace('[0]','')}
+                return {'address': stash[0]['address'].replace('[0]', '')}
             else:
                 return {'address': stash[0]}
 
@@ -535,5 +529,78 @@ def python_version_check():
                                                                  Defaults.supported_min_python_versions[0]))
         sys.exit(1)
 
-
     return True
+
+def merge_dicts(source, target):
+    '''
+    successor of dict_merge
+    merges two dictionaries or lists into one
+    overlapping list/dictionaries are also merged within each other
+    if isinstance(source, list) and isinstance(target, list):
+        # shady, just extend?
+        for i, v in enumerate(higher prio):
+            if v is dict
+                if lower has dict in the ith element
+                    combine them
+    if isinstance(source, dict) and isinstance(target, dict):
+        if all elements are singular
+            return {**target, **source}
+        merged = {**target, **source} # source has priority over conflicts
+        # find conflicting lists
+        for all conflicting lists,
+            # merged[key] = source[key] + target[key] # honestly depends on the situation
+            merged[key] = merge_dicts(source[key], target[key])
+
+        for all conflicting lists
+            merged[key] = merge_dicts(source[key], target[key])
+    decisions to make
+        what happens to conflicting lists?
+            should I drop one and keep the other (could be relevant on some cases)
+            should I merge the lists? (could be relevant as well)
+
+        what happens to conflicting dirs?
+    if I have two lists
+        lists have dictionaries in the same index
+            merge those dictionaries
+
+        # add remaining values of lower priority to higher priority
+        ignore non dict values
+
+    conflicts
+        regular values: higher prio overrides
+        dictionaries: merge conflicting dictionaries
+        lists: higher prio overrides, merge any matching dictionary elements
+
+    assume target is low priority
+    '''
+    if isinstance(source, list) and isinstance(target, list):
+        for i, value in enumerate(target):
+            if isinstance(value, dict) and isinstance(source[i], dict): # what if i not in source?
+                merge_dicts(source[i], target[i])
+            elif isinstance(value, list) and isinstance(source[i], list):
+                merge_dicts(source[i], target[i])
+
+    if isinstance(source, dict) and isinstance(target, dict):
+        for key, value in target.items():
+            if key not in source:
+                source[key] = target[key]
+            else:
+                # regular values
+                # do nothing
+                # dictionaries
+                if isinstance(value, dict) and isinstance(source[key], dict):
+                    merge_dicts(source[key], target[key])
+                elif isinstance(value, list) and isinstance(source[key], list):
+                    merge_dicts(source[key], target[key])
+
+
+def remove_constant_values(target):
+    if isinstance(target, dict):
+        for key, value in target.items():
+            if isinstance(value, dict) and len(value) == 1 and 'constant_value' in value:
+                target[key] = value['constant_value']
+            elif isinstance(value, dict) or isinstance(value, list):
+                remove_constant_values(value)
+    elif isinstance(target, list):
+        for value in target:
+            remove_constant_values(value)

@@ -1,5 +1,5 @@
 import json
-from terraform_compliance.common.helper import seek_key_in_dict, flatten_list, dict_merge, Match
+from terraform_compliance.common.helper import seek_key_in_dict, flatten_list, Match, merge_dicts, remove_constant_values
 import sys
 from copy import deepcopy
 from terraform_compliance.common.defaults import Defaults
@@ -131,7 +131,7 @@ class TerraformParser(object):
             change = resource.get('change', {})
             actions = change.get('actions', [])
             if actions != ['delete']:
-                resource['values'] = dict_merge(change.get('after', {}), change.get('after_unknown', {}))
+                resource['values'] = change.get('after', {}) # dict_merge(change.get('after', {}), change.get('after_unknown', {}))
                 if 'change' in resource:
                     del resource['change']
 
@@ -161,8 +161,6 @@ class TerraformParser(object):
         # Resources
         self.configuration['resources'] = {}
 
-        resources = []
-
         # root resources
         resources = self.raw.get('configuration', {}).get('root_module', {}).get('resources', [])
 
@@ -170,9 +168,26 @@ class TerraformParser(object):
         for module in seek_key_in_dict(self.raw.get('configuration', {}).get('root_module', {}).get("module_calls", {}), "module"):
             resources += module.get('module',{}).get("resources", [])
 
+        remove_constant_values(resources)
         for resource in resources:
             if self.is_type(resource, 'data'):
                 self.data[resource['address']] = resource
+            elif self.is_type(resource, 'managed'):
+                target_resource = [v for r,v in self.resources.items() if v['address'] == resource['address']]
+                if target_resource:
+                    for key, value in resource.get('expressions', {}).items():
+                        # If we have the key in configuration and resource data then fill the gaps
+                        target_values = self.resources[resource['address']].get('values', {})
+                        if key in target_values and type(value) is type(target_values[key]):
+                            merge_dicts(value, target_values[key])
+                            if value != target_values[key]:
+                                print("Changing {}".format(key))
+                            target_values[key] = value if value != target_values[key] else target_values[key]
+                        # If we have the key in configuration but doesn't exist in resource, then
+                        # create that attribute
+                        else:
+                            target_values[key] = value
+
             else:
                 self.configuration['resources'][resource['address']] = resource
 
