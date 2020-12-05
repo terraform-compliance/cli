@@ -5,7 +5,7 @@ colorful==0.5.4
 filetype==1.0.7
 junit-xml==1.9
 emoji==0.6.0
-lxml==4.6.1
+lxml==4.6.2
 semver==2.13.0
 IPython==7.16.1
 diskcache==5.1.0
