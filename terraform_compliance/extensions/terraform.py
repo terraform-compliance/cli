@@ -331,25 +331,16 @@ class TerraformParser(object):
                     # This is where we synchronise constant_value in the configuration section with the resource
                     # for filling up the missing elements that hasn't been defined in the resource due to provider
                     # implementation.
-                    target_resource = self.resources.get(resource, {}).get('address')
+                    target_resource = [t for t in [self.resources.get(resource, {}).get('address')] if t is not None]
                     if not target_resource:
                         target_resource = [k for k in self.resources.keys() if k.startswith(resource)]
-                        if len(target_resource) > 1:
-                            raise TerraformComplianceInternalFailure('It looks like instead of finding just one resource for referencing'
-                                                                     ', I found many matching the criteria: {}'.format(target_resource))
-                        elif len(target_resource) == 1:
-                            target_resource = target_resource[0]
-                        else:
-                            raise TerraformComplianceInternalFailure('I could not find any resource matching the criteria: {}'.format(resource))
+                        if not target_resource:
+                            target_resource = [k for k in self.resources.keys() if k.endswith(resource)]
 
-                    if type(value) is type(self.resources[target_resource]['values'].get(key)) and self.resources[target_resource]['values'].get(key) != value:
-                        if isinstance(value, (list, dict)):
-                            merge_dicts(self.resources[target_resource]['values'][key], value)
-                            print("merged")
-
-                        print(value)
-
-
+                    for t_r in target_resource:
+                        if type(value) is type(self.resources[t_r]['values'].get(key)) and self.resources[t_r]['values'].get(key) != value:
+                            if isinstance(value, (list, dict)):
+                                merge_dicts(self.resources[t_r]['values'][key], value)
 
                 if ref_list:
                     ref_type = self.configuration['resources'][resource]['expressions'].get('type', {})
