@@ -173,21 +173,6 @@ class TerraformParser(object):
         for resource in resources:
             if self.is_type(resource, 'data'):
                 self.data[resource['address']] = resource
-            elif self.is_type(resource, 'managed'):
-                target_resource = [v for r,v in self.resources.items() if v['address'] == resource['address']]
-                if target_resource:
-                    for key, value in resource.get('expressions', {}).items():
-                        # If we have the key in configuration and resource data then fill the gaps
-                        target_values = self.resources[resource['address']].get('values', {})
-                        if key in target_values:
-                            if type(value) is type(target_values[key]):
-                                merge_dicts(value, target_values[key])
-                                target_values[key] = value if value != target_values[key] else target_values[key]
-
-                        # If we have the key in configuration but doesn't exist in resource, then
-                        # create that attribute
-                        else:
-                            target_values[key] = value
 
             else:
                 self.configuration['resources'][resource['address']] = resource
@@ -329,13 +314,21 @@ class TerraformParser(object):
             if 'expressions' in self.configuration['resources'][resource]:
                 ref_list = {}
                 for key, value in self.configuration['resources'][resource]['expressions'].items():
-                    if 'references' in value:
-                        for ref in value['references']:
-                            if not ref.startswith(invalid_references):
-                                if key not in ref_list:
-                                    ref_list[key] = self._find_resource_from_name(ref)
-                                else:
-                                    ref_list[key].extend(self._find_resource_from_name(ref))
+                    references = seek_key_in_dict(value, 'references') if isinstance(value, (dict, list)) else []
+
+                    valid_references = []
+                    for ref in references:
+                        if isinstance(ref, dict) and ref.get('references'):
+                            valid_references = [r for r in ref['references'] if not r.startswith(invalid_references)]
+
+                    for ref in valid_references:
+                        if key not in ref_list:
+                            ref_list[key] = self._find_resource_from_name(ref)
+                        else:
+                            ref_list[key].extend(self._find_resource_from_name(ref))
+
+                    if self.resources[resource]['values'].get(key) != value:
+                        self.resources[resource]['values'][key] = value
 
                 if ref_list:
                     ref_type = self.configuration['resources'][resource]['expressions'].get('type',
