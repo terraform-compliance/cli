@@ -1,0 +1,1 @@
+Failure: aws_instance\.ebs_encrypted_not_present \(aws_instance\) does not have encrypted property\.

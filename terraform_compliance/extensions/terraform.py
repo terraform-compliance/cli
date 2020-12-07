@@ -1,9 +1,10 @@
 import json
-from terraform_compliance.common.helper import seek_key_in_dict, flatten_list, dict_merge, Match
+from terraform_compliance.common.helper import seek_key_in_dict, flatten_list, Match, merge_dicts, remove_constant_values
 import sys
 from copy import deepcopy
 from terraform_compliance.common.defaults import Defaults
 from terraform_compliance.extensions.cache import Cache
+from terraform_compliance.common.exceptions import TerraformComplianceInternalFailure
 
 
 class TerraformParser(object):
@@ -20,7 +21,8 @@ class TerraformParser(object):
         '''
         self.supported_terraform_versions = (
             '0.12.',
-            '0.13.'
+            '0.13.',
+            '0.14.'
         )
         self.supported_format_versions = ['0.1']
 
@@ -131,7 +133,7 @@ class TerraformParser(object):
             change = resource.get('change', {})
             actions = change.get('actions', [])
             if actions != ['delete']:
-                resource['values'] = dict_merge(change.get('after', {}), change.get('after_unknown', {}))
+                resource['values'] = change.get('after', {}) # dict_merge(change.get('after', {}), change.get('after_unknown', {}))
                 if 'change' in resource:
                     del resource['change']
 
@@ -161,8 +163,6 @@ class TerraformParser(object):
         # Resources
         self.configuration['resources'] = {}
 
-        resources = []
-
         # root resources
         resources = self.raw.get('configuration', {}).get('root_module', {}).get('resources', [])
 
@@ -170,9 +170,11 @@ class TerraformParser(object):
         for module in seek_key_in_dict(self.raw.get('configuration', {}).get('root_module', {}).get("module_calls", {}), "module"):
             resources += module.get('module',{}).get("resources", [])
 
+        remove_constant_values(resources)
         for resource in resources:
             if self.is_type(resource, 'data'):
                 self.data[resource['address']] = resource
+
             else:
                 self.configuration['resources'][resource['address']] = resource
 
@@ -304,7 +306,7 @@ class TerraformParser(object):
         :return:
         '''
         self.resources_raw = deepcopy(self.resources)
-        invalid_references = ('var.')
+        invalid_references = ('var.', 'each.')
 
         # This section will link resources found in configuration part of the plan output.
         # The reference should be on both ways (A->B, B->A) since terraform sometimes report these references
@@ -313,18 +315,35 @@ class TerraformParser(object):
             if 'expressions' in self.configuration['resources'][resource]:
                 ref_list = {}
                 for key, value in self.configuration['resources'][resource]['expressions'].items():
-                    if 'references' in value:
-                        for ref in value['references']:
-                            if not ref.startswith(invalid_references):
-                                if key not in ref_list:
-                                    ref_list[key] = self._find_resource_from_name(ref)
-                                else:
-                                    ref_list[key].extend(self._find_resource_from_name(ref))
+                    references = seek_key_in_dict(value, 'references') if isinstance(value, (dict, list)) else []
+
+                    valid_references = []
+                    for ref in references:
+                        if isinstance(ref, dict) and ref.get('references'):
+                            valid_references = [r for r in ref['references'] if not r.startswith(invalid_references)]
+
+                    for ref in valid_references:
+                        if key not in ref_list:
+                            ref_list[key] = self._find_resource_from_name(ref)
+                        else:
+                            ref_list[key].extend(self._find_resource_from_name(ref))
+
+                    # This is where we synchronise constant_value in the configuration section with the resource
+                    # for filling up the missing elements that hasn't been defined in the resource due to provider
+                    # implementation.
+                    target_resource = [t for t in [self.resources.get(resource, {}).get('address')] if t is not None]
+                    if not target_resource:
+                        target_resource = [k for k in self.resources.keys() if k.startswith(resource)]
+                        if not target_resource:
+                            target_resource = [k for k in self.resources.keys() if k.endswith(resource)]
+
+                    for t_r in target_resource:
+                        if type(value) is type(self.resources[t_r]['values'].get(key)) and self.resources[t_r]['values'].get(key) != value:
+                            if isinstance(value, (list, dict)):
+                                merge_dicts(self.resources[t_r]['values'][key], value)
 
                 if ref_list:
-                    ref_type = self.configuration['resources'][resource]['expressions'].get('type',
-                                                                                            {}).get('constant_value',
-                                                                                                    {})
+                    ref_type = self.configuration['resources'][resource]['expressions'].get('type', {})
 
                     if not ref_type and not self.is_type(resource, 'data'):
                         resource_type, resource_id = resource.split('.')
