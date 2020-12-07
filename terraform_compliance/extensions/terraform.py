@@ -4,6 +4,7 @@ import sys
 from copy import deepcopy
 from terraform_compliance.common.defaults import Defaults
 from terraform_compliance.extensions.cache import Cache
+from terraform_compliance.common.exceptions import TerraformComplianceInternalFailure
 
 
 class TerraformParser(object):
@@ -305,7 +306,7 @@ class TerraformParser(object):
         :return:
         '''
         self.resources_raw = deepcopy(self.resources)
-        invalid_references = ('var.')
+        invalid_references = ('var.', 'each.')
 
         # This section will link resources found in configuration part of the plan output.
         # The reference should be on both ways (A->B, B->A) since terraform sometimes report these references
@@ -330,9 +331,20 @@ class TerraformParser(object):
                     # This is where we syncronise constant_value in the configuration section with the resource
                     # for filling up the missing elements that hasn't been defined in the resource due to provider
                     # implementation.
-                    if type(value) is type(self.resources[resource]['values'].get(key)) and self.resources[resource]['values'].get(key) != value:
+                    target_resource = self.resources.get(resource)
+                    if not target_resource:
+                        target_resource = [k for k in self.resources.keys() if k.startswith(resource)]
+                        if len(target_resource) > 1:
+                            raise TerraformComplianceInternalFailure('It looks like instead of finding just one resource for referencing'
+                                                                     ', I found many matching the criteria: {}'.format(target_resource))
+                        elif len(target_resource) == 1:
+                            target_resource = target_resource[0]
+                        else:
+                            raise TerraformComplianceInternalFailure('I could not find any resource matching the criteria: {}'.format(resource))
+
+                    if type(value) is type(self.resources[target_resource]['values'].get(key)) and self.resources[target_resource]['values'].get(key) != value:
                         if isinstance(value, (list, dict)):
-                            merge_dicts(self.resources[resource]['values'][key], value)
+                            merge_dicts(self.resources[target_resource]['values'][key], value)
                             print("merged")
 
                         print(value)
