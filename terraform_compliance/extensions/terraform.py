@@ -327,13 +327,20 @@ class TerraformParser(object):
                         else:
                             ref_list[key].extend(self._find_resource_from_name(ref))
 
-                    if self.resources[resource]['values'].get(key) != value:
-                        self.resources[resource]['values'][key] = value
+                    # This is where we syncronise constant_value in the configuration section with the resource
+                    # for filling up the missing elements that hasn't been defined in the resource due to provider
+                    # implementation.
+                    if type(value) is type(self.resources[resource]['values'].get(key)) and self.resources[resource]['values'].get(key) != value:
+                        if isinstance(value, (list, dict)):
+                            merge_dicts(self.resources[resource]['values'][key], value)
+                            print("merged")
+
+                        print(value)
+
+
 
                 if ref_list:
-                    ref_type = self.configuration['resources'][resource]['expressions'].get('type',
-                                                                                            {}).get('constant_value',
-                                                                                                    {})
+                    ref_type = self.configuration['resources'][resource]['expressions'].get('type', {})
 
                     if not ref_type and not self.is_type(resource, 'data'):
                         resource_type, resource_id = resource.split('.')
