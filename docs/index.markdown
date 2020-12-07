@@ -9,7 +9,7 @@ permalink: /
 
 <div align="left">
   <a href="https://travis-ci.org/eerkunt/terraform-compliance">
-    <img src="https://img.shields.io/travis/eerkunt/terraform-compliance/master.svg" alt="Build" />
+    <img src="https://github.com/eerkunt/terraform-compliance/workflows/CD/badge.svg" alt="Build" />
   </a>
 
   <a href="https://hub.docker.com/r/eerkunt/terraform-compliance/">
@@ -111,7 +111,7 @@ See [Examples](/pages/Examples/) for more sample use cases.
 
 ## Supporting / Requirements
 
-`terraform-compliance` only supports `terraform` 0.12.+. In order to use older versions of `terraform`,
+`terraform-compliance` supports versions that are newer than `terraform` 0.12+. In order to use older versions of `terraform`,
 you can use [0.6.4](https://github.com/eerkunt/terraform-compliance/releases/tag/0.6.4) of the tool,
 but many capabilities will not be supported and maintaining of `0.6.4` version is ended.
 
