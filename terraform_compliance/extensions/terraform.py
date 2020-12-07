@@ -328,10 +328,10 @@ class TerraformParser(object):
                         else:
                             ref_list[key].extend(self._find_resource_from_name(ref))
 
-                    # This is where we syncronise constant_value in the configuration section with the resource
+                    # This is where we synchronise constant_value in the configuration section with the resource
                     # for filling up the missing elements that hasn't been defined in the resource due to provider
                     # implementation.
-                    target_resource = self.resources.get(resource)
+                    target_resource = self.resources.get(resource, {}).get('address')
                     if not target_resource:
                         target_resource = [k for k in self.resources.keys() if k.startswith(resource)]
                         if len(target_resource) > 1:
