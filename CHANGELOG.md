@@ -1,7 +1,9 @@
 # CHANGELOG
 
-## Unreleased
+## 1.3.8 (2020-12-07)
 * New [tag](https://terraform-compliance.com/pages/bdd-references/using_tags/#supported-tags) to exclude resources from tagged scenario. ([#414](https://github.com/eerkunt/terraform-compliance/issues/414))
+* Addressed the problem defined in ([#417](https://github.com/eerkunt/terraform-compliance/issues/417)) and ([#410](https://github.com/eerkunt/terraform-compliance/issues/410)) by changing how we refer the resources
+* Added terraform 0.14.x support. ([#421](https://github.com/eerkunt/terraform-compliance/issues/421))
 
 ## 1.3.7 (2020-11-09)
 * Fixed [When it has something](https://terraform-compliance.com/pages/bdd-references/when.html#when-it-has-something) steps for `provider`s. ([#371](https://github.com/eerkunt/terraform-compliance/issues/371))
