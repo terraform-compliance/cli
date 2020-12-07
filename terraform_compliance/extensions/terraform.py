@@ -179,11 +179,11 @@ class TerraformParser(object):
                     for key, value in resource.get('expressions', {}).items():
                         # If we have the key in configuration and resource data then fill the gaps
                         target_values = self.resources[resource['address']].get('values', {})
-                        if key in target_values and type(value) is type(target_values[key]):
-                            merge_dicts(value, target_values[key])
-                            if value != target_values[key]:
-                                print("Changing {}".format(key))
-                            target_values[key] = value if value != target_values[key] else target_values[key]
+                        if key in target_values:
+                            if type(value) is type(target_values[key]):
+                                merge_dicts(value, target_values[key])
+                                target_values[key] = value if value != target_values[key] else target_values[key]
+
                         # If we have the key in configuration but doesn't exist in resource, then
                         # create that attribute
                         else:
