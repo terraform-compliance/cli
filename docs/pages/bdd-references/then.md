@@ -512,12 +512,12 @@ This step compares the contents of the current stash to the [in step variables](
 >
 > ▪
 [Then](#){: .p-1 .text-red-200} 
-it must be in
+it must cover
 [haystack](#){: .p-1 .text-green-200 .fw-700}
 >
 > ▪
 [Then](#){: .p-1 .text-red-200} 
-it must be a subset of
+it must be a superset of
 [haystack](#){: .p-1 .text-green-200 .fw-700}
 >
 
