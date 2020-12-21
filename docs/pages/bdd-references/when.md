@@ -361,7 +361,7 @@ reference includes
 [When](#){: .p-1 .text-red-200}
 its
 [property](#){: .p-1 .text-green-200 .fw-700}
-reference consists
+reference contains
 [something](#){: .p-1 .text-blue-100 .fw-700}
 >
 > ▪
@@ -395,7 +395,7 @@ reference includes
 [When](#){: .p-1 .text-red-200}
 its
 [property](#){: .p-1 .text-green-200 .fw-700}
-reference consists
+reference contains
 "
 [some string with spaces](#){: .p-1 .text-blue-100 .fw-700}
 "
@@ -440,7 +440,7 @@ reference does not include
 [When](#){: .p-1 .text-red-200}
 its
 [property](#){: .p-1 .text-green-200 .fw-700}
-reference does not consist
+reference does not contain
 [something](#){: .p-1 .text-blue-100 .fw-700}
 >
 > ▪
@@ -474,7 +474,7 @@ reference does not include
 [When](#){: .p-1 .text-red-200}
 its
 [property](#){: .p-1 .text-green-200 .fw-700}
-reference does not consist
+reference does not contain
 "
 [some string with spaces](#){: .p-1 .text-blue-100 .fw-700}
 "
