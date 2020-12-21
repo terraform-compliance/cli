@@ -174,7 +174,7 @@ includes
 [When](#){: .p-1 .text-red-200}
 its
 [property](#){: .p-1 .text-green-200 .fw-700}
-consists
+contains
 [something](#){: .p-1 .text-blue-100 .fw-700}
 >
 > ▪
@@ -208,7 +208,7 @@ includes
 [When](#){: .p-1 .text-red-200}
 its
 [property](#){: .p-1 .text-green-200 .fw-700}
-consists
+contains
 "
 [some string with spaces](#){: .p-1 .text-blue-100 .fw-700}
 "
@@ -345,7 +345,7 @@ does not include
 [When](#){: .p-1 .text-red-200}
 its
 [property](#){: .p-1 .text-green-200 .fw-700}
-does not consist
+does not contain
 [something](#){: .p-1 .text-blue-100 .fw-700}
 >
 > ▪
@@ -379,7 +379,7 @@ does not include
 [When](#){: .p-1 .text-red-200}
 its
 [property](#){: .p-1 .text-green-200 .fw-700}
-does not consist
+does not contain
 "
 [some string with spaces](#){: .p-1 .text-blue-100 .fw-700}
 "
@@ -408,7 +408,7 @@ is
 | [value](#){: .p-1 .text-blue-100 .fw-700} | any dictionary value (allows spaces). | `my dictionary value` |
 
 ------------------------
-### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} reference has [something](#){: .p-1 .text-blue-100 .fw-700}
+### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} reference has not [something](#){: .p-1 .text-blue-100 .fw-700}
 This is a filtering function, specific for resource referencing. The resource references will be checked based on
 the `property` property defined within the step. This is the negative version (ref. `not` usage within the step) of the
 filtering step.
