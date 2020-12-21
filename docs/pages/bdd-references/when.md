@@ -237,84 +237,6 @@ is
 | [value](#){: .p-1 .text-blue-100 .fw-700} | any dictionary value (allows spaces). | `my dictionary value` |
 
 ------------------------
-### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} reference has [something](#){: .p-1 .text-blue-100 .fw-700}
-This is a filtering function, specific for resource referencing. The resource references will be checked based on
-the `property` property defined within the step.
-
-> __Possible sentences :__
->
-> ▪
-[When](#){: .p-1 .text-red-200}
-its
-[property](#){: .p-1 .text-green-200 .fw-700}
-reference is
-[something](#){: .p-1 .text-blue-100 .fw-700}
->
-> ▪
-[When](#){: .p-1 .text-red-200}
-its
-[property](#){: .p-1 .text-green-200 .fw-700}
-reference has
-[something](#){: .p-1 .text-blue-100 .fw-700}
->
-> ▪
-[When](#){: .p-1 .text-red-200}
-its
-[property](#){: .p-1 .text-green-200 .fw-700}
-reference includes
-[something](#){: .p-1 .text-blue-100 .fw-700}
->
-> ▪
-[When](#){: .p-1 .text-red-200}
-its
-[property](#){: .p-1 .text-green-200 .fw-700}
-reference consists
-[something](#){: .p-1 .text-blue-100 .fw-700}
->
-> ▪
-[When](#){: .p-1 .text-red-200}
-its
-[property](#){: .p-1 .text-green-200 .fw-700}
-reference is
-"
-[some string with spaces](#){: .p-1 .text-blue-100 .fw-700}
-"
->
-> ▪
-[When](#){: .p-1 .text-red-200}
-its
-[property](#){: .p-1 .text-green-200 .fw-700}
-reference has
-"
-[some string with spaces](#){: .p-1 .text-blue-100 .fw-700}
-"
->
-> ▪
-[When](#){: .p-1 .text-red-200}
-its
-[property](#){: .p-1 .text-green-200 .fw-700}
-reference includes
-"
-[some string with spaces](#){: .p-1 .text-blue-100 .fw-700}
-"
->
-> ▪
-[When](#){: .p-1 .text-red-200}
-its
-[property](#){: .p-1 .text-green-200 .fw-700}
-reference consists
-"
-[some string with spaces](#){: .p-1 .text-blue-100 .fw-700}
-"
->
->
-| key | Description | Examples |
-|:---:|:----------|:-|
-| [property](#){: .p-1 .text-green-200 .fw-700} | any property that is used for referencing another resource.  | `security_group_id` `aws_instance` `"something with spaces"` |
-| [something](#){: .p-1 .text-blue-100 .fw-700} | any string or numeric value that the property has. | `s3_my_bucket` `my-bucket` `50G` `"something with spaces"` |
-| [some string with spaces](#){: .p-1 .text-blue-100 .fw-700} | any string (allows spaces). | `my dictionary key` |
-
-------------------------
 ### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} has not [something](#){: .p-1 .text-blue-100 .fw-700}
 This is a filtering function. Thus, found resources from previous step will be filtered based on these values.
 
@@ -406,6 +328,84 @@ is
 | [some string with spaces](#){: .p-1 .text-blue-100 .fw-700} | any string (allows spaces). | `my dictionary key` |
 | [key](#){: .p-1 .text-blue-100 .fw-700} | any dictionary key (allows spaces). | `my dictionary key` |
 | [value](#){: .p-1 .text-blue-100 .fw-700} | any dictionary value (allows spaces). | `my dictionary value` |
+
+------------------------
+### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} reference has [something](#){: .p-1 .text-blue-100 .fw-700}
+This is a filtering function, specific for resource referencing. The resource references will be checked based on
+the `property` property defined within the step.
+
+> __Possible sentences :__
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+reference is
+[something](#){: .p-1 .text-blue-100 .fw-700}
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+reference has
+[something](#){: .p-1 .text-blue-100 .fw-700}
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+reference includes
+[something](#){: .p-1 .text-blue-100 .fw-700}
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+reference consists
+[something](#){: .p-1 .text-blue-100 .fw-700}
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+reference is
+"
+[some string with spaces](#){: .p-1 .text-blue-100 .fw-700}
+"
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+reference has
+"
+[some string with spaces](#){: .p-1 .text-blue-100 .fw-700}
+"
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+reference includes
+"
+[some string with spaces](#){: .p-1 .text-blue-100 .fw-700}
+"
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+reference consists
+"
+[some string with spaces](#){: .p-1 .text-blue-100 .fw-700}
+"
+>
+>
+| key | Description | Examples |
+|:---:|:----------|:-|
+| [property](#){: .p-1 .text-green-200 .fw-700} | any property that is used for referencing another resource.  | `security_group_id` `aws_instance` `"something with spaces"` |
+| [something](#){: .p-1 .text-blue-100 .fw-700} | any string or numeric value that the property has. | `s3_my_bucket` `my-bucket` `50G` `"something with spaces"` |
+| [some string with spaces](#){: .p-1 .text-blue-100 .fw-700} | any string (allows spaces). | `my dictionary key` |
 
 ------------------------
 ### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} reference has not [something](#){: .p-1 .text-blue-100 .fw-700}
