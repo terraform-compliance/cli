@@ -130,6 +130,7 @@ def wrapper(_step_obj, something, inherited_values=Null):
 
 
 @then(u'{something:ANY} is enabled')
+@then(u'{something:ANY} is be enabled')
 @then(u'{something:ANY} must be enabled')
 def wrapper(_step_obj, something):
     return property_is_enabled(_step_obj, something)
