@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## Unreleased
+* Fixed an issue where \x08 character was breaking JUnit XML conversion during provider version_constraint checks. ([#432](https://github.com/eerkunt/terraform-compliance/pull/432))
+
 ## 1.3.8 (2020-12-07)
 * New [tag](https://terraform-compliance.com/pages/bdd-references/using_tags/#supported-tags) to exclude resources from tagged scenario. ([#414](https://github.com/eerkunt/terraform-compliance/issues/414))
 * Addressed the problem defined in ([#417](https://github.com/eerkunt/terraform-compliance/issues/417)) and ([#410](https://github.com/eerkunt/terraform-compliance/issues/410)) by changing how we refer the resources

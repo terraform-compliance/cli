@@ -84,3 +84,32 @@ defined
 |:---:|:----------|:-|
 | [name](#){: .text-green-200 .fw-700}  | name of the resource. The name must point to a resource. Can not be `provider` or anything else. | `aws_security_group` `aws_s3_bucket` |
 
+
+
+----------------------
+### [Given](#){: .p-1 .text-red-200} I have resource that supports [something](#){: .p-1 .text-green-200 .fw-700}
+
+
+> __Possible sentences :__
+>
+> ▪
+[Given](#){: .p-1 .text-red-200} 
+I resource that supports 
+[something](#){: .p-1 .text-green-200 .fw-700}
+>
+| key | Description | Examples |
+|:---:|:----------|:-|
+| [something](#){: .p-1 .text-green-200 .fw-700}  | [something](#){: .p-1 .text-green-200 .fw-700} | any property within Terraform resource/provider/etc | `tags` `access_key` `ingress` `"something with spaces"` `kms_key_id` |
+
+
+
+----------------------
+### Possible [Name](#){: .text-green-200 .fw-700} values
+
+You may use the additional values for [name](#){: .text-green-200 .fw-700} in addition to any Terrafrom resource type:
+
+> ▪ `a resource`, `any resource`, `resources`
+> 
+> ▪ `an output`, `any output`, `outputs`
+> 
+> ▪ `a variable`, `any variable`, `variables`

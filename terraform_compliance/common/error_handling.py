@@ -97,4 +97,4 @@ class Error(Exception):
                 step.failure = WrapperError(self.exception('\r{}'.format(' '*len(self.exception_name))))
 
         if self.message:
-            self.step_obj.failure.traceback = '{}: {}'.format(self.exception_name, '\n'.join(self.message)).replace('\x00', '\\x00') 
+            self.step_obj.failure.traceback = '{}: {}'.format(self.exception_name, '\n'.join(self.message)).replace('\x00', '\\x00').replace('\x08', '\\x08')
