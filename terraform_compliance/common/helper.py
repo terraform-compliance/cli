@@ -536,6 +536,18 @@ def merge_dicts(source, target):
     successor of dict_merge
     merges two dictionaries or lists into one
     overlapping list/dictionaries are also merged within each other
+   
+    assume target is low priority
+
+    conflicts
+        regular values: higher prio overrides
+        dictionaries: merge conflicting dictionaries
+        lists: higher prio overrides for regular values, merge any matching dictionary/list elements
+            if len(target) > len(source):
+                append the tail to the source
+
+
+    # Confusing and less important comments:
     if isinstance(source, list) and isinstance(target, list):
         # shady, just extend?
         for i, v in enumerate(higher prio):
@@ -565,17 +577,12 @@ def merge_dicts(source, target):
 
         # add remaining values of lower priority to higher priority
         ignore non dict values
-
-    conflicts
-        regular values: higher prio overrides
-        dictionaries: merge conflicting dictionaries
-        lists: higher prio overrides, merge any matching dictionary elements
-
-    assume target is low priority
     '''
     if isinstance(source, list) and isinstance(target, list):
         for i, value in enumerate(target):
-            if isinstance(value, dict) and isinstance(source[i], dict): # what if i not in source?
+            if i >= len(source):
+                source.append(value)
+            elif isinstance(value, dict) and isinstance(source[i], dict):
                 merge_dicts(source[i], target[i])
             elif isinstance(value, list) and isinstance(source[i], list):
                 merge_dicts(source[i], target[i])
