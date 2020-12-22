@@ -62,12 +62,12 @@ Feature: Feature for #291 continued
 	@case_sensitive
 	Scenario: Then property is enabled (passes)
 	        Given I have azurerm_postgresql_configuration defined
-	        Then sku_name is be enabled
+	        Then sku_name is enabled
 
 	@case_sensitive
 	Scenario: Then property is enabled (fails)
 	        Given I have azurerm_postgresql_configuration defined
-	        Then sku_namE is be enabled
+	        Then sku_namE is enabled
 
 
 	@noskip        

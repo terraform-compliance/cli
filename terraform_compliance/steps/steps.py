@@ -48,6 +48,7 @@ from terraform_compliance.steps.then.interpolations import i_flatten_everything_
 from terraform_compliance.steps.then.it_must_be_in import it_must_be_in
 from terraform_compliance.steps.then.its_value_condition_be_null import its_value_condition_be_null
 
+# {name} is checked for startswith("resource that supports "). The @given decorator for that documented case is not needed
 @given(u'I have {name:ANY} defined')
 @given(u'I have {name:ANY} {type_name:SECTION} configured')
 def wrapper(_step_obj, name, type_name='resource', _terraform_config=world):
@@ -128,6 +129,7 @@ def wrapper(_step_obj, something, inherited_values=Null):
     return it_must_not_contain_something(_step_obj, something, inherited_values=Null)
 
 
+@then(u'{something:ANY} is enabled')
 @then(u'{something:ANY} is be enabled')
 @then(u'{something:ANY} must be enabled')
 def wrapper(_step_obj, something):

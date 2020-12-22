@@ -174,7 +174,7 @@ includes
 [When](#){: .p-1 .text-red-200}
 its
 [property](#){: .p-1 .text-green-200 .fw-700}
-consists
+contains
 [something](#){: .p-1 .text-blue-100 .fw-700}
 >
 > ▪
@@ -208,7 +208,7 @@ includes
 [When](#){: .p-1 .text-red-200}
 its
 [property](#){: .p-1 .text-green-200 .fw-700}
-consists
+contains
 "
 [some string with spaces](#){: .p-1 .text-blue-100 .fw-700}
 "
@@ -230,6 +230,99 @@ is
 | key | Description | Examples |
 |:---:|:----------|:-|
 | [property](#){: .p-1 .text-green-200 .fw-700} | any property that resources have. Using `type` will give the Terraform resource type; `address` is the name you have given it | `address` `name` `size` |
+| [dictionary](#){: .p-1 .text-green-200 .fw-700} | a dictionary property that resource has. | `tags` |
+| [something](#){: .p-1 .text-blue-100 .fw-700} | any string or numeric value that the property has. | `s3_my_bucket` `my-bucket` `50G` `"something with spaces"` |
+| [some string with spaces](#){: .p-1 .text-blue-100 .fw-700} | any string (allows spaces). | `my dictionary key` |
+| [key](#){: .p-1 .text-blue-100 .fw-700} | any dictionary key (allows spaces). | `my dictionary key` |
+| [value](#){: .p-1 .text-blue-100 .fw-700} | any dictionary value (allows spaces). | `my dictionary value` |
+
+------------------------
+### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} has not [something](#){: .p-1 .text-blue-100 .fw-700}
+This is a filtering function. Thus, found resources from previous step will be filtered based on these values.
+
+> __Possible sentences :__
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+is not
+[something](#){: .p-1 .text-blue-100 .fw-700}
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+has not
+[something](#){: .p-1 .text-blue-100 .fw-700}
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+does not include
+[something](#){: .p-1 .text-blue-100 .fw-700}
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+does not contain
+[something](#){: .p-1 .text-blue-100 .fw-700}
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+is not
+"
+[some string with spaces](#){: .p-1 .text-blue-100 .fw-700}
+"
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+has not
+"
+[some string with spaces](#){: .p-1 .text-blue-100 .fw-700}
+"
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+does not include
+"
+[some string with spaces](#){: .p-1 .text-blue-100 .fw-700}
+"
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+does not contain
+"
+[some string with spaces](#){: .p-1 .text-blue-100 .fw-700}
+"
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[dictionary](#){: .p-1 .text-green-200 .fw-700}
+does not include an entry where
+"
+[key](#){: .p-1 .text-blue-100 .fw-700}
+"
+is
+"
+[value](#){: .p-1 .text-blue-100 .fw-700}
+"
+>
+>
+| key | Description | Examples |
+|:---:|:----------|:-|
+| [property](#){: .p-1 .text-green-200 .fw-700} | any property that resources have. Using `type` will give the Terraform resource type; `address` is the name you have given it | `address` `name` `size`|
 | [dictionary](#){: .p-1 .text-green-200 .fw-700} | a dictionary property that resource has. | `tags` |
 | [something](#){: .p-1 .text-blue-100 .fw-700} | any string or numeric value that the property has. | `s3_my_bucket` `my-bucket` `50G` `"something with spaces"` |
 | [some string with spaces](#){: .p-1 .text-blue-100 .fw-700} | any string (allows spaces). | `my dictionary key` |
@@ -268,7 +361,7 @@ reference includes
 [When](#){: .p-1 .text-red-200}
 its
 [property](#){: .p-1 .text-green-200 .fw-700}
-reference consists
+reference contains
 [something](#){: .p-1 .text-blue-100 .fw-700}
 >
 > ▪
@@ -302,7 +395,7 @@ reference includes
 [When](#){: .p-1 .text-red-200}
 its
 [property](#){: .p-1 .text-green-200 .fw-700}
-reference consists
+reference contains
 "
 [some string with spaces](#){: .p-1 .text-blue-100 .fw-700}
 "
@@ -315,100 +408,7 @@ reference consists
 | [some string with spaces](#){: .p-1 .text-blue-100 .fw-700} | any string (allows spaces). | `my dictionary key` |
 
 ------------------------
-### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} has not [something](#){: .p-1 .text-blue-100 .fw-700}
-This is a filtering function. Thus, found resources from previous step will be filtered based on these values.
-
-> __Possible sentences :__
->
-> ▪
-[When](#){: .p-1 .text-red-200}
-its
-[property](#){: .p-1 .text-green-200 .fw-700}
-is not
-[something](#){: .p-1 .text-blue-100 .fw-700}
->
-> ▪
-[When](#){: .p-1 .text-red-200}
-its
-[property](#){: .p-1 .text-green-200 .fw-700}
-has not
-[something](#){: .p-1 .text-blue-100 .fw-700}
->
-> ▪
-[When](#){: .p-1 .text-red-200}
-its
-[property](#){: .p-1 .text-green-200 .fw-700}
-does not include
-[something](#){: .p-1 .text-blue-100 .fw-700}
->
-> ▪
-[When](#){: .p-1 .text-red-200}
-its
-[property](#){: .p-1 .text-green-200 .fw-700}
-does not consist
-[something](#){: .p-1 .text-blue-100 .fw-700}
->
-> ▪
-[When](#){: .p-1 .text-red-200}
-its
-[property](#){: .p-1 .text-green-200 .fw-700}
-is not
-"
-[some string with spaces](#){: .p-1 .text-blue-100 .fw-700}
-"
->
-> ▪
-[When](#){: .p-1 .text-red-200}
-its
-[property](#){: .p-1 .text-green-200 .fw-700}
-has not
-"
-[some string with spaces](#){: .p-1 .text-blue-100 .fw-700}
-"
->
-> ▪
-[When](#){: .p-1 .text-red-200}
-its
-[property](#){: .p-1 .text-green-200 .fw-700}
-does not include
-"
-[some string with spaces](#){: .p-1 .text-blue-100 .fw-700}
-"
->
-> ▪
-[When](#){: .p-1 .text-red-200}
-its
-[property](#){: .p-1 .text-green-200 .fw-700}
-does not consist
-"
-[some string with spaces](#){: .p-1 .text-blue-100 .fw-700}
-"
->
-> ▪
-[When](#){: .p-1 .text-red-200}
-its
-[dictionary](#){: .p-1 .text-green-200 .fw-700}
-does not include an entry where
-"
-[key](#){: .p-1 .text-blue-100 .fw-700}
-"
-is
-"
-[value](#){: .p-1 .text-blue-100 .fw-700}
-"
->
->
-| key | Description | Examples |
-|:---:|:----------|:-|
-| [property](#){: .p-1 .text-green-200 .fw-700} | any property that resources have. Using `type` will give the Terraform resource type; `address` is the name you have given it | `address` `name` `size`|
-| [dictionary](#){: .p-1 .text-green-200 .fw-700} | a dictionary property that resource has. | `tags` |
-| [something](#){: .p-1 .text-blue-100 .fw-700} | any string or numeric value that the property has. | `s3_my_bucket` `my-bucket` `50G` `"something with spaces"` |
-| [some string with spaces](#){: .p-1 .text-blue-100 .fw-700} | any string (allows spaces). | `my dictionary key` |
-| [key](#){: .p-1 .text-blue-100 .fw-700} | any dictionary key (allows spaces). | `my dictionary key` |
-| [value](#){: .p-1 .text-blue-100 .fw-700} | any dictionary value (allows spaces). | `my dictionary value` |
-
-------------------------
-### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} reference has [something](#){: .p-1 .text-blue-100 .fw-700}
+### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} reference has not [something](#){: .p-1 .text-blue-100 .fw-700}
 This is a filtering function, specific for resource referencing. The resource references will be checked based on
 the `property` property defined within the step. This is the negative version (ref. `not` usage within the step) of the
 filtering step.
@@ -440,7 +440,7 @@ reference does not include
 [When](#){: .p-1 .text-red-200}
 its
 [property](#){: .p-1 .text-green-200 .fw-700}
-reference does not consist
+reference does not contain
 [something](#){: .p-1 .text-blue-100 .fw-700}
 >
 > ▪
@@ -474,7 +474,7 @@ reference does not include
 [When](#){: .p-1 .text-red-200}
 its
 [property](#){: .p-1 .text-green-200 .fw-700}
-reference does not consist
+reference does not contain
 "
 [some string with spaces](#){: .p-1 .text-blue-100 .fw-700}
 "
