@@ -101,6 +101,15 @@ I resource that supports
 |:---:|:----------|:-|
 | [something](#){: .p-1 .text-green-200 .fw-700}  | [something](#){: .p-1 .text-green-200 .fw-700} | any property within Terraform resource/provider/etc | `tags` `access_key` `ingress` `"something with spaces"` `kms_key_id` |
 
+NOTE: Some properties will act different than others based on if they are a Terraform default property for a given resource. 
+
+For example, tags is a Terraform default property and so each resource which supports tags, will have the tags property present.
+The property may be an empty dictionary which is why in the [Examples about tags](/pages/Examples/tags_related.html), the example 
+scenario tests for a null value.
+
+KMS Key Ids, are not a Terraform default property and will not be on the resource by default. 
+
+Supported but non-default properties show up in a different section ('after_unknown') of the plan's json file
 
 
 ----------------------
