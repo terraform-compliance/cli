@@ -101,16 +101,122 @@ I resource that supports
 |:---:|:----------|:-|
 | [something](#){: .p-1 .text-green-200 .fw-700}  | [something](#){: .p-1 .text-green-200 .fw-700} | any property within Terraform resource/provider/etc | `tags` `access_key` `ingress` `"something with spaces"` `kms_key_id` |
 
-NOTE: Some properties will act different than others based on if they are a Terraform default property for a given resource. 
+NOTE: Some properties will act different than others based on if they are a default property as determined by Terraform. Default properties for a will be found in has and must contain clauses even if they are null and so must be checked for null status as in [Examples about tags](/pages/Examples/tags_related.html). The non-default values as described below will be found when using this 'supports [something](#){: .p-1 .text-green-200 .fw-700}' statement, but will not be found in the given resource unless the property has been defined in the Terraform config.
 
-For example, tags is a Terraform default property and so each resource which supports tags, will have the tags property present.
-The property may be an empty dictionary which is why in the [Examples about tags](/pages/Examples/tags_related.html), the example 
-scenario tests for a null value.
+Default properties in this instance are properties which show up in the plans json file in the resources 'values' key even when that property is not included in the Terraform configuration. An example of a Terraform default property for an AWS RDS Cluster is shown below.
 
-KMS Key Ids, are not a Terraform default property and will not be on the resource by default. 
+Simple AWS RDS Cluster configuration
+```hcl
+resource "aws_rds_cluster" "db_cluster" {
+  cluster_identifier      = "aurora-cluster-demo"
+  engine                  = "aurora-postgresql"
+  database_name           = "mydb"
+  master_username         = "postgres"
+  master_password         = "nothing"
+}
+```
 
-Supported but non-default properties show up in a different section ('after_unknown') of the plan's json file
+The matching resource in the plan.json is:
+```json
+{
+    "format_version": "0.1",
+    "terraform_version": "0.14.2",
+    "planned_values": {
+        "root_module": {
+            "resources": [
+                {
+                    "address": "aws_rds_cluster.db_cluster",
+                    "mode": "managed",
+                    "type": "aws_rds_cluster",
+                    "name": "db_cluster",
+                    "provider_name": "registry.terraform.io/hashicorp/aws",
+                    "schema_version": 0,
+                    "values": {
+                        "allow_major_version_upgrade": null,
+                        "backtrack_window": null,
+                        "backup_retention_period": 1,
+                        "cluster_identifier": "aurora-cluster-demo",
+                        "copy_tags_to_snapshot": false,
+                        "database_name": "mydb",
+                        "deletion_protection": null,
+                        "enable_http_endpoint": false,
+                        "enabled_cloudwatch_logs_exports": null,
+                        "engine": "aurora-postgresql",
+                        "engine_mode": "provisioned",
+                        "final_snapshot_identifier": null,
+                        "global_cluster_identifier": null,
+                        "iam_database_authentication_enabled": null,
+                        "iam_roles": null,
+                        "master_password": "nothing",
+                        "master_username": "postgres",
+                        "replication_source_identifier": null,
+                        "restore_to_point_in_time": [],
+                        "s3_import": [],
+                        "scaling_configuration": [],
+                        "skip_final_snapshot": false,
+                        "snapshot_identifier": null,
+                        "source_region": null,
+                        "tags": null,
+                        "timeouts": null
+                    }
+                }
+            ]
+        }
+    },
+```
 
+We know that AWS RDS Clusters can use KMS Keys for encryption, but there are not included in this 'values' section in the plan unless they are specifically called out. In this case a has or must contain statement will not find kms_key_id in this example cluster. 
+
+Supported, but non-default properties show up in a different section of the json file (resource_changes.[].change.after_unknown). Below is the relevant section in the plan.json file referenced above:
+
+```json
+    "resource_changes": [
+        {
+            "address": "aws_rds_cluster.db_cluster",
+            "mode": "managed",
+            "type": "aws_rds_cluster",
+            "name": "db_cluster",
+            "provider_name": "registry.terraform.io/hashicorp/aws",
+            "change": {
+                "actions": [
+                    "create"
+                ],
+                "before": null,
+                "after": {
+                    "allow_major_version_upgrade": null,
+
+                    ...
+
+                    "timeouts": null
+                },
+                "after_unknown": {
+                    "apply_immediately": true,
+                    "arn": true,
+                    "availability_zones": true,
+                    "cluster_identifier_prefix": true,
+                    "cluster_members": true,
+                    "cluster_resource_id": true,
+                    "db_cluster_parameter_group_name": true,
+                    "db_subnet_group_name": true,
+                    "endpoint": true,
+                    "engine_version": true,
+                    "hosted_zone_id": true,
+                    "id": true,
+                    "kms_key_id": true,
+                    "port": true,
+                    "preferred_backup_window": true,
+                    "preferred_maintenance_window": true,
+                    "reader_endpoint": true,
+                    "restore_to_point_in_time": [],
+                    "s3_import": [],
+                    "scaling_configuration": [],
+                    "storage_encrypted": true,
+                    "vpc_security_group_ids": true
+                }
+            }
+        }
+    ],
+```
 
 ----------------------
 ### Possible [Name](#){: .text-green-200 .fw-700} values
