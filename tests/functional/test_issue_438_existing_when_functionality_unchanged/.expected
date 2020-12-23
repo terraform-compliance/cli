@@ -1,0 +1,5 @@
+SKIPPING: Can not find any arn property for aws_rds_cluster resource in terraform plan.
+SKIPPING: Skipping the step since resource type does not have arn property.
+Scenario: When it does not contain functionality not changed\s*\n\s+Given I have aws_rds_cluster defined\s*\n\s+When it does not contain arn
+SKIPPING: Can not find any id property for aws_rds_cluster resource in terraform plan.
+SKIPPING: Skipping the step since resource type does not have id property.
