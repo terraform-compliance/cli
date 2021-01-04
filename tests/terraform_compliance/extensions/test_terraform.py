@@ -180,7 +180,7 @@ class TestTerraformParser(TestCase):
             }
         ]
         obj._parse_resources()
-        self.assertEqual(obj.data['data.something'], {'address': 'data.something', 'mode': 'data', 'values': {'key': 'bar'}, 'additional_supported_properties_without_known_values': {'key': 'null'}})
+        self.assertEqual(obj.data['data.something'], {'address': 'data.something', 'mode': 'data', 'values': {'key': 'bar'}, '_terraform_compliance_additional_values': {'key': 'null'}})
 
     @patch.object(TerraformParser, '_read_file', return_value={})
     def test_parse_resources_resources_exists_in_the_resource_changes_resource(self, *args):
@@ -203,7 +203,7 @@ class TestTerraformParser(TestCase):
             }
         ]
         obj._parse_resources()
-        self.assertEqual(obj.resources['something'], {'address': 'something', 'values': {'key': 'bar'}, 'additional_supported_properties_without_known_values': {'key': 'null'}})
+        self.assertEqual(obj.resources['something'], {'address': 'something', 'values': {'key': 'bar'}, '_terraform_compliance_additional_values': {'key': 'null'}})
 
     @patch.object(TerraformParser, '_read_file', return_value={})
     def test_parse_resources_resources_exists_in_the_resource_changes_deleted(self, *args):

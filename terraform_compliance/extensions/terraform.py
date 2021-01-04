@@ -134,7 +134,7 @@ class TerraformParser(object):
             actions = change.get('actions', [])
             if actions != ['delete']:
                 resource['values'] = change.get('after', {}) # dict_merge(change.get('after', {}), change.get('after_unknown', {}))
-                resource['additional_supported_properties_without_known_values'] = change.get('after_unknown', {})
+                resource['_terraform_compliance_additional_values'] = change.get('after_unknown', {})
                 if 'change' in resource:
                     del resource['change']
 
