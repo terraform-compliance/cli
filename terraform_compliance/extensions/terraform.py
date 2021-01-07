@@ -343,7 +343,7 @@ class TerraformParser(object):
                 if ref_list:
                     ref_type = self.configuration['resources'][resource]['expressions'].get('type', {})
 
-                    if (not ref_type or not isinstance(ref_type, str)) and not self.is_type(resource, 'data'):
+                    if not ref_type and not self.is_type(resource, 'data'):
                         resource_type, resource_id = resource.split('.')
                         ref_type = resource_type
 
