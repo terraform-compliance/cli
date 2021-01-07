@@ -1,0 +1,1 @@
+Failure: aws_rds_cluster.db_cluster \(aws_rds_cluster\) does not have kms_key_id property.

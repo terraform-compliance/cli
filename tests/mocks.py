@@ -320,6 +320,7 @@ class MockedWorldConfigTerraform(object):
             }
         }
         self.resources_raw = self.resources
+        self.type_to_after_unknown_properties = self.resources
         self.variables = {
             'some_variable': 'some_value',
             'some_other_variable': 'some_other_value'

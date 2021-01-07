@@ -37,6 +37,7 @@ class TerraformParser(object):
         self.configuration = dict(resources={}, variables={})
         self.file_type = "plan"
         self.resources_raw = {}
+        self.type_to_after_unknown_properties = {}
         self.parse_it = parse_it
 
         if parse_it:
@@ -134,6 +135,7 @@ class TerraformParser(object):
             actions = change.get('actions', [])
             if actions != ['delete']:
                 resource['values'] = change.get('after', {}) # dict_merge(change.get('after', {}), change.get('after_unknown', {}))
+                self.remember_after_unknown(resource, change.get('after_unknown', {}))
                 if 'change' in resource:
                     del resource['change']
 
@@ -144,6 +146,32 @@ class TerraformParser(object):
 
         if self.parse_it:
             self.cache.set('resources', self.resources)
+
+    '''
+    Creates a map of resource type to after_unknown values
+    These can be used in given step "resource that supports x"
+    
+    Note: This function may be extended to capture 'after' values as well. That would require flattening the multi level
+    dictionaries in resource
+    '''
+    def remember_after_unknown(self, resource, after_unknown):
+        # get type
+        resource_type = resource.get('type', '')
+
+        # if resource doesn't have type field, try to extract it from address
+        if not resource_type and 'address' in resource and resource['address']:
+            resource_type = resource.get('address').split('.')[0]
+
+        # get after_unknown values
+
+        # need to merge because which values are in after_unknown may change from instance to instance
+        # merging rule: if field not in map, add it
+        if resource_type not in self.type_to_after_unknown_properties:
+            self.type_to_after_unknown_properties[resource_type] = after_unknown
+        else:
+            for key, value in after_unknown.items():
+                if key not in self.type_to_after_unknown_properties[resource_type]:
+                    self.type_to_after_unknown_properties[resource_type][key] = value
 
     def _parse_configurations(self):
         '''
@@ -393,11 +421,13 @@ class TerraformParser(object):
 
         cache_mounted_resources = self.cache.get('mounted_resources') if self.parse_it else None
         cache_raw_resources = self.cache.get('resources_raw') if self.parse_it else None
+        cache_type_to_after_unknown_properties = self.cache.get('type_to_after_unknown_properties') if self.parse_it else None
 
         if cache_mounted_resources and cache_raw_resources:
             # print('Read from cache, instead of re-mounting.')
             self.resources = cache_mounted_resources
             self.resources_raw = cache_raw_resources
+            self.type_to_after_unknown_properties = cache_type_to_after_unknown_properties
         else:
             # print('Building cache for mounted resources at {}'.format(Defaults.cache_dir))
             self._mount_references()
@@ -405,6 +435,7 @@ class TerraformParser(object):
             if self.parse_it:
                 self.cache.set('mounted_resources', self.resources)
                 self.cache.set('resources_raw', self.resources_raw)
+                self.cache.set('type_to_after_unknown_properties', self.type_to_after_unknown_properties)
 
         self._distribute_providers()
 
