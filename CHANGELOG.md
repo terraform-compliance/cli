@@ -2,6 +2,7 @@
 
 ## Unreleased
 * Fixed an issue where \x08 character was breaking JUnit XML conversion during provider version_constraint checks. ([#432](https://github.com/eerkunt/terraform-compliance/pull/432))
+* Fixed an issue where the omission of `after_unknown` values were breaking the Given step `resource that supports`. ([#445](https://github.com/eerkunt/terraform-compliance/pull/445))
 
 ## 1.3.8 (2020-12-07)
 * New [tag](https://terraform-compliance.com/pages/bdd-references/using_tags/#supported-tags) to exclude resources from tagged scenario. ([#414](https://github.com/eerkunt/terraform-compliance/issues/414))
