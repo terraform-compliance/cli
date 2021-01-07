@@ -343,6 +343,9 @@ class TerraformParser(object):
                 if ref_list:
                     ref_type = self.configuration['resources'][resource]['expressions'].get('type', {})
 
+                    if 'references' in ref_type:
+                        ref_type = resource.split('.')[0]
+
                     if not ref_type and not self.is_type(resource, 'data'):
                         resource_type, resource_id = resource.split('.')
                         ref_type = resource_type
