@@ -334,8 +334,6 @@ class TerraformParser(object):
                     target_resource = [t for t in [self.resources.get(resource, {}).get('address')] if t is not None]
                     if not target_resource:
                         target_resource = [k for k in self.resources.keys() if k.startswith(resource)]
-                        if not target_resource:
-                            target_resource = [k for k in self.resources.keys() if k.endswith(resource)]
 
                     for t_r in target_resource:
                         if type(value) is type(self.resources[t_r]['values'].get(key)) and self.resources[t_r]['values'].get(key) != value:
