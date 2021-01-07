@@ -1,8 +1,10 @@
 # CHANGELOG
 
 ## Unreleased
+* Fixed an issue where incorrect `ref_type` format were breaking during parsing. ([#444](https://github.com/eerkunt/terraform-compliance/pull/444))
 * Fixed an issue where \x08 character was breaking JUnit XML conversion during provider version_constraint checks. ([#432](https://github.com/eerkunt/terraform-compliance/pull/432))
 * Fixed an issue where the omission of `after_unknown` values were breaking the Given step `resource that supports`. ([#445](https://github.com/eerkunt/terraform-compliance/pull/445))
+* Fixed an issue where parsing the terraform file threw list out of range error. ([#428](https://github.com/eerkunt/terraform-compliance/issues/428))
 
 ## 1.3.8 (2020-12-07)
 * New [tag](https://terraform-compliance.com/pages/bdd-references/using_tags/#supported-tags) to exclude resources from tagged scenario. ([#414](https://github.com/eerkunt/terraform-compliance/issues/414))
