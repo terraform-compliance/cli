@@ -1,6 +1,7 @@
 # CHANGELOG
 
 ## Unreleased
+* Fixed an issue where incorrect `ref_type` format were breaking during parsing. ([#444](https://github.com/eerkunt/terraform-compliance/pull/444))
 * Fixed an issue where \x08 character was breaking JUnit XML conversion during provider version_constraint checks. ([#432](https://github.com/eerkunt/terraform-compliance/pull/432))
 * Fixed an issue where parsing the terraform file threw list out of range error. ([#428](https://github.com/eerkunt/terraform-compliance/issues/428))
 
