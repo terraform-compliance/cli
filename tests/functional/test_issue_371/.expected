@@ -1,0 +1,3 @@
+Failure: region property in .* provider does not match with .* case insensitive regex\. It is set to .*
+Failure: access_key property in .* provider matches with .* case insensitive regex\. It is set to .*
+Failure: secret_key property in .* provider matches with .* case insensitive regex\. It is set to .*

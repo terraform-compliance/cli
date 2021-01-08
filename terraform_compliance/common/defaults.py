@@ -2,6 +2,7 @@ import sys
 import os
 import colorful
 from emoji import emojize
+import tempfile
 
 
 class Defaults(object):
@@ -12,12 +13,14 @@ class Defaults(object):
     r_mount_addr_ptr_list = 'terraform-compliance.mounted_resources.addresses_list'
 
     supported_min_python_versions = '3.6.0'
+    cache_dir = tempfile.mkdtemp(prefix='terraform-compliance')
 
     def __init__(self):
         self.interactive_mode = self.detect_term()
         self.no_failure_tags = ['warning', 'no-failure', 'no-fail', 'info', 'nofailure', 'nofail', 'dontfail']
         self.case_sensitive_tags = ['case-sensitive', 'case_sensitive', 'casesensitive', 'case-sensitivity']
         self.no_skip_tags = ['noskip', 'no-skip', 'dontskip', 'failonskip', 'fail-on-skip']
+        self.exclude_resources_tags = ['exclude', 'ignore']
 
         if '--no-ansi' in sys.argv or not sys.stdout.isatty():
             self.skip_colour = \

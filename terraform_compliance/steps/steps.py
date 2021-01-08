@@ -47,7 +47,9 @@ from terraform_compliance.steps.then.it_must_have_reference_address_referenced i
 from terraform_compliance.steps.then.its_key_condition_be_value import its_key_condition_be_value
 from terraform_compliance.steps.then.interpolations import i_flatten_everything_found
 from terraform_compliance.steps.then.it_must_be_in import it_must_be_in
+from terraform_compliance.steps.then.its_value_condition_be_null import its_value_condition_be_null
 
+# {name} is checked for startswith("resource that supports "). The @given decorator for that documented case is not needed
 @given(u'I have {name:ANY} defined')
 @given(u'I have {name:ANY} {type_name:SECTION} configured')
 def wrapper(_step_obj, name, type_name='resource', _terraform_config=world):
@@ -139,6 +141,7 @@ def wrapper(_step_obj, something, inherited_values=Null):
     return it_must_not_contain_something(_step_obj, something, inherited_values=Null)
 
 
+@then(u'{something:ANY} is enabled')
 @then(u'{something:ANY} is be enabled')
 @then(u'{something:ANY} must be enabled')
 def wrapper(_step_obj, something):
@@ -187,7 +190,7 @@ def wrapper(_step_obj, condition, search_regex, _stash=EmptyStash):
 
 @then(u'its value {condition:ANY} be null')
 def wrapper(_step_obj, condition):
-    return its_value_condition_match_the_search_regex_regex(_step_obj, condition, u'(\x00|^$|^null|^None)$')
+    return its_value_condition_be_null(_step_obj, condition)
 
 
 @then(u'its value {condition:ANY} be {match:ANY}')

@@ -75,18 +75,18 @@ def it_must_contain_something(_step_obj, something, inherited_values=Null, child
                     elif isinstance(value, list):
                         _, temp_found_values = it_must_contain_something(_step_obj, something, value, child=True)
                         prop_list.extend(temp_found_values)
-                        found_values.append('added_to_proplist')
                         resource_passed = True
 
                     elif isinstance(value, (str, bool, int, float)):
                         if match.equals(value, something):
                             found_values.append(value)
+                            resource_passed = True
 
                     if found_key is not Null and len(found_key):
 
                         for found_key_instance in found_key:
                             if isinstance(found_key_instance, dict):
-                                if match.get(found_key_instance, something, Null) not in (Null, [], '', {}, 'added_to_proplist'):
+                                if match.get(found_key_instance, something, Null) not in (Null, [], '', {}):
                                     found_values.append(match.get(found_key_instance, something))
                                     resource_passed = True
 
@@ -95,10 +95,9 @@ def it_must_contain_something(_step_obj, something, inherited_values=Null, child
                     found_values[i] = found_val['constant_value']
 
             for found_val in found_values:
-                if found_val not in (Null, [], '', {}, 'added_to_proplist'): # slightly redundant now.
-                    prop_list.append({'address': resource['address'],
-                                    'values': found_val,
-                                    'type': _step_obj.context.name})
+                prop_list.append({'address': resource['address'],
+                                'values': found_val,
+                                'type': _step_obj.context.name})
 
             # do not check prop list here because every resource should contain it.
             if not resource_passed and not child: # if nothing was found in this resource, don't error if you're a child
@@ -112,20 +111,24 @@ def it_must_contain_something(_step_obj, something, inherited_values=Null, child
             return something, prop_list
 
     elif _step_obj.context.type == 'provider':
-        _step_obj.context.stash = []
+        prop_list = []
         for provider_data in _step_obj.context.stash:
             values = seek_key_in_dict(provider_data, something)
 
             if values:
-                _step_obj.context.stash.append(values)
+                prop_list.extend(values)
                 _step_obj.context.property_name = something
                 _step_obj.context.address = '{}.{}'.format(provider_data.get('name', _step_obj.context.addresses),
                                                            provider_data.get('alias', "\b"))
-                return True
+
             else:
                 Error(_step_obj, '{} {} does not have {} property.'.format(_step_obj.context.addresses,
                                                                            _step_obj.context.type,
                                                                            something))
+
+        if prop_list:
+            _step_obj.context.stash = prop_list
+            return True
 
         Error(_step_obj, '{} {} does not have {} property.'.format(_step_obj.context.addresses,
                                                                    _step_obj.context.type,
@@ -197,18 +200,18 @@ def it_must_not_contain_something(_step_obj, something, inherited_values=Null):
                     elif isinstance(value, list):
                         _, temp_found_values = it_must_contain_something(_step_obj, something, value, child=True)
                         prop_list.extend(temp_found_values)
-                        found_values.append('added_to_proplist')
                         resource_passed = True
 
                     elif isinstance(value, (str, bool, int, float)):
                         if match.equals(value, something):
                             found_values.append(value)
+                            resource_passed = True
 
                     if found_key is not Null and len(found_key):
 
                         for found_key_instance in found_key:
                             if isinstance(found_key_instance, dict):
-                                if match.get(found_key_instance, something, Null) not in (Null, [], '', {}, 'added_to_proplist'):
+                                if match.get(found_key_instance, something, Null) not in (Null, [], '', {}):
                                     found_values.append(match.get(found_key_instance, something))
                                     resource_passed = True
 

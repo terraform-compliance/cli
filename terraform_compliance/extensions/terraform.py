@@ -1,8 +1,9 @@
 import json
-from terraform_compliance.common.helper import seek_key_in_dict, flatten_list, dict_merge, Match
+from terraform_compliance.common.helper import seek_key_in_dict, flatten_list, Match, merge_dicts, remove_constant_values
 import sys
 from copy import deepcopy
 from terraform_compliance.common.defaults import Defaults
+from terraform_compliance.extensions.cache import Cache
 from terraform_compliance.common.exceptions import TerraformComplianceInternalFailure
 
 
@@ -19,8 +20,9 @@ class TerraformParser(object):
         :return: None
         '''
         self.supported_terraform_versions = (
-            '0.12', # This is here because this tuple must have multiple values.
-            '0.12.'
+            '0.12.',
+            '0.13.',
+            '0.14.'
         )
         self.supported_format_versions = ['0.1']
 
@@ -35,8 +37,10 @@ class TerraformParser(object):
         self.configuration = dict(resources={}, variables={})
         self.file_type = "plan"
         self.resources_raw = {}
+        self.parse_it = parse_it
 
         if parse_it:
+            self.cache = Cache()
             self.parse()
 
     def _version_check(self):
@@ -84,6 +88,13 @@ class TerraformParser(object):
         :return: none
         '''
 
+        # Read Cache
+        if self.parse_it:
+            cache = self.cache.get('resources')
+            if cache:
+                self.resources = cache
+                return
+
         # Resources ( exists in Plan )
         for findings in seek_key_in_dict(self.raw.get('planned_values', {}).get('root_module', {}), 'resources'):
             for resource in findings.get('resources', []):
@@ -122,7 +133,7 @@ class TerraformParser(object):
             change = resource.get('change', {})
             actions = change.get('actions', [])
             if actions != ['delete']:
-                resource['values'] = dict_merge(change.get('after', {}), change.get('after_unknown', {}))
+                resource['values'] = change.get('after', {}) # dict_merge(change.get('after', {}), change.get('after_unknown', {}))
                 if 'change' in resource:
                     del resource['change']
 
@@ -130,6 +141,9 @@ class TerraformParser(object):
                     self.data[resource['address']] = resource
                 else:
                     self.resources[resource['address']] = resource
+
+        if self.parse_it:
+            self.cache.set('resources', self.resources)
 
     def _parse_configurations(self):
         '''
@@ -139,10 +153,15 @@ class TerraformParser(object):
         :return: none
         '''
 
+        # Read Cache
+        if self.parse_it:
+            cache = self.cache.get('configuration')
+            if cache:
+                self.configuration = cache
+                return
+
         # Resources
         self.configuration['resources'] = {}
-
-        resources = []
 
         # root resources
         resources = self.raw.get('configuration', {}).get('root_module', {}).get('resources', [])
@@ -151,9 +170,11 @@ class TerraformParser(object):
         for module in seek_key_in_dict(self.raw.get('configuration', {}).get('root_module', {}).get("module_calls", {}), "module"):
             resources += module.get('module',{}).get("resources", [])
 
+        remove_constant_values(resources)
         for resource in resources:
             if self.is_type(resource, 'data'):
                 self.data[resource['address']] = resource
+
             else:
                 self.configuration['resources'][resource['address']] = resource
 
@@ -200,6 +221,9 @@ class TerraformParser(object):
 
                 self.configuration['outputs'][key] = tmp_output
 
+        if self.parse_it:
+            self.cache.set('configuration', self.configuration)
+
     def _mount_resources(self, source, target, ref_type):
         '''
         Mounts values of the source resource to the target resource's values with ref_type key
@@ -218,7 +242,7 @@ class TerraformParser(object):
                     if target_resource not in self.resources or 'values' not in self.resources[target_resource]:
                         continue
 
-                    resource = deepcopy(self.resources[source_resource]['values'])
+                    resource = self.resources_raw[source_resource]['values']
                     resource[Defaults.mounted_ptr] = True
 
                     if Defaults.r_mount_ptr not in self.resources[target_resource]:
@@ -232,15 +256,13 @@ class TerraformParser(object):
 
                     if ref_type not in self.resources[target_resource]['values']:
                         self.resources[target_resource]['values'][ref_type] = []
-                        self.resources[target_resource]['values'][ref_type].append(resource)
-                        self.resources[target_resource][Defaults.r_mount_ptr][parameter] = ref_type
-                        self.resources[target_resource][Defaults.r_mount_addr_ptr][parameter] = source
-                        self.resources[target_resource][Defaults.r_mount_addr_ptr_list].extend(source)
-                    else:
-                        self.resources[target_resource]['values'][ref_type].append(resource)
-                        self.resources[target_resource][Defaults.r_mount_ptr][parameter] = ref_type
-                        self.resources[target_resource][Defaults.r_mount_addr_ptr][parameter] = source
-                        self.resources[target_resource][Defaults.r_mount_addr_ptr_list].extend(source)
+
+                    self.resources[target_resource]['values'][ref_type].append(resource)
+                    self.resources[target_resource][Defaults.r_mount_ptr][parameter] = ref_type
+                    self.resources[target_resource][Defaults.r_mount_addr_ptr][parameter] = source
+                    target_set = set(self.resources[target_resource][Defaults.r_mount_addr_ptr_list])
+                    source_set = set(source)
+                    self.resources[target_resource][Defaults.r_mount_addr_ptr_list] = list(target_set | source_set)
 
                     if parameter not in self.resources[source_resource]['values']:
                         self.resources[source_resource]['values'][parameter] = target_resource
@@ -284,7 +306,7 @@ class TerraformParser(object):
         :return:
         '''
         self.resources_raw = deepcopy(self.resources)
-        invalid_references = ('var.')
+        invalid_references = ('var.', 'each.')
 
         # This section will link resources found in configuration part of the plan output.
         # The reference should be on both ways (A->B, B->A) since terraform sometimes report these references
@@ -293,18 +315,36 @@ class TerraformParser(object):
             if 'expressions' in self.configuration['resources'][resource]:
                 ref_list = {}
                 for key, value in self.configuration['resources'][resource]['expressions'].items():
-                    if 'references' in value:
-                        for ref in value['references']:
-                            if not ref.startswith(invalid_references):
-                                if key not in ref_list:
-                                    ref_list[key] = self._find_resource_from_name(ref)
-                                else:
-                                    ref_list[key].extend(self._find_resource_from_name(ref))
+                    references = seek_key_in_dict(value, 'references') if isinstance(value, (dict, list)) else []
+
+                    valid_references = []
+                    for ref in references:
+                        if isinstance(ref, dict) and ref.get('references'):
+                            valid_references = [r for r in ref['references'] if not r.startswith(invalid_references)]
+
+                    for ref in valid_references:
+                        if key not in ref_list:
+                            ref_list[key] = self._find_resource_from_name(ref)
+                        else:
+                            ref_list[key].extend(self._find_resource_from_name(ref))
+
+                    # This is where we synchronise constant_value in the configuration section with the resource
+                    # for filling up the missing elements that hasn't been defined in the resource due to provider
+                    # implementation.
+                    target_resource = [t for t in [self.resources.get(resource, {}).get('address')] if t is not None]
+                    if not target_resource:
+                        target_resource = [k for k in self.resources.keys() if k.startswith(resource)]
+
+                    for t_r in target_resource:
+                        if type(value) is type(self.resources[t_r]['values'].get(key)) and self.resources[t_r]['values'].get(key) != value:
+                            if isinstance(value, (list, dict)):
+                                merge_dicts(self.resources[t_r]['values'][key], value)
 
                 if ref_list:
-                    ref_type = self.configuration['resources'][resource]['expressions'].get('type',
-                                                                                            {}).get('constant_value',
-                                                                                                    {})
+                    ref_type = self.configuration['resources'][resource]['expressions'].get('type', {})
+
+                    if 'references' in ref_type:
+                        ref_type = resource.split('.')[0]
 
                     if not ref_type and not self.is_type(resource, 'data'):
                         resource_type, resource_id = resource.split('.')
@@ -352,7 +392,21 @@ class TerraformParser(object):
             self._parse_variables()
             self._parse_configurations()
 
-        self._mount_references()
+        cache_mounted_resources = self.cache.get('mounted_resources') if self.parse_it else None
+        cache_raw_resources = self.cache.get('resources_raw') if self.parse_it else None
+
+        if cache_mounted_resources and cache_raw_resources:
+            # print('Read from cache, instead of re-mounting.')
+            self.resources = cache_mounted_resources
+            self.resources_raw = cache_raw_resources
+        else:
+            # print('Building cache for mounted resources at {}'.format(Defaults.cache_dir))
+            self._mount_references()
+
+            if self.parse_it:
+                self.cache.set('mounted_resources', self.resources)
+                self.cache.set('resources_raw', self.resources_raw)
+
         self._distribute_providers()
 
         for _, resource in self.resources.items():

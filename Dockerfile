@@ -43,8 +43,6 @@ RUN  set -ex \
      && rm -vrf ${TMP_DIR} \
      && pip install --upgrade pip \
      && pip install terraform-compliance=="${VERSION}" \
-     && pip uninstall -y radish radish-bdd \
-     && pip install radish radish-bdd \
      && apt-get remove -y ${BUILD_DEPS} \
      && apt-get autoremove -y \
      && apt-get clean -y \

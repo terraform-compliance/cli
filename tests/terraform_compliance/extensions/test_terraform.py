@@ -3,6 +3,7 @@ from terraform_compliance.extensions.terraform import TerraformParser, seek_key_
 from tests.mocks import MockedData
 from mock import patch
 from ddt import ddt, data
+from copy import deepcopy
 
 
 @ddt
@@ -331,6 +332,7 @@ class TestTerraformParser(TestCase):
                 }
             }
         }
+        obj.resources_raw = deepcopy(obj.resources)
         obj._mount_resources([source], {'some_key': [target]}, ref_type)
         self.assertEqual(['a', {'some_key': 'some_value', 'terraform-compliance.mounted': True}], obj.resources[target]['values'][ref_type])
 
@@ -350,6 +352,7 @@ class TestTerraformParser(TestCase):
                 }
             }
         }
+        obj.resources_raw = deepcopy(obj.resources)
         obj._mount_resources([source], {'some_key': [target]}, ref_type)
         self.assertEqual([{'some_key': 'some_value', 'terraform-compliance.mounted': True}], obj.resources[target]['values'][ref_type])
 
@@ -366,6 +369,7 @@ class TestTerraformParser(TestCase):
             source: {
             }
         }
+        obj.resources_raw = deepcopy(obj.resources)
         obj._mount_resources([source], [target], ref_type)
         self.assertEqual({}, obj.resources[target]['values'])
 

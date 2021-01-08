@@ -24,6 +24,9 @@ class SecurityGroupRule(object):
         self._check_for_invalidations()
 
     def _normalise_ports(self):
+        self.from_port = 0 if self.ports == 'any' else self.from_port
+        self.to_port = 0 if self.ports == 'any' else self.to_port
+
         # Sometimes terraform reports ports like this
         if self.from_port == 0 and self.to_port == 0:
             self.to_port = 65535
@@ -52,13 +55,13 @@ class SecurityGroupRule(object):
     def _normalise_protocols(self):
         # TODO: Implement other protocols, not just TCP and UDP.
         # There is always one protocol in the list as an input.
-        if self.protocol[0] == '-1' or isinstance(self.protocol[0], int):
-            self.protocol = ['tcp', 'udp']
+        if self.protocol[0] == '-1' or isinstance(self.protocol[0], int) or self.protocol[0] == 'any':
+            self.protocol = ['tcp', 'udp', 'icmp']
         else:
             self.protocol[0] = self.protocol[0].lower()
 
     def _check_for_invalidations(self):
-        if (self.from_port and self.to_port) and self.from_port > self.to_port:
+        if (self.from_port and self.to_port) and self.from_port > self.to_port and ('tcp' in self.protocol or 'udp' in self.protocol):
             raise TerraformComplianceInvalidData('Invalid configuration from_port can not be bigger than to_port. '
                                                  '{} > {} {} in {}'.format(self.from_port,
                                                                            self.to_port,
@@ -107,7 +110,10 @@ class SecurityGroupRule(object):
 
     @staticmethod
     def _get_port_range(from_port, to_port):
-        return set(range(from_port, to_port+1))
+        if to_port >= from_port:
+            return set(range(from_port, to_port+1))
+        else:
+            return set(range(to_port, from_port+1))
 
 
 class SecurityGroup(object):

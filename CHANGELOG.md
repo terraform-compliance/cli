@@ -1,15 +1,54 @@
 # CHANGELOG
 
 ## Unreleased
+* Fixed an issue where incorrect `ref_type` format were breaking during parsing. ([#444](https://github.com/eerkunt/terraform-compliance/pull/444))
+* Fixed an issue where \x08 character was breaking JUnit XML conversion during provider version_constraint checks. ([#432](https://github.com/eerkunt/terraform-compliance/pull/432))
+* Fixed an issue where parsing the terraform file threw list out of range error. ([#428](https://github.com/eerkunt/terraform-compliance/issues/428))
 * New step: [When its value condition the "search regex" regex](https://terraform-compliance.com/pages/bdd-references/when.html#when-its-value-condition-the-search-regex-regex). ([#333](https://github.com/eerkunt/terraform-compliance/issues/333))
 * New step: [When any of its values condition the “search regex” regex](https://terraform-compliance.com/pages/bdd-references/when.html#when-any-of-its-values-condition-the-search-regex-regex). ([#333](https://github.com/eerkunt/terraform-compliance/issues/333))
+
+## 1.3.8 (2020-12-07)
+* New [tag](https://terraform-compliance.com/pages/bdd-references/using_tags/#supported-tags) to exclude resources from tagged scenario. ([#414](https://github.com/eerkunt/terraform-compliance/issues/414))
+* Addressed the problem defined in ([#417](https://github.com/eerkunt/terraform-compliance/issues/417)) and ([#410](https://github.com/eerkunt/terraform-compliance/issues/410)) by changing how we refer the resources
+* Added terraform 0.14.x support. ([#421](https://github.com/eerkunt/terraform-compliance/issues/421))
+
+## 1.3.7 (2020-11-09)
+* Fixed [When it has something](https://terraform-compliance.com/pages/bdd-references/when.html#when-it-has-something) steps for `provider`s. ([#371](https://github.com/eerkunt/terraform-compliance/issues/371))
+* Fixed [Then it must contain something](https://terraform-compliance.com/pages/bdd-references/then.html#then-it-must-contain-something) steps for `provider`s. ([#371](https://github.com/eerkunt/terraform-compliance/issues/371))
+
+## 1.3.6 (2020-11-02)
+* Fixed an issue where some found values were not recorded on [Then it must contain something](https://terraform-compliance.com/pages/bdd-references/then.html#then-it-must-contain-something). ([#400](https://github.com/eerkunt/terraform-compliance/issues/400))
+* Fixed a problem where [When its property has something](https://terraform-compliance.com/pages/bdd-references/when.html#when-its-property-has-something) ignored `None` values. ([#401](https://github.com/eerkunt/terraform-compliance/issues/401))
+* Improved silent mode (`-S`) with better output and formatting ([#398](https://github.com/eerkunt/terraform-compliance/issues/398))
+
+## 1.3.5 (2020-10-14)
+* Fixed a problem where using terraform-compliance with hashicorp/setup-terraform github action was causing problems due to the terraform wrapper. ([#334](https://github.com/eerkunt/terraform-compliance/issues/334) [#336](https://github.com/eerkunt/terraform-compliance/issues/366))
+
+## 1.3.4 (2020-09-04)
+* Improved [Then it must condition have proto protocol and port port for cidr](https://terraform-compliance.com/pages/bdd-references/then.html#then--it-must-condition-have-proto-protocol-and-port-port-for-cidr) where now it supports "any" (tcp, udp, icmp) and "icmp" protocols. ([#360](https://github.com/eerkunt/terraform-compliance/pull/360))
+* Improved [Then it must condition have proto protocol and port port for cidr](https://terraform-compliance.com/pages/bdd-references/then.html#then--it-must-condition-have-proto-protocol-and-port-port-for-cidr) where now it supports "any" port definition (0-65535). ([#360](https://github.com/eerkunt/terraform-compliance/pull/360))
+
+## 1.3.3 (2020-08-22)
+* Fixed resource_raw not getting read from the cache. ([#356](https://github.com/eerkunt/terraform-compliance/pull/356))
+
+## 1.3.2 (2020-08-18)
+* Fixed an issue where the null character in step definition break --junit-xml dump. ([#347](https://github.com/eerkunt/terraform-compliance/pull/347))
+* New Terraform 0.13 support ([#351](https://github.com/eerkunt/terraform-compliance/pull/351))
+* Fixed [Then it must contain something](https://terraform-compliance.com/pages/bdd-references/then.html#then-it-must-contain-something) where found but empty properties were not passed to the stash. ([#352](https://github.com/eerkunt/terraform-compliance/pull/352))
+* Improved [Then it must contain something](https://terraform-compliance.com/pages/bdd-references/then.html#then-it-must-contain-something) and [Then it must not contain something](https://terraform-compliance.com/pages/bdd-references/then.html#then-it-must-not-contain-something) by removing legacy code. ([#352](https://github.com/eerkunt/terraform-compliance/pull/352))
+* Improved [Then it condition be be null](https://terraform-compliance.com/pages/bdd-references/then.html#then-its-value-condition-be-null) to have a dedicated function with better classification of what is considered to be null. ([#352](https://github.com/eerkunt/terraform-compliance/pull/352))
+
+## 1.3.1 (2020-08-12)
+* Improved mounting references to accomodate large plan files. ([#346](https://github.com/eerkunt/terraform-compliance/pull/346))
+
+## 1.3.0 (2020-07-31)
+* Added cache capability and optimised the resource mounting a bit since it might trigger OOM kernel signalling and can be killed unexpectedly.
 * New cumulative stash and [in step variables](http://terraform-compliance.com/pages/bdd-references/then.html#in-step-variables) functionality for steps to directly access stash content ([#329](https://github.com/eerkunt/terraform-compliance/pull/329))
 * New step: [Then it must be in haystack](http://terraform-compliance.com/pages/bdd-references/then.html#then-it-must-be-in-haystack) ([#329](https://github.com/eerkunt/terraform-compliance/pull/329))
 * New step: [Then it must cover haystack](http://terraform-compliance.com/pages/bdd-references/then.html#then-it-must-cover-haystack) ([#329](https://github.com/eerkunt/terraform-compliance/pull/329))
 
 ## 1.2.11 (2020-07-20)
 * Fixed an issue where [When it has something](https://terraform-compliance.com/pages/bdd-references/when.html#when-it-has-something) formats the search value incorrectly. ([#330](https://github.com/eerkunt/terraform-compliance/pull/330))
-
 
 ## 1.2.10 (2020-07-15)
 * Fixed `Then it must contain` to properly drill down and split into multiple resources if need be. ([#327](https://github.com/eerkunt/terraform-compliance/pull/327))
