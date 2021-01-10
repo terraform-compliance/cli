@@ -72,9 +72,15 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
     elif name.startswith('resource that supports'):
         filter_property = re.match(r'resource that supports (.*)', name).group(1)
 
-        resource_types_supports_tags = find_root_by_key(_terraform_config.config.terraform.resources_raw,
+        resource_types_supports_tags = set(find_root_by_key(_terraform_config.config.terraform.resources_raw,
                                                         filter_property,
-                                                        return_key='type')
+                                                        return_key='type'))
+
+        # look for after_unknown values in case they were omitted
+        for resource_type, after_unknown_properties in _terraform_config.config.terraform.type_to_after_unknown_properties.items():
+            if filter_property in after_unknown_properties:
+                resource_types_supports_tags.add(resource_type)
+
         resource_list = []
         for resource_type in resource_types_supports_tags:
             # Issue-168: Mounted resources causes problem on recursive searching for resources that supports tags

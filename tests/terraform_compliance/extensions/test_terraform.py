@@ -594,3 +594,57 @@ class TestTerraformParser(TestCase):
         self.assertTrue('tags' not in obj.resources['other-provider_other_resource_id']['values'])
         self.assertEqual(value, obj.resources['provider_resource_id']['values']['tags'][0])
 
+    @patch.object(TerraformParser, '_read_file', return_value={})
+    def test_remember_after_unknown_simple(self, *args):
+        obj = TerraformParser('somefile', parse_it=False)
+        resource = {
+            'type': 'resource_type',
+        }
+
+        after_unknown_values = {'property_{}'.format(i): i for i in range(10)}
+        obj.remember_after_unknown(resource, after_unknown_values)
+
+        self.assertTrue(resource['type'] in obj.type_to_after_unknown_properties)
+
+        for key in after_unknown_values:
+            mapped_after_unknown_value = obj.type_to_after_unknown_properties[resource['type']][key]
+            self.assertEqual(mapped_after_unknown_value, after_unknown_values[key])
+    
+    @patch.object(TerraformParser, '_read_file', return_value={})
+    def test_remember_after_unknown(self, *args):
+        obj = TerraformParser('somefile', parse_it=False)
+
+        # test parameters (not all combinations will cover all properties for all types)
+        len_resources = 20
+        len_properties = 20
+        len_types = 3
+
+        # create resources that falls into specific types
+        resources = {
+            'resource_{}'.format(i): {'type': 'type_{}'.format(i % len_types)} for i in range(len_resources)
+        }
+        
+        # create after_unknown for each.
+        # resource will have varying after_unknown values despite belonging the same type
+        resource_to_after_unknown_values = {}
+        for j, resource in enumerate(resources):
+            if j < 3:
+                resource_to_after_unknown_values[resource] = {}
+            else:
+                resource_to_after_unknown_values[resource] = {'property_{}'.format(i): i for i in range(j % 2, len_properties, 2)}
+
+        # check if all after_unknown values are accumulated correctly per each resource type
+        for resource_name, resource in resources.items():
+            obj.remember_after_unknown(resource, resource_to_after_unknown_values[resource_name])
+
+
+        for i in range(len_types):
+            t = 'type_{}'.format(i)
+
+            self.assertTrue(t in obj.type_to_after_unknown_properties)
+
+            for property_value in range(len_properties):
+                property_key = 'property_{}'.format(property_value)
+
+                mapped_after_unknown_value = obj.type_to_after_unknown_properties[t][property_key]
+                self.assertEqual(mapped_after_unknown_value, property_value)                
