@@ -161,10 +161,12 @@ class TerraformParser(object):
         # if resource doesn't have type field, try to extract it from address (ideally, this if never evaluates true)
         if not resource_type and 'address' in resource and resource['address']:
             parsed_address = resource.get('address').split('.')
-            if parsed_address == 'module':
+            if parsed_address != 'module':
+                resource_type = parsed_address[0]
+            elif len(parsed_address) >= 3:
                 resource_type = parsed_address[2]
             else:
-                resource_type = parsed_address[0]
+                return
 
         # get after_unknown values
 
