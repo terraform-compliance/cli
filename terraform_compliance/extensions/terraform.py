@@ -2,6 +2,7 @@ import json
 from terraform_compliance.common.helper import seek_key_in_dict, flatten_list, Match, merge_dicts, remove_constant_values
 import sys
 from copy import deepcopy
+from radish.utils import console_write
 from terraform_compliance.common.defaults import Defaults
 from terraform_compliance.extensions.cache import Cache
 from terraform_compliance.common.exceptions import TerraformComplianceInternalFailure
@@ -357,7 +358,47 @@ class TerraformParser(object):
                             valid_references = [r for r in ref['references'] if not r.startswith(invalid_references)]
 
                     for ref in valid_references:
-                        if key not in ref_list:
+                        # if ref is not in the correct format, handle it
+                        if len(ref.split('.')) < 3 and ref.startswith('module'):
+                            
+                            # Using for_each and modules together may introduce an issue where the plan.out.json won't include the necessary third part of the reference
+                            # It is partially resolved by mounting the reference to all instances belonging to the module
+                            if 'for_each_expression' in self.configuration['resources'][resource]:
+
+                                # extract source resources
+                                assumed_source_resources = [k for k in self.resources.keys() if k.startswith(resource)]
+                                # extract for_each keys
+                                assumed_for_each_keys = [k[len(resource):].split('.')[0] for k in assumed_source_resources]
+                                # combine ref with for each keys
+                                assumed_refs = ['{}{}'.format(ref, key) for key in assumed_for_each_keys]
+                                # get all the resources that start with updated ref
+                                ambigious_references = []
+                                for r in self.resources.keys():
+                                    for assumed_ref in assumed_refs:
+                                        if r.startswith(assumed_ref):
+                                            if key in ref_list:
+                                                ref_list[key].append(r)
+                                            else:
+                                                ref_list[key] = [r]
+
+                                            ambigious_references.append(r)
+
+                                # throw a warning
+                                defaults = Defaults()
+                                console_write('{} {}: {}'.format(defaults.warning_icon,
+                                       defaults.warning_colour('WARNING (Mounting)'),
+                                       defaults.info_colour('The reference "{}" in resource {} is ambigious.'
+                                        ' It will be mounted to the following resources:').format(ref, resource)))
+                                for i, r in enumerate(ambigious_references, 1):
+                                    console_write(defaults.info_colour('{}. {}'.format(i, r)))
+                                
+                            # if the reference can not be resolved, warn the user and continue.
+                            else: 
+                                console_write('{} {}: {}'.format(Defaults().warning_icon,
+                                       Defaults().warning_colour('WARNING (Mounting)'),
+                                       Defaults().info_colour('The reference "{}" in resource {} is ambigious. It will not be mounted.'.format(ref, resource))))
+                                continue
+                        elif key not in ref_list:
                             ref_list[key] = self._find_resource_from_name(ref)
                         else:
                             ref_list[key].extend(self._find_resource_from_name(ref))
