@@ -9,6 +9,7 @@ from terraform_compliance.steps.steps import (
     it_condition_have_proto_protocol_and_port_port_for_cidr,
     it_fails,
     its_key_is_value, its_key_is_not_value,
+    its_key_metadata_has_something,
     its_value_condition_equal,
     its_value_condition_contain,
     it_must_contain_something
@@ -719,6 +720,251 @@ class TestStepCases(TestCase):
         ]
         its_key_is_value(step, 'tags', 'tag_key_three', 'not_tag_key_three')
         self.assertEqual(step.state, 'skipped')
+
+    @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
+    def test_its_key_metadata_has_something_key_non_existent(self, *args):
+        step = MockedStep()
+        step.context.stash = [
+            {
+                'type': 'aws_db_instance',
+                'some_key': 'some_value',
+                'values': {
+                    'storage_encrypted': True
+                }
+            },
+            {
+                'type': 'aws_db_instance',
+                'some_key': 'some_other_value',
+                'values': {
+                    'storage_encrypted': False
+                }
+            }
+        ]
+        its_key_metadata_has_something(step, 'actions', 'create', has_step=True)
+        self.assertEqual(step.state, 'skipped')
+  
+
+    @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
+    def test_its_key_metadata_has_something_value_non_existent(self, *args):
+        step = MockedStep()
+        step.context.stash = [
+            {
+                'actions': ['update'],
+                'type': 'aws_db_instance',
+                'some_key': 'some_value',
+                'values': {
+                    'storage_encrypted': True
+                }
+            },
+            {
+                'type': 'aws_db_instance',
+                'some_key': 'some_other_value',
+                'values': {
+                    'storage_encrypted': False
+                }
+            }
+        ]
+        its_key_metadata_has_something(step, 'actions', 'create', has_step=True)
+        self.assertEqual(step.state, 'skipped')        
+
+    @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
+    def test_its_key_metadata_has_something_success_string(self, *args):
+        step = MockedStep()
+        step.context.stash = [
+            {   
+                'type': 'aws_db_instance',
+                'some_key': 'some_value',
+                'values': {
+                    'storage_encrypted': True
+                }
+            },
+            {
+                'type': 'aws_db_instance',
+                'some_key': 'some_other_value',
+                'values': {
+                    'storage_encrypted': False
+                }
+            }
+        ]
+        its_key_metadata_has_something(step, 'some_key', 'some_value', has_step=True)
+        self.assertNotEqual(step.state, 'skipped')
+        self.assertTrue(type(step.context.stash) is list)
+        self.assertEqual(len(step.context.stash), 1)
+        self.assertEqual(step.context.stash[0]['some_key'], 'some_value')
+
+    @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
+    def test_its_key_metadata_has_something_success_bool(self, *args):
+        step = MockedStep()
+        step.context.stash = [
+            {   
+                'type': 'aws_db_instance',
+                'some_key': True,
+                'values': {
+                    'storage_encrypted': True
+                }
+            },
+            {
+                'type': 'aws_db_instance',
+                'some_key': 'some_other_value',
+                'values': {
+                    'storage_encrypted': False
+                }
+            }
+        ]
+        its_key_metadata_has_something(step, 'some_key', 'True', has_step=True)
+        self.assertNotEqual(step.state, 'skipped')
+        self.assertTrue(type(step.context.stash) is list)
+        self.assertEqual(len(step.context.stash), 1)
+        self.assertEqual(step.context.stash[0]['some_key'], True)
+
+    @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
+    def test_its_key_metadata_has_something_success_list(self, *args):
+        step = MockedStep()
+        step.context.stash = [
+            {   
+                'type': 'aws_db_instance',
+                'some_key': ['some_value', 'some_other_value'],
+                'values': {
+                    'storage_encrypted': True
+                }
+            },
+            {
+                'type': 'aws_db_instance',
+                'some_key': 'some_other_value',
+                'values': {
+                    'storage_encrypted': False
+                }
+            }
+        ]
+        its_key_metadata_has_something(step, 'some_key', 'some_value', has_step=True)
+        self.assertNotEqual(step.state, 'skipped')
+        self.assertTrue(type(step.context.stash) is list)
+        self.assertEqual(len(step.context.stash), 1)
+        self.assertEqual(step.context.stash[0]['some_key'][0], 'some_value')
+        self.assertEqual(step.context.stash[0]['some_key'][1], 'some_other_value')
+
+    @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
+    def test_its_key_metadata_has_something_int(self, *args):
+        step = MockedStep()
+        step.context.stash = [
+            {   
+                'type': 'aws_db_instance',
+                'some_key': 1,
+                'values': {
+                    'storage_encrypted': True
+                }
+            },
+            {
+                'type': 'aws_db_instance',
+                'some_key': 'some_other_value',
+                'values': {
+                    'storage_encrypted': False
+                }
+            }
+        ]
+        its_key_metadata_has_something(step, 'some_key', '1', has_step=True)
+        self.assertNotEqual(step.state, 'skipped')
+        self.assertTrue(type(step.context.stash) is list)
+        self.assertEqual(len(step.context.stash), 1)
+        self.assertEqual(step.context.stash[0]['some_key'], 1)
+
+    @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
+    def test_its_key_metadata_has_something_dictionary(self, *args):
+        # special case, may be subject to change
+        # check keys on dictionaries
+        step = MockedStep()
+        step.context.stash = [
+            {   
+                'type': 'aws_db_instance',
+                'some_key': {'some_value': 'deeper_value'},
+                'values': {
+                    'storage_encrypted': True
+                }
+            },
+            {
+                'type': 'aws_db_instance',
+                'some_key': 'some_other_value',
+                'values': {
+                    'storage_encrypted': False
+                }
+            }
+        ]
+        its_key_metadata_has_something(step, 'some_key', 'some_value', has_step=True)
+        self.assertNotEqual(step.state, 'skipped')
+        self.assertTrue(type(step.context.stash) is list)
+        self.assertEqual(len(step.context.stash), 1)
+        self.assertEqual(step.context.stash[0]['some_key']['some_value'], 'deeper_value')
+
+    @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
+    def test_its_key_metadata_has_not_something_all_pairs_present(self, *args):
+        step = MockedStep()
+        step.context.stash = [
+            {   
+                'type': 'aws_db_instance',
+                'some_key': 'some_value',
+                'values': {
+                    'storage_encrypted': True
+                }
+            },
+            {
+                'type': 'aws_db_instance',
+                'some_key': 'some_value',
+                'values': {
+                    'storage_encrypted': False
+                }
+            }
+        ]
+        its_key_metadata_has_something(step, 'some_key', 'some_value', has_step=False)
+        self.assertEqual(step.state, 'skipped')
+
+    @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
+    def test_its_key_metadata_has_not_something_keys_non_existent(self, *args):
+        step = MockedStep()
+        step.context.stash = [
+            {   
+                'type': 'aws_db_instance',
+                'values': {
+                    'storage_encrypted': True
+                }
+            },
+            {
+                'type': 'aws_db_instance',
+                'some_key': 'some_other_value',
+                'values': {
+                    'storage_encrypted': False
+                }
+            }
+        ]
+        its_key_metadata_has_something(step, 'some_key', 'some_other_value', has_step=False)
+        self.assertNotEqual(step.state, 'skipped')
+        self.assertTrue(type(step.context.stash) is list)
+        self.assertEqual(len(step.context.stash), 1)
+        self.assertTrue('some_key' not in step.context.stash[0])
+
+    @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
+    def test_its_key_metadata_has_not_something_values_non_existent(self, *args):
+        step = MockedStep()
+        step.context.stash = [
+            {   
+                'type': 'aws_db_instance',
+                'some_key': 'some_value',
+                'values': {
+                    'storage_encrypted': True
+                }
+            },
+            {
+                'type': 'aws_db_instance',
+                'some_key': 'some_other_value',
+                'values': {
+                    'storage_encrypted': False
+                }
+            }
+        ]
+        its_key_metadata_has_something(step, 'some_key', 'some_other_value', has_step=False)
+        self.assertNotEqual(step.state, 'skipped')
+        self.assertTrue(type(step.context.stash) is list)
+        self.assertEqual(len(step.context.stash), 1)
+        self.assertEqual(step.context.stash[0]['some_key'], 'some_value')
 
     @patch('terraform_compliance.extensions.ext_radish_bdd.world', return_value=MockedWorld())
     def test_find_keys_that_has_kv_structure(self, *args):
