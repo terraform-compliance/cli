@@ -49,7 +49,7 @@ jobs:
         env:
           TWINE_USERNAME: ${{ secrets.PYPI_USER }}
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-        run: twine upload dist/*
+        run: twine upload dist/* || true
 
       - name: Publish to Docker Hub
         env:
@@ -57,7 +57,7 @@ jobs:
           DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
           DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
         run : |
-          sleep 15
+          sleep 120
           echo "Getting the latest terraform version from Hashicorp"
           echo "export LATEST_TERRAFORM_VERSION=$(curl https://checkpoint-api.hashicorp.com/v1/check/terraform | jq -r .current_version)" > terraform_version.sh
           source terraform_version.sh
