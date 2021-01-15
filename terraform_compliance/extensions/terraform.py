@@ -148,14 +148,15 @@ class TerraformParser(object):
         if self.parse_it:
             self.cache.set('resources', self.resources)
 
-    '''
-    Creates a map of resource type to after_unknown values
-    These can be used in given step "resource that supports x"
-    
-    Note: This function may be extended to capture 'after' values as well. That would require flattening the multi level
-    dictionaries in resource
-    '''
     def remember_after_unknown(self, resource, after_unknown):
+        '''
+        Creates a map of resource type to after_unknown values
+        These can be used in given step "resource that supports x"
+
+        Note: This function may be extended to capture 'after' values as well. That would require flattening the multi level
+        dictionaries in resource
+        '''
+        
         # get type
         resource_type = resource.get('type', '')
 
@@ -479,6 +480,7 @@ class TerraformParser(object):
         else:
             # print('Building cache for mounted resources at {}'.format(Defaults.cache_dir))
             self._mount_references()
+            self._add_action_status()
 
             if self.parse_it:
                 self.cache.set('mounted_resources', self.resources)
@@ -489,6 +491,18 @@ class TerraformParser(object):
 
         for _, resource in self.resources.items():
             self._expand_resource_tags(resource)
+
+    def _add_action_status(self):
+        '''
+        Adds Terraform's action status to each resource
+        '''
+        if 'resource_changes' not in self.raw:
+            return
+
+        for resource_change in self.raw['resource_changes']:
+            resource = resource_change['address']
+            if resource in self.resources:
+                self.resources[resource]['actions'] = resource_change['change']['actions']
 
     def find_resources_by_type(self, resource_type, match=Match(case_sensitive=False)):
         '''
