@@ -17,6 +17,7 @@ from terraform_compliance.common.error_handling import Error
 from terraform_compliance.steps.given.i_have_name_section_configured import i_have_name_section_configured
 
 # WHEN
+from terraform_compliance.steps.when.its_key_metadata_has_something import its_key_metadata_has_something
 from terraform_compliance.steps.when.its_key_is_value import (
     its_key_is_value,
     its_key_is_not_value
@@ -53,6 +54,23 @@ from terraform_compliance.steps.then.its_value_condition_be_null import its_valu
 @given(u'I have {name:ANY} {type_name:SECTION} configured')
 def wrapper(_step_obj, name, type_name='resource', _terraform_config=world):
     return i_have_name_section_configured(_step_obj, name, type_name, _terraform_config)
+
+
+@when(u'its {key:PROPERTY} metadata has {value:PROPERTY}')
+@when(u'its {key:PROPERTY} metadata is {value:PROPERTY}')
+@when(u'its {key:PROPERTY} metadata contains {value:PROPERTY}')
+@when(u'its {key:PROPERTY} metadata includes {value:PROPERTY}')
+def wrapper(_step_obj, key, value):
+    return its_key_metadata_has_something(_step_obj, key, value)
+
+
+@when(u'its {key:PROPERTY} metadata has not {value:PROPERTY}')
+@when(u'its {key:PROPERTY} metadata is not {value:PROPERTY}')
+@when(u'its {key:PROPERTY} metadata does not have {value:PROPERTY}')
+@when(u'its {key:PROPERTY} metadata does not contain {value:PROPERTY}')
+@when(u'its {key:PROPERTY} metadata does not include {value:PROPERTY}')
+def wrapper(_step_obj, key, value):
+    return its_key_metadata_has_something(_step_obj, key, value, has_step=False)
 
 
 @when(u'its {key:PROPERTY} is {value:PROPERTY}')
