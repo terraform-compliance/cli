@@ -1,6 +1,8 @@
 # CHANGELOG
 
 ## Unreleased
+
+## 1.3.10 (2020-01-15)
 * Fixed an issue where ambigious references were breaking during parsing. ([#446](https://github.com/terraform-compliance/cli/pull/446))
 
 ## 1.3.9 (2020-01-10)
