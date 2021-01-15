@@ -330,6 +330,133 @@ is
 | [value](#){: .p-1 .text-blue-100 .fw-700} | any dictionary value (allows spaces). | `my dictionary value` |
 
 ------------------------
+### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} metadata has [something](#){: .p-1 .text-blue-100 .fw-700}
+This is a filtering function. Thus, found resources from previous step will be filtered based on these values.
+
+This step checks if a property metadata has a specific value. Metadata are considered to be key, value pairs outside of `values`, which includes the properties of the resource.
+
+Following is how an `aws_instance` example is represented in stash.
+```
+{'address': 'aws_instance.example',
+ 'mode': 'managed',
+ 'type': 'aws_instance',
+ 'name': 'example',
+ 'provider_name': 'registry.terraform.io/hashicorp/aws',
+ 'values': {
+  'ami': 'ami-034bf895b736be04a',
+  'arn': 'arn:aws:ec2:us-west-1:704778554736:instance/i-0d6a689453a806e50',
+  'tags': {'Name': 'HelloWorldChange'},
+  ...
+  },
+ 'actions': ['update']
+}
+```
+`actions`, `provider_name`, or `address` are considered to be metadata. However `ami`, `arn`, and `tags` are considered to be otherwise, as they are in `values`. The [debugger](https://terraform-compliance.com/pages/usage/#-d--debug) could be used to see the metadata present at a given step.
+
+> __Possible sentences :__
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+metadata is
+[something](#){: .p-1 .text-blue-100 .fw-700}
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+metadata has
+[something](#){: .p-1 .text-blue-100 .fw-700}
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+metadata includes
+[something](#){: .p-1 .text-blue-100 .fw-700}
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+metadata contains
+[something](#){: .p-1 .text-blue-100 .fw-700}
+>
+>
+| key | Description | Examples |
+|:---:|:----------|:-|
+| [property](#){: .p-1 .text-green-200 .fw-700} | any metadata that resources have. Using `actions` will give the Terraform's actions on the resource on an apply; `address` is the name you have given it | `address` `name` `actions` |
+| [something](#){: .p-1 .text-blue-100 .fw-700} | any string or numeric value that the property has. | `s3_my_bucket` `my-bucket` `create` `"something with spaces"` |
+
+------------------------
+### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} metadata has not [something](#){: .p-1 .text-blue-100 .fw-700}
+This is a filtering function. Thus, found resources from previous step will be filtered based on these values.
+
+This step filters a resource out if it has `property` metadata that has `something` value. Metadata are considered to be key, value pairs outside of `values`, which includes the properties of the resource.
+
+Following is how an `aws_instance` example is represented in stash.
+```
+{'address': 'aws_instance.example',
+ 'mode': 'managed',
+ 'type': 'aws_instance',
+ 'name': 'example',
+ 'provider_name': 'registry.terraform.io/hashicorp/aws',
+ 'values': {
+  'ami': 'ami-034bf895b736be04a',
+  'arn': 'arn:aws:ec2:us-west-1:704778554736:instance/i-0d6a689453a806e50',
+  'tags': {'Name': 'HelloWorldChange'},
+  ...
+  },
+ 'actions': ['update']
+}
+```
+`actions`, `provider_name`, or `address` are considered to be metadata. However `ami`, `arn`, and `tags` are considered to be otherwise, as they are in `values`. The [debugger](https://terraform-compliance.com/pages/usage/#-d--debug) could be used to see the metadata present at a given step.
+
+> __Possible sentences :__
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+metadata is not
+[something](#){: .p-1 .text-blue-100 .fw-700}
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+metadata has not
+[something](#){: .p-1 .text-blue-100 .fw-700}
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+metadata does not have
+[something](#){: .p-1 .text-blue-100 .fw-700}
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+metadata does not include
+[something](#){: .p-1 .text-blue-100 .fw-700}
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+metadata does not contain
+[something](#){: .p-1 .text-blue-100 .fw-700}
+>
+>
+| key | Description | Examples |
+|:---:|:----------|:-|
+| [property](#){: .p-1 .text-green-200 .fw-700} | any metadata that resources have. Using `actions` will give the Terraform's actions on the resource on an apply; `address` is the name you have given it | `address` `name` `actions` |
+| [something](#){: .p-1 .text-blue-100 .fw-700} | any string or numeric value that the property has. | `s3_my_bucket` `my-bucket` `create` `"something with spaces"` |
+
+------------------------
 ### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} reference has [something](#){: .p-1 .text-blue-100 .fw-700}
 This is a filtering function, specific for resource referencing. The resource references will be checked based on
 the `property` property defined within the step.
