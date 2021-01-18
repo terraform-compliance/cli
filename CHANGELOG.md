@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## 1.3.11 (2020-01-18)
 * New step: [When its property metadata has something](https://terraform-compliance.com/pages/bdd-references/when.html#when-its-property-metadata-has-something) ([#447](https://github.com/terraform-compliance/cli/pull/447))
 * New step: [When its property metadata has not something](https://terraform-compliance.com/pages/bdd-references/when.html#when-its-property-metadata-has-not-something) ([#447](https://github.com/terraform-compliance/cli/pull/447))
 
