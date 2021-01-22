@@ -88,19 +88,22 @@ def its_key_is_not_value(_step_obj, key, value, dict_value=None, address=Null):
 
     found_list = []
     for obj in _step_obj.context.stash:
-        object_key = obj.get(key, Null)
+        object_key = obj.get('values', {})
 
+        if isinstance(object_key, list):
+            object_keys = []
+            for object_key_element in object_key:
+                if not match.equals(match.get(object_key_element, key, Null), value):
+                    object_keys.append(match.get(object_key_element, key, Null))
+
+            object_key = [keys for keys in object_keys if keys is not Null]
+        else:
+            object_key = match.get(object_key, key, Null)
+        
+        # temporary logic
+        # check metadata if key is not in values
         if object_key is Null:
-            object_key = obj.get('values', {})
-            if isinstance(object_key, list):
-                object_keys = []
-                for object_key_element in object_key:
-                    if not match.equals(match.get(object_key_element, key, Null), value):
-                        object_keys.append(match.get(object_key_element, key, Null))
-
-                object_key = [keys for keys in object_keys if keys is not Null]
-            else:
-                object_key = match.get(object_key, key, Null)
+            object_key = match.get(obj, key, Null)
 
         if address is not Null and isinstance(object_key, dict) and match.contains(object_key, address):
             object_key = match.get(object_key, address, Null)
