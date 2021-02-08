@@ -11,7 +11,7 @@ def look_for_bdd_tags(_step_obj):
     _step_obj.context.skip_class = None # to pick a tagname that user used
     _step_obj.context.lines_to_noskip = []
     _step_obj.context.bad_tags = False
-    _step_obj.context.resources_to_exclude = {}
+    _step_obj.context.resources_to_exclude = r''
 
     defaults = Defaults()
 
@@ -28,6 +28,7 @@ def look_for_bdd_tags(_step_obj):
                 _step_obj.context.no_skip = True
                 _step_obj.context.skip_class = tag.name
                 _step_obj.context.lines_to_noskip = [-1]
+            # noskip
             elif re.search(r'({})_at_lines?_.*'.format('|'.join(defaults.no_skip_tags)), tag.name.lower()):
                 # check for '@noskip at line x'
                 regex = r'({})_at_lines?((_\d*)*)'.format('|'.join(defaults.no_skip_tags))
@@ -46,25 +47,18 @@ def look_for_bdd_tags(_step_obj):
                     
                     except Exception as e:
                         Error(_step_obj, f'A tag was determined to be a noskip, but line numbers could not be grouped by the regex {regex}\n{e}')
+            # exclude resources
             elif re.search(r'({})_.+\..+'.format('|'.join(defaults.exclude_resources_tags)), tag.name.lower()):
-                regex = r'({})_(.+)\.(.+)'.format('|'.join(defaults.exclude_resources_tags))
+                regex = r'({})_(.+)'.format('|'.join(defaults.exclude_resources_tags))
                 
                 m = re.search(regex, tag.name.lower())
                 if m is not None:
-                    resource_type = m.group(2)
-                    resource_name = m.group(3)
+                    resource_address = m.group(2)
 
-                    if resource_type not in _step_obj.context.resources_to_exclude:
-                        _step_obj.context.resources_to_exclude[resource_type] = []
+                    if _step_obj.context.resources_to_exclude:
+                        _step_obj.context.resources_to_exclude += r'|'
                     
-                    _step_obj.context.resources_to_exclude[resource_type].append('{}.{}'.format(resource_type, resource_name))
-
-            '''
-            elif starts with exclude
-                parse the rest of the line
-                
-                add the resource type and resource name to the dictionary
-            '''
+                    _step_obj.context.resources_to_exclude += r'({})'.format(resource_address)
 
 
     if _step_obj.context.no_failure and _step_obj.context.no_skip:
