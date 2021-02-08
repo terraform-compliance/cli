@@ -4,6 +4,7 @@ from IPython import embed
 from radish import before, after, world
 from terraform_compliance.extensions.terraform import TerraformParser
 from terraform_compliance.common.helper import Null
+from terraform_compliance.extensions.ext_radish_bdd import skip_step
 
 @before.each_feature
 def load_terraform_data(feature):
@@ -90,16 +91,20 @@ def exclude_resources(step):
         return
     
     match = step.context.match
-    resources_to_exclude = match.get(step.context.resources_to_exclude, step.context.name, {})
-    bad_resource_indices = []
-    # note O(n^2) runtime, but shouldn't be a problem at this scale
-    for address in resources_to_exclude:
-        for i, resource in enumerate(step.context.stash):
-            if match.equals(resource['address'], address):
-                bad_resource_indices.append(i)
-    
-    step.context.stash = [step.context.stash[i] for i in range(len(step.context.stash)) if i not in bad_resource_indices]
+    resources_to_exclude = step.context.resources_to_exclude
+    resources = []
 
+    for resource in step.context.stash:
+        address = resource.get('address', '')
+        if match.regex_match(resources_to_exclude, address) is None:
+            resources.append(resource)
+    
+    step.context.stash = resources
+
+    # if stash is empty, skip
+    # note that if the stash was empty from the Given step, this function will not run
+    if not step.context.stash:
+        skip_step(step, step.context.name)
 
 # debugging step should be always the last hooker
 @after.each_step(order=1)
