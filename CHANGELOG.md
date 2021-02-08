@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 1.3.13 (2020-02-08)
+* Fix an issue where `metadata` were checked before `values` on [When its property does not have something](https://terraform-compliance.com/pages/bdd-references/when.html#when-its-property-has-not-something) ([#451](https://github.com/terraform-compliance/cli/pull/451))
+* Improve [exclude tag](https://terraform-compliance.com/pages/bdd-references/using_tags/#supported-tags) to support basix regular expressions ([#448](https://github.com/terraform-compliance/cli/pull/448))
+* Fixed an issue where [exclude tag](https://terraform-compliance.com/pages/bdd-references/using_tags/#supported-tags) did not trigger skip_step if it emptied the stash ([#448](https://github.com/terraform-compliance/cli/pull/448))
+
 ## 1.3.12 (2020-01-18)
 * New step: [When its property metadata has something](https://terraform-compliance.com/pages/bdd-references/when.html#when-its-property-metadata-has-something) ([#447](https://github.com/terraform-compliance/cli/pull/447))
 * New step: [When its property metadata has not something](https://terraform-compliance.com/pages/bdd-references/when.html#when-its-property-metadata-has-not-something) ([#447](https://github.com/terraform-compliance/cli/pull/447))
