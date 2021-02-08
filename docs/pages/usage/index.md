@@ -147,6 +147,16 @@ If you are using a [Docker](/pages/installation/docker) version of `terraform-co
 packaged within the Docker Image. In case, you may need to use another version of `terraform` binary, you can still use 
 `-t` to point the local version.
 
+`terraform` executable is used to transform `plan.out` file produced from `terraform plan` to `plan.out.json` by running 
+`terraform show -json plan.out > plan.out.json`. In case you are having version conflicts of `terraform` while using the
+Docker image of `terraform-compliance`, you can just avoid this problem and the need of `terraform` executable in your CI/CD
+container by running ;
+
+```shell
+[~] $ terraform plan -out plan.out                           # To create the plan
+[~] $ terraform show -json plan.out > plan.out.json          # To convert the plan.out to JSON format just after the plan
+```
+
 ### -q / --quit-early
 {: .d-inline-block }
 OPTIONAL
