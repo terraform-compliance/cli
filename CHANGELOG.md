@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Changelog
+## Unreleased
 * Fix an issue where `metadata` were checked before `values` on [When its property does not have something](https://terraform-compliance.com/pages/bdd-references/when.html#when-its-property-has-not-something) ([#451](https://github.com/terraform-compliance/cli/pull/451))
 
 ## 1.3.12 (2020-01-18)
