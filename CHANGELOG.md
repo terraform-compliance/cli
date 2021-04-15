@@ -1,7 +1,8 @@
 # CHANGELOG
 
-## Unreleased
+## 1.3.14 (2020-04-15)
 * Upgraded python in Docker image from 3.7.3 (stretch) to 3.7.10 (buster)
+* Enabled terraform 0.15 support.
 
 ## 1.3.13 (2020-02-08)
 * Fix an issue where `metadata` were checked before `values` on [When its property does not have something](https://terraform-compliance.com/pages/bdd-references/when.html#when-its-property-has-not-something) ([#451](https://github.com/terraform-compliance/cli/pull/451))
