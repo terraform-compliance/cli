@@ -107,7 +107,7 @@ Regarding the feature file format - `radish` is used to parse files with extensi
 
 ## Supporting / Requirements
 
-`terraform-compliance` only supports `terraform` 0.12.+. In order to use older versions of `terraform`,
+`terraform-compliance` supports `terraform` 0.12 and newer versions. In order to use older versions of `terraform`,
 you can use [0.6.4](https://github.com/eerkunt/terraform-compliance/releases/tag/0.6.4) of the tool, 
 but many capabilities will not be supported and maintaining of `0.6.4` version is ended.
 
