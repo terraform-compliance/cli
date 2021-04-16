@@ -210,6 +210,7 @@ This option will let you peek in the stash or run IPython on the current step.
 - s: prints stash
 - d: opens Interactive Python.
 - h: prints commands
+- l: adds a step after the current one
 
 In Python shell, context can be accessed via `step.context.stash`. Note that modifications to step object will carry over to the steps below.
 

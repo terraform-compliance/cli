@@ -131,7 +131,7 @@ def wait_for_user_input(step):
             # get context class
             # break the test if context class is bad
             step_context_class = line_strip.split()[0].lower()
-            # mock current steps id
+            # mock current steps properties
             step_id = step.id
             inline_step = Step(
                 step_id,
@@ -154,7 +154,7 @@ Commands
 - s: prints stash
 - d: opens Interactive Python
 - h: prints commands
-- l: add a step after this line
+- l: adds a step after the current one
                 """
             )
 
