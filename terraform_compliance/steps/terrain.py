@@ -2,7 +2,9 @@ import json
 import re
 from IPython import embed
 from radish import before, after, world
+from radish.matcher import merge_step
 from terraform_compliance.extensions.terraform import TerraformParser
+from terraform_compliance.extensions.override_radish_step import Step, StepRegistry
 from terraform_compliance.common.helper import Null
 from terraform_compliance.extensions.ext_radish_bdd import skip_step
 
@@ -115,7 +117,7 @@ def wait_for_user_input(step):
     cmd = 'cmd'
     while cmd != '':
         try:
-            cmd = input(">> Press enter to continue")
+            cmd = input(">> Press enter to continue ")
         except EOFError:
             print()
             return
@@ -124,6 +126,27 @@ def wait_for_user_input(step):
             embed()
         elif cmd == 's':
             print(json.dumps(step.context.stash, indent=4))
+        elif cmd == 'l':
+            line_strip = input('> ').strip()
+            # get context class
+            # break the test if context class is bad
+            step_context_class = line_strip.split()[0].lower()
+            # mock current steps id
+            step_id = step.id
+            inline_step = Step(
+                step_id,
+                line_strip,
+                step.path,
+                step.line,
+                step.parent,
+                step.runable,
+                step_context_class
+            )
+
+            # break the test if the inline step is not in registry
+            merge_step(inline_step, StepRegistry().steps)
+            inline_step.run()
+
         elif cmd != '':
             print(
                 """
@@ -131,6 +154,7 @@ Commands
 - s: prints stash
 - d: opens Interactive Python
 - h: prints commands
+- l: add a step after this line
                 """
             )
 
