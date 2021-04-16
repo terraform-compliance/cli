@@ -524,3 +524,28 @@ it must be a superset of
 | key | Description | Examples |
 |:---:|:----------|:-|
 | [haystack](#){: .p-1 .text-green-200 .fw-700} | The resources to be accessed via in step variables | `{aws_lambda_function.values.function_name}`, `{aws_cloudwatch_log_group.values.name}`, `{resource_name.path.to.property}` |
+
+------------------------
+### [Then](#){: .p-1 .text-red-200} it must pass python test [file name](#){: .p-1 .text-green-200 .fw-700} [function name](#){: .p-1 .text-blue-100 .fw-700}
+This step enables calling your own custom steps from a Python file that is located in the same directory with the feature file it appears in.
+
+The selected function will be called in a similar fashion to supported steps. The `stash` and the `step object` can be modified by the user to reach desired functionality.
+> __Possible sentences :__
+>
+> ▪
+[Then](#){: .p-1 .text-red-200} 
+it must pass python test
+[file name](#){: .p-1 .text-green-200 .fw-700}
+[function name](#){: .p-1 .text-blue-100 .fw-700}
+>
+> ▪
+[Then](#){: .p-1 .text-red-200} 
+python
+[file name](#){: .p-1 .text-green-200 .fw-700}
+[function name](#){: .p-1 .text-blue-100 .fw-700}
+>
+
+| key | Description | Examples |
+|:---:|:----------|:-|
+| [file name](#){: .p-1 .text-green-200 .fw-700} | The Python file, where the custom step resides | `my_step.py`, `"file_name.py"` |
+| [function name](#){: .p-1 .text-blue-100 .fw-700} | Custom step function | `test_function`, `"name_of_your_function"` | 
