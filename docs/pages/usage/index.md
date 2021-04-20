@@ -215,3 +215,5 @@ This option will let you peek in the stash or run IPython on the current step.
 In Python shell, context can be accessed via `step.context.stash`. Note that modifications to step object will carry over to the steps below.
 
 It is usually a better idea to inspect the stash *before* the step being debugged.
+
+Injecting a step via `l` to the execution will modify the context, stash, and whether the scenario is skipped or failed, depending on the behavior of the step. Running steps on a skipped or failed scenario is possible but may not produce meaningful results.

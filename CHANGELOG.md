@@ -1,7 +1,7 @@
 # CHANGELOG
 
 ## Unreleased
-* New debugging option: `l`. Adds a step after the current one.
+* New debugging option: `l`. Adds a step after the current one. [-d/-debug](https://terraform-compliance.com/pages/usage/#-d--debug)
 
 ## 1.3.14 (2020-04-15)
 * Upgraded python in Docker image from 3.7.3 (stretch) to 3.7.10 (buster)
