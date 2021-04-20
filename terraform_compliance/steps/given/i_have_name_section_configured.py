@@ -41,6 +41,8 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
 
     if not hasattr(_step_obj.context, 'cumulative_stash'):
         _step_obj.context.cumulative_stash = []
+    if not hasattr(_step_obj.context, 'stash'):
+        _step_obj.context.stash = []
 
     if name in ('a resource', 'any resource', 'resources'):
         _step_obj.context.type = type_name
