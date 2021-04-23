@@ -87,7 +87,7 @@ def exclude_resources(step):
     if not hasattr(step.context, 'resources_to_exclude') or not step.context.resources_to_exclude:
         return 
 
-    if step.context_class != 'given':
+    if step.context_class != 'given' or not step.context.stash:
         return
     
     match = step.context.match
