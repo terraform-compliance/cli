@@ -20,6 +20,7 @@ cli parameters.
   
   usage: terraform-compliance [-h] --features feature directory --planfile
                               plan_file [--identity [ssh private key]]
+                              [--terraform [terraform_file]]
                               [--version]
   
   BDD Test Framework for Hashicorp terraform
