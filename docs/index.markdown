@@ -111,17 +111,7 @@ See [Examples](/pages/Examples/) for more sample use cases.
 
 ## Supporting / Requirements
 
-`terraform-compliance` supports versions that are newer than `terraform` 0.12+. In order to use older versions of `terraform`,
-you can use [0.6.4](https://github.com/eerkunt/terraform-compliance/releases/tag/0.6.4) of the tool,
-but many capabilities will not be supported and maintaining of `0.6.4` version is ended.
-
-Some of the features that you will be missing can be listed as ;
-
-- Complete `terraform` interpolations support
-- `terraform` modules, variables and providers support.
-- Any filtering function for advanced queries
-- Many missing resources requires `tag`ging.
-- .. and many more ..
+`terraform-compliance` supports versions that are newer than `terraform` 0.12+.
 
 You can have a look to the [CHANGELOG](https://github.com/eerkunt/terraform-compliance/blob/master/CHANGELOG.md)
 for further information.
