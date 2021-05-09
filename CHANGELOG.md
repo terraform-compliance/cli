@@ -3,6 +3,7 @@
 ## Unreleased
 * Fixed an issue where [exclude resources tag](https://terraform-compliance.com/pages/bdd-references/using_tags.html#exclude-resources) were breaking due to improper `step_obj` creation from `Given` step. ([#468](https://github.com/terraform-compliance/cli/issues/468))
 * Disabled ssh host key checking for private repositories ([#474](https://github.com/terraform-compliance/cli/issues/474))
+* New argument: -tf / --terraform-version. ([#365](https://github.com/terraform-compliance/cli/issues/365) [#38](https://github.com/terraform-compliance/cli/issues/381) [MicrosoftDocs/azure-dev-docs#396](https://github.com/MicrosoftDocs/azure-dev-docs/pull/396) [documentation](https://terraform-compliance.com/pages/usage/#-tv---terraform-version))
 
 ## 1.3.14 (2020-04-15)
 * Upgraded python in Docker image from 3.7.3 (stretch) to 3.7.10 (buster)
