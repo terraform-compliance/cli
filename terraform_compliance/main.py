@@ -5,6 +5,7 @@ from git import Repo
 from terraform_compliance import __app_name__, __version__
 from terraform_compliance.common.readable_dir import ReadableDir
 from terraform_compliance.common.readable_plan import ReadablePlan
+from terraform_compliance.common.terraform_files import download_terraform
 from radish.main import main as call_radish
 from radish.utils import console_write
 from radish.loader import load_module
@@ -39,6 +40,8 @@ def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
     parser = argparser
     parser.add_argument('--terraform', '-t', dest='terraform_file', metavar='terraform_file', type=str, nargs='?',
                         help='The absolute path to the terraform executable.', required=False)
+    parser.add_argument('--terraform-version', '-tv', dest='terraform_version', metavar='terraform_version', type=str,
+                        nargs='?', help='Downloads a specific terraform version for reading the plan')
     parser.add_argument('--features', '-f', dest='features', metavar='feature directory', action=ReadableDir,
                         help='Directory (or git repository with "git:" prefix) consists of BDD features', required=True)
     parser.add_argument('--planfile', '-p', dest='plan_file', metavar='plan_file', action=ReadablePlan,
@@ -51,7 +54,8 @@ def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
                         help='Do not output any scenarios, just write results or failures', required=False)
     parser.add_argument('--identity', '-i', dest='ssh_key', metavar='ssh private key', type=str, nargs='?',
                         help='SSH Private key that will be use on git authentication.', required=False)
-    parser.add_argument('--debug', '-d', dest='debug', action='store_true', help='Turns on debugging mode', required=False)
+    parser.add_argument('--debug', '-d', dest='debug', action='store_true', help='Turns on debugging mode',
+                        required=False)
 
     parser.add_argument('--version', '-v', action='version', version=__version__)
 
@@ -60,6 +64,11 @@ def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
     steps_directory = os.path.join(os.path.split(os.path.abspath(__file__))[0], 'steps')
 
     python_version_check()
+
+    # Download specific terraform version before we start to do anything
+    if args.terraform_version:
+        terraform_path = download_terraform(args.terraform_version)
+        args.terraform_file = terraform_path
 
     # SSH Key is given for git authentication
     ssh_cmd = {}

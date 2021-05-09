@@ -1,6 +1,11 @@
 import os
+import stat
 import sys
 import subprocess
+import platform
+import urllib.request
+import tempfile
+from shutil import unpack_archive
 
 
 def which(program):
@@ -46,15 +51,19 @@ def convert_terraform_plan_to_json(terraform_plan_file, terraform_executable=Non
                                        stdout=FP_plan_file,
                                        stderr=subprocess.PIPE)
     except FileNotFoundError as err:
-        sys.stderr.write('ERROR: {} does not exist. Please give correct executable for "terraform".\n'.format(terraform_executable))
+        sys.stderr.write(
+            'ERROR: {} does not exist. Please give correct executable for "terraform".\n'.format(terraform_executable))
         sys.stderr.write('       {}\n'.format(str(err)))
         sys.exit(1)
     except PermissionError  as err:
-        sys.stderr.write('ERROR: {} is not executable. Please give correct executable for "terraform".\n'.format(terraform_executable))
+        sys.stderr.write('ERROR: {} is not executable. Please give correct executable for "terraform".\n'.format(
+            terraform_executable))
         sys.stderr.write('       {}\n'.format(str(err)))
         sys.exit(1)
     except OSError as err:
-        sys.stderr.write('ERROR: {} does not look like terraform. Please give correct executable for "terraform".\n'.format(terraform_executable))
+        sys.stderr.write(
+            'ERROR: {} does not look like terraform. Please give correct executable for "terraform".\n'.format(
+                terraform_executable))
         sys.stderr.write('       {}\n'.format(str(err)))
         sys.exit(1)
 
@@ -78,3 +87,30 @@ def convert_terraform_plan_to_json(terraform_plan_file, terraform_executable=Non
                                                                                                     terraform_plan_file))
 
     sys.exit(1)
+
+
+def get_platform_details():
+    system = platform.system().lower()
+    arch = "amd64" if platform.machine() == "x86_64" else "386"
+    return system, arch
+
+
+def download_terraform(version):
+    system, arch = get_platform_details()
+    tmp_dir = tempfile.gettempdir()
+    terraform_file = "{}/terraform_{}_{}_{}".format(tmp_dir, version, system, arch)
+
+    if os.path.isfile(terraform_file):
+        print('. Using cached {}'.format(terraform_file))
+        return terraform_file
+
+    url = 'https://releases.hashicorp.com/terraform/{}/terraform_{}_{}_{}.zip'.format(version, version, system,
+                                                                                      arch)
+    print('. Downloading terraform v{} from {} ...'.format(version, url))
+    urllib.request.urlretrieve(url, '{}.zip'.format(terraform_file))
+    print('. Unpacking {}.zip'.format(terraform_file))
+    unpack_archive('{}.zip'.format(terraform_file), tmp_dir)
+    os.rename('{}/terraform'.format(tmp_dir), terraform_file)
+    st = os.stat(terraform_file)
+    os.chmod(terraform_file, st.st_mode | stat.S_IEXEC)
+    return terraform_file
