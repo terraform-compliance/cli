@@ -20,6 +20,7 @@ cli parameters.
   
   usage: terraform-compliance [-h] --features feature directory --planfile
                               plan_file [--identity [ssh private key]]
+                              [--terraform [terraform_file]]
                               [--version]
   
   BDD Test Framework for Hashicorp terraform
@@ -55,7 +56,7 @@ All files within the directory (or repository) will be processed non-recursively
 
 or for a `git` repository ; (highly recommended for segregation of duties and having immutable features!)
 
-If the repository is a public repository ;
+If the repository is a public repository or credentials are available in the configured git credential manager ;
 
 ```shell
 [~] $ terraform-compliance -f git:https://github.com/user/repo ...
