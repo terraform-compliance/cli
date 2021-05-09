@@ -16,11 +16,12 @@ cli parameters.
 ```shell 
 [~] $ terraform-compliance -h
 
-  terraform-compliance v1.0.0 initiated
+  terraform-compliance v[...] initiated
   
   usage: terraform-compliance [-h] --features feature directory --planfile
                               plan_file [--identity [ssh private key]]
                               [--terraform [terraform_file]]
+                              [--terraform-version [terraform_version]]
                               [--version]
   
   BDD Test Framework for Hashicorp terraform
@@ -36,7 +37,9 @@ cli parameters.
                           SSH Private key that will be use on git
                           authentication.
     --terraform [terraform_file], -t [terraform_file]
-                            The absolute path to the terraform executable.
+                          The absolute path to the terraform executable.
+    --terraform-version [terraform_version], -tv [terraform_version]
+                            
     --version, -v         show program's version number and exit
 ```
 
@@ -157,6 +160,20 @@ container by running ;
 [~] $ terraform plan -out plan.out                           # To create the plan
 [~] $ terraform show -json plan.out > plan.out.json          # To convert the plan.out to JSON format just after the plan
 ```
+
+### -tv / --terraform-version
+{: .d-inline-block }
+OPTIONAL
+{: .label .label-yellow}
+
+In some use cases where a `plan` file is provided without converted into JSON format, then `terraform-compliance`
+requires `terraform executable` in order to convert this with `-t / --terraform` argument explained above.
+
+If you don't have `terraform executable` exist in your system (like running from Docker), then you might
+want to provide `-tv / --terraform-version` argument to ask `terraform-compliance` to download & install
+given terraform version within your system. In these kind of scenarios, use this argument.
+
+By default, the latest version of `terraform` will be installed in the Docker image on each `terraform-compliance` release.
 
 ### -q / --quit-early
 {: .d-inline-block }
