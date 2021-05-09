@@ -49,5 +49,8 @@ RUN  set -ex \
      && rm -rf /var/lib/apt/lists/* \
      && mkdir -p /target
 
+RUN echo "Host *" >> /etc/ssh/ssh_config
+RUN echo " StrictHostKeyChecking no" >> /etc/ssh/ssh_config
+
 WORKDIR /target
 ENTRYPOINT ["terraform-compliance"]
