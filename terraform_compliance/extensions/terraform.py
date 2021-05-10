@@ -5,7 +5,7 @@ from copy import deepcopy
 from radish.utils import console_write
 from terraform_compliance.common.defaults import Defaults
 from terraform_compliance.extensions.cache import Cache
-from terraform_compliance.common.exceptions import TerraformComplianceInternalFailure
+from terraform_compliance.common.helper import recursive_jsonify
 
 
 class TerraformParser(object):
@@ -157,7 +157,7 @@ class TerraformParser(object):
         Note: This function may be extended to capture 'after' values as well. That would require flattening the multi level
         dictionaries in resource
         '''
-        
+
         # get type
         resource_type = resource.get('type', '')
 
@@ -362,7 +362,7 @@ class TerraformParser(object):
                     for ref in valid_references:
                         # if ref is not in the correct format, handle it
                         if len(ref.split('.')) < 3 and ref.startswith('module'):
-                            
+
                             # Using for_each and modules together may introduce an issue where the plan.out.json won't include the necessary third part of the reference
                             # It is partially resolved by mounting the reference to all instances belonging to the module
                             if 'for_each_expression' in self.configuration['resources'][resource]:
@@ -393,9 +393,9 @@ class TerraformParser(object):
                                         ' It will be mounted to the following resources:').format(ref, resource)))
                                 for i, r in enumerate(ambigious_references, 1):
                                     console_write(defaults.info_colour('{}. {}'.format(i, r)))
-                                
+
                             # if the reference can not be resolved, warn the user and continue.
-                            else: 
+                            else:
                                 console_write('{} {}: {}'.format(Defaults().warning_icon,
                                        Defaults().warning_colour('WARNING (Mounting)'),
                                        Defaults().info_colour('The reference "{}" in resource {} is ambigious. It will not be mounted.'.format(ref, resource))))
@@ -435,7 +435,7 @@ class TerraformParser(object):
                     self._mount_resources(source=source_resources,
                                           target=ref_list,
                                           ref_type=ref_type)
-                    
+
                     # Mounting B->A
                     for parameter, target_resources in ref_list.items():
                         for target_resource in target_resources:
@@ -482,6 +482,13 @@ class TerraformParser(object):
             # print('Building cache for mounted resources at {}'.format(Defaults.cache_dir))
             self._mount_references()
             self._add_action_status()
+
+            self.resources = recursive_jsonify(self.resources)
+            self.resources_raw = recursive_jsonify(self.resources_raw)
+            self.type_to_after_unknown_properties = recursive_jsonify(self.type_to_after_unknown_properties)
+            self.variables = recursive_jsonify(self.variables)
+            self.data = recursive_jsonify(self.data)
+            self.providers = recursive_jsonify(self.providers)
 
             if self.parse_it:
                 self.cache.set('mounted_resources', self.resources)
