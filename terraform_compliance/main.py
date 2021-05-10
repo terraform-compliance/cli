@@ -5,7 +5,6 @@ from git import Repo
 from terraform_compliance import __app_name__, __version__
 from terraform_compliance.common.readable_dir import ReadableDir
 from terraform_compliance.common.readable_plan import ReadablePlan
-from terraform_compliance.common.terraform_files import download_terraform
 from radish.main import main as call_radish
 from radish.utils import console_write
 from radish.loader import load_module
