@@ -3,7 +3,8 @@ from terraform_compliance.common.terraform_files import (
     which,
     convert_terraform_plan_to_json,
     download_terraform,
-    get_platform_details
+    get_platform_details,
+    detect_required_terraform_version
 )
 
 import os
@@ -31,3 +32,12 @@ class TestTerraformFiles(TestCase):
 
     # def test_downloading_terraform(self, *args):
     #     tf = download_terraform('0.15.3')
+
+    def test_detect_required_terraform_version(self):
+        current, target = detect_required_terraform_version('0.14.0, but this is 0.15.1; plan files cannot be transferred between')
+        self.assertEqual(current, '0.14.0')
+        self.assertEqual(target, '0.15.1')
+
+        current, target = detect_required_terraform_version('')
+        self.assertIsNone(current)
+        self.assertIsNone(target)

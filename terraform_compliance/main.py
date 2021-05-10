@@ -40,8 +40,6 @@ def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
     parser = argparser
     parser.add_argument('--terraform', '-t', dest='terraform_file', metavar='terraform_file', type=str, nargs='?',
                         help='The absolute path to the terraform executable.', required=False)
-    parser.add_argument('--terraform-version', '-tv', dest='terraform_version', metavar='terraform_version', type=str,
-                        nargs='?', help='Downloads a specific terraform version for reading the plan')
     parser.add_argument('--features', '-f', dest='features', metavar='feature directory', action=ReadableDir,
                         help='Directory (or git repository with "git:" prefix) consists of BDD features', required=True)
     parser.add_argument('--planfile', '-p', dest='plan_file', metavar='plan_file', action=ReadablePlan,
@@ -64,11 +62,6 @@ def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
     steps_directory = os.path.join(os.path.split(os.path.abspath(__file__))[0], 'steps')
 
     python_version_check()
-
-    # Download specific terraform version before we start to do anything
-    if args.terraform_version:
-        terraform_path = download_terraform(args.terraform_version)
-        args.terraform_file = terraform_path
 
     # SSH Key is given for git authentication
     ssh_cmd = {}
