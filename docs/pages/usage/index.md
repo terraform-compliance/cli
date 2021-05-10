@@ -139,16 +139,17 @@ Please note that, if the host that you are trying to authenticate already define
 OPTIONAL
 {: .label .label-yellow}
 
-In some cases, a `plan` file that is created by a specific version of `terraform` might require the same version
-of that `terraform` in order to process that. `terraform-compliance` uses `terraform` in order to parse any plan/state
-files that has been created. In these cases you can just provide the same version of `terraform` via ;
+`terraform-compliance` will attempt to auto-detect the `terraform` version that is used while creating the plan. It will
+attempt to downlod that specific terraform version while converting the plan file into JSON format.
+
+In case this detection attempt fails, you can also provide a local `terraform` executable
 
 ```shell
 [~] $ terraform-compliance -t /path/to/specific/versin/of/terraform ...
 ```
 
-If you are using a [Docker](/pages/installation/docker) version of `terraform-compliance`, `terraform` binary is already
-packaged within the Docker Image. In case, you may need to use another version of `terraform` binary, you can still use 
+If you are using a [Docker](/pages/installation/docker) version of `terraform-compliance`, the latest version of `terraform` binary is already
+packaged within the Docker Image. In case the auto-detection failed and you may need to use another version of `terraform` binary, you can still use 
 `-t` to point the local version.
 
 `terraform` executable is used to transform `plan.out` file produced from `terraform plan` to `plan.out.json` by running 
@@ -161,19 +162,7 @@ container by running ;
 [~] $ terraform show -json plan.out > plan.out.json          # To convert the plan.out to JSON format just after the plan
 ```
 
-### -tv / --terraform-version
-{: .d-inline-block }
-OPTIONAL
-{: .label .label-yellow}
 
-In some use cases where a `plan` file is provided without converted into JSON format, then `terraform-compliance`
-requires `terraform executable` in order to convert this with `-t / --terraform` argument explained above.
-
-If you don't have `terraform executable` exist in your system (like running from Docker), then you might
-want to provide `-tv / --terraform-version` argument to ask `terraform-compliance` to download & install
-given terraform version within your system. In these kind of scenarios, use this argument.
-
-By default, the latest version of `terraform` will be installed in the Docker image on each `terraform-compliance` release.
 
 ### -q / --quit-early
 {: .d-inline-block }
