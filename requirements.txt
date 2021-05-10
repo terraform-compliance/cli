@@ -8,4 +8,4 @@ emoji==1.2.0
 lxml==4.6.3
 semver==2.13.0
 IPython==7.16.1
-diskcache==5.1.0
+diskcache==5.2.1
