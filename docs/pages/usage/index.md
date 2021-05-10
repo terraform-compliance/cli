@@ -21,7 +21,6 @@ cli parameters.
   usage: terraform-compliance [-h] --features feature directory --planfile
                               plan_file [--identity [ssh private key]]
                               [--terraform [terraform_file]]
-                              [--terraform-version [terraform_version]]
                               [--version]
   
   BDD Test Framework for Hashicorp terraform
@@ -37,9 +36,7 @@ cli parameters.
                           SSH Private key that will be use on git
                           authentication.
     --terraform [terraform_file], -t [terraform_file]
-                          The absolute path to the terraform executable.
-    --terraform-version [terraform_version], -tv [terraform_version]
-                            
+                          The absolute path to the terraform executable.  
     --version, -v         show program's version number and exit
 ```
 
