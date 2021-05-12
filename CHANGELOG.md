@@ -1,9 +1,14 @@
 # CHANGELOG
 
 ## Unreleased
+
+* Added an auto-detection mechanism for terraform version while converting the plan. ([#365](https://github.com/terraform-compliance/cli/issues/365) [#273](https://github.com/terraform-compliance/cli/issues/273) [#381](https://github.com/terraform-compliance/cli/issues/381) [MicrosoftDocs/azure-dev-docs#396](https://github.com/MicrosoftDocs/azure-dev-docs/pull/396) [documentation](https://terraform-compliance.com/pages/usage/#-tv---terraform-version))
+
+## 1.3.15 (2020-05-12)
 * Fixed an issue where [exclude resources tag](https://terraform-compliance.com/pages/bdd-references/using_tags.html#exclude-resources) were breaking due to improper `step_obj` creation from `Given` step. ([#468](https://github.com/terraform-compliance/cli/issues/468))
 * Disabled ssh host key checking for private repositories ([#474](https://github.com/terraform-compliance/cli/issues/474))
-* Added an auto-detection mechanism for terraform version while converting the plan. ([#365](https://github.com/terraform-compliance/cli/issues/365) [#273](https://github.com/terraform-compliance/cli/issues/273) [#381](https://github.com/terraform-compliance/cli/issues/381) [MicrosoftDocs/azure-dev-docs#396](https://github.com/MicrosoftDocs/azure-dev-docs/pull/396) [documentation](https://terraform-compliance.com/pages/usage/#-tv---terraform-version))
+* Fixed an issue where some complicated `plan.out.json` files were creating problems while getting parsed. Also improved performance especially on large plan files.
+* Improved performance around 20x while parsing JSON entities. ([#460](https://github.com/terraform-compliance/cli/issues/460))
 
 ## 1.3.14 (2020-04-15)
 * Upgraded python in Docker image from 3.7.3 (stretch) to 3.7.10 (buster)

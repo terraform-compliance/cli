@@ -5,6 +5,7 @@ from copy import deepcopy
 from radish.utils import console_write
 from terraform_compliance.common.defaults import Defaults
 from terraform_compliance.extensions.cache import Cache
+from terraform_compliance.common.helper import recursive_jsonify
 
 
 class TerraformParser(object):
@@ -481,6 +482,13 @@ class TerraformParser(object):
             # print('Building cache for mounted resources at {}'.format(Defaults.cache_dir))
             self._mount_references()
             self._add_action_status()
+
+            self.resources = recursive_jsonify(self.resources)
+            self.resources_raw = recursive_jsonify(self.resources_raw)
+            self.type_to_after_unknown_properties = recursive_jsonify(self.type_to_after_unknown_properties)
+            self.variables = recursive_jsonify(self.variables)
+            self.data = recursive_jsonify(self.data)
+            self.providers = recursive_jsonify(self.providers)
 
             if self.parse_it:
                 self.cache.set('mounted_resources', self.resources)
