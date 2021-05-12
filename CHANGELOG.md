@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## 1.3.15 (2020-05-12)
 * Fixed an issue where [exclude resources tag](https://terraform-compliance.com/pages/bdd-references/using_tags.html#exclude-resources) were breaking due to improper `step_obj` creation from `Given` step. ([#468](https://github.com/terraform-compliance/cli/issues/468))
 * Disabled ssh host key checking for private repositories ([#474](https://github.com/terraform-compliance/cli/issues/474))
 * Fixed an issue where some complicated `plan.out.json` files were creating problems while getting parsed. Also improved performance especially on large plan files.
