@@ -2,13 +2,13 @@ import re
 from netaddr import IPNetwork
 from terraform_compliance.steps import resource_name
 from collections.abc import Iterable
-import json
 from copy import deepcopy
 import sys
 from terraform_compliance.common.exceptions import TerraformComplianceInternalFailure
 from semver import VersionInfo, compare
 from terraform_compliance.common.defaults import Defaults
 from radish.utils import console_write
+import orjson
 
 
 class EmptyStash(object):
@@ -370,8 +370,8 @@ def jsonify(string):
         return string
 
     try:
-        return json.loads(string)
-    except json.decoder.JSONDecodeError:
+        return orjson.loads(string)
+    except orjson.JSONDecodeError:
         return string
 
 
@@ -536,7 +536,7 @@ def merge_dicts(source, target):
     successor of dict_merge
     merges two dictionaries or lists into one
     overlapping list/dictionaries are also merged within each other
-   
+
     assume target is low priority
 
     conflicts
