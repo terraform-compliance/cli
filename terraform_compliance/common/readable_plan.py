@@ -1,7 +1,7 @@
 import sys
 import os
 from argparse import Action
-import json
+import orjson
 import filetype
 from terraform_compliance.common.terraform_files import convert_terraform_plan_to_json
 from terraform_compliance.common.exceptions import TerraformComplianceInternalFailure
@@ -37,8 +37,7 @@ class ReadablePlan(Action):
 
         # Check if the given file is a json file.
         try:
-            with open(values, 'r', encoding='utf-8') as plan_file:
-                plan_lines = plan_file.read().splitlines()
+            plan_lines = [line for line in open(values, 'r', encoding='utf-8')]
 
             # Some Github Actions (hashicorp/setup-terraform) has internal wrappers which is
             # breaking the json file that is read by the terraform-compliance
@@ -49,14 +48,14 @@ class ReadablePlan(Action):
             else:
                 plan_lines = plan_lines[0]
 
-            data = json.loads(plan_lines)
+            data = orjson.loads(plan_lines)
 
             # Write the changed plan file to the same file, since it is used in other places.
             if file_change_required:
                 with open(values, 'w', encoding='utf-8') as plan_file:
                     plan_file.write(plan_lines)
 
-        except json.decoder.JSONDecodeError:
+        except orjson.JSONDecodeError:
             print('ERROR: {} is not a valid JSON file'.format(values))
             sys.exit(1)
         except UnicodeDecodeError:
