@@ -51,7 +51,8 @@ def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
                         help='Do not output any scenarios, just write results or failures', required=False)
     parser.add_argument('--identity', '-i', dest='ssh_key', metavar='ssh private key', type=str, nargs='?',
                         help='SSH Private key that will be use on git authentication.', required=False)
-    parser.add_argument('--debug', '-d', dest='debug', action='store_true', help='Turns on debugging mode', required=False)
+    parser.add_argument('--debug', '-d', dest='debug', action='store_true', help='Turns on debugging mode',
+                        required=False)
 
     parser.add_argument('--version', '-v', action='version', version=__version__)
 
