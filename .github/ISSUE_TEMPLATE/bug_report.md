@@ -32,7 +32,7 @@ However, difficulty in reproducing the issue makes it more difficult to get to i
 - Instructions on how to compile the files you provided
 -->
 
-**Feature File**
+**Feature File:**
 <!-- Can link to the file or paste it below-->
 ```gherkin
 Given I have ....
@@ -40,10 +40,10 @@ When it contains ...
 Then it must ....
 And it must ...
 ```
-**Plan File**
+**Plan File:**
 <!-- Please make sure that your plan doesn't have any confidential information. -->
 
-**Sample Terraform Code**
+**Sample Terraform Code:**
 <!-- Can link to the file or paste it below. Please make sure that your code doesn't have any confidential information. -->
 ```hcl
 resource "aws_s3_bucket" "example_code" {
@@ -51,23 +51,23 @@ resource "aws_s3_bucket" "example_code" {
 }
 ```
 
-**Used `terraform-compliance` parameters**
+**Used `terraform-compliance` Parameters:**
 <!-- If anything other than `-p` and `-f` is being used, please let us know. -->
 
-**Running via Docker**
+**Running via Docker:**
 <!-- Yes or No -->
 <!-- If not running via Docker, this section can be deleted. Otherwise, docker related information goes here. -->
 
-**Error Output**
+**Error Output:**
 <!-- What did happen? -->
 
-**Expected behavior:**
+**Expected Behavior:**
 <!-- What did you expect to happen? -->
 
-**Tested versions:**
+**Tested Versions:**
 - terraform-compliance version: ```your terraform-compliance version``` <!-- terraform-compliance -v -->
 - terraform version: ```your terraform version``` <!-- terraform -v -->
 - python version: ```your python runtime version, if running as a python package``` <!-- python -v -->
 
-**Additional context**
+**Additional Context:**
 <!-- Add any other context about the problem here. -->
