@@ -1,6 +1,6 @@
 radish-bdd==0.13.1
 mock==4.0.3
-gitpython==3.1.14
+gitpython==3.1.17
 netaddr==0.8.0
 colorful==0.5.4
 filetype==1.0.7
@@ -16,4 +16,4 @@ diskcache==5.2.1
 setuptools
 wheel
 twine
-orjson==3.5.2
+orjson==3.5.3

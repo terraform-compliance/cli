@@ -73,7 +73,7 @@ class ReadablePlan(Action):
 
             # Check if this is a state file
             if 'values' in data:
-                assert data['values']['root_module']['resources']
+                assert data['values']['root_module'].get('resources', data['values']['root_module'].get('child_modules'))
 
             # Then it must be a terraform plan file
             else:

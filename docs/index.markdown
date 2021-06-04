@@ -8,7 +8,7 @@ permalink: /
 <img src="https://github.com/eerkunt/terraform-compliance/raw/master/logo.png" align="right" width="150" valign="top" style="max-width:100%;">
 
 <div align="left">
-  <a href="https://travis-ci.org/eerkunt/terraform-compliance">
+  <a href="https://github.com/terraform-compliance/cli/actions/workflows/cd.yml">
     <img src="https://github.com/eerkunt/terraform-compliance/workflows/CD/badge.svg" alt="Build" />
   </a>
 
