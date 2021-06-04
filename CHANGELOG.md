@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## 1.3.16 (2020-06-04)
 
 * Added an auto-detection mechanism for terraform version while converting the plan. ([#365](https://github.com/terraform-compliance/cli/issues/365) [#273](https://github.com/terraform-compliance/cli/issues/273) [#381](https://github.com/terraform-compliance/cli/issues/381) [MicrosoftDocs/azure-dev-docs#396](https://github.com/MicrosoftDocs/azure-dev-docs/pull/396) [documentation](https://terraform-compliance.com/pages/usage/#-tv---terraform-version))
 * Updated the hashicorp public key. ([#475](https://github.com/terraform-compliance/cli/issues/475))
