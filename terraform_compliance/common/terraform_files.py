@@ -132,10 +132,14 @@ def download_terraform(version):
 
 
 def detect_required_terraform_version(string):
-    match = re.search(r'([0-9.]+), but this is ([0-9.]+); plan files cannot be transferred between',
-                      string, re.DOTALL)
+    match_regex = [
+        r'([0-9.]+), but this is ([0-9.]+); plan files cannot be transferred between',
+        r'by Terraform v([0-9.]+), which is newer than current v([0-9.]+);'
+    ]
+    for pattern in match_regex:
+        match = re.search(pattern, string, re.DOTALL)
 
-    if match is not None:
-        return match.group(1), match.group(2)
+        if match is not None:
+            return match.group(1), match.group(2)
 
     return None, None
