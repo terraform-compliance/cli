@@ -3,7 +3,7 @@ layout: default
 title: Encryption
 nav_order: 2
 has_children: false
-parent: Examples
+parent: AWS
 ---
 
 AWS

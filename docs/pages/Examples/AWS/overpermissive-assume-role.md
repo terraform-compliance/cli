@@ -3,7 +3,7 @@ layout: default
 title: Overpermissive Roles
 nav_order: 5
 has_children: false
-parent: Examples
+parent: AWS
 ---
 
 AWS

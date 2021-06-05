@@ -1,9 +1,9 @@
 ---
 layout: default
 title: Noskip Examples
-nav_order: 12
+nav_order: 2
 has_children: false
-parent: Examples
+parent: Azure
 ---
 # Noskip Examples
 

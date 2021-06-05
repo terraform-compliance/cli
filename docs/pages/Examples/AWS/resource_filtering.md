@@ -3,7 +3,7 @@ layout: default
 title: Resource Filtering
 nav_order: 6
 has_children: false
-parent: Examples
+parent: AWS
 ---
 
 AWS
