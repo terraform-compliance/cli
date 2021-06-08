@@ -159,7 +159,7 @@ must be enabled
 
 
 `encryption at rest` and `encryption in flight` are templated property types to help you to increase
-the readability of your BDD test. Please check [templated entities](/pages/bdd-references/templated_entities) 
+the readability of your BDD test. Please check [templated entities](/pages/bdd-references/template_entities.html) 
 section for more information.
 
 ------------------------
