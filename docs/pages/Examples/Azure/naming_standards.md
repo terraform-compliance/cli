@@ -1,9 +1,9 @@
 ---
 layout: default
 title: Naming Standards
-nav_order: 4
+nav_order: 1
 has_children: false
-parent: Examples
+parent: AWS
 ---
 
 AWS
@@ -18,18 +18,16 @@ AWS
   Scenario Outline: Naming Standard on all available resources
     Given I have <resource_name> defined
     When it contains <name_key>
+    Then it must have name
     Then its value must match the "myproject-(prod|uat|dev)-someapplication-.*" regex
 
     Examples:
-    | resource_name           | name_key |
-    | AWS EC2 instance        | name     |
-    | AWS ELB resource        | name     |
-    | AWS RDS instance        | name     |
-    | AWS S3 Bucket           | bucket   |
-    | AWS EBS volume          | name     |
-    | AWS Auto-Scaling Group  | name     |
-    | aws_key_pair            | key_name |
-    | aws_ecs_cluster         | name     |
+    | resource_name                          | name_key |
+    | azurerm_network_interface              | name     |
+    | azurerm_windows_virtual_machine        | name     |
+
+  
+
 ```
 
 This is just an example where we assumed we have a naming standard that we apply 
