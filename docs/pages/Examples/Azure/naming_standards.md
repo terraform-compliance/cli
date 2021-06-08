@@ -3,10 +3,10 @@ layout: default
 title: Naming Standards
 nav_order: 1
 has_children: false
-parent: AWS
+parent: Azure
 ---
 
-AWS
+Azure
 {: .label .label-yellow } 
 
 * Table of Contents

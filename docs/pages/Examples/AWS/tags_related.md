@@ -1,9 +1,9 @@
 ---
 layout: default
 title: Tags
-nav_order: 1
+nav_order: 10
 has_children: false
-parent: Examples
+parent: AWS
 ---
 
 # Examples about tags

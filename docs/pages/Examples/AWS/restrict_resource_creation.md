@@ -3,7 +3,7 @@ layout: default
 title: Restrict Resources
 nav_order: 7
 has_children: false
-parent: Examples
+parent: AWS
 ---
 
 AWS

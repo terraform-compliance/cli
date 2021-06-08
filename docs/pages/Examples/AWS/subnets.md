@@ -3,7 +3,7 @@ layout: default
 title: Subnets
 nav_order: 9
 has_children: false
-parent: Examples
+parent: AWS
 ---
 
 AWS

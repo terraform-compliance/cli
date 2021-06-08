@@ -3,7 +3,7 @@ layout: default
 title: Security Groups
 nav_order: 8
 has_children: false
-parent: Examples
+parent: AWS
 ---
 
 AWS
