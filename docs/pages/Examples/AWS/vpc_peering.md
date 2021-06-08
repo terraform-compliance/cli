@@ -17,7 +17,8 @@ AWS
 ```gherkin
 Scenario Outline: Owner and Peer Validation
     Given I have aws_vpc_peering_connection defined
-    When it contains <key>
+    When it has <key>
+    Then it must have <key>
     Then its value must match the "<value>" regex
 
   Examples:
