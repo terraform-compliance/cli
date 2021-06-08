@@ -17,8 +17,8 @@ AWS
 ```gherkin
   Scenario Outline: Naming Standard on all available resources
     Given I have <resource_name> defined
-    When it contains <name_key>
-    Then it must have name
+    When it has <name_key>
+    Then it must have <name_key>
     Then its value must match the "myproject-(prod|uat|dev)-someapplication-.*" regex
 
     Examples:
