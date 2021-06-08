@@ -416,7 +416,7 @@ it must fail
 ------------------------
 ### [Then](#){: .p-1 .text-red-200} it must have [address](#){: .p-1 .text-green-200 .fw-700} referenced
 `terraform-compliance` mounts resources into each other if they are referenced. E.g. an `aws_security_group_rule` onto
-`aws_security_grouup`. Some use cases may require to find these references, mount points about which entity is mounted 
+`aws_security_group`. Some use cases may require to find these references, mount points about which entity is mounted 
 on top of which entity. This step can be used in these situations.
 
 > __Possible sentences :__
