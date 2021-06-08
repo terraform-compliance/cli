@@ -7,7 +7,7 @@ parent: Azure
 ---
 
 Azure
-{: .label .label-yellow } 
+{: .label .label-blue } 
 
 * Table of Contents
 {:toc}

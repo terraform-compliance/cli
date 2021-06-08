@@ -5,6 +5,13 @@ nav_order: 2
 has_children: false
 parent: Azure
 ---
+
+Azure
+{: .label .label-blue } 
+
+* Table of Contents
+{:toc}
+
 # Noskip Examples
 
 Noskip tag fails the scenario or step if it skips. Using this tag lets us use `GIVEN` and `WHEN` steps similar to a `THEN` step.
