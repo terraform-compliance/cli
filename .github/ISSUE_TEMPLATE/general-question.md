@@ -7,5 +7,5 @@ assignees: ''
 
 ---
 
-** Question : **
-<A clear describe of your question. Ex, how can I do [...] for [...] with terraform-compliance ?>
+**Question:**
+<!-- A clear describe of your question. Ex, how can I do [...] for [...] with terraform-compliance? -->

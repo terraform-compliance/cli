@@ -7,34 +7,67 @@ assignees: eerkunt
 
 ---
 
-**Description :**
-<A clear and concise description of what the bug is.>
+<!-- Thank you for opening an issue! -->
+## Description
+<!-- A clear and concise description of what the bug is. -->
 
-**To Reproduce**
-1. <Either a sample `terraform` code, or your `terraform plan` file if it doesn't have any confidential information>
-```hcl
-resource "aws_s3_bucket" "example_code" {
-   bucket = "This is just a sample code"
-}
-```
-2. <Used `terraform-compliance` parameters>
-3. <Indication about either run via docker container or python package>
-4. <Error output>
-5. <Your feature/scenario/steps>
+## To Reproduce
+<!--
+To fix problems, we usually only need the following:
+   1. Feature/Scenarios/Steps you are running terraform-compliance with
+   2. plan.out.json file you are running terraform-compliance against
+
+More context can only help:
+   3. Sample `terraform` code that generates parts or the entirety of the shared terraform plan
+   4. Used `terraform-compliance` parameters
+   5. Indication about either run via docker container or python package
+   6. Error output
+
+
+Providing a plan file makes it x10 times easier to reproduce your problem. Sometimes, it can be difficult to provide an anonymized version of the plan file. In those cases, sharing the terraform code will suffice. 
+
+However, difficulty in reproducing the issue makes it more difficult to get to it. If you are not sharing a plan file and your setup involves using multiple files, directories, variables, or modules, please share more information on how to reproduce it. This may include:
+- Overview of your file structure
+- Mock variable files
+- Instructions on how to compile the files you provided
+-->
+
+**Feature File:**
+<!-- Can link to the file or paste it below-->
 ```gherkin
 Given I have ....
 When it contains ...
 Then it must ....
 And it must ...
 ```
+**Plan File:**
+<!-- Please make sure that your plan doesn't have any confidential information. -->
 
-**Expected behavior :**
-<A clear and concise description of what you expected to happen.>
+**Sample Terraform Code:**
+<!-- Can link to the file or paste it below. Please make sure that your code doesn't have any confidential information. -->
+```hcl
+resource "aws_s3_bucket" "example_code" {
+   bucket = "This is just a sample code"
+}
+```
 
-**Tested versions :**
-- <terraform-compliance version (`terraform-compliance -v`)>
-- <terraform version (`terraform -v`)>
-- <python runtime version, if running as a python package (`python --version`)>
+**Used `terraform-compliance` Parameters:**
+<!-- If anything other than `-p` and `-f` is being used, please let us know. -->
 
-**Additional context**
-Add any other context about the problem here.
+**Running via Docker:**
+<!-- Yes or No -->
+<!-- If not running via Docker, this section can be deleted. Otherwise, docker related information goes here. -->
+
+**Error Output:**
+<!-- What did happen? -->
+
+**Expected Behavior:**
+<!-- What did you expect to happen? -->
+
+**Tested Versions:**
+- terraform-compliance version: ```your terraform-compliance version``` <!-- terraform-compliance -v -->
+- terraform version: ```your terraform version``` <!-- terraform -v -->
+- python version: ```your python runtime version, if running as a python package``` <!-- python -v -->
+
+**Additional Context:**
+<!-- Add any other context about the problem here. -->
