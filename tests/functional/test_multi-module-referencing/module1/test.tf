@@ -3,7 +3,7 @@ module "second_layer" {
 }
 
 resource "aws_s3_bucket" "should_not_fail_first_layer" {
-  bucket = "some-test-bucket-name"
+  bucket = "some-test-bucket-should_not_fail_first_layer"
 }
 
 resource "aws_s3_bucket_public_access_block" "should_not_fail_first_layer" {

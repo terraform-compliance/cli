@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "test" {
-  bucket = "some-test-bucket-name"
+  bucket = "some-test-bucket-test"
 }
 
 resource "aws_s3_bucket_public_access_block" "test" {
