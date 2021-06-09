@@ -573,6 +573,15 @@ class TerraformParser(object):
         return False
 
     def process_module_calls(self, module_resource, parents_modules=None):
+        '''
+        This method will recursively process modules and extract resources from "module_resource" data
+        which is actually a data from self.configuration dict. We were returning the native resource name
+        before this method, but now we are returning proper address naming for the resource.
+
+        :param module_resource: The self.configuration part
+        :param parents_modules: internal usage for recursive functionality
+        :return: None
+        '''
         if parents_modules is None:
             parents_modules = []
 
@@ -596,11 +605,27 @@ class TerraformParser(object):
         return resources
 
     def extract_resource_type_from_address(self, resource_address_string):
+        '''
+        Tries to get the resource type from the resource address
+
+        :param resource_address_string: String of the whole resource address
+        :return: String of the resource type if found, otherwise will return full address
+
+        Example;
+
+            "aws_s3_bucket.test" will return "aws_s3_bucket"
+            "module_a.module_b.module_c.aws_s3_bucket.test" will return "aws_s3_bucket"
+            "something_else" will return "something_else"
+        '''
         if '.' in resource_address_string:
             octets = resource_address_string.split('.')
             if len(octets) > 1:
+                # Return the type as we found it properly
                 return octets[-2]
             else:
+                # Return the whole address
                 return octets[0]
+
+        # Returning the whole address
         return resource_address_string
 
