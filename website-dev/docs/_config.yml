@@ -23,8 +23,8 @@ aux_links:
 #  "Edit this Page":
 #    - "{{site.github.repository_url}}/tree/master/docs/{{page.path}}"
 
-#theme: just-the-docs
-remote_theme: pmarsceill/just-the-docs
+theme: just-the-docs
+#remote_theme: pmarsceill/just-the-docs
 
 plugins:
   - jekyll-feed
