@@ -205,8 +205,7 @@ class TerraformParser(object):
         resources = self.raw.get('configuration', {}).get('root_module', {}).get('resources', [])
 
         # Append module resources
-        for module in seek_key_in_dict(self.raw.get('configuration', {}).get('root_module', {}).get("module_calls", {}), "module"):
-            resources += module.get('module',{}).get("resources", [])
+        resources.extend(self.process_module_calls(self.raw.get('configuration', {}).get('root_module', {}).get("module_calls", {})))
 
         remove_constant_values(resources)
         for resource in resources:
@@ -425,8 +424,7 @@ class TerraformParser(object):
                         ref_type = resource.split('.')[0]
 
                     if not ref_type and not self.is_type(resource, 'data'):
-                        resource_type, resource_id = resource.split('.')
-                        ref_type = resource_type
+                        ref_type = self.extract_resource_type_from_address(resource)
 
                     for k, v in ref_list.items():
                         v = flatten_list(v)
@@ -441,7 +439,7 @@ class TerraformParser(object):
                     for parameter, target_resources in ref_list.items():
                         for target_resource in target_resources:
                             if not self.is_type(resource, 'data') and not self.is_type(resource, 'var') and not self.is_type(resource, 'provider'):
-                                ref_type = target_resource.split('.', maxsplit=1)[0]
+                                ref_type = self.extract_resource_type_from_address(target_resource)
 
                                 self._mount_resources(source=[target_resource],
                                                       target={parameter: source_resources},
@@ -573,3 +571,61 @@ class TerraformParser(object):
             return resource['address'].split('.')[0] == mode
 
         return False
+
+    def process_module_calls(self, module_resource, parents_modules=None):
+        '''
+        This method will recursively process modules and extract resources from "module_resource" data
+        which is actually a data from self.configuration dict. We were returning the native resource name
+        before this method, but now we are returning proper address naming for the resource.
+
+        :param module_resource: The self.configuration part
+        :param parents_modules: internal usage for recursive functionality
+        :return: None
+        '''
+        if parents_modules is None:
+            parents_modules = []
+
+        resources = []
+        for k, v in module_resource.items():
+            # Set the naming correct (for cases like module.a.module.b.module.c...)
+            current_module_level = deepcopy(parents_modules)
+            current_module_level.append('module.{}'.format(k))
+            module_name = ".".join(current_module_level)
+
+            # Register the resource (along with module naming)
+            if 'resources' in v.get('module', {}):
+                for resource in v['module']['resources']:
+                    resource['address'] = '{}.{}'.format(module_name, resource['address'])
+                    resources.append(resource)
+
+            # Dive deeper, its not finished yet.
+            if 'module_calls' in v.get('module', {}):
+                resources.extend(self.process_module_calls(v['module']['module_calls'], current_module_level))
+
+        return resources
+
+    def extract_resource_type_from_address(self, resource_address_string):
+        '''
+        Tries to get the resource type from the resource address
+
+        :param resource_address_string: String of the whole resource address
+        :return: String of the resource type if found, otherwise will return full address
+
+        Example;
+
+            "aws_s3_bucket.test" will return "aws_s3_bucket"
+            "module_a.module_b.module_c.aws_s3_bucket.test" will return "aws_s3_bucket"
+            "something_else" will return "something_else"
+        '''
+        if '.' in resource_address_string:
+            octets = resource_address_string.split('.')
+            if len(octets) > 1:
+                # Return the type as we found it properly
+                return octets[-2]
+            else:
+                # Return the whole address
+                return octets[0]
+
+        # Returning the whole address
+        return resource_address_string
+

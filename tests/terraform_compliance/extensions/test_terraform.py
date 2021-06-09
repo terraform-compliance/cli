@@ -1,14 +1,12 @@
-from unittest import TestCase
+from unittest import TestCase, TestLoader
 from terraform_compliance.extensions.terraform import TerraformParser, seek_key_in_dict
 from tests.mocks import MockedData
 from mock import patch
 from ddt import ddt, data
 from copy import deepcopy
 
-
 @ddt
 class TestTerraformParser(TestCase):
-
 
     @patch.object(TerraformParser, '_read_file', return_value={})
     def test_version_check_success(self, *args):
@@ -16,7 +14,6 @@ class TestTerraformParser(TestCase):
         obj.raw['format_version'] = obj.supported_format_versions[0]
         obj.raw['terraform_version'] = obj.supported_terraform_versions[0]
         self.assertTrue(obj._version_check())
-
 
     @patch.object(TerraformParser, '_read_file', return_value={})
     def test_version_check_failure_unsupported_format_version(self, *args):
@@ -26,7 +23,6 @@ class TestTerraformParser(TestCase):
         with self.assertRaises(SystemExit):
             obj._version_check()
 
-
     @patch.object(TerraformParser, '_read_file', return_value={})
     def test_version_check_failure_unsupported_terraform_version(self, *args):
         obj = TerraformParser('somefile', parse_it=False)
@@ -35,14 +31,12 @@ class TestTerraformParser(TestCase):
         with self.assertRaises(SystemExit):
             obj._version_check()
 
-
     @patch.object(TerraformParser, '_read_file', return_value={})
     def test_identify_data_file_success(self, *args):
         obj = TerraformParser('somefile', parse_it=False)
         obj.raw['values'] = True
         obj._identify_data_file()
         self.assertEqual(obj.file_type, 'state')
-
 
     @patch.object(TerraformParser, '_read_file', return_value={})
     def test_identify_data_file_failure(self, *args):
@@ -268,7 +262,7 @@ class TestTerraformParser(TestCase):
         obj.raw['configuration'] = {
             'root_module': {
                 'module_calls': {
-                    'a_module':{
+                    'a_module': {
                         'module': {
                             'resources': [
                                 {
@@ -281,7 +275,7 @@ class TestTerraformParser(TestCase):
             }
         }
         obj._parse_configurations()
-        self.assertEqual(obj.configuration['resources']['something'], {'address': 'something'})
+        self.assertEqual(obj.configuration['resources']['module.a_module.something'], {'address': 'module.a_module.something'})
 
     @patch.object(TerraformParser, '_read_file', return_value={})
     def test_parse_configurations_ignore_nested_resources(self, *args):
@@ -609,7 +603,7 @@ class TestTerraformParser(TestCase):
         for key in after_unknown_values:
             mapped_after_unknown_value = obj.type_to_after_unknown_properties[resource['type']][key]
             self.assertEqual(mapped_after_unknown_value, after_unknown_values[key])
-    
+
     @patch.object(TerraformParser, '_read_file', return_value={})
     def test_remember_after_unknown(self, *args):
         obj = TerraformParser('somefile', parse_it=False)
@@ -648,3 +642,214 @@ class TestTerraformParser(TestCase):
 
                 mapped_after_unknown_value = obj.type_to_after_unknown_properties[t][property_key]
                 self.assertEqual(mapped_after_unknown_value, property_value)                
+
+    @patch.object(TerraformParser, '_read_file', return_value={})
+    def test_process_module_calls_success(self, *args):
+        module_resource = {
+                'first_layer': {
+                    'source': './module1',
+                    'module': {
+                        'resources': [
+                                        {
+                                            'address': 'aws_s3_bucket.should_not_fail_first_layer',
+                                            'type': 'aws_s3_bucket',
+                                            'name': 'should_not_fail_first_layer',
+                                            'expressions': {
+                                                'bucket': {'constant_value': 'some-test-bucket-name'}
+                                            },
+                                        },
+                                        {
+                                            'address': 'aws_s3_bucket_public_access_block.should_not_fail_first_layer',
+                                            'type': 'aws_s3_bucket_public_access_block',
+                                            'name': 'should_not_fail_first_layer',
+                                            'provider_config_key': 'first_layer:aws',
+                                            'expressions': {
+                                                'block_public_acls': {'constant_value': True},
+                                                'block_public_policy': {'constant_value': True},
+                                                 'bucket': {'references': ['aws_s3_bucket.should_not_fail_first_layer']},
+                                                 'ignore_public_acls': {'constant_value': True},
+                                                 'restrict_public_buckets': {'constant_value': True}
+                                            },
+                                        }
+                        ],
+                        'module_calls': {
+                            'second_layer': {
+                                'source': './module2',
+                                'module': {
+                                    'resources': [
+                                        {
+                                            'address': 'aws_s3_bucket.should_not_fail_second_layer',
+                                            'type': 'aws_s3_bucket',
+                                            'name': 'should_not_fail_second_layer',
+                                            'expressions': {
+                                                'bucket': {'constant_value': 'some-test-bucket-name'}
+                                            },
+                                        },
+                                        {
+                                            'address': 'aws_s3_bucket_public_access_block.should_not_fail_second_layer',
+                                            'type': 'aws_s3_bucket_public_access_block',
+                                            'name': 'should_not_fail_second_layer',
+                                            'expressions': {
+                                                'block_public_acls': {'constant_value': True},
+                                                'block_public_policy': {'constant_value': True},
+                                                'bucket': {'references': ['aws_s3_bucket.should_not_fail_second_layer']},
+                                                'ignore_public_acls': {'constant_value': True},
+                                                'restrict_public_buckets': {'constant_value': True}
+                                            },
+                                        }
+                                    ],
+                                    'module_calls': {
+                                        'third_layer': {
+                                            'source': './module3',
+                                            'module': {
+                                                'resources': [
+                                                    {
+                                                        'address': 'aws_s3_bucket.test',
+                                                        'type': 'aws_s3_bucket',
+                                                        'name': 'test',
+                                                        'expressions': {
+                                                            'bucket': {'constant_value': 'some-test-bucket-name'}
+                                                        },
+                                                    },
+                                                    {
+                                                        'address': 'aws_s3_bucket_public_access_block.test',
+                                                        'type': 'aws_s3_bucket_public_access_block',
+                                                        'name': 'test',
+                                                        'expressions': {
+                                                            'block_public_acls': {'constant_value': True},
+                                                            'block_public_policy': {'constant_value': True},
+                                                            'bucket': {'references': ['aws_s3_bucket.test']},
+                                                            'ignore_public_acls': {'constant_value': True},
+                                                            'restrict_public_buckets': {'constant_value': True}
+                                                        },
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                'root_layer': {
+                    'source': './module1',
+                    'module': {
+                        'resources': [
+                            {
+                                'address': 'aws_s3_bucket.should_not_fail_first_layer',
+                                'type': 'aws_s3_bucket',
+                                'name': 'should_not_fail_first_layer',
+                                'expressions': {
+                                    'bucket': {'constant_value': 'some-test-bucket-name'}
+                                },
+                            },
+                            {
+                                'address': 'aws_s3_bucket_public_access_block.should_not_fail_first_layer',
+                                'type': 'aws_s3_bucket_public_access_block',
+                                'name': 'should_not_fail_first_layer',
+                                'provider_config_key': 'first_layer:aws',
+                                'expressions': {
+                                    'block_public_acls': {'constant_value': True},
+                                    'block_public_policy': {'constant_value': True},
+                                    'bucket': {'references': ['aws_s3_bucket.should_not_fail_first_layer']},
+                                    'ignore_public_acls': {'constant_value': True},
+                                    'restrict_public_buckets': {'constant_value': True}
+                                },
+                            }
+                        ],
+                        'module_calls': {
+                            'second_layer': {
+                                'source': './module2',
+                                'module': {
+                                    'resources': [
+                                        {
+                                            'address': 'aws_s3_bucket.should_not_fail_second_layer',
+                                            'type': 'aws_s3_bucket',
+                                            'name': 'should_not_fail_second_layer',
+                                            'expressions': {
+                                                'bucket': {'constant_value': 'some-test-bucket-name'}
+                                            },
+                                        },
+                                        {
+                                            'address': 'aws_s3_bucket_public_access_block.should_not_fail_second_layer',
+                                            'type': 'aws_s3_bucket_public_access_block',
+                                            'name': 'should_not_fail_second_layer',
+                                            'expressions': {
+                                                'block_public_acls': {'constant_value': True},
+                                                'block_public_policy': {'constant_value': True},
+                                                'bucket': {'references': ['aws_s3_bucket.should_not_fail_second_layer']},
+                                                'ignore_public_acls': {'constant_value': True},
+                                                'restrict_public_buckets': {'constant_value': True}
+                                            },
+                                        }
+                                    ],
+                                    'module_calls': {
+                                        'third_layer': {
+                                            'source': './module3',
+                                            'module': {
+                                                'resources': [
+                                                    {
+                                                        'address': 'aws_s3_bucket.test',
+                                                        'type': 'aws_s3_bucket',
+                                                        'name': 'test',
+                                                        'expressions': {
+                                                            'bucket': {'constant_value': 'some-test-bucket-name'}
+                                                        },
+                                                    },
+                                                    {
+                                                        'address': 'aws_s3_bucket_public_access_block.test',
+                                                        'type': 'aws_s3_bucket_public_access_block',
+                                                        'name': 'test',
+                                                        'expressions': {
+                                                            'block_public_acls': {'constant_value': True},
+                                                            'block_public_policy': {'constant_value': True},
+                                                            'bucket': {'references': ['aws_s3_bucket.test']},
+                                                            'ignore_public_acls': {'constant_value': True},
+                                                            'restrict_public_buckets': {'constant_value': True}
+                                                        },
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+        print(module_resource)
+        obj = TerraformParser('somefile', parse_it=False)
+        print(obj)
+        resources = obj.process_module_calls(module_resource)
+        print(resources)
+        self.assertEqual(len(resources), 12)
+
+        # Check if all extracted resources are actually in dict type
+        for tested_resouce in resources:
+            self.assertIs(type(tested_resouce), dict)
+
+        self.assertEqual(resources[0]['address'], 'module.first_layer.aws_s3_bucket.should_not_fail_first_layer')
+        self.assertEqual(resources[1]['address'], 'module.first_layer.aws_s3_bucket_public_access_block.should_not_fail_first_layer')
+        self.assertEqual(resources[2]['address'], 'module.first_layer.module.second_layer.aws_s3_bucket.should_not_fail_second_layer')
+        self.assertEqual(resources[3]['address'], 'module.first_layer.module.second_layer.aws_s3_bucket_public_access_block.should_not_fail_second_layer')
+        self.assertEqual(resources[4]['address'], 'module.first_layer.module.second_layer.module.third_layer.aws_s3_bucket.test')
+        self.assertEqual(resources[5]['address'], 'module.first_layer.module.second_layer.module.third_layer.aws_s3_bucket_public_access_block.test')
+        self.assertEqual(resources[6]['address'], 'module.root_layer.aws_s3_bucket.should_not_fail_first_layer')
+        self.assertEqual(resources[7]['address'], 'module.root_layer.aws_s3_bucket_public_access_block.should_not_fail_first_layer')
+        self.assertEqual(resources[8]['address'], 'module.root_layer.module.second_layer.aws_s3_bucket.should_not_fail_second_layer')
+        self.assertEqual(resources[9]['address'], 'module.root_layer.module.second_layer.aws_s3_bucket_public_access_block.should_not_fail_second_layer')
+        self.assertEqual(resources[10]['address'], 'module.root_layer.module.second_layer.module.third_layer.aws_s3_bucket.test')
+        self.assertEqual(resources[11]['address'], 'module.root_layer.module.second_layer.module.third_layer.aws_s3_bucket_public_access_block.test')
+
+    @patch.object(TerraformParser, '_read_file', return_value={})
+    def test_extract_resource_type_from_address(self, *args):
+        obj = TerraformParser('somefile', parse_it=False)
+        self.assertEqual(obj.extract_resource_type_from_address('aws_s3_bucket.some_name'), 'aws_s3_bucket')
+        self.assertEqual(obj.extract_resource_type_from_address('module.a.aws_s3_bucket.some_name'), 'aws_s3_bucket')
+        self.assertEqual(obj.extract_resource_type_from_address('module.a.module.b.aws_s3_bucket.some_name'), 'aws_s3_bucket')
+        self.assertEqual(obj.extract_resource_type_from_address('module.a.module.b.module.c.aws_s3_bucket.some_name'), 'aws_s3_bucket')
+        self.assertEqual(obj.extract_resource_type_from_address('something_else.aws_s3_bucket.some_name'), 'aws_s3_bucket')
+        self.assertEqual(obj.extract_resource_type_from_address('aws_s3_bucket_some_name'), 'aws_s3_bucket_some_name')
