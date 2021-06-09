@@ -578,11 +578,14 @@ class TerraformParser(object):
 
         return False
 
-    def process_module_calls(self, module_resource, parents=[]):
+    def process_module_calls(self, module_resource, parents_modules=None):
+        if parents_modules is None:
+            parents_modules = []
+
         resources = []
         for k, v in module_resource.items():
             # Set the naming correct (for cases like module.a.module.b.module.c...)
-            current_module_level = parents
+            current_module_level = parents_modules
             current_module_level.append('module.{}'.format(k))
             module_name = ".".join(current_module_level)
 

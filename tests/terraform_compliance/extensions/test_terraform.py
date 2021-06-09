@@ -1,14 +1,12 @@
-from unittest import TestCase
+from unittest import TestCase, TestLoader
 from terraform_compliance.extensions.terraform import TerraformParser, seek_key_in_dict
 from tests.mocks import MockedData
 from mock import patch
 from ddt import ddt, data
 from copy import deepcopy
 
-
 @ddt
 class TestTerraformParser(TestCase):
-
 
     @patch.object(TerraformParser, '_read_file', return_value={})
     def test_version_check_success(self, *args):
@@ -16,7 +14,6 @@ class TestTerraformParser(TestCase):
         obj.raw['format_version'] = obj.supported_format_versions[0]
         obj.raw['terraform_version'] = obj.supported_terraform_versions[0]
         self.assertTrue(obj._version_check())
-
 
     @patch.object(TerraformParser, '_read_file', return_value={})
     def test_version_check_failure_unsupported_format_version(self, *args):
@@ -26,7 +23,6 @@ class TestTerraformParser(TestCase):
         with self.assertRaises(SystemExit):
             obj._version_check()
 
-
     @patch.object(TerraformParser, '_read_file', return_value={})
     def test_version_check_failure_unsupported_terraform_version(self, *args):
         obj = TerraformParser('somefile', parse_it=False)
@@ -35,14 +31,12 @@ class TestTerraformParser(TestCase):
         with self.assertRaises(SystemExit):
             obj._version_check()
 
-
     @patch.object(TerraformParser, '_read_file', return_value={})
     def test_identify_data_file_success(self, *args):
         obj = TerraformParser('somefile', parse_it=False)
         obj.raw['values'] = True
         obj._identify_data_file()
         self.assertEqual(obj.file_type, 'state')
-
 
     @patch.object(TerraformParser, '_read_file', return_value={})
     def test_identify_data_file_failure(self, *args):
@@ -268,7 +262,7 @@ class TestTerraformParser(TestCase):
         obj.raw['configuration'] = {
             'root_module': {
                 'module_calls': {
-                    'a_module':{
+                    'a_module': {
                         'module': {
                             'resources': [
                                 {
@@ -281,7 +275,7 @@ class TestTerraformParser(TestCase):
             }
         }
         obj._parse_configurations()
-        self.assertEqual(obj.configuration['resources']['something'], {'address': 'something'})
+        self.assertEqual(obj.configuration['resources']['module.a_module.something'], {'address': 'module.a_module.something'})
 
     @patch.object(TerraformParser, '_read_file', return_value={})
     def test_parse_configurations_ignore_nested_resources(self, *args):
@@ -609,7 +603,7 @@ class TestTerraformParser(TestCase):
         for key in after_unknown_values:
             mapped_after_unknown_value = obj.type_to_after_unknown_properties[resource['type']][key]
             self.assertEqual(mapped_after_unknown_value, after_unknown_values[key])
-    
+
     @patch.object(TerraformParser, '_read_file', return_value={})
     def test_remember_after_unknown(self, *args):
         obj = TerraformParser('somefile', parse_it=False)
@@ -740,7 +734,9 @@ class TestTerraformParser(TestCase):
                 }
             }
 
+        print(module_resource)
         obj = TerraformParser('somefile', parse_it=False)
+        print(obj)
         resources = obj.process_module_calls(module_resource)
         print(resources)
         self.assertEqual(len(resources), 6)
