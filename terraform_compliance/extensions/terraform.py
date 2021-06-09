@@ -423,13 +423,7 @@ class TerraformParser(object):
                     if 'references' in ref_type:
                         ref_type = resource.split('.')[0]
 
-                    # Direct resources
-                    if not ref_type and not self.is_type(resource, 'data') and not resource.startswith('module'):
-                        resource_type, resource_id = resource.split('.')
-                        ref_type = resource_type
-
-                    # Module Support here
-                    if resource.startswith('module') and not ref_type:
+                    if not ref_type and not self.is_type(resource, 'data'):
                         ref_type = self.extract_resource_type_from_address(resource)
 
                     for k, v in ref_list.items():
