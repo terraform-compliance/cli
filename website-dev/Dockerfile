@@ -11,5 +11,5 @@ WORKDIR /docs
 
 RUN bundle install
 
-CMD bundle exec jekyll serve
+CMD ["bundle", "exec", "jekyll", "serve", "--livereload", "--host", "0.0.0.0"]
 
