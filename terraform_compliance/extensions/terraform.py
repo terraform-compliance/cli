@@ -588,7 +588,7 @@ class TerraformParser(object):
         resources = []
         for k, v in module_resource.items():
             # Set the naming correct (for cases like module.a.module.b.module.c...)
-            current_module_level = parents_modules
+            current_module_level = deepcopy(parents_modules)
             current_module_level.append('module.{}'.format(k))
             module_name = ".".join(current_module_level)
 
