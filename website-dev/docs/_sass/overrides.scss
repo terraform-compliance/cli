@@ -1,0 +1,81 @@
+.site-footer {
+    visibility: hidden;
+}
+
+@media (min-width: 66.5rem) {
+    .side-bar {
+        width: 264px;
+        min-width: 264px;
+    }
+
+    .main-content {
+        margin-left: 264px;
+
+    }
+}
+
+@media (min-width: 50rem) {
+    .main-content {
+        position: relative;
+        max-width: calc(100% - 264px);
+        margin-left: 248px;
+    }
+}
+
+@media (min-width: 31.25rem) and (min-width: 50rem) {
+    .navigation-list-item {
+        font-size: 18px !important;
+    }
+}
+
+@media (min-width: 31.25rem)  {
+    html {
+        font-size: 16px !important;
+    }
+}
+
+
+
+.highlight .nf, .highlight .s2 {
+    color: #cb4b16;
+}
+
+.highlight .p {
+    color: #5132cb;
+}
+
+code {
+    font-family: "SFMono-Regular", Menlo, Consolas, Monospace;
+    font-size: 13px;
+    line-height: 1.4;
+    padding: 0.2em 0.15em;
+    font-weight: 400;
+    border: 1px solid #ccc;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+}
+
+.highlighter-rouge {
+    margin-bottom: 0.75rem;
+    overflow: hidden;
+    border-radius: 4px;
+    background-color: #ebe9fc;
+}
+
+pre.highlight, figure.highlight {
+    padding: 0.75rem;
+    margin-bottom: 0;
+    -webkit-overflow-scrolling: touch;
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+@media (min-width: 50rem) {
+    .site-header {
+        z-index: 101;
+        height: 90px;
+        max-height: 90px;
+        border-bottom: 1px solid #eeebee;
+}
+}

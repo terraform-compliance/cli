@@ -1,0 +1,12 @@
+source "https://rubygems.org"
+gem "jekyll"
+group :jekyll_plugins do
+  gem "jekyll-feed"
+end
+
+gem "just-the-docs"
+gem "kramdown"
+gem "webrick"
+
+# Performance-booster for watching directories on Windows
+gem "wdm", :install_if => Gem.win_platform?
