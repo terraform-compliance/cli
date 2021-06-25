@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.3.18 (2020-06-25)
+* Added new format support for terraform 1.0.1+ versions.
+
 ## 1.3.17 (2020-06-08)
 * Added support for terraform 1.0.x versions.
 
