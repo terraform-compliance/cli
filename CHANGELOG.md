@@ -1,7 +1,10 @@
 # CHANGELOG
 
-## 1.3.18 (2020-06-25)
+## 1.3.19 (2020-06-25)
 * Added new format support for terraform 1.0.1+ versions.
+
+## 1.3.18 (2020-06-09)
+* Fixed a problem where `terraform-compliance` fails to recognise some resources on a 2+ multi-layered module structure. 
 
 ## 1.3.17 (2020-06-08)
 * Added support for terraform 1.0.x versions.
