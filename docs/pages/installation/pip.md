@@ -16,6 +16,12 @@ It requires Python 3.x to run properly. Installation is pretty standard like any
 [~] $ pip install terraform-compliance
 ```
 
+or for faster parsing support (requires orjson)
+
+```shell
+[~] $ pip install terraform-compliance[faster_parsing]
+```
+
 in some use cases, you may want to create a new virtual environment to encapsulate `terraform-compliance`
 installation in your `venv` directory. In order to do that ;
 

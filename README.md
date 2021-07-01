@@ -40,6 +40,11 @@
 - __segregation of duty:__ you can keep your tests in a different repository where a separate team is responsible. 
 - __why ?:__ why not ?
 
+## Performance
+
+If terraform-compliance is not running quickly enough make sure to check the
+optional faster\_parsing pip install flag in the [Installation Guide](https://terraform-compliance.com/pages/installation/)
+
 ## Idea
 
 `terraform-compliance` mainly focuses on [negative testing](https://en.wikipedia.org/wiki/Negative_testing) instead
