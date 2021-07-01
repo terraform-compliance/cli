@@ -18,7 +18,7 @@ dependencies = [
     'semver>=2.10.2',
     'IPython==7.16.1',
     'diskcache==5.1.0',
-    'orjson==3.5.2'
+    'orjson==3.5.3'
 ]
 
 setup(
