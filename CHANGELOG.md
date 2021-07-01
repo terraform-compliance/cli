@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.3.21 (2020-07-01)
+* Fixed the docker image where terraform-compliance couldnt be installed with faster_parsing option
+
 ## 1.3.20 (2020-07-01)
 * Made `orjson` package installation optional. ([#192](https://github.com/terraform-compliance/cli/issues/192) [#516](https://github.com/terraform-compliance/cli/pull/516))
 
