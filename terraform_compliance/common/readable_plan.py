@@ -1,10 +1,14 @@
 import sys
 import os
 from argparse import Action
-import orjson
 import filetype
 from terraform_compliance.common.terraform_files import convert_terraform_plan_to_json
 from terraform_compliance.common.exceptions import TerraformComplianceInternalFailure
+
+try:
+    import orjson as json
+except ImportError:
+    import json
 
 
 class ReadablePlan(Action):
@@ -48,14 +52,14 @@ class ReadablePlan(Action):
             else:
                 plan_lines = plan_lines[0]
 
-            data = orjson.loads(plan_lines)
+            data = json.loads(plan_lines)
 
             # Write the changed plan file to the same file, since it is used in other places.
             if file_change_required:
                 with open(values, 'w', encoding='utf-8') as plan_file:
                     plan_file.write(plan_lines)
 
-        except orjson.JSONDecodeError:
+        except json.JSONDecodeError:
             print('ERROR: {} is not a valid JSON file'.format(values))
             sys.exit(1)
         except UnicodeDecodeError:
