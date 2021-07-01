@@ -8,7 +8,10 @@ from terraform_compliance.common.exceptions import TerraformComplianceInternalFa
 from semver import VersionInfo, compare
 from terraform_compliance.common.defaults import Defaults
 from radish.utils import console_write
-import orjson
+try:
+    import orjson as json
+except ImportError:
+    import json
 
 
 class EmptyStash(object):
@@ -370,8 +373,8 @@ def jsonify(string):
         return string
 
     try:
-        return orjson.loads(string)
-    except orjson.JSONDecodeError:
+        return json.loads(string)
+    except json.JSONDecodeError:
         return string
 
 
