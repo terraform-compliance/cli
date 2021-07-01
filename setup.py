@@ -18,7 +18,6 @@ dependencies = [
     'semver>=2.10.2',
     'IPython==7.16.1',
     'diskcache==5.1.0',
-    'orjson==3.5.3'
 ]
 
 setup(
@@ -61,6 +60,6 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
     extras_require = {
-        "faster_parsing": ["orjson"],
+        "faster_parsing": ["orjson==3.5.3"],
     }
 )
