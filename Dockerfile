@@ -42,7 +42,7 @@ RUN  set -ex \
      && unset OLD_BASEDIR \
      && rm -vrf ${TMP_DIR} \
      && pip install --upgrade pip \
-     && pip install terraform-compliance=="${VERSION}" \
+     && pip install terraform-compliance[faster_parsing]=="${VERSION}" \
      && apt-get remove -y ${BUILD_DEPS} \
      && apt-get autoremove -y \
      && apt-get clean -y \
