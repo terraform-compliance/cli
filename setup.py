@@ -59,7 +59,7 @@ setup(
         'Programming Language :: Python :: 3.7',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
-    extra_require = {
+    extras_require = {
         "faster_parsing": ["orjson"],
     }
 )
