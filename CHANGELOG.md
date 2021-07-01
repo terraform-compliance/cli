@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.3.20 (2020-07-01)
+* Made `orjson` package installation optional. ([#192](https://github.com/terraform-compliance/cli/issues/192) [#516](https://github.com/terraform-compliance/cli/pull/516))
+
 ## 1.3.19 (2020-06-25)
 * Added new format support for terraform 1.0.1+ versions.
 
