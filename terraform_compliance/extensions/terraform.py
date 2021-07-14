@@ -416,8 +416,6 @@ class TerraformParser(object):
                         target_resource = [k for k in self.resources.keys() if k.startswith(resource)]
 
                     for t_r in target_resource:
-                        if self.resources[t_r].get('values') is None:
-                            continue
                         if type(value) is type(self.resources[t_r]['values'].get(key)) and self.resources[t_r]['values'].get(key) != value:
                             if isinstance(value, (list, dict)):
                                 merge_dicts(self.resources[t_r]['values'][key], value)
@@ -561,7 +559,7 @@ class TerraformParser(object):
         return providers
 
     def _expand_resource_tags(self, resource):
-        if isinstance((resource.get('values') or {}).get('tags'), list):
+        if isinstance(resource.get('values', {}).get('tags'), list):
             for tag in resource.get('values', {}).get('tags', {}):
                 if isinstance(tag, dict) and 'key' in tag and 'value' in tag:
                     tag[tag['key']] = tag['value']
