@@ -1,10 +1,12 @@
 # CHANGELOG
 
+## Unreleased
+* Added module calls' source to metadata. ([#456](https://github.com/terraform-compliance/cli/issues/456))
 ## 1.3.22 (2020-07-20)
 * Fixed a problem where some resources/modules was not properly processed due to null value.
 
 ## 1.3.21 (2020-07-01)
-* Fixed the docker image where terraform-compliance couldnt be installed with faster_parsing option
+* Fixed the docker image where terraform-compliance couldnt be installed with faster_parsing option.
 
 ## 1.3.20 (2020-07-01)
 * Made `orjson` package installation optional. ([#192](https://github.com/terraform-compliance/cli/issues/192) [#516](https://github.com/terraform-compliance/cli/pull/516))
