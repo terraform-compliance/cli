@@ -208,7 +208,6 @@ class TerraformParser(object):
         resources = self.raw.get('configuration', {}).get('root_module', {}).get('resources', [])
 
         # Append module resources
-        # record the source in this
         resources.extend(self.process_module_calls(self.raw.get('configuration', {}).get('root_module', {}).get("module_calls", {})))
 
         remove_constant_values(resources)
@@ -261,9 +260,6 @@ class TerraformParser(object):
                         tmp_output['type'] = 'boolean'
 
                 self.configuration['outputs'][key] = tmp_output
-
-        # after setting self.configurations with the module calls, you can now match the source in them with self.resources
-        # make sure to capture for_each with regex
 
         if self.parse_it:
             self.cache.set('configuration', self.configuration)
@@ -526,8 +522,6 @@ class TerraformParser(object):
         '''
         Adds module call's source to module's resources as metadata
         '''
-        # needs to handle for generated names
-
         for resource in self.resources.values():
             # removes the for_each signature from addresses
             # module.a["index_1"].b.c -> module.a.b.c
@@ -619,8 +613,7 @@ class TerraformParser(object):
             current_module_level = deepcopy(parents_modules)
             current_module_level.append('module.{}'.format(k))
             module_name = ".".join(current_module_level)
-            # pull source here
-            # could there be different sources in recursive module_call's? What happens then?
+            # Pull module's source to be later used in metadata
             module_source = v.get('source', '')
 
             # Register the resource (along with module naming)
