@@ -530,8 +530,6 @@ class TerraformParser(object):
             if 'source' in self.configuration['resources'].get(fixed_module_name, ''):
                 resource['source'] = self.configuration['resources'][fixed_module_name]['source']
 
-            
-
 
     def find_resources_by_type(self, resource_type, match=Match(case_sensitive=False)):
         '''
@@ -653,4 +651,3 @@ class TerraformParser(object):
 
         # Returning the whole address
         return resource_address_string
-
