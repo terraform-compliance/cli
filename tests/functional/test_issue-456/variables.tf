@@ -12,14 +12,7 @@ variable ecr_repositories {
 			image_tag_mutability = "MUTABLE"
 
 			scan_on_push = true
-		},
-		repository_1 = {
-			name                 = "bar3"
-			image_tag_mutability = "MUTABLE"
-
-			scan_on_push = false
 		}
-
 	}
 }
 
