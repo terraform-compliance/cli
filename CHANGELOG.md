@@ -1,7 +1,8 @@
 # CHANGELOG
 
-## Unreleased
+## 1.3.23 (2020-08-02)
 * Added module calls' source to metadata. ([#456](https://github.com/terraform-compliance/cli/issues/456))
+
 ## 1.3.22 (2020-07-20)
 * Fixed a problem where some resources/modules was not properly processed due to null value.
 
