@@ -485,7 +485,9 @@ class TerraformParser(object):
         else:
             # print('Building cache for mounted resources at {}'.format(Defaults.cache_dir))
             self._mount_references()
+            # metadata related calls
             self._add_action_status()
+            self._add_module_call_source()
 
             self.resources = recursive_jsonify(self.resources)
             self.resources_raw = recursive_jsonify(self.resources_raw)
@@ -515,6 +517,19 @@ class TerraformParser(object):
             resource = resource_change['address']
             if resource in self.resources:
                 self.resources[resource]['actions'] = resource_change['change']['actions']
+
+    def _add_module_call_source(self):
+        '''
+        Adds module call's source to module's resources as metadata
+        '''
+        for resource in self.resources.values():
+            # removes the for_each signature from addresses
+            # module.a["index_1"].b.c -> module.a.b.c
+            fixed_module_name = '.'.join([word.split('[')[0] for word in resource['address'].split('.')])
+
+            if 'source' in self.configuration['resources'].get(fixed_module_name, ''):
+                resource['source'] = self.configuration['resources'][fixed_module_name]['source']
+
 
     def find_resources_by_type(self, resource_type, match=Match(case_sensitive=False)):
         '''
@@ -596,11 +611,14 @@ class TerraformParser(object):
             current_module_level = deepcopy(parents_modules)
             current_module_level.append('module.{}'.format(k))
             module_name = ".".join(current_module_level)
+            # Pull module's source to be later used in metadata
+            module_source = v.get('source', '')
 
             # Register the resource (along with module naming)
             if 'resources' in v.get('module', {}):
                 for resource in v['module']['resources']:
                     resource['address'] = '{}.{}'.format(module_name, resource['address'])
+                    resource['source'] = module_source
                     resources.append(resource)
 
             # Dive deeper, its not finished yet.
@@ -633,4 +651,3 @@ class TerraformParser(object):
 
         # Returning the whole address
         return resource_address_string
-
