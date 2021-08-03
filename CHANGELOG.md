@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## 1.3.24 (2020-08-03)
 * Fixed a problem where some sources with `count` was not mounted properly ([#514](https://github.com/terraform-compliance/cli/issues/456))
 
 ## 1.3.23 (2020-08-02)
