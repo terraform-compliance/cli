@@ -331,6 +331,11 @@ class TerraformParser(object):
 
             resources = ['{}.{}.{}'.format(resource_type, module_name, res) for res in resources]
 
+            if not resources:
+                for key, _ in self.resources.items():
+                    if key.startswith(resource_name):
+                        resources.append(key)
+
             if resources:
                 resource_list.extend(resources)
         else:
@@ -346,7 +351,7 @@ class TerraformParser(object):
         :return:
         '''
         self.resources_raw = deepcopy(self.resources)
-        invalid_references = ('var.', 'each.')
+        invalid_references = ('var.', 'each.', 'count.')
 
         # This section will link resources found in configuration part of the plan output.
         # The reference should be on both ways (A->B, B->A) since terraform sometimes report these references
@@ -354,6 +359,7 @@ class TerraformParser(object):
         for resource in self.configuration['resources']:
             if 'expressions' in self.configuration['resources'][resource]:
                 ref_list = {}
+
                 for key, value in self.configuration['resources'][resource]['expressions'].items():
                     references = seek_key_in_dict(value, 'references') if isinstance(value, (dict, list)) else []
 
@@ -366,8 +372,9 @@ class TerraformParser(object):
                         # if ref is not in the correct format, handle it
                         if len(ref.split('.')) < 3 and ref.startswith('module'):
 
-                            # Using for_each and modules together may introduce an issue where the plan.out.json won't include the necessary third part of the reference
-                            # It is partially resolved by mounting the reference to all instances belonging to the module
+                            # Using for_each and modules together may introduce an issue where the plan.out.json won't
+                            # include the necessary third part of the reference. It is partially resolved by mounting
+                            # the reference to all instances belonging to the module
                             if 'for_each_expression' in self.configuration['resources'][resource]:
 
                                 # extract source resources

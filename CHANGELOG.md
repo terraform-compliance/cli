@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## Unreleased
+* Fixed a problem where some sources with `count` was not mounted properly ([#514](https://github.com/terraform-compliance/cli/issues/456))
+
 ## 1.3.23 (2020-08-02)
 * Added module calls' source to metadata. ([#456](https://github.com/terraform-compliance/cli/issues/456))
 
