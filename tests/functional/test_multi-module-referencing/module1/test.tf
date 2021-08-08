@@ -1,5 +1,5 @@
 module "second_layer" {
-  source = "module2"
+  source = "./module2"
 }
 
 resource "aws_s3_bucket" "should_not_fail_first_layer" {

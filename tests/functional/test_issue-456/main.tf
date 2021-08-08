@@ -1,5 +1,5 @@
 module "ecr_repository_with_for" {
-  source   = "modules\/ecr_module"
+  source   = "./modules/ecr_module"
   for_each = var.ecr_repositories
 
   name          = each.key
@@ -7,7 +7,7 @@ module "ecr_repository_with_for" {
 }
 
 module "ecr_repository_with_count" {
- source   = "modules\/ecr_module"
+ source   = "./modules/ecr_module"
  count = 3
 
  name          = "bar"
@@ -15,14 +15,14 @@ module "ecr_repository_with_count" {
 }
 
 module "other_ecr_repository" {
-  source   = "modules\/other_ecr_module"
+  source   = "./modules/other_ecr_module"
 
   name                 = "non_for_loop_bar"
   scan_on_push = true
 }
 
 module "other_ecr_repository_with_count" {
- source   = "modules\/other_ecr_module"
+ source   = "./modules/other_ecr_module"
  count = 7
 
  name          = "bar"

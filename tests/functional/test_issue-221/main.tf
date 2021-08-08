@@ -1,3 +1,3 @@
 module "elasticSearch" {
-  source = "module"
+  source = "./module/"
 }
