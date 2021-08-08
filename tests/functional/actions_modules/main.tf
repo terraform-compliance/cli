@@ -1,5 +1,5 @@
 module "ecr_repository" {
-  source   = "./modules/ecr_module"
+  source   = "modules\/ecr_module"
   name          = var.repo_name
   scan_on_push  = var.scan_on_push_val
 }

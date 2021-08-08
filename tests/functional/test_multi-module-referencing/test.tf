@@ -1,9 +1,9 @@
 module "first_layer" {
-  source = "./module1"
+  source = "module1"
 }
 
 module "root_layer" {
-  source = "./module1"
+  source = "module1"
 }
 
 

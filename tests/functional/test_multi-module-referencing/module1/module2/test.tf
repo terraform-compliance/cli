@@ -1,5 +1,5 @@
 module "third_layer" {
-  source = "./module3"
+  source = "module3"
 }
 
 resource "aws_s3_bucket" "should_not_fail_second_layer" {

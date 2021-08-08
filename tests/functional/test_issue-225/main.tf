@@ -1,5 +1,5 @@
 module "appmesh_existing" {
-  source = "./appmesh"
+  source = "appmesh"
 }
 
 provider "aws" {

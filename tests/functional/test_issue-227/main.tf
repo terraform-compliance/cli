@@ -1,3 +1,3 @@
 module "test" {
-  source = "./role"
+  source = "role"
 }

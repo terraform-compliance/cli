@@ -104,6 +104,9 @@ def i_have_name_section_configured(_step_obj, name, type_name='resource', _terra
         name = convert_resource_type(name)
         resource_list = _terraform_config.config.terraform.find_resources_by_type(name, match)
 
+        if name == 'aws_autoscaling_group':
+            resource_list = transform_asg_style_tags(resource_list)
+
         if resource_list:
             _step_obj.context.type = type_name
             _step_obj.context.name = name
