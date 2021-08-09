@@ -1,5 +1,4 @@
 Feature: Feature for #537
-  Test
 
   Scenario Outline: Ensure all ASGs have tags
     Given I have aws_autoscaling_group defined
@@ -10,4 +9,4 @@ Feature: Feature for #537
 
     Examples:
       | tags |
-      | Tier |pytes
+      | Tier |
