@@ -1,6 +1,6 @@
 # CHANGELOG
 
-# 1.3.25 (Unreleased)
+# 1.3.25 (2021-08-24)
 * Fixed a problem where some of the resource mounting on iterated resources was failing if they were in iterated modules.
 
 ## 1.3.24 (2021-08-03)
