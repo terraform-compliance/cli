@@ -15,7 +15,8 @@ from terraform_compliance.common.helper import (
     is_list_of_dict,
     is_key_exist,
     transform_asg_style_tags,
-    python_version_check
+    python_version_check,
+    strip_iterations
 )
 
 
@@ -279,3 +280,23 @@ class TestHelperFunctions(TestCase):
 
     def test_python_version_check_success(self):
         self.assertEqual(python_version_check(), 1)
+
+    def test_strip_iterations_from_address(self):
+        self.assertEqual(strip_iterations('module.test["a"].aws_s3_bucket.test["a"]'),
+                                          'module.test.aws_s3_bucket.test')
+        self.assertEqual(strip_iterations('module.test[1].aws_s3_bucket.test["a"]'),
+                                          'module.test.aws_s3_bucket.test')
+        self.assertEqual(strip_iterations('module.test["a"].aws_s3_bucket.test[2]'),
+                                          'module.test.aws_s3_bucket.test')
+        self.assertEqual(strip_iterations('module.test["a-b"].aws_s3_bucket.test[2]'),
+                                          'module.test.aws_s3_bucket.test')
+        self.assertEqual(strip_iterations('module.test["a_B"].aws_s3_bucket.test[2]'),
+                                          'module.test.aws_s3_bucket.test')
+        self.assertEqual(strip_iterations('module.test["a_53917_xafad"].aws_s3_bucket.test[2]'),
+                                          'module.test.aws_s3_bucket.test')
+        self.assertEqual(strip_iterations('module.test["a_53917/xafad"].aws_s3_bucket.test[2]'),
+                                          'module.test.aws_s3_bucket.test')
+        self.assertEqual(strip_iterations('module.test["a_5391\\7/xafad"].aws_s3_bucket.test[2]'),
+                                          'module.test.aws_s3_bucket.test')
+        self.assertEqual(strip_iterations('module.test.aws_s3_bucket.test'),
+                                          'module.test.aws_s3_bucket.test')
