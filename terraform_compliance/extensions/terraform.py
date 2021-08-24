@@ -5,7 +5,7 @@ from copy import deepcopy
 from radish.utils import console_write
 from terraform_compliance.common.defaults import Defaults
 from terraform_compliance.extensions.cache import Cache
-from terraform_compliance.common.helper import recursive_jsonify
+from terraform_compliance.common.helper import recursive_jsonify, strip_iterations
 
 
 class TerraformParser(object):
@@ -307,17 +307,35 @@ class TerraformParser(object):
                     if parameter not in self.resources[source_resource]['values']:
                         self.resources[source_resource]['values'][parameter] = target_resource
 
-    def _find_resource_from_name(self, resource_name):
+    def _find_resource_from_name(self, resource_name, module_address=None):
         '''
         Finds all the resources that is starting with resource_name
 
         :param resource_name: The first initials of the resource
+        :param module_address: Full module address (without the resource)
         :return: list of the found resources
         '''
         if resource_name in self.resources:
             return [resource_name]
 
         resource_list = []
+        # Try to find the resource with the module address in self.resources
+        if module_address is not None:
+            full_address = '{}.{}'.format(module_address, resource_name)
+            if full_address in self.resources:
+                return [full_address]
+
+            for key, value in self.resources.items():
+                if not key.startswith(module_address):
+                    continue
+
+                # Possibly module (or resource) is using foreach/count
+                k = strip_iterations(key)
+                if k == strip_iterations(full_address):
+                    resource_list.append(key)
+
+            if resource_list:
+                return resource_list
 
         resource_type, resource_id = resource_name.split('.')[0:2]
 
@@ -357,6 +375,9 @@ class TerraformParser(object):
         # The reference should be on both ways (A->B, B->A) since terraform sometimes report these references
         # in opposite ways, depending on the provider structure.
         for resource in self.configuration['resources']:
+            relative_resource_address = '{}.{}'.format(self.configuration['resources'][resource]['type'], self.configuration['resources'][resource]['name'])
+            current_module_address = self.configuration['resources'][resource]['address'].replace('.{}'.format(relative_resource_address), '')
+
             if 'expressions' in self.configuration['resources'][resource]:
                 ref_list = {}
 
@@ -411,9 +432,9 @@ class TerraformParser(object):
                                        Defaults().info_colour('The reference "{}" in resource {} is ambigious. It will not be mounted.'.format(ref, resource))))
                                 continue
                         elif key not in ref_list:
-                            ref_list[key] = self._find_resource_from_name(ref)
+                            ref_list[key] = self._find_resource_from_name(ref, current_module_address)
                         else:
-                            ref_list[key].extend(self._find_resource_from_name(ref))
+                            ref_list[key].extend(self._find_resource_from_name(ref, current_module_address))
 
                     # This is where we synchronise constant_value in the configuration section with the resource
                     # for filling up the missing elements that hasn't been defined in the resource due to provider
@@ -443,6 +464,11 @@ class TerraformParser(object):
 
                     # Mounting A->B
                     source_resources = self._find_resource_from_name(self.configuration['resources'][resource]['address'])
+
+                    # Try again in case we might have for_each/count usage for the module
+                    if not source_resources:
+                        source_resources = self._find_resource_from_name(relative_resource_address, current_module_address)
+
                     self._mount_resources(source=source_resources,
                                           target=ref_list,
                                           ref_type=ref_type)
