@@ -1,5 +1,8 @@
 # CHANGELOG
 
+# 1.3.25 (Unreleased)
+* Fixed a problem where some of the resource mounting on iterated resources was failing if they were in iterated modules.
+
 ## 1.3.24 (2021-08-03)
 * Fixed a problem where some sources with `count` was not mounted properly ([#514](https://github.com/terraform-compliance/cli/issues/456))
 
