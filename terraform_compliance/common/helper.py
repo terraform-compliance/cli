@@ -643,3 +643,15 @@ def strip_iterations(address):
     return address
 
 
+def get_most_child_module(module):
+    modules = module.split('.')
+    current_module = None
+    for i in range(0, len(modules)):
+        if modules[i] == 'module':
+            current_module = modules[i+1]
+
+    if not current_module:
+        return module
+
+    return current_module
+

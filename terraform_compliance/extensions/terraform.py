@@ -5,7 +5,7 @@ from copy import deepcopy
 from radish.utils import console_write
 from terraform_compliance.common.defaults import Defaults
 from terraform_compliance.extensions.cache import Cache
-from terraform_compliance.common.helper import recursive_jsonify, strip_iterations
+from terraform_compliance.common.helper import recursive_jsonify, strip_iterations, get_most_child_module
 
 
 class TerraformParser(object):
@@ -387,7 +387,16 @@ class TerraformParser(object):
                     valid_references = []
                     for ref in references:
                         if isinstance(ref, dict) and ref.get('references'):
-                            valid_references = [r for r in ref['references'] if not r.startswith(invalid_references)]
+                            valid_references = []
+                            for r in ref['references']:
+                                if r.startswith('var'):
+                                    # Try to track the resource given by a variable
+                                    _var = self._fetch_resource_by_a_variable(current_module_address, r)
+                                    if _var:
+                                        valid_references.extend(_var)
+
+                                if not r.startswith(invalid_references):
+                                    valid_references.append(r)
 
                     for ref in valid_references:
                         # if ref is not in the correct format, handle it
@@ -405,7 +414,7 @@ class TerraformParser(object):
                                 # combine ref with for each keys
                                 assumed_refs = ['{}{}'.format(ref, key) for key in assumed_for_each_keys]
                                 # get all the resources that start with updated ref
-                                ambigious_references = []
+                                ambiguous_references = []
                                 for r in self.resources.keys():
                                     for assumed_ref in assumed_refs:
                                         if r.startswith(assumed_ref):
@@ -414,7 +423,7 @@ class TerraformParser(object):
                                             else:
                                                 ref_list[key] = [r]
 
-                                            ambigious_references.append(r)
+                                            ambiguous_references.append(r)
 
                                 # throw a warning
                                 defaults = Defaults()
@@ -422,7 +431,7 @@ class TerraformParser(object):
                                        defaults.warning_colour('WARNING (Mounting)'),
                                        defaults.info_colour('The reference "{}" in resource {} is ambigious.'
                                         ' It will be mounted to the following resources:').format(ref, resource)))
-                                for i, r in enumerate(ambigious_references, 1):
+                                for i, r in enumerate(ambiguous_references, 1):
                                     console_write(defaults.info_colour('{}. {}'.format(i, r)))
 
                             # if the reference can not be resolved, warn the user and continue.
@@ -684,3 +693,9 @@ class TerraformParser(object):
 
         # Returning the whole address
         return resource_address_string
+
+    def _fetch_resource_by_a_variable(self, module, variable):
+        target_module = get_most_child_module(module)
+        stripped_variable = variable.replace('var.', '')
+        var = self.raw['configuration'].get('root_module', {}).get('module_calls', {}).get(target_module, {}).get('expressions', {}).get(stripped_variable, {}).get('references', {})
+        return var
