@@ -1,6 +1,9 @@
 # CHANGELOG
 
-# 1.3.25 (2021-08-24)
+# 1.3.26 (2021-08-25)
+* Fixed a problem where a resource parameter passed as a variable to a module that is being used as a parameter for another resource was not triggering resource mounting. ([#386](https://github.com/terraform-compliance/cli/issues/386))
+
+## 1.3.25 (2021-08-24)
 * Fixed a problem where some of the resource mounting on iterated resources was failing if they were in iterated modules.
 
 ## 1.3.24 (2021-08-03)
