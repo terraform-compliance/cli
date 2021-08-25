@@ -5,7 +5,7 @@ from copy import deepcopy
 from radish.utils import console_write
 from terraform_compliance.common.defaults import Defaults
 from terraform_compliance.extensions.cache import Cache
-from terraform_compliance.common.helper import recursive_jsonify, strip_iterations
+from terraform_compliance.common.helper import recursive_jsonify, strip_iterations, get_most_child_module
 
 
 class TerraformParser(object):
@@ -387,13 +387,20 @@ class TerraformParser(object):
                     valid_references = []
                     for ref in references:
                         if isinstance(ref, dict) and ref.get('references'):
-                            valid_references = [r for r in ref['references'] if not r.startswith(invalid_references)]
+                            valid_references = []
+                            for r in ref['references']:
+                                if r.startswith('var'):
+                                    # Try to track the resource given by a variable
+                                    valid_references.extend(self._fetch_resource_by_a_variable(current_module_address, r))
+
+                                if not r.startswith(invalid_references):
+                                    valid_references.append(r)
 
                     for ref in valid_references:
                         # if ref is not in the correct format, handle it
                         if len(ref.split('.')) < 3 and ref.startswith('module'):
 
-                            # Using for_each and modules together may introduce an issue where the plan.out.json won't
+                            # Using for_each and modules together may introduce an issue where the plan.out.fromIssue.json won't
                             # include the necessary third part of the reference. It is partially resolved by mounting
                             # the reference to all instances belonging to the module
                             if 'for_each_expression' in self.configuration['resources'][resource]:
@@ -684,3 +691,12 @@ class TerraformParser(object):
 
         # Returning the whole address
         return resource_address_string
+
+    def _fetch_resource_by_a_variable(self, module, variable):
+        target_module = get_most_child_module(module)
+        variable = variable.replace('var.', '')
+        var = self.raw['configuration'].get('root_module', {}).get('module_calls', {}).get(target_module, {}).get('expressions', {}).get(variable, {}).get('references', {})
+        if not var:
+            return [variable]
+
+        return var
