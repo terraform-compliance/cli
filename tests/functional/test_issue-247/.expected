@@ -1,1 +1,1 @@
-Failure: kms_master_key_id property in aws_sns_topic.fail is considered to be Null. It is set to None.
+Failure: kms_master_key_id property in aws_sns_topic.fail is considered to be Null. It is set to "None".
