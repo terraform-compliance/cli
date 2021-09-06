@@ -1,1 +1,1 @@
-Failure: Multivalued tags property in aws_s3_bucket.b is considered to be Null. It is set to \{\'MyBuggyTag\': \'\', \'MyOkTag\': \'\'\}.
+Failure: Multivalued tags property in aws_s3_bucket.b is considered to be Null. It is set to "\{\'MyBuggyTag\': \'\', \'MyOkTag\': \'\'\}".

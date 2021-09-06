@@ -1,1 +1,1 @@
-Failure: tags property in aws_instance.tf-example-ec2 is considered to be Null. It is set to \{\}.
+Failure: tags property in aws_instance.tf-example-ec2 is considered to be Null. It is set to "\{\}".
