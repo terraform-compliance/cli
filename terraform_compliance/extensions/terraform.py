@@ -282,7 +282,7 @@ class TerraformParser(object):
                     if target_resource not in self.resources or 'values' not in self.resources[target_resource]:
                         continue
 
-                    resource = self.resources_raw[source_resource].['values']
+                    resource = self.resources_raw[source_resource]['values']
 
                     # This is a very stupid terraform-provider bug. Somehow, sometimes it loses the state
                     # and sets the value to None - which is normally not allowed.. It should have been an empty
