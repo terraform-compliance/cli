@@ -287,8 +287,14 @@ class TerraformParser(object):
                     # This is a very stupid terraform-provider bug. Somehow, sometimes it loses the state
                     # and sets the value to None - which is normally not allowed.. It should have been an empty
                     # dict instead. Hence, we are fixing that here.
-
                     if resource is None:
+                        defaults = Defaults()
+                        console_write('{} {}: {}'.format(defaults.warning_icon,
+                                                         defaults.warning_colour('WARNING (mounting)'),
+                                                         defaults.info_colour('The resource "{}" has no values set. This is a terraform provider '
+                                                                              'bug. Its recommended to remove/fix this resource within your state.'.format(source_resource))))
+                        self.resources_raw[source_resource]['values'] = {}
+                        self.resources[source_resource]['values'] = {}
                         resource = {}
 
                     resource[Defaults.mounted_ptr] = True
@@ -436,7 +442,7 @@ class TerraformParser(object):
                                 # throw a warning
                                 defaults = Defaults()
                                 console_write('{} {}: {}'.format(defaults.warning_icon,
-                                       defaults.warning_colour('WARNING (Mounting)'),
+                                       defaults.warning_colour('WARNING (mounting)'),
                                        defaults.info_colour('The reference "{}" in resource {} is ambigious.'
                                         ' It will be mounted to the following resources:').format(ref, resource)))
                                 for i, r in enumerate(ambiguous_references, 1):
@@ -445,7 +451,7 @@ class TerraformParser(object):
                             # if the reference can not be resolved, warn the user and continue.
                             else:
                                 console_write('{} {}: {}'.format(Defaults().warning_icon,
-                                       Defaults().warning_colour('WARNING (Mounting)'),
+                                       Defaults().warning_colour('WARNING (mounting)'),
                                        Defaults().info_colour('The reference "{}" in resource {} is ambigious. It will not be mounted.'.format(ref, resource))))
                                 continue
                         elif key not in ref_list:
