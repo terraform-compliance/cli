@@ -269,7 +269,7 @@ class TerraformParser(object):
         Mounts values of the source resource to the target resource's values with ref_type key
 
         :param source: source resource
-        :param target:  target resource
+        :param target: target resource
         :param ref_type: reference type (e.g. ingress )
         :return: none
         '''
@@ -282,7 +282,15 @@ class TerraformParser(object):
                     if target_resource not in self.resources or 'values' not in self.resources[target_resource]:
                         continue
 
-                    resource = self.resources_raw[source_resource]['values']
+                    resource = self.resources_raw[source_resource].['values']
+
+                    # This is a very stupid terraform-provider bug. Somehow, sometimes it loses the state
+                    # and sets the value to None - which is normally not allowed.. It should have been an empty
+                    # dict instead. Hence, we are fixing that here.
+
+                    if resource is None:
+                        resource = {}
+
                     resource[Defaults.mounted_ptr] = True
 
                     if Defaults.r_mount_ptr not in self.resources[target_resource]:
