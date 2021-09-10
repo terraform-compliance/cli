@@ -308,6 +308,11 @@ class TerraformParser(object):
                     if Defaults.r_mount_addr_ptr_list not in self.resources[target_resource]:
                         self.resources[target_resource][Defaults.r_mount_addr_ptr_list] = []
 
+                    # ensure resources[target_resource]['values'] is an
+                    # empty dict and not None
+                    if not self.resources[target_resource]['values']:
+                        self.resources[target_resource]['values'] = dict()
+
                     if ref_type not in self.resources[target_resource]['values']:
                         self.resources[target_resource]['values'][ref_type] = []
 
