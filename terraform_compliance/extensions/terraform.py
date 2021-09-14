@@ -348,10 +348,18 @@ class TerraformParser(object):
                 if not key.startswith(module_address):
                     continue
 
-                # Possibly module (or resource) is using foreach/count
-                k = strip_iterations(key)
-                if k == strip_iterations(full_address):
-                    resource_list.append(key)
+                # Check if the resource/module has iterations
+                if '[' in key:
+                    # Possibly module (or resource) is using foreach/count
+                    k = strip_iterations(key)
+                    if k == strip_iterations(full_address):
+                        resource_list.append(key)
+                else:
+                    # Resource/module does not have any iteration
+                    # Additionally, the resource we are looking under this module is coming from another
+                    # module output. Thus, we need to dive a bit deeper.
+                    if resource_name.startswith('module') and key.startswith('module'):
+                        resource_list.append(key)
 
             if resource_list:
                 return resource_list
@@ -359,6 +367,8 @@ class TerraformParser(object):
         resource_type, resource_id = resource_name.split('.')[0:2]
 
         if resource_type == 'module':
+            # TODO: This wont work correctly, if an output is used within a module, coming from another module.
+            #       Fix multi-layer module structure for the outputs ?
             module_name, output_id = resource_name.split('.')[1:3]
             module = self.raw['configuration']['root_module'].get('module_calls', {}).get(module_name, {})
 
