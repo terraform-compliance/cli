@@ -7,7 +7,7 @@ def it_must_be_in(_step_obj, haystack, cover=False):
     values = [resource['values'] for resource in _step_obj.context.stash]
     for value in values:
         if not isinstance(value, (bool, int, float, str)):
-            Error(_step_obj, 'Values are not in the correct type. (bool, str, int, float)')
+            Error(_step_obj, 'Values are not of the correct type. (bool, str, int, float)')
 
     if 'haystack' not in _step_obj.context.in_step_variables:
         Error(_step_obj, 'Could not resolve haystack: {}'.format(haystack))       

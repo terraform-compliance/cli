@@ -47,6 +47,7 @@ from terraform_compliance.steps.then.it_must_have_reference_address_referenced i
 from terraform_compliance.steps.then.its_key_condition_be_value import its_key_condition_be_value
 from terraform_compliance.steps.then.interpolations import i_flatten_everything_found
 from terraform_compliance.steps.then.it_must_be_in import it_must_be_in
+from terraform_compliance.steps.then.it_must_not_be_in import it_must_not_be_in
 from terraform_compliance.steps.then.its_value_condition_be_null import its_value_condition_be_null
 
 # {name} is checked for startswith("resource that supports "). The @given decorator for that documented case is not needed
@@ -245,3 +246,13 @@ def wrapper(_step_obj, haystack):
 @then('it must cover {haystack:ANY}')
 def wrapper(_step_obj, haystack):
     return it_must_be_in(_step_obj, haystack, cover=True)
+
+@then('it must not be a subset of {haystack:ANY}')
+@then('it must not be in {haystack:ANY}')
+def wrapper(_step_obj, haystack):
+    return it_must_not_be_in(_step_obj, haystack)
+
+@then('it must not be a superset of {haystack:ANY}')
+@then('it must not cover {haystack:ANY}')
+def wrapper(_step_obj, haystack):
+    return it_must_not_be_in(_step_obj, haystack, cover=True)
