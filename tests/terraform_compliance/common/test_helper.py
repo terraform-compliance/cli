@@ -15,10 +15,13 @@ from terraform_compliance.common.helper import (
     is_list_of_dict,
     is_key_exist,
     transform_asg_style_tags,
-    python_version_check
+    python_version_check,
+    strip_iterations,
+    get_most_child_module
 )
+from ddt import ddt, data, unpack
 
-
+@ddt
 class TestHelperFunctions(TestCase):
 
     def test_flatten_single_dimensional_list(self):
@@ -279,3 +282,24 @@ class TestHelperFunctions(TestCase):
 
     def test_python_version_check_success(self):
         self.assertEqual(python_version_check(), 1)
+
+    @data(['module.test["a"].aws_s3_bucket.test["a"]', 'module.test.aws_s3_bucket.test'],
+          ['module.test[1].aws_s3_bucket.test["a"]','module.test.aws_s3_bucket.test'],
+          ['module.test["a"].aws_s3_bucket.test[2]', 'module.test.aws_s3_bucket.test'],
+          ['module.test["a-b"].aws_s3_bucket.test[2]', 'module.test.aws_s3_bucket.test'],
+          ['module.test["a_B"].aws_s3_bucket.test[2]', 'module.test.aws_s3_bucket.test'],
+          ['module.test["a_53917_xafad"].aws_s3_bucket.test[2]', 'module.test.aws_s3_bucket.test'],
+          ['module.test["a_53917/xafad"].aws_s3_bucket.test[2]', 'module.test.aws_s3_bucket.test'],
+          ['module.test["a_5391\\7/xafad"].aws_s3_bucket.test[2]', 'module.test.aws_s3_bucket.test'],
+          ['module.test.aws_s3_bucket.test', 'module.test.aws_s3_bucket.test'])
+    @unpack
+    def test_strip_iterations_from_address(self, given, expected):
+        self.assertEqual(strip_iterations(given), expected)
+
+    @data(['module.a.module.b.module.c', 'c'],
+          ['module.a', 'a'],
+          ['module.a.module.b.aws_some_resource.c', 'b'],
+          ['aws_some_resource.c', 'aws_some_resource.c'])
+    @unpack
+    def test_get_most_child_module(self, given, expected):
+        self.assertEqual(get_most_child_module(given), expected)

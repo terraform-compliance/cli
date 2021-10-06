@@ -30,7 +30,8 @@ AWS
 ```gherkin
 Scenario Outline: Well-known insecure protocol exposure on Public Network for ingress traffic
     Given I have AWS Security Group defined
-  	When it contains ingress
+    When it has ingress
+    Then it must have ingress
     Then it must not have <proto> protocol and port <portNumber> for 0.0.0.0/0
 
 
@@ -51,7 +52,8 @@ Scenario Outline: Well-known insecure protocol exposure on Public Network for in
 ```gherkin
 Scenario: No publicly open ports
     Given I have AWS Security Group defined
-    When it contains ingress
+    When it has ingress
+    Then it must have ingress
     Then it must not have tcp protocol and port 1024-65535 for 0.0.0.0/0
 ```
 
@@ -60,6 +62,7 @@ Scenario: No publicly open ports
 ```gherkin
 Scenario: Only selected ports should be publicly open
     Given I have AWS Security Group defined
-    When it contains ingress
+    When it has ingress
+    Then it must have ingress
     Then it must only have tcp protocol and port 22,443 for 0.0.0.0/0
 ```

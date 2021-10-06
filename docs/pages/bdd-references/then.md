@@ -159,7 +159,7 @@ must be enabled
 
 
 `encryption at rest` and `encryption in flight` are templated property types to help you to increase
-the readability of your BDD test. Please check [templated entities](/pages/bdd-references/templated_entities) 
+the readability of your BDD test. Please check [templated entities](/pages/bdd-references/template_entities.html) 
 section for more information.
 
 ------------------------
@@ -416,7 +416,7 @@ it must fail
 ------------------------
 ### [Then](#){: .p-1 .text-red-200} it must have [address](#){: .p-1 .text-green-200 .fw-700} referenced
 `terraform-compliance` mounts resources into each other if they are referenced. E.g. an `aws_security_group_rule` onto
-`aws_security_grouup`. Some use cases may require to find these references, mount points about which entity is mounted 
+`aws_security_group`. Some use cases may require to find these references, mount points about which entity is mounted 
 on top of which entity. This step can be used in these situations.
 
 > __Possible sentences :__
@@ -486,41 +486,51 @@ I flatten all values found
 >
 
 ------------------------
-### [Then](#){: .p-1 .text-red-200} it must be in [haystack](#){: .p-1 .text-green-200 .fw-700}
-This step compares the contents of the current stash to the [in step variables](/pages/bdd-references/then.html#in-step-variables). Passes if resources from the previous step form a subset of the resources within the in step variables. Only sets of bool, int, float, and string values are supported.
+### [Then](#){: .p-1 .text-red-200} it [condition](#){: .p-1 .text-blue-100 .fw-700} be in [haystack](#){: .p-1 .text-green-200 .fw-700}
+This step compares the contents of the current stash to the [in step variables](/pages/bdd-references/then.html#in-step-variables). This step will pass or fail depending on the condition. It evaluates whether or not resources from the previous step form a subset of the resources within the in step variables. Only sets of bool, int, float, and string values are supported.
 > __Possible sentences :__
 >
 > ▪
-[Then](#){: .p-1 .text-red-200} 
-it must be in
+[Then](#){: .p-1 .text-red-200}
+it
+[condition](#){: .p-1 .text-blue-100 .fw-700}
+be in
 [haystack](#){: .p-1 .text-green-200 .fw-700}
 >
 > ▪
-[Then](#){: .p-1 .text-red-200} 
-it must be a subset of
+[Then](#){: .p-1 .text-red-200}
+it 
+[condition](#){: .p-1 .text-blue-100 .fw-700}
+be a subset of
 [haystack](#){: .p-1 .text-green-200 .fw-700}
 >
 
 | key | Description | Examples |
 |:---:|:----------|:-|
 | [haystack](#){: .p-1 .text-green-200 .fw-700} | The resources to be accessed via in step variables | `{aws_lambda_function.values.function_name}`, `{aws_cloudwatch_log_group.values.name}`, `{resource_name.path.to.property}` |
+| [condition](#){: .p-1 .text-blue-100 .fw-700} | Defines whether the resources from the previous must be a subset of the in step variables | Only `must` and `must not` |
 
 ------------------------
 ### [Then](#){: .p-1 .text-red-200} it must cover [haystack](#){: .p-1 .text-green-200 .fw-700}
-This step compares the contents of the current stash to the [in step variables](/pages/bdd-references/then.html#in-step-variables). Passes if resources from the previous step form a superset of the resources within the in step variables. Only sets of bool, int, float, and string values are supported.
+This step compares the contents of the current stash to the [in step variables](/pages/bdd-references/then.html#in-step-variables). This step will pass or fail depending on the condition. It evaluates whether or not resources from the previous step form a superset of the resources within the in step variables. Only sets of bool, int, float, and string values are supported.
 > __Possible sentences :__
 >
 > ▪
-[Then](#){: .p-1 .text-red-200} 
-it must cover
+[Then](#){: .p-1 .text-red-200}
+it
+[condition](#){: .p-1 .text-blue-100 .fw-700}
+cover
 [haystack](#){: .p-1 .text-green-200 .fw-700}
 >
 > ▪
-[Then](#){: .p-1 .text-red-200} 
-it must be a superset of
+[Then](#){: .p-1 .text-red-200}
+it
+[condition](#){: .p-1 .text-blue-100 .fw-700}
+be a superset of
 [haystack](#){: .p-1 .text-green-200 .fw-700}
 >
 
 | key | Description | Examples |
 |:---:|:----------|:-|
 | [haystack](#){: .p-1 .text-green-200 .fw-700} | The resources to be accessed via in step variables | `{aws_lambda_function.values.function_name}`, `{aws_cloudwatch_log_group.values.name}`, `{resource_name.path.to.property}` |
+| [condition](#){: .p-1 .text-blue-100 .fw-700} | Defines whether the resources from the previous must be a superset of the in step variables | Only `must` and `must not` |

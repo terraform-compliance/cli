@@ -275,7 +275,41 @@ class TestTerraformParser(TestCase):
             }
         }
         obj._parse_configurations()
-        self.assertEqual(obj.configuration['resources']['module.a_module.something'], {'address': 'module.a_module.something'})
+        self.assertEqual(obj.configuration['resources']['module.a_module.something'], {'address': 'module.a_module.something', 'source': ''})
+    
+    # Tests if module source is being correctly pulled
+    @patch.object(TerraformParser, '_read_file', return_value={})
+    def test_parse_configurations_module_resources_with_source(self, *args):
+        obj = TerraformParser('somefile', parse_it=False)
+        obj.raw['configuration'] = {
+            'root_module': {
+                'module_calls': {
+                    'a_module': {
+                        'source' : 'source_of_a',
+                        'module': {
+                            'resources': [
+                                {
+                                    'address': 'something'
+                                }
+                            ]
+                        }
+                    },
+
+                    'b_module': {
+                        'source' : 'source_of_b',
+                        'module': {
+                            'resources': [
+                                {
+                                    'address': 'something'
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+        obj._parse_configurations()
+        self.assertEqual(obj.configuration['resources']['module.a_module.something'], {'address': 'module.a_module.something', 'source': 'source_of_a'})
 
     @patch.object(TerraformParser, '_read_file', return_value={})
     def test_parse_configurations_ignore_nested_resources(self, *args):

@@ -56,6 +56,8 @@ not met with the infrastructure plan.
 will be deprecated soon
 {: .label .label-blue}
 
+This step filters and drills down at the same time, unlike other WHEN steps. Please use [`When it has something`](https://terraform-compliance.com/pages/bdd-references/when.html#when-it-has-something) followed by [`Then it must have something`](https://terraform-compliance.com/pages/bdd-references/then.html#then-it-must-contain-something) to achieve a similar functionality.
+
 > __Possible sentences :__
 >
 > ▪

@@ -614,3 +614,44 @@ def remove_constant_values(target):
     elif isinstance(target, list):
         for value in target:
             remove_constant_values(value)
+
+
+def strip_iterations(address):
+    # Tried this with regex but it looks like the code was much less readable,
+    # Hence trying to do it via quite a grunt way
+
+    flag = False
+    captured = ""
+    capture_list = []
+    capture_start = "["
+    capture_end = "]"
+
+    for letter in address:
+        if letter == capture_start:
+            flag = True
+            captured = ""
+        elif letter == capture_end:
+            flag = False
+            capture_list.append('{}{}'.format(captured, capture_end))
+
+        if flag:
+            captured += letter
+
+    for replacement in capture_list:
+        address = address.replace(replacement, '')
+
+    return address
+
+
+def get_most_child_module(module):
+    modules = module.split('.')
+    current_module = None
+    for i in range(0, len(modules)):
+        if modules[i] == 'module':
+            current_module = modules[i+1]
+
+    if not current_module:
+        return module
+
+    return current_module
+

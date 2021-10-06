@@ -5,7 +5,7 @@ from copy import deepcopy
 from radish.utils import console_write
 from terraform_compliance.common.defaults import Defaults
 from terraform_compliance.extensions.cache import Cache
-from terraform_compliance.common.helper import recursive_jsonify
+from terraform_compliance.common.helper import recursive_jsonify, strip_iterations, get_most_child_module
 
 
 class TerraformParser(object):
@@ -269,7 +269,7 @@ class TerraformParser(object):
         Mounts values of the source resource to the target resource's values with ref_type key
 
         :param source: source resource
-        :param target:  target resource
+        :param target: target resource
         :param ref_type: reference type (e.g. ingress )
         :return: none
         '''
@@ -283,6 +283,20 @@ class TerraformParser(object):
                         continue
 
                     resource = self.resources_raw[source_resource]['values']
+
+                    # This is a very stupid terraform-provider bug. Somehow, sometimes it loses the state
+                    # and sets the value to None - which is normally not allowed.. It should have been an empty
+                    # dict instead. Hence, we are fixing that here.
+                    if resource is None:
+                        defaults = Defaults()
+                        console_write('{} {}: {}'.format(defaults.warning_icon,
+                                                         defaults.warning_colour('WARNING (mounting)'),
+                                                         defaults.info_colour('The resource "{}" has no values set. This is a terraform provider '
+                                                                              'bug. Its recommended to remove/fix this resource within your state.'.format(source_resource))))
+                        self.resources_raw[source_resource]['values'] = {}
+                        self.resources[source_resource]['values'] = {}
+                        resource = {}
+
                     resource[Defaults.mounted_ptr] = True
 
                     if Defaults.r_mount_ptr not in self.resources[target_resource]:
@@ -293,6 +307,11 @@ class TerraformParser(object):
 
                     if Defaults.r_mount_addr_ptr_list not in self.resources[target_resource]:
                         self.resources[target_resource][Defaults.r_mount_addr_ptr_list] = []
+
+                    # ensure resources[target_resource]['values'] is an
+                    # empty dict and not None
+                    if not self.resources[target_resource]['values']:
+                        self.resources[target_resource]['values'] = dict()
 
                     if ref_type not in self.resources[target_resource]['values']:
                         self.resources[target_resource]['values'][ref_type] = []
@@ -307,21 +326,49 @@ class TerraformParser(object):
                     if parameter not in self.resources[source_resource]['values']:
                         self.resources[source_resource]['values'][parameter] = target_resource
 
-    def _find_resource_from_name(self, resource_name):
+    def _find_resource_from_name(self, resource_name, module_address=None):
         '''
         Finds all the resources that is starting with resource_name
 
         :param resource_name: The first initials of the resource
+        :param module_address: Full module address (without the resource)
         :return: list of the found resources
         '''
         if resource_name in self.resources:
             return [resource_name]
 
         resource_list = []
+        # Try to find the resource with the module address in self.resources
+        if module_address is not None:
+            full_address = '{}.{}'.format(module_address, resource_name)
+            if full_address in self.resources:
+                return [full_address]
+
+            for key, value in self.resources.items():
+                if not key.startswith(module_address):
+                    continue
+
+                # Check if the resource/module has iterations
+                if '[' in key:
+                    # Possibly module (or resource) is using foreach/count
+                    k = strip_iterations(key)
+                    if k == strip_iterations(full_address):
+                        resource_list.append(key)
+                else:
+                    # Resource/module does not have any iteration
+                    # Additionally, the resource we are looking under this module is coming from another
+                    # module output. Thus, we need to dive a bit deeper.
+                    if resource_name.startswith('module') and key.startswith('module'):
+                        resource_list.append(key)
+
+            if resource_list:
+                return resource_list
 
         resource_type, resource_id = resource_name.split('.')[0:2]
 
         if resource_type == 'module':
+            # TODO: This wont work correctly, if an output is used within a module, coming from another module.
+            #       Fix multi-layer module structure for the outputs ?
             module_name, output_id = resource_name.split('.')[1:3]
             module = self.raw['configuration']['root_module'].get('module_calls', {}).get(module_name, {})
 
@@ -330,6 +377,11 @@ class TerraformParser(object):
             resources = output_value.get('expression', {}).get('references', []) if 'expression' in output_value else output_value.get('value', [])
 
             resources = ['{}.{}.{}'.format(resource_type, module_name, res) for res in resources]
+
+            if not resources:
+                for key, _ in self.resources.items():
+                    if key.startswith(resource_name):
+                        resources.append(key)
 
             if resources:
                 resource_list.extend(resources)
@@ -346,28 +398,42 @@ class TerraformParser(object):
         :return:
         '''
         self.resources_raw = deepcopy(self.resources)
-        invalid_references = ('var.', 'each.')
+        invalid_references = ('var.', 'each.', 'count.')
 
         # This section will link resources found in configuration part of the plan output.
         # The reference should be on both ways (A->B, B->A) since terraform sometimes report these references
         # in opposite ways, depending on the provider structure.
         for resource in self.configuration['resources']:
+            relative_resource_address = '{}.{}'.format(self.configuration['resources'][resource]['type'], self.configuration['resources'][resource]['name'])
+            current_module_address = self.configuration['resources'][resource]['address'].replace('.{}'.format(relative_resource_address), '')
+
             if 'expressions' in self.configuration['resources'][resource]:
                 ref_list = {}
+
                 for key, value in self.configuration['resources'][resource]['expressions'].items():
                     references = seek_key_in_dict(value, 'references') if isinstance(value, (dict, list)) else []
 
                     valid_references = []
                     for ref in references:
                         if isinstance(ref, dict) and ref.get('references'):
-                            valid_references = [r for r in ref['references'] if not r.startswith(invalid_references)]
+                            valid_references = []
+                            for r in ref['references']:
+                                if r.startswith('var'):
+                                    # Try to track the resource given by a variable
+                                    _var = self._fetch_resource_by_a_variable(current_module_address, r)
+                                    if _var:
+                                        valid_references.extend(_var)
+
+                                if not r.startswith(invalid_references):
+                                    valid_references.append(r)
 
                     for ref in valid_references:
                         # if ref is not in the correct format, handle it
                         if len(ref.split('.')) < 3 and ref.startswith('module'):
 
-                            # Using for_each and modules together may introduce an issue where the plan.out.json won't include the necessary third part of the reference
-                            # It is partially resolved by mounting the reference to all instances belonging to the module
+                            # Using for_each and modules together may introduce an issue where the plan.out.json won't
+                            # include the necessary third part of the reference. It is partially resolved by mounting
+                            # the reference to all instances belonging to the module
                             if 'for_each_expression' in self.configuration['resources'][resource]:
 
                                 # extract source resources
@@ -377,7 +443,7 @@ class TerraformParser(object):
                                 # combine ref with for each keys
                                 assumed_refs = ['{}{}'.format(ref, key) for key in assumed_for_each_keys]
                                 # get all the resources that start with updated ref
-                                ambigious_references = []
+                                ambiguous_references = []
                                 for r in self.resources.keys():
                                     for assumed_ref in assumed_refs:
                                         if r.startswith(assumed_ref):
@@ -386,27 +452,27 @@ class TerraformParser(object):
                                             else:
                                                 ref_list[key] = [r]
 
-                                            ambigious_references.append(r)
+                                            ambiguous_references.append(r)
 
                                 # throw a warning
                                 defaults = Defaults()
                                 console_write('{} {}: {}'.format(defaults.warning_icon,
-                                       defaults.warning_colour('WARNING (Mounting)'),
+                                       defaults.warning_colour('WARNING (mounting)'),
                                        defaults.info_colour('The reference "{}" in resource {} is ambigious.'
                                         ' It will be mounted to the following resources:').format(ref, resource)))
-                                for i, r in enumerate(ambigious_references, 1):
+                                for i, r in enumerate(ambiguous_references, 1):
                                     console_write(defaults.info_colour('{}. {}'.format(i, r)))
 
                             # if the reference can not be resolved, warn the user and continue.
                             else:
                                 console_write('{} {}: {}'.format(Defaults().warning_icon,
-                                       Defaults().warning_colour('WARNING (Mounting)'),
+                                       Defaults().warning_colour('WARNING (mounting)'),
                                        Defaults().info_colour('The reference "{}" in resource {} is ambigious. It will not be mounted.'.format(ref, resource))))
                                 continue
                         elif key not in ref_list:
-                            ref_list[key] = self._find_resource_from_name(ref)
+                            ref_list[key] = self._find_resource_from_name(ref, current_module_address)
                         else:
-                            ref_list[key].extend(self._find_resource_from_name(ref))
+                            ref_list[key].extend(self._find_resource_from_name(ref, current_module_address))
 
                     # This is where we synchronise constant_value in the configuration section with the resource
                     # for filling up the missing elements that hasn't been defined in the resource due to provider
@@ -436,6 +502,11 @@ class TerraformParser(object):
 
                     # Mounting A->B
                     source_resources = self._find_resource_from_name(self.configuration['resources'][resource]['address'])
+
+                    # Try again in case we might have for_each/count usage for the module
+                    if not source_resources:
+                        source_resources = self._find_resource_from_name(relative_resource_address, current_module_address)
+
                     self._mount_resources(source=source_resources,
                                           target=ref_list,
                                           ref_type=ref_type)
@@ -485,7 +556,9 @@ class TerraformParser(object):
         else:
             # print('Building cache for mounted resources at {}'.format(Defaults.cache_dir))
             self._mount_references()
+            # metadata related calls
             self._add_action_status()
+            self._add_module_call_source()
 
             self.resources = recursive_jsonify(self.resources)
             self.resources_raw = recursive_jsonify(self.resources_raw)
@@ -515,6 +588,19 @@ class TerraformParser(object):
             resource = resource_change['address']
             if resource in self.resources:
                 self.resources[resource]['actions'] = resource_change['change']['actions']
+
+    def _add_module_call_source(self):
+        '''
+        Adds module call's source to module's resources as metadata
+        '''
+        for resource in self.resources.values():
+            # removes the for_each signature from addresses
+            # module.a["index_1"].b.c -> module.a.b.c
+            fixed_module_name = '.'.join([word.split('[')[0] for word in resource['address'].split('.')])
+
+            if 'source' in self.configuration['resources'].get(fixed_module_name, ''):
+                resource['source'] = self.configuration['resources'][fixed_module_name]['source']
+
 
     def find_resources_by_type(self, resource_type, match=Match(case_sensitive=False)):
         '''
@@ -596,11 +682,14 @@ class TerraformParser(object):
             current_module_level = deepcopy(parents_modules)
             current_module_level.append('module.{}'.format(k))
             module_name = ".".join(current_module_level)
+            # Pull module's source to be later used in metadata
+            module_source = v.get('source', '')
 
             # Register the resource (along with module naming)
             if 'resources' in v.get('module', {}):
                 for resource in v['module']['resources']:
                     resource['address'] = '{}.{}'.format(module_name, resource['address'])
+                    resource['source'] = module_source
                     resources.append(resource)
 
             # Dive deeper, its not finished yet.
@@ -634,3 +723,8 @@ class TerraformParser(object):
         # Returning the whole address
         return resource_address_string
 
+    def _fetch_resource_by_a_variable(self, module, variable):
+        target_module = get_most_child_module(module)
+        stripped_variable = variable.replace('var.', '')
+        var = self.raw['configuration'].get('root_module', {}).get('module_calls', {}).get(target_module, {}).get('expressions', {}).get(stripped_variable, {}).get('references', {})
+        return var
