@@ -504,6 +504,8 @@ def transform_asg_style_tags(resource_list):
         return resource_list
 
     for resource in resource_list:
+        if resource.get('values', {}) is None:
+            resource['values'] = {}
         tag = resource.get('values', {}).get('tag')
 
         if not resource.get('values', {}).get('tags'):

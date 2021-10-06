@@ -275,6 +275,16 @@ class TestHelperFunctions(TestCase):
         output = transform_asg_style_tags([resource_list])
         self.assertEqual(output[0]['values']['tags']['some_key'], 'some_value')
 
+    def test_transform_asg_style_tags_with_null_values_success(self):
+        resource_list = {
+            'address': 'aws_subnet.test',
+            'type': 'aws_subnet',
+            'name': 'test',
+            'values': None
+        }
+        output = transform_asg_style_tags([resource_list])
+        self.assertEqual(output[0]['values']['tags'], {})
+
     def test_transform_asg_style_tags_return_directly(self):
         resource_list = 'abc'
         output = transform_asg_style_tags(resource_list)
