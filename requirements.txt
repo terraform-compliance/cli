@@ -4,7 +4,7 @@ netaddr==0.8.0
 colorful==0.5.4
 filetype==1.0.8
 junit-xml==1.9
-emoji==1.5.0
+emoji==1.6.0
 lxml==4.6.3
 semver==2.13.0
 IPython==7.16.1
