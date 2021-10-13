@@ -1,6 +1,7 @@
 # CHANGELOG
 
 # Unreleased
+* Fixed a problem where a resource with None values will throw an AttributeError exception during tags processing ([#567](https://github.com/terraform-compliance/cli/issues/567))
 
 ## 1.3.29 (2021-10-01)
 * Added a new step: `Then it must not cover` ([docs](https://terraform-compliance.com/pages/bdd-references/then.html#then-it-must-cover-haystack) [#562](https://github.com/terraform-compliance/cli/issues/562))
