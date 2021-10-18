@@ -1,6 +1,6 @@
 # CHANGELOG
 
-# Unreleased
+# 1.3.30 (2021-10-18)
 * Fixed a problem where a resource with None values will throw an AttributeError exception during tags processing ([#567](https://github.com/terraform-compliance/cli/issues/567))
 
 ## 1.3.29 (2021-10-01)
