@@ -5,7 +5,7 @@ colorful==0.5.4
 filetype==1.0.8
 junit-xml==1.9
 emoji==1.6.1
-lxml==4.6.4
+lxml==4.7.0
 semver==2.13.0
 IPython==7.16.1
 orjson==3.6.0
