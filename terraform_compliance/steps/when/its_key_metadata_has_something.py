@@ -2,8 +2,9 @@ from terraform_compliance.common.error_handling import Error
 from terraform_compliance.extensions.ext_radish_bdd import skip_step
 
 
-def its_key_metadata_has_something(_step_obj, key, value, has_step=True):
+def its_key_metadata_has_something(_step_obj, key, value, has_step=True, regex_match=None):
     match = _step_obj.context.match
+    match.regex_flag = regex_match
 
     if match.equals(key, 'values'):
         Error(_step_obj, 'The key "values" is not metadata, please use the "When its property has something" step instead.')

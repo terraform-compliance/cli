@@ -66,6 +66,7 @@ def its_key_is_value(_step_obj, key, value, dict_value=None, address=Null, regex
         _step_obj.context.stash = found_list
         _step_obj.context.addresses = get_resource_address_list_from_stash(found_list)
     else:
+        _step_obj.context.addresses = _step_obj.context.addresses if isinstance(_step_obj.context.addresses, list) else [_step_obj.context.addresses]
         if object_key is Null:
             skip_step(_step_obj, message='Could not find {} in {}.'.format(key,
                                                                            ', '.join(_step_obj.context.addresses)))
@@ -134,6 +135,7 @@ def its_key_is_not_value(_step_obj, key, value, dict_value=None, address=Null, r
         _step_obj.context.stash = found_list
         _step_obj.context.addresses = get_resource_address_list_from_stash(found_list)
     else:
+        _step_obj.context.addresses = _step_obj.context.addresses if isinstance(_step_obj.context.addresses, list) else [_step_obj.context.addresses]
         if object_key is Null:
             skip_step(_step_obj, message='Could not find {} in {}.'.format(key,
                                                                      ', '.join(_step_obj.context.addresses)))

@@ -62,8 +62,14 @@ def wrapper(_step_obj, name, type_name='resource', _terraform_config=world):
 @when(u'its {key:PROPERTY} metadata contains {value:PROPERTY}')
 @when(u'its {key:PROPERTY} metadata includes {value:PROPERTY}')
 def wrapper(_step_obj, key, value):
-    return its_key_metadata_has_something(_step_obj, key, value)
+    return its_key_metadata_has_something(_step_obj, key, value, regex_match=False)
 
+@when(u'its {key:PROPERTY} metadata has "{search_regex}" regex')
+@when(u'its {key:PROPERTY} metadata is "{search_regex}" regex')
+@when(u'its {key:PROPERTY} metadata contains "{search_regex}" regex')
+@when(u'its {key:PROPERTY} metadata includes "{search_regex}" regex')
+def wrapper(_step_obj, key, search_regex):
+    return its_key_metadata_has_something(_step_obj, key, search_regex, regex_match=True)
 
 @when(u'its {key:PROPERTY} metadata has not {value:PROPERTY}')
 @when(u'its {key:PROPERTY} metadata is not {value:PROPERTY}')
@@ -73,6 +79,13 @@ def wrapper(_step_obj, key, value):
 def wrapper(_step_obj, key, value):
     return its_key_metadata_has_something(_step_obj, key, value, has_step=False)
 
+@when(u'its {key:PROPERTY} metadata has not "{search_regex}" regex')
+@when(u'its {key:PROPERTY} metadata is not "{search_regex}" regex')
+@when(u'its {key:PROPERTY} metadata does not have "{search_regex}" regex')
+@when(u'its {key:PROPERTY} metadata does not contain "{search_regex}" regex')
+@when(u'its {key:PROPERTY} metadata does not include "{search_regex}" regex')
+def wrapper(_step_obj, key, search_regex):
+    return its_key_metadata_has_something(_step_obj, key, search_regex, has_step=False, regex_match=True)
 
 @when(u'its {key:PROPERTY} is {value:PROPERTY}')
 @when(u'its {key:PROPERTY} has {value:PROPERTY}')
