@@ -8,7 +8,7 @@ from terraform_compliance.common.helper import (
 from terraform_compliance.extensions.ext_radish_bdd import skip_step
 
 
-def its_key_is_value(_step_obj, key, value, dict_value=None, address=Null, regex_match=Null):
+def its_key_is_value(_step_obj, key, value, dict_value=None, address=Null, regex_match=None):
     match = _step_obj.context.match
     match.regex_flag = regex_match
     
@@ -77,7 +77,7 @@ def its_key_is_value(_step_obj, key, value, dict_value=None, address=Null, regex
                                                                                ', '.join(_step_obj.context.addresses)))
 
 
-def its_key_is_not_value(_step_obj, key, value, dict_value=None, address=Null, regex_flag=Null):
+def its_key_is_not_value(_step_obj, key, value, dict_value=None, address=Null, regex_flag=None):
     match = _step_obj.context.match
     match.regex_flag = regex_flag
     

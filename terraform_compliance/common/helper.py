@@ -23,7 +23,7 @@ class Null(object):
 
 
 class Match(object):
-    def __init__(self, case_sensitive, regex_flag=Null):
+    def __init__(self, case_sensitive, regex_flag=None):
         self.case_sensitive = case_sensitive
         self.regex_flag = regex_flag
 
