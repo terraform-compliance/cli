@@ -239,6 +239,60 @@ is
 | [value](#){: .p-1 .text-blue-100 .fw-700} | any dictionary value (allows spaces). | `my dictionary value` |
 
 ------------------------
+### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} has \"[something]\"(#){: .p-1 .text-blue-100 .fw-700} regex
+This is a filtering function with regular expression support on values. Thus, found resources from previous step will be filtered based on these values.
+
+> __Possible sentences :__
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+is "[something](#){: .p-1 .text-blue-100 .fw-700}" regex
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+has
+"[something](#){: .p-1 .text-blue-100 .fw-700}" regex
+> 
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+includes
+"[something](#){: .p-1 .text-blue-100 .fw-700}" regex
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+contains
+"[something](#){: .p-1 .text-blue-100 .fw-700}" regex
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[dictionary](#){: .p-1 .text-green-200 .fw-700}
+includes an entry where
+"
+[key](#){: .p-1 .text-blue-100 .fw-700}
+"
+is
+is "[value](#){: .p-1 .text-blue-100 .fw-700}" regex
+>
+>
+| key | Description | Examples |
+|:---:|:----------|:-|
+| [property](#){: .p-1 .text-green-200 .fw-700} | any property that resources have. Using `type` will give the Terraform resource type; `address` is the name you have given it | `address` `name` `size` |
+| [dictionary](#){: .p-1 .text-green-200 .fw-700} | a dictionary property that resource has. | `tags` |
+| [something](#){: .p-1 .text-blue-100 .fw-700} | Any regular expression | `aws_s3_.*"` |
+| [some string with spaces](#){: .p-1 .text-blue-100 .fw-700} | any string (allows spaces). | `my dictionary key` |
+| [key](#){: .p-1 .text-blue-100 .fw-700} | any dictionary key (allows spaces). | `my dictionary key` |
+| [value](#){: .p-1 .text-blue-100 .fw-700} | Any regular expression | `^4\\..*` |
+
+------------------------
 ### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} has not [something](#){: .p-1 .text-blue-100 .fw-700}
 This is a filtering function. Thus, found resources from previous step will be filtered based on these values.
 
@@ -331,6 +385,60 @@ is
 | [key](#){: .p-1 .text-blue-100 .fw-700} | any dictionary key (allows spaces). | `my dictionary key` |
 | [value](#){: .p-1 .text-blue-100 .fw-700} | any dictionary value (allows spaces). | `my dictionary value` |
 
+### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} has not \"[something]\"(#){: .p-1 .text-blue-100 .fw-700} regex
+This is a filtering function with regular expression support on values. Thus, found resources from previous step will be filtered based on these values.
+
+> __Possible sentences :__
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+is not "[something](#){: .p-1 .text-blue-100 .fw-700}" regex
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+has
+not "[something](#){: .p-1 .text-blue-100 .fw-700}" regex
+> 
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+does not include
+"[something](#){: .p-1 .text-blue-100 .fw-700}" regex
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+does not contain
+"[something](#){: .p-1 .text-blue-100 .fw-700}" 
+regex
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[dictionary](#){: .p-1 .text-green-200 .fw-700}
+does not include an entry where
+"
+[key](#){: .p-1 .text-blue-100 .fw-700}
+"
+is
+is "[value](#){: .p-1 .text-blue-100 .fw-700}" regex
+>
+>
+| key | Description | Examples |
+|:---:|:----------|:-|
+| [property](#){: .p-1 .text-green-200 .fw-700} | any property that resources have. Using `type` will give the Terraform resource type; `address` is the name you have given it | `address` `name` `size` |
+| [dictionary](#){: .p-1 .text-green-200 .fw-700} | a dictionary property that resource has. | `tags` |
+| [something](#){: .p-1 .text-blue-100 .fw-700} | Any regular expression | `aws_s3_.*"` |
+| [some string with spaces](#){: .p-1 .text-blue-100 .fw-700} | any string (allows spaces). | `my dictionary key` |
+| [key](#){: .p-1 .text-blue-100 .fw-700} | any dictionary key (allows spaces). | `my dictionary key` |
+| [value](#){: .p-1 .text-blue-100 .fw-700} | Any regular expression | `^4\\..*` |
+
 ------------------------
 ### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} metadata has [something](#){: .p-1 .text-blue-100 .fw-700}
 This is a filtering function. Thus, found resources from previous step will be filtered based on these values.
@@ -390,6 +498,51 @@ metadata contains
 |:---:|:----------|:-|
 | [property](#){: .p-1 .text-green-200 .fw-700} | any metadata that resources have. Using `actions` will give the Terraform's actions on the resource on an apply; `address` is the name you have given it | `address` `name` `actions` |
 | [something](#){: .p-1 .text-blue-100 .fw-700} | any string or numeric value that the property has. | `s3_my_bucket` `my-bucket` `create` `"something with spaces"` |
+
+------------------------
+### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} metadata has "[something](#){: .p-1 .text-blue-100 .fw-700}" regex
+This step has the same functionality with `When its property metadata has something` step. Additionaly this step
+supports regular expressions for matching values.
+
+> __Possible sentences :__
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+metadata is "
+[something](#){: .p-1 .text-blue-100 .fw-700}"
+regex
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+metadata has "
+[something](#){: .p-1 .text-blue-100 .fw-700}"
+regex
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+metadata includes "
+[something](#){: .p-1 .text-blue-100 .fw-700}"
+regex
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+metadata contains ""
+[something](#){: .p-1 .text-blue-100 .fw-700}"
+regex
+>
+>
+| key | Description | Examples |
+|:---:|:----------|:-|
+| [property](#){: .p-1 .text-green-200 .fw-700} | any metadata that resources have. Using `actions` will give the Terraform's actions on the resource on an apply; `address` is the name you have given it | `address` `name` `actions` |
+| " [regex](#){: .p-1 .text-blue-100 .fw-700} " | any regular expression with special characters escaped | `"module.project1.*"` |
 
 ------------------------
 ### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} metadata has not [something](#){: .p-1 .text-blue-100 .fw-700}
@@ -457,6 +610,59 @@ metadata does not contain
 |:---:|:----------|:-|
 | [property](#){: .p-1 .text-green-200 .fw-700} | any metadata that resources have. Using `actions` will give the Terraform's actions on the resource on an apply; `address` is the name you have given it | `address` `name` `actions` |
 | [something](#){: .p-1 .text-blue-100 .fw-700} | any string or numeric value that the property has. | `s3_my_bucket` `my-bucket` `create` `"something with spaces"` |
+
+------------------------
+### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} metadata has not [something](#){: .p-1 .text-blue-100 .fw-700}
+This step has the same functionality with `When its property metadata has not something` step. Additionaly this step
+supports regular expressions for matching values.
+
+> __Possible sentences :__
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+metadata is not "
+[something](#){: .p-1 .text-blue-100 .fw-700}"
+regex
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+metadata has not "
+[something](#){: .p-1 .text-blue-100 .fw-700}"
+regex
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+metadata does not have "
+[something](#){: .p-1 .text-blue-100 .fw-700}"
+regex
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+metadata does not include "
+[something](#){: .p-1 .text-blue-100 .fw-700}"
+regex
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+metadata does not contain "
+[something](#){: .p-1 .text-blue-100 .fw-700}"
+regex
+>
+>
+| key | Description | Examples |
+|:---:|:----------|:-|
+| [property](#){: .p-1 .text-green-200 .fw-700} | any metadata that resources have. Using `actions` will give the Terraform's actions on the resource on an apply; `address` is the name you have given it | `address` `name` `actions` |
+| " [regular expression](#){: .p-1 .text-blue-100 .fw-700} "| any regular expression with special characters escaped | `"module.project1.*"` |
 
 ------------------------
 ### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} reference has [something](#){: .p-1 .text-blue-100 .fw-700}

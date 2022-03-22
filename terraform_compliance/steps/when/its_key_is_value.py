@@ -8,8 +8,9 @@ from terraform_compliance.common.helper import (
 from terraform_compliance.extensions.ext_radish_bdd import skip_step
 
 
-def its_key_is_value(_step_obj, key, value, dict_value=None, address=Null):
+def its_key_is_value(_step_obj, key, value, dict_value=None, address=Null, regex_match=None):
     match = _step_obj.context.match
+    match.regex_flag = regex_match
     
     orig_key = key
     if key == 'reference':
@@ -65,6 +66,7 @@ def its_key_is_value(_step_obj, key, value, dict_value=None, address=Null):
         _step_obj.context.stash = found_list
         _step_obj.context.addresses = get_resource_address_list_from_stash(found_list)
     else:
+        _step_obj.context.addresses = _step_obj.context.addresses if isinstance(_step_obj.context.addresses, list) else [_step_obj.context.addresses]
         if object_key is Null:
             skip_step(_step_obj, message='Could not find {} in {}.'.format(key,
                                                                            ', '.join(_step_obj.context.addresses)))
@@ -76,8 +78,9 @@ def its_key_is_value(_step_obj, key, value, dict_value=None, address=Null):
                                                                                ', '.join(_step_obj.context.addresses)))
 
 
-def its_key_is_not_value(_step_obj, key, value, dict_value=None, address=Null):
+def its_key_is_not_value(_step_obj, key, value, dict_value=None, address=Null, regex_match=None):
     match = _step_obj.context.match
+    match.regex_flag = regex_match
     
     orig_key = key
     if key == 'reference':
@@ -132,6 +135,7 @@ def its_key_is_not_value(_step_obj, key, value, dict_value=None, address=Null):
         _step_obj.context.stash = found_list
         _step_obj.context.addresses = get_resource_address_list_from_stash(found_list)
     else:
+        _step_obj.context.addresses = _step_obj.context.addresses if isinstance(_step_obj.context.addresses, list) else [_step_obj.context.addresses]
         if object_key is Null:
             skip_step(_step_obj, message='Could not find {} in {}.'.format(key,
                                                                      ', '.join(_step_obj.context.addresses)))

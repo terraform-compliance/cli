@@ -23,17 +23,22 @@ class Null(object):
 
 
 class Match(object):
-    def __init__(self, case_sensitive):
+    def __init__(self, case_sensitive, regex_flag=None):
         self.case_sensitive = case_sensitive
+        self.regex_flag = regex_flag
 
     def equals(self, left, right):
         if not isinstance(left, (bool, int, float, str)) or not isinstance(right, (bool, int, float, str)):
             raise TypeError
 
-        if self.case_sensitive:
-            return str(left) == str(right)
-        else:
-            return str(left).lower() == str(right).lower()
+        if self.regex_flag: # Regex enabled matches
+            re_flag = 0 if self.case_sensitive else re.IGNORECASE
+            return True if re.match(right, left, flags=re_flag) else False
+        else: # Regex disabled matches
+            if self.case_sensitive:
+                return str(left) == str(right)
+            else:
+                return str(left).lower() == str(right).lower()
 
     # gets something from a dictionary
     # needle == key

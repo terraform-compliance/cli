@@ -1,0 +1,6 @@
+6 scenarios \(1 passed, 4 failed, 1 skipped\)
+SKIPPING: Can not find .* version_constraint in aws
+Failure: aws_s3_bucket.bucket \(aws_s3_bucket\) does not have aws_s3_bucket_server_side_encryption_configuration property
+Failure: aws_s3_bucket.bucket \(aws_s3_bucket\) does not have aws_s3_bucket_versioning property
+Failure: aws_s3_bucket.bucket \(aws_s3_bucket\) does not have aws_s3_bucket_logging property
+Failure: module.project1.aws_kms_key.test \(aws_kms_key\) does not have project property
