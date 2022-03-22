@@ -144,10 +144,10 @@ def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
 
     try:
         result = call_radish(args=commands[1:])
+        return result
     except IndexError as e:
-        print(e)
-
-    return result
+        print("FATAL ERROR: It looks like there is a syntax error on your feature file.")
+    return
 
 
 if __name__ == '__main__':
