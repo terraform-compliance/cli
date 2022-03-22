@@ -1,11 +1,11 @@
 # CHANGELOG
 
-# Unreleased
-* Added a new step: `When its {key} is "{value}" regex` [#608](https://github.com/terraform-compliance/cli/issues/608)) [#602](https://github.com/terraform-compliance/cli/issues/602))
-* Added a new step: `When its {key} is not "{value}" regex` [#608](https://github.com/terraform-compliance/cli/issues/608)) [#602](https://github.com/terraform-compliance/cli/issues/602))
-* Added a new step: `When its {key} metadata has "{value}" regex` [#608](https://github.com/terraform-compliance/cli/issues/608)) [#602](https://github.com/terraform-compliance/cli/issues/602))
-* Added a new step: `When its {key} metadata has not "{value}" regex` [#608](https://github.com/terraform-compliance/cli/issues/608)) [#602](https://github.com/terraform-compliance/cli/issues/602))
-* Fixed a problem that was throwing an exception `IndexError: list index out of range` [#605](https://github.com/terraform-compliance/cli/issues/605))
+# 1.3.32 (2022-03-22)
+* Added a new step: `When its {key} is "{value}" regex` ([#608](https://github.com/terraform-compliance/cli/issues/608) [#602](https://github.com/terraform-compliance/cli/issues/602) [docs](https://terraform-compliance.com/pages/bdd-references/when.html#when-its-property-has-something-regex))
+* Added a new step: `When its {key} is not "{value}" regex` ([#608](https://github.com/terraform-compliance/cli/issues/608) [#602](https://github.com/terraform-compliance/cli/issues/602) [docs](https://terraform-compliance.com/pages/bdd-references/when.html#when-its-property-has-not-something-regex))
+* Added a new step: `When its {key} metadata has "{value}" regex` ([#608](https://github.com/terraform-compliance/cli/issues/608) [#602](https://github.com/terraform-compliance/cli/issues/602) [docs](https://terraform-compliance.com/pages/bdd-references/when.html#when-its-property-metadata-has-something-regex))
+* Added a new step: `When its {key} metadata has not "{value}" regex` ([#608](https://github.com/terraform-compliance/cli/issues/608) [#602](https://github.com/terraform-compliance/cli/issues/602) [docs](https://terraform-compliance.com/pages/bdd-references/when.html#when-its-property-metadata-has-not-something-regex))
+* Fixed a problem that was throwing an exception `IndexError: list index out of range` [#605](https://github.com/terraform-compliance/cli/issues/605)
 
 # 1.3.31 (2021-12-09)
 * Added support for terraform 1.1.x
