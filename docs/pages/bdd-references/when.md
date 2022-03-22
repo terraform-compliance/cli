@@ -500,6 +500,51 @@ metadata contains
 | [something](#){: .p-1 .text-blue-100 .fw-700} | any string or numeric value that the property has. | `s3_my_bucket` `my-bucket` `create` `"something with spaces"` |
 
 ------------------------
+### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} metadata has "[something](#){: .p-1 .text-blue-100 .fw-700}" regex
+This step has the same functionality with `When its property metadata has something` step. Additionaly this step
+supports regular expressions for matching values.
+
+> __Possible sentences :__
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+metadata is "
+[something](#){: .p-1 .text-blue-100 .fw-700}"
+regex
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+metadata has "
+[something](#){: .p-1 .text-blue-100 .fw-700}"
+regex
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+metadata includes "
+[something](#){: .p-1 .text-blue-100 .fw-700}"
+regex
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+metadata contains ""
+[something](#){: .p-1 .text-blue-100 .fw-700}"
+regex
+>
+>
+| key | Description | Examples |
+|:---:|:----------|:-|
+| [property](#){: .p-1 .text-green-200 .fw-700} | any metadata that resources have. Using `actions` will give the Terraform's actions on the resource on an apply; `address` is the name you have given it | `address` `name` `actions` |
+| " [regex](#){: .p-1 .text-blue-100 .fw-700} " | any regular expression with special characters escaped | `"module.project1.*"` |
+
+------------------------
 ### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} metadata has not [something](#){: .p-1 .text-blue-100 .fw-700}
 This is a filtering function. Thus, found resources from previous step will be filtered based on these values.
 
@@ -565,6 +610,59 @@ metadata does not contain
 |:---:|:----------|:-|
 | [property](#){: .p-1 .text-green-200 .fw-700} | any metadata that resources have. Using `actions` will give the Terraform's actions on the resource on an apply; `address` is the name you have given it | `address` `name` `actions` |
 | [something](#){: .p-1 .text-blue-100 .fw-700} | any string or numeric value that the property has. | `s3_my_bucket` `my-bucket` `create` `"something with spaces"` |
+
+------------------------
+### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} metadata has not [something](#){: .p-1 .text-blue-100 .fw-700}
+This step has the same functionality with `When its property metadata has not something` step. Additionaly this step
+supports regular expressions for matching values.
+
+> __Possible sentences :__
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+metadata is not "
+[something](#){: .p-1 .text-blue-100 .fw-700}"
+regex
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+metadata has not "
+[something](#){: .p-1 .text-blue-100 .fw-700}"
+regex
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+metadata does not have "
+[something](#){: .p-1 .text-blue-100 .fw-700}"
+regex
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+metadata does not include "
+[something](#){: .p-1 .text-blue-100 .fw-700}"
+regex
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+metadata does not contain "
+[something](#){: .p-1 .text-blue-100 .fw-700}"
+regex
+>
+>
+| key | Description | Examples |
+|:---:|:----------|:-|
+| [property](#){: .p-1 .text-green-200 .fw-700} | any metadata that resources have. Using `actions` will give the Terraform's actions on the resource on an apply; `address` is the name you have given it | `address` `name` `actions` |
+| " [regular expression](#){: .p-1 .text-blue-100 .fw-700} "| any regular expression with special characters escaped | `"module.project1.*"` |
 
 ------------------------
 ### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} reference has [something](#){: .p-1 .text-blue-100 .fw-700}
