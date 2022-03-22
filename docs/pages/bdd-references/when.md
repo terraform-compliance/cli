@@ -239,7 +239,7 @@ is
 | [value](#){: .p-1 .text-blue-100 .fw-700} | any dictionary value (allows spaces). | `my dictionary value` |
 
 ------------------------
-### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} has \"[something]\"(#){: .p-1 .text-blue-100 .fw-700} regex
+### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} has "[something](#){: .p-1 .text-blue-100 .fw-700}" regex
 This is a filtering function with regular expression support on values. Thus, found resources from previous step will be filtered based on these values.
 
 > __Possible sentences :__
@@ -385,7 +385,7 @@ is
 | [key](#){: .p-1 .text-blue-100 .fw-700} | any dictionary key (allows spaces). | `my dictionary key` |
 | [value](#){: .p-1 .text-blue-100 .fw-700} | any dictionary value (allows spaces). | `my dictionary value` |
 
-### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} has not \"[something]\"(#){: .p-1 .text-blue-100 .fw-700} regex
+### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} has not "[something](#){: .p-1 .text-blue-100 .fw-700}" regex
 This is a filtering function with regular expression support on values. Thus, found resources from previous step will be filtered based on these values.
 
 > __Possible sentences :__
@@ -612,7 +612,7 @@ metadata does not contain
 | [something](#){: .p-1 .text-blue-100 .fw-700} | any string or numeric value that the property has. | `s3_my_bucket` `my-bucket` `create` `"something with spaces"` |
 
 ------------------------
-### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} metadata has not [something](#){: .p-1 .text-blue-100 .fw-700}
+### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} metadata has not "[something](#){: .p-1 .text-blue-100 .fw-700}" regex
 This step has the same functionality with `When its property metadata has not something` step. Additionaly this step
 supports regular expressions for matching values.
 
