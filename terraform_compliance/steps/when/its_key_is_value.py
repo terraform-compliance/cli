@@ -77,9 +77,9 @@ def its_key_is_value(_step_obj, key, value, dict_value=None, address=Null, regex
                                                                                ', '.join(_step_obj.context.addresses)))
 
 
-def its_key_is_not_value(_step_obj, key, value, dict_value=None, address=Null, regex_flag=None):
+def its_key_is_not_value(_step_obj, key, value, dict_value=None, address=Null, regex_match=None):
     match = _step_obj.context.match
-    match.regex_flag = regex_flag
+    match.regex_flag = regex_match
     
     orig_key = key
     if key == 'reference':

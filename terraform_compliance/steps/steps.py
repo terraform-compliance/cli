@@ -84,7 +84,7 @@ def wrapper(_step_obj, key, value):
 @when(u'its {address:PROPERTY} {key:PROPERTY} contains {value:PROPERTY}')
 @when(u'its {key:PROPERTY} includes an entry where {value:PROPERTY} is {dict_value:PROPERTY}')
 def wrapper(_step_obj, key, value, dict_value=None, address=Null):
-    return its_key_is_value(_step_obj, key, value, dict_value, address, regex_flag=False)
+    return its_key_is_value(_step_obj, key, value, dict_value, address, regex_match=False)
 
 @when(u'its {key:PROPERTY} is "{search_regex}" regex')
 @when(u'its {key:PROPERTY} has "{search_regex}" regex')
@@ -96,7 +96,7 @@ def wrapper(_step_obj, key, value, dict_value=None, address=Null):
 @when(u'its {address:PROPERTY} {key:PROPERTY} contains "{search_regex}" regex')
 @when(u'its {key:PROPERTY} includes an entry where {value:PROPERTY} is "{dict_value}" regex')
 def wrapper(_step_obj, key, search_regex, dict_value=None, address=Null):
-    return its_key_is_value(_step_obj, key, search_regex, dict_value, address, regex_flag=True)
+    return its_key_is_value(_step_obj, key, search_regex, dict_value, address, regex_match=True)
 
 
 @when(u'its {key:PROPERTY} is not {value:PROPERTY}')
@@ -109,7 +109,7 @@ def wrapper(_step_obj, key, search_regex, dict_value=None, address=Null):
 @when(u'its {address:PROPERTY} {key:PROPERTY} does not contain {value:PROPERTY}')
 @when(u'its {key:PROPERTY} does not include an entry where {value:PROPERTY} is {dict_value:PROPERTY}')
 def wrapper(_step_obj, key, value, dict_value=None, address=Null):
-    return its_key_is_not_value(_step_obj, key, value, dict_value, address, regex_flag=False)
+    return its_key_is_not_value(_step_obj, key, value, dict_value, address, regex_match=False)
 
 @when(u'its {key:PROPERTY} is not "{search_regex}" regex')
 @when(u'its {key:PROPERTY} has not "{search_regex}" regex')
@@ -121,7 +121,7 @@ def wrapper(_step_obj, key, value, dict_value=None, address=Null):
 @when(u'its {address:PROPERTY} {key:PROPERTY} does not contain "{search_regex}" regex')
 @when(u'its {key:PROPERTY} does not include an entry where {value:PROPERTY} is "{dict_value}" regex')
 def wrapper(_step_obj, key, search_regex, dict_value=None, address=Null):
-    return its_key_is_not_value(_step_obj, key, search_regex, dict_value, address, regex_flag=True)
+    return its_key_is_not_value(_step_obj, key, search_regex, dict_value, address, regex_match=True)
 
 @when(u'it contain {something:PROPERTY}') # This is just here for not breaking backward compatibility. I know its wrong.
 @when(u'it contains {something:PROPERTY}')
