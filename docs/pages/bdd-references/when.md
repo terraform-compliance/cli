@@ -239,6 +239,60 @@ is
 | [value](#){: .p-1 .text-blue-100 .fw-700} | any dictionary value (allows spaces). | `my dictionary value` |
 
 ------------------------
+### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} has \"[something]\"(#){: .p-1 .text-blue-100 .fw-700} regex
+This is a filtering function with regular expression support on values. Thus, found resources from previous step will be filtered based on these values.
+
+> __Possible sentences :__
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+is "[something](#){: .p-1 .text-blue-100 .fw-700}" regex
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+has
+"[something](#){: .p-1 .text-blue-100 .fw-700}" regex
+> 
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+includes
+"[something](#){: .p-1 .text-blue-100 .fw-700}" regex
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+contains
+"[something](#){: .p-1 .text-blue-100 .fw-700}" regex
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[dictionary](#){: .p-1 .text-green-200 .fw-700}
+includes an entry where
+"
+[key](#){: .p-1 .text-blue-100 .fw-700}
+"
+is
+is "[value](#){: .p-1 .text-blue-100 .fw-700}" regex
+>
+>
+| key | Description | Examples |
+|:---:|:----------|:-|
+| [property](#){: .p-1 .text-green-200 .fw-700} | any property that resources have. Using `type` will give the Terraform resource type; `address` is the name you have given it | `address` `name` `size` |
+| [dictionary](#){: .p-1 .text-green-200 .fw-700} | a dictionary property that resource has. | `tags` |
+| [something](#){: .p-1 .text-blue-100 .fw-700} | Any regular expression | `aws_s3_.*"` |
+| [some string with spaces](#){: .p-1 .text-blue-100 .fw-700} | any string (allows spaces). | `my dictionary key` |
+| [key](#){: .p-1 .text-blue-100 .fw-700} | any dictionary key (allows spaces). | `my dictionary key` |
+| [value](#){: .p-1 .text-blue-100 .fw-700} | Any regular expression | `^4\\..*` |
+
+------------------------
 ### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} has not [something](#){: .p-1 .text-blue-100 .fw-700}
 This is a filtering function. Thus, found resources from previous step will be filtered based on these values.
 
@@ -330,6 +384,60 @@ is
 | [some string with spaces](#){: .p-1 .text-blue-100 .fw-700} | any string (allows spaces). | `my dictionary key` |
 | [key](#){: .p-1 .text-blue-100 .fw-700} | any dictionary key (allows spaces). | `my dictionary key` |
 | [value](#){: .p-1 .text-blue-100 .fw-700} | any dictionary value (allows spaces). | `my dictionary value` |
+
+### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} has not \"[something]\"(#){: .p-1 .text-blue-100 .fw-700} regex
+This is a filtering function with regular expression support on values. Thus, found resources from previous step will be filtered based on these values.
+
+> __Possible sentences :__
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+is not "[something](#){: .p-1 .text-blue-100 .fw-700}" regex
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+has
+not "[something](#){: .p-1 .text-blue-100 .fw-700}" regex
+> 
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+does not include
+"[something](#){: .p-1 .text-blue-100 .fw-700}" regex
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[property](#){: .p-1 .text-green-200 .fw-700}
+does not contain
+"[something](#){: .p-1 .text-blue-100 .fw-700}" 
+regex
+>
+> ▪
+[When](#){: .p-1 .text-red-200}
+its
+[dictionary](#){: .p-1 .text-green-200 .fw-700}
+does not include an entry where
+"
+[key](#){: .p-1 .text-blue-100 .fw-700}
+"
+is
+is "[value](#){: .p-1 .text-blue-100 .fw-700}" regex
+>
+>
+| key | Description | Examples |
+|:---:|:----------|:-|
+| [property](#){: .p-1 .text-green-200 .fw-700} | any property that resources have. Using `type` will give the Terraform resource type; `address` is the name you have given it | `address` `name` `size` |
+| [dictionary](#){: .p-1 .text-green-200 .fw-700} | a dictionary property that resource has. | `tags` |
+| [something](#){: .p-1 .text-blue-100 .fw-700} | Any regular expression | `aws_s3_.*"` |
+| [some string with spaces](#){: .p-1 .text-blue-100 .fw-700} | any string (allows spaces). | `my dictionary key` |
+| [key](#){: .p-1 .text-blue-100 .fw-700} | any dictionary key (allows spaces). | `my dictionary key` |
+| [value](#){: .p-1 .text-blue-100 .fw-700} | Any regular expression | `^4\\..*` |
 
 ------------------------
 ### [When](#){: .p-1 .text-red-200} its [property](#){: .p-1 .text-green-200 .fw-700} metadata has [something](#){: .p-1 .text-blue-100 .fw-700}
