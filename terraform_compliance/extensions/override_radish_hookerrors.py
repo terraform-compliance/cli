@@ -82,7 +82,7 @@ def handle_radish_errors(error_text):
         },
         {
             'class': StepDefinitionNotFoundError,
-            'text': '{}. Looks like a syntax error.'.format(str(error_text).split('\n')[3])
+            'text': '{}. Looks like a syntax error.'.format(str(error_text).split('\n'))
         },
     ]
 
