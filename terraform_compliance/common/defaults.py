@@ -48,10 +48,10 @@ class Defaults(object):
             self.green = colorful.green
             self.blue = colorful.blue
 
-            self.info_icon = emojize(':bulb:', use_aliases=True)
-            self.warning_icon = emojize(':exclamation:', use_aliases=True)
-            self.tada = emojize(':tada:', use_aliases=True)
-            self.icon = emojize(':triangular_flag_on_post:', use_aliases=True)
+            self.info_icon = emojize(':bulb:', language='alias')
+            self.warning_icon = emojize(':exclamation:', language='alias')
+            self.tada = emojize(':tada:', language='alias')
+            self.icon = emojize(':triangular_flag_on_post:', language='alias')
 
         self.types_list = ['resource', 'variable', 'provider', 'data', 'resource that supports tags']
 
