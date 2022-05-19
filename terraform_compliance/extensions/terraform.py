@@ -27,11 +27,13 @@ class TerraformParser(object):
             '0.15.',
             '1.0.',
             '1.1.',
+            '1.2.',
         )
         self.supported_format_versions = [
             '0.1',
             '0.2',
             '1.0',
+            '1.1',
         ]
 
         self.raw = self._read_file(filename)
