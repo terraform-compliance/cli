@@ -1,7 +1,10 @@
 # CHANGELOG
 
 # Unreleased
+
+## 1.3.33 (2022-06-09)
 * Fixed a problem where `emoji` library was throwing some warning messages on some specific systems. ([#611](https://github.com/terraform-compliance/cli/issues/611))
+* Added terraform support for 1.2+ with the change of new plan version.
 
 ## 1.3.32 (2022-03-22)
 * Added a new step: `When its {key} is "{value}" regex` ([#608](https://github.com/terraform-compliance/cli/issues/608) [#602](https://github.com/terraform-compliance/cli/issues/602) [docs](https://terraform-compliance.com/pages/bdd-references/when.html#when-its-property-has-something-regex))
