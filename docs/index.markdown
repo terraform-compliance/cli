@@ -120,4 +120,8 @@ for further information.
 
 You can be a sponsor for this project and help me to make it thrive!
 
-* [Github Sponsorship (eerkunt)](https://github.com/sponsors/eerkunt)
+* [Github Sponsorship (eerkunt)](https://github.com/sponsors/eerkunt) 💖
+
+## Other amazing projects ;
+
+* [resmo.com](https://www.resmo.com/)
