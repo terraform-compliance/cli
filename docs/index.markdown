@@ -115,3 +115,9 @@ See [Examples](/pages/Examples/) for more sample use cases.
 
 You can have a look to the [CHANGELOG](https://github.com/eerkunt/terraform-compliance/blob/master/CHANGELOG.md)
 for further information.
+
+## How can you support the project ?
+
+You can be a sponsor for this project and help me to make it thrive!
+
+* [Github Sponsorship (eerkunt)](https://github.com/sponsors/eerkunt)
