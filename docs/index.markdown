@@ -120,7 +120,7 @@ for further information.
 
 You can be a sponsor for this project and help me to make it thrive!
 
-* [Github Sponsorship (eerkunt)](https://github.com/sponsors/eerkunt) 💖
+<iframe src="https://github.com/sponsors/eerkunt/card" title="Sponsor eerkunt" height="225" width="600" style="border: 0;"></iframe>
 
 ## Other amazing projects ;
 
