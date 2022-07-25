@@ -110,9 +110,9 @@ Regarding the feature file format - `radish` is used to parse files with extensi
 
 ![Example Run](https://github.com/eerkunt/terraform-compliance/blob/master/terraform-compliance-demo.gif?raw=true)
 
-## Supporting / Requirements
+## Sponsors
 
-`terraform-compliance` supports `terraform` 0.12 and newer versions. 
+* [resmo.com](resmo.com): Discover unmatched insights for Cloud and SaaS assets. Use SQL to ask questions and get real-time notifications for security and compliance violations.
 
 ## License
 [MIT](https://tldrlegal.com/license/mit-license)
