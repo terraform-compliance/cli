@@ -2,6 +2,9 @@
 
 # Unreleased
 
+## 1.3.34 (2022-10-07)
+* Support for terraform 1.3+
+
 ## 1.3.33 (2022-06-09)
 * Fixed a problem where `emoji` library was throwing some warning messages on some specific systems. ([#611](https://github.com/terraform-compliance/cli/issues/611))
 * Added terraform support for 1.2+ with the change of new plan version.
