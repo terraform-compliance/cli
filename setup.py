@@ -6,17 +6,17 @@ from terraform_compliance import __app_name__, __version__
 
 
 dependencies = [
-    'radish-bdd==0.13.1'
-    'gitpython==3.1.20'
-    'netaddr==0.8.0'
-    'colorful==0.5.4'
-    'filetype==1.1.0'
-    'junit-xml==1.9
-    'emoji==2.1.0'
-    'lxml==4.9.1'
-    'semver==2.13.0'
-    'IPython==7.16.1'
-    'orjson==3.6.0'
+    'radish-bdd==0.13.1',
+    'gitpython==3.1.20',
+    'netaddr==0.8.0',
+    'colorful==0.5.4',
+    'filetype==1.1.0',
+    'junit-xml==1.9',
+    'emoji==2.1.0',
+    'lxml==4.9.1',
+    'semver==2.13.0',
+    'IPython==7.16.1',
+    'orjson==3.6.0',
     'diskcache==5.4.0'
 ]
 
