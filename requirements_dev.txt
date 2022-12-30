@@ -5,7 +5,7 @@ netaddr==0.8.0
 colorful==0.5.4
 filetype==1.1.0
 junit-xml==1.9
-emoji==2.1.0
+emoji==2.2.0
 lxml==4.9.1
 ddt==1.6.0
 pytest==7.0.0
