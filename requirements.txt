@@ -8,5 +8,5 @@ emoji==2.1.0
 lxml==4.9.1
 semver==2.13.0
 IPython==7.16.1
-orjson==3.6.0
+orjson==3.8.3
 diskcache==5.4.0
