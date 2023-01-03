@@ -4,7 +4,7 @@ from radish.utils import console_write
 from terraform_compliance.main import Step
 import colorful
 from ast import literal_eval
-from mock import MagicMock
+from unittest.mock import MagicMock
 import os
 
 
