@@ -16,7 +16,7 @@ from terraform_compliance.steps.steps import (
 )
 from terraform_compliance.common.exceptions import TerraformComplianceNotImplemented, Failure
 from tests.mocks import MockedStep, MockedWorld
-from mock import patch
+from unittest.mock import patch
 
 
 class TestStepCases(TestCase):
