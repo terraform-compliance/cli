@@ -17,6 +17,7 @@ dependencies = [
     'semver==2.13.0',
     'IPython==7.16.1',
     'orjson==3.8.3',
+    'mock==5.0.0',
     'diskcache==5.4.0'
 ]
 
