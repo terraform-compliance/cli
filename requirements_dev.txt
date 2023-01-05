@@ -16,4 +16,4 @@ diskcache==5.4.0
 setuptools
 wheel
 twine
-orjson==3.8.3
+orjson==3.8.4
