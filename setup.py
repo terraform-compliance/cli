@@ -7,18 +7,18 @@ from terraform_compliance import __app_name__, __version__
 
 dependencies = [
     'radish-bdd==0.13.1',
-    'gitpython==3.1.20',
-    'netaddr==0.8.0',
-    'colorful==0.5.4',
-    'filetype==1.1.0',
-    'junit-xml==1.9',
-    'emoji==2.1.0',
-    'lxml==4.9.1',
-    'semver==2.13.0',
+    'gitpython>=3.0.5',
+    'netaddr>=0.7.19',
+    'colorful>=0.5.4',
+    'filetype>=1.0.5',
+    'junit-xml>=1.8',
+    'lxml>=4.5.0',
+    'emoji>=0.5.4',
+    'mock>=3.0.5',
+    'semver>=2.10.2',
     'IPython==7.16.1',
-    'orjson==3.8.3',
-    'mock==5.0.0',
-    'diskcache==5.4.0'
+    'diskcache>=5.1.0',
+    'orjson>=3.8.3',
 ]
 
 setup(
