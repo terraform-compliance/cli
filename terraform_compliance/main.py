@@ -1,4 +1,5 @@
 import os
+import atexit
 from argparse import ArgumentParser
 from tempfile import mkdtemp
 from git import Repo
@@ -33,8 +34,14 @@ class ArgHandling(object):
     pass
 
 
+def cleanup():
+    os.remove(Defaults().cache_file)
+
+
 def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
                                                             description='BDD Test Framework for Hashicorp terraform')):
+    atexit.register(cleanup)
+    
     args = arghandling
     parser = argparser
     parser.add_argument('--terraform', '-t', dest='terraform_file', metavar='terraform_file', type=str, nargs='?',
