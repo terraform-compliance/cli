@@ -1,7 +1,7 @@
 # CHANGELOG
 
 # Unreleased
-* Fixed an issue where some `tmp` files were not deleted properly.  ([#677](https://github.com/terraform-compliance/cli/issues/677) [#677])
+* Fixed an issue where some `tmp` files were not deleted properly.  ([#677](https://github.com/terraform-compliance/cli/issues/677))
 
 ## 1.3.41 (2023-01-17)
 * Added support for terraform 1.4.*
