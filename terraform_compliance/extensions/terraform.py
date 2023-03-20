@@ -583,6 +583,8 @@ class TerraformParser(object):
 
         for _, resource in self.resources.items():
             self._expand_resource_tags(resource)
+        
+        self.cache.close()
 
     def _add_action_status(self):
         '''
