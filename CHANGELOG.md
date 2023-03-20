@@ -1,6 +1,29 @@
 # CHANGELOG
 
 # Unreleased
+* Fixed an issue where some `tmp` files were not deleted properly.  ([#677](https://github.com/terraform-compliance/cli/issues/677))
+
+## 1.3.41 (2023-01-17)
+* Added support for terraform 1.4.*
+
+## 1.3.40 (2023-01-16)
+* Loosing the versioning requirement of some dependencies as it was creating some problems
+
+## 1.3.39 (2023-01-04)
+* Fixed some dependencies that won't make terraform-compliance fail.
+
+## 1.3.38 (2023-01-03)
+* Fixed some problems on testing
+
+## 1.3.37 (2022-12-30)
+* Upgrade on other dependencies
+
+## 1.3.36 (2022-12-30)
+* Upgrade on orjson package.
+
+## 1.3.35 (2022-12-30)
+* Fixed some dependency inconsistency
+* Preparation for the static-build release
 
 ## 1.3.34 (2022-10-07)
 * Support for terraform 1.3+
