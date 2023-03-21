@@ -578,6 +578,7 @@ class TerraformParser(object):
                 self.cache.set('mounted_resources', self.resources)
                 self.cache.set('resources_raw', self.resources_raw)
                 self.cache.set('type_to_after_unknown_properties', self.type_to_after_unknown_properties)
+                self.cache.close()
 
         self._distribute_providers()
 
