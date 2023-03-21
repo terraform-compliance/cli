@@ -1,4 +1,5 @@
 import os
+import shutil
 import atexit
 from argparse import ArgumentParser
 from tempfile import mkdtemp
@@ -35,7 +36,7 @@ class ArgHandling(object):
 
 
 def cleanup():
-    os.remove(Defaults().cache_file)
+    shutil.rmtree(Defaults().cache_dir)
 
 
 def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
