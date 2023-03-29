@@ -49,7 +49,7 @@ jobs:
         env:
           TWINE_USERNAME: ${{ secrets.PYPI_USER }}
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-        run: twine upload dist/* || true
+        run: twine upload --skip-existing dist/*
 
       - name: Publish to Docker Hub
         env:
