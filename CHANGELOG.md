@@ -1,6 +1,6 @@
 # CHANGELOG
 
-# Unreleased
+# 1.3.42 (2023-03-29)
 * Fixed an issue where some `tmp` files were not deleted properly.  ([#677](https://github.com/terraform-compliance/cli/issues/677))
 
 ## 1.3.41 (2023-01-17)
