@@ -466,7 +466,7 @@ class TerraformParser(object):
                                 defaults = Defaults()
                                 console_write('{} {}: {}'.format(defaults.warning_icon,
                                        defaults.warning_colour('WARNING (mounting)'),
-                                       defaults.info_colour('The reference "{}" in resource {} is ambigious.'
+                                       defaults.info_colour('The reference "{}" in resource {} is ambiguous.'
                                         ' It will be mounted to the following resources:').format(ref, resource)))
                                 for i, r in enumerate(ambiguous_references, 1):
                                     console_write(defaults.info_colour('{}. {}'.format(i, r)))
@@ -475,7 +475,7 @@ class TerraformParser(object):
                             else:
                                 console_write('{} {}: {}'.format(Defaults().warning_icon,
                                        Defaults().warning_colour('WARNING (mounting)'),
-                                       Defaults().info_colour('The reference "{}" in resource {} is ambigious. It will not be mounted.'.format(ref, resource))))
+                                       Defaults().info_colour('The reference "{}" in resource {} is ambiguous. It will not be mounted.'.format(ref, resource))))
                                 continue
                         elif key not in ref_list:
                             ref_list[key] = self._find_resource_from_name(ref, current_module_address)
