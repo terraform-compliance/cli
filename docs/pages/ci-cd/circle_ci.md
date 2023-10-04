@@ -28,11 +28,16 @@ We have set up our pipeline to follow this basic workflow:
 You will need to add a `requirements.txt` to your project. You can rename this file to anything you would like, but
 be sure to update the name in your `.circleci/config.yml`.
 
+Following [Pip requirements format](https://pip.pypa.io/en/stable/reference/requirements-file-format/). You can specify
+any level of requirement that you desire for `terraform-compliance`.
+
 `requirements.txt`:
 
 ```
 terraform-compliance >= 1.3.0
 ```
+
+Below is an example of the workflow described above.
 
 `.circleci/config.yml`:
 
