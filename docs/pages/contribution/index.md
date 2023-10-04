@@ -30,12 +30,12 @@ If you are going to reporting something else, please create a [General Question]
 
 Normally, we expect to have either a [Bug Reporting](https://github.com/eerkunt/terraform-compliance/issues/new?assignees=eerkunt&labels=bug&template=bug_report.md&title=) or 
 a [Feature Request](https://github.com/eerkunt/terraform-compliance/issues/new?assignees=&labels=enhancement&template=feature_request.md&title=) before 
-having a Pull Request for in the codebase that will effect any functionality. This is not a hard requirement, you are free
+having a Pull Request for in the codebase that will affect any functionality. This is not a hard requirement, you are free
 to create a new Pull Request if you find something is wrong or missing within the codebase or documentation. 
 
 There is few mandatory requirement for the Pull Requests ;
 
-1. All code changes that effects functionality MUST have [tests](https://github.com/eerkunt/terraform-compliance/tree/master/tests) implemented within the same Pull Request. 
+1. All code changes that affects functionality MUST have [tests](https://github.com/eerkunt/terraform-compliance/tree/master/tests) implemented within the same Pull Request. 
 2. Any functionality change must be recorded within the [CHANGELOG](https://github.com/eerkunt/terraform-compliance/blob/master/CHANGELOG.md).
 3. Your Pull Request must pass the CI in order to be processed.
 

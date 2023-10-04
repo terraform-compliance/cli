@@ -81,7 +81,7 @@ __Please note that__
 - nofail and noskip tags can not be used within the same scenario.
 
 ### Case Sensitivity
-All steps, under the tagged scenario will use case sensitive matching. This tag also effects regular expressions.
+All steps, under the tagged scenario will use case-sensitive matching. This tag also affects regular expressions.
 > __Possible formats:__
 >
 > ▪
