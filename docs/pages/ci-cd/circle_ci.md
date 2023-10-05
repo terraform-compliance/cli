@@ -143,3 +143,8 @@ workflows:
             - terraform_compliance
 
 ```
+
+Not provided above is the authentication method for AWS.
+
+CircleCI provides authentication through [OpenID Connect](https://circleci.com/blog/openid-connect-identity-tokens/) as
+well as through AWS user Access Keys.
