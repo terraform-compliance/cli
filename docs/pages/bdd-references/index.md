@@ -29,7 +29,7 @@ Feature: Security Groups should be used to protect services/instances
   We'll use AWS Security Groups as a Perimeter Defence
 ```
 
-This won't effect anything about the test steps, but it will ease the pain for everybody to 
+This won't affect anything about the test steps, but it will ease the pain for everybody to 
 understand what does that feature aims for.
 
 ### Scenario
