@@ -32,6 +32,7 @@ class TerraformParser(object):
             '1.4.',
             '1.5.',
             '1.6.',
+            '1.7.',
         )
         self.supported_format_versions = [
             '0.1',
