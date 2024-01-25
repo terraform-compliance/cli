@@ -1,3 +1,4 @@
+import sys
 import os
 import shutil
 import atexit
@@ -159,4 +160,4 @@ def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
 
 
 if __name__ == '__main__':
-    cli()
+    sys.exit(cli())
