@@ -7,7 +7,7 @@ has_children: true
 
 # BDD Reference
 
-`terraform-compliance` utilises [radish](http://radish-bdd.io/) to handle BDD directives. BDD is
+`terraform-compliance` utilises [radish](https://github.com/radish-bdd/radish) to handle BDD directives. BDD is
 used in many development practices from End-to-End testing to FrontEnd testing, provides easy-to-understand
 context that is self-descriptive and easy-to-understand for someone that is reading the test results.
 
