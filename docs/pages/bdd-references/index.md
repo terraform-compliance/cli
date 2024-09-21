@@ -7,7 +7,7 @@ has_children: true
 
 # BDD Reference
 
-`terraform-compliance` utilises [radish](http://radish-bdd.io/) to handle BDD directives. BDD is
+`terraform-compliance` utilises [radish](https://github.com/radish-bdd/radish) to handle BDD directives. BDD is
 used in many development practices from End-to-End testing to FrontEnd testing, provides easy-to-understand
 context that is self-descriptive and easy-to-understand for someone that is reading the test results.
 
@@ -29,7 +29,7 @@ Feature: Security Groups should be used to protect services/instances
   We'll use AWS Security Groups as a Perimeter Defence
 ```
 
-This won't effect anything about the test steps, but it will ease the pain for everybody to 
+This won't affect anything about the test steps, but it will ease the pain for everybody to 
 understand what does that feature aims for.
 
 ### Scenario

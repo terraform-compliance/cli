@@ -1,5 +1,8 @@
 # CHANGELOG
 
+# 1.3.45 (2023-09-10)
+* Support for Terraform v1.6*
+
 # 1.3.42 (2023-03-29)
 * Fixed an issue where some `tmp` files were not deleted properly.  ([#677](https://github.com/terraform-compliance/cli/issues/677))
 
