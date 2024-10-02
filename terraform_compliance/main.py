@@ -22,12 +22,11 @@ from radish.stepmodel import Step
 Step.run = StepOverride.run
 
 from terraform_compliance.extensions.override_radish_hookerrors import handle_exception as handle_exception_override
-from terraform_compliance.extensions.override_radish_utctime import current_utc_time
+from terraform_compliance.extensions.override_radish_utctime import apply_utctime_patch
 from radish import errororacle
-import radish.extensions.time_recorder
 
 errororacle.handle_exception = handle_exception_override
-radish.extensions.time_recorder.datetime.utcnow = current_utc_time
+apply_utctime_patch()
 ##
 #
 
