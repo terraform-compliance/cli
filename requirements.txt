@@ -1,7 +1,7 @@
 radish-bdd==0.13.1
 gitpython==3.1.20
 netaddr==0.8.0
-colorful==0.5.4
+colorful==0.5.6
 filetype==1.2.0
 junit-xml==1.9
 emoji==2.14.0
