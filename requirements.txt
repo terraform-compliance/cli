@@ -1,4 +1,4 @@
-radish-bdd==0.13.1
+radish-bdd==0.18.2
 gitpython==3.1.20
 netaddr==0.8.0
 colorful==0.5.4

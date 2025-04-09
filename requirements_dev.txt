@@ -1,4 +1,4 @@
-radish-bdd==0.13.1
+radish-bdd==0.18.2
 mock==5.1.0
 gitpython==3.1.20
 netaddr==0.8.0
