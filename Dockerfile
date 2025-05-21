@@ -1,4 +1,4 @@
-FROM python:3.7.10-slim
+FROM python:3.11-slim
 
 ARG VERSION
 ARG LATEST_TERRAFORM_VERSION
