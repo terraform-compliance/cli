@@ -6,7 +6,7 @@ from terraform_compliance import __app_name__, __version__
 
 
 dependencies = [
-    'radish-bdd==0.13.1',
+    'radish-bdd==0.18.2',
     'gitpython>=3.0.5',
     'netaddr>=0.7.19',
     'colorful>=0.5.4',
@@ -18,7 +18,7 @@ dependencies = [
     'semver>=2.10.2',
     'IPython==7.16.1',
     'diskcache>=5.1.0',
-    'orjson>=3.8.3',
+    'orjson>=3.10.15',
 ]
 
 setup(
@@ -54,6 +54,8 @@ setup(
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
     extras_require = {
