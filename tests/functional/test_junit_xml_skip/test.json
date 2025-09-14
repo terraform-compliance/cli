@@ -1,0 +1,32 @@
+{
+  "format_version": "1.0",
+  "terraform_version": "1.11.4",
+  "planned_values": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "aws_s3_bucket.example_code",
+          "mode": "managed",
+          "type": "aws_s3_bucket",
+          "name": "example_code",
+          "provider_name": "registry.terraform.io/hashicorp/aws",
+          "values": {
+            "bucket": "This is just a sample code"
+          }
+        }
+      ]
+    }
+  },
+  "resource_changes": [
+    {
+      "address": "aws_s3_bucket.example_code",
+      "mode": "managed",
+      "type": "aws_s3_bucket",
+      "name": "example_code",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["create"]
+      }
+    }
+  ]
+} 

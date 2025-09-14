@@ -41,6 +41,17 @@ def cleanup():
     shutil.rmtree(Defaults().cache_dir)
 
 
+def setup_radish_extensions():
+    """Setup custom radish extensions including our JUnit XML fix"""
+    from radish import config
+    
+    # Import our custom extension
+    from terraform_compliance.extensions.junit_xml_fix import FixedJUnitXMLWriter
+    
+    # Register our extension
+    return [FixedJUnitXMLWriter]
+
+
 def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
                                                             description='BDD Test Framework for Hashicorp terraform')):
     atexit.register(cleanup)
@@ -151,6 +162,9 @@ def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
     if args.silence is False:
         console_write('\n{} Running tests. {}\n'.format(Defaults().icon,
                                                         Defaults().tada))
+
+    # Before running radish, setup our extensions
+    extensions = setup_radish_extensions()
 
     try:
         result = call_radish(args=commands[1:])

@@ -4,6 +4,7 @@ from radish import custom_type
 from radish import world
 from terraform_compliance.common.defaults import Defaults
 from terraform_compliance.common.error_handling import Error
+from .junit_xml_fix import FixedJUnitXMLWriter
 
 
 def skip_step(step, resource=None, message=None):
