@@ -378,9 +378,15 @@ def jsonify(string):
         return string
 
     try:
-        return json.loads(string)
+        parsed = json.loads(string)
     except json.JSONDecodeError:
         return string
+
+    # Only convert when resulting structure is JSON (list/dict); keep primitives as strings.
+    if isinstance(parsed, (dict, list)):
+        return parsed
+
+    return string
 
 
 def recursive_jsonify(haystack):
