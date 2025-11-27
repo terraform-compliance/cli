@@ -5,7 +5,6 @@ Fixes the UnboundLocalError when scenarios are skipped
 
 import os
 import sys
-from datetime import datetime
 from xml.etree import ElementTree as ET
 
 from radish.extensionregistry import extension
