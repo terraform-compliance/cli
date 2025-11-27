@@ -151,21 +151,30 @@ class TerraformParser(object):
                 else:
                     self.resources[resource['address']] = resource
 
+        delete_only_addresses = set()
+
         # Resource Changes ( exists in Plan )
-        for finding in self.raw.get('resource_changes', {}):
+        for finding in self.raw.get('resource_changes', []):
             resource = deepcopy(finding)
             change = resource.get('change', {})
             actions = change.get('actions', [])
-            if actions != ['delete']:
-                resource['values'] = change.get('after', {}) # dict_merge(change.get('after', {}), change.get('after_unknown', {}))
-                self.remember_after_unknown(resource, change.get('after_unknown', {}))
-                if 'change' in resource:
-                    del resource['change']
+            if actions == ['delete']:
+                delete_only_addresses.add(resource.get('address'))
+                continue
 
-                if self.is_type(resource, 'data'):
-                    self.data[resource['address']] = resource
-                else:
-                    self.resources[resource['address']] = resource
+            resource['values'] = change.get('after', {})
+            self.remember_after_unknown(resource, change.get('after_unknown', {}))
+            if 'change' in resource:
+                del resource['change']
+
+            if self.is_type(resource, 'data'):
+                self.data[resource['address']] = resource
+            else:
+                self.resources[resource['address']] = resource
+
+        for address in delete_only_addresses:
+            self.resources.pop(address, None)
+            self.data.pop(address, None)
 
         if self.parse_it:
             self.cache.set('resources', self.resources)
