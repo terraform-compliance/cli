@@ -43,8 +43,6 @@ def cleanup():
 
 def setup_radish_extensions():
     """Setup custom radish extensions including our JUnit XML fix"""
-    from radish import config
-    
     # Import our custom extension
     from terraform_compliance.extensions.junit_xml_fix import FixedJUnitXMLWriter
     

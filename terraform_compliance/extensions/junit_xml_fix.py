@@ -7,11 +7,25 @@ import os
 import sys
 from xml.etree import ElementTree as ET
 
-from radish.extensionregistry import extension
+from radish.extensionregistry import ExtensionRegistry, extension
 from radish.hookregistry import after
 from radish.scenarioloop import ScenarioLoop
 from radish.scenariooutline import ScenarioOutline
 from radish.terrain import world
+
+# Skip registering the built-in radish JUnit writer so only the fixed version provides options/hooks.
+_original_register = ExtensionRegistry.register
+
+
+def _register_without_default_junit(self, extension_class):
+    name = getattr(extension_class, "__name__", "")
+    module = getattr(extension_class, "__module__", "")
+    if name == "JUnitXMLWriter" and module in {"junit_xml_writer", "radish.extensions.junit_xml_writer"}:
+        return
+    return _original_register(self, extension_class)
+
+
+ExtensionRegistry.register = _register_without_default_junit
 
 
 @extension
