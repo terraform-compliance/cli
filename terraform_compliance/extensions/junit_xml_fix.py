@@ -5,15 +5,31 @@ Fixes the UnboundLocalError when scenarios are skipped
 
 import os
 import sys
-from datetime import datetime
 from xml.etree import ElementTree as ET
-from radish.extensions import CodeGenerator
-from radish.model import ScenarioLoop, ScenarioOutline
+
+from radish.extensionregistry import ExtensionRegistry, extension
 from radish.hookregistry import after
-from radish import config
+from radish.scenarioloop import ScenarioLoop
+from radish.scenariooutline import ScenarioOutline
+from radish.terrain import world
+
+# Skip registering the built-in radish JUnit writer so only the fixed version provides options/hooks.
+_original_register = ExtensionRegistry.register
 
 
-class FixedJUnitXMLWriter(CodeGenerator):
+def _register_without_default_junit(self, extension_class):
+    name = getattr(extension_class, "__name__", "")
+    module = getattr(extension_class, "__module__", "")
+    if name == "JUnitXMLWriter" and module in {"junit_xml_writer", "radish.extensions.junit_xml_writer"}:
+        return
+    return _original_register(self, extension_class)
+
+
+ExtensionRegistry.register = _register_without_default_junit
+
+
+@extension
+class FixedJUnitXMLWriter(object):
     """
     Fixed JUnit XML writer that properly handles skipped scenarios
     """
@@ -25,16 +41,19 @@ class FixedJUnitXMLWriter(CodeGenerator):
         )
     ]
     
+    LOAD_IF = staticmethod(lambda cfg: bool(getattr(cfg, "junit_xml", None)))
+
     def __init__(self):
         # Disable the default radish JUnit XML writer
         self.junit_xml_path = None
+        after.each_feature(self.generate_junit_xml)
         
     def get_junit_xml_path(self):
         """Get the JUnit XML output path from configuration"""
-        return config().junit_xml
+        config_obj = getattr(world, "config", None)
+        return getattr(config_obj, "junit_xml", None)
     
-    @after.each_feature
-    def generate_junit_xml(self, feature):
+    def generate_junit_xml(self, feature, *_, **__):
         """Generate JUnit XML report for the feature"""
         junit_xml_path = self.get_junit_xml_path()
         if not junit_xml_path:

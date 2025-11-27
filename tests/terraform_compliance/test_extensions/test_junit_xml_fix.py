@@ -33,8 +33,9 @@ class TestFixedJUnitXMLWriter:
             # Create writer and generate XML
             writer = FixedJUnitXMLWriter()
             
-            with patch('radish.config') as mock_config:
-                mock_config.return_value.junit_xml = junit_path
+            with patch('terraform_compliance.extensions.junit_xml_fix.world') as mock_world:
+                mock_world.config = Mock()
+                mock_world.config.junit_xml = junit_path
                 
                 writer.generate_junit_xml(mock_feature)
                 
@@ -82,8 +83,9 @@ class TestFixedJUnitXMLWriter:
             # Create writer and generate XML
             writer = FixedJUnitXMLWriter()
             
-            with patch('radish.config') as mock_config:
-                mock_config.return_value.junit_xml = junit_path
+            with patch('terraform_compliance.extensions.junit_xml_fix.world') as mock_world:
+                mock_world.config = Mock()
+                mock_world.config.junit_xml = junit_path
                 
                 writer.generate_junit_xml(mock_feature)
                 
