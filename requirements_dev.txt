@@ -5,8 +5,8 @@ netaddr==1.3.0
 colorful==0.5.8
 filetype==1.2.0
 junit-xml==1.9
+lxml==6.0.2
 emoji==2.15.0
-lxml==6.0.1
 ddt==1.6.0
 pytest==8.3.5
 nose==1.3.7
