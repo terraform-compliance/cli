@@ -214,6 +214,53 @@ class TestTerraformParser(TestCase):
         self.assertEqual(obj.resources, {})
 
     @patch.object(TerraformParser, '_read_file', return_value={})
+    def test_parse_resources_deleted_state_resources_removed(self, *args):
+        obj = TerraformParser('somefile', parse_it=False)
+        obj.raw['values'] = {
+            'root_module': {
+                'resources': [
+                    {
+                        'address': 'something'
+                    }
+                ]
+            }
+        }
+        obj.raw['resource_changes'] = [
+            {
+                'address': 'something',
+                'change': {
+                    'actions': ['delete']
+                }
+            }
+        ]
+        obj._parse_resources()
+        self.assertEqual(obj.resources, {})
+
+    @patch.object(TerraformParser, '_read_file', return_value={})
+    def test_parse_resources_deleted_state_data_removed(self, *args):
+        obj = TerraformParser('somefile', parse_it=False)
+        obj.raw['values'] = {
+            'root_module': {
+                'resources': [
+                    {
+                        'address': 'data.something',
+                        'mode': 'data'
+                    }
+                ]
+            }
+        }
+        obj.raw['resource_changes'] = [
+            {
+                'address': 'data.something',
+                'change': {
+                    'actions': ['delete']
+                }
+            }
+        ]
+        obj._parse_resources()
+        self.assertEqual(obj.data, {})
+
+    @patch.object(TerraformParser, '_read_file', return_value={})
     def test_parse_configurations_resources(self, *args):
         obj = TerraformParser('somefile', parse_it=False)
         obj.raw['configuration'] = {
