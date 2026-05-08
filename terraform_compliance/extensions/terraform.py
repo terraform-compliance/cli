@@ -362,15 +362,20 @@ class TerraformParser(object):
             if full_address in self.resources:
                 return [full_address]
 
+            # Compare on iteration-stripped addresses so an outer module that
+            # uses count/for_each (e.g. module.outer[0]) still matches a non-
+            # iterated module_address ('module.outer') when scanning children.
+            stripped_module_address = strip_iterations(module_address)
+            stripped_full_address = strip_iterations(full_address)
             for key, value in self.resources.items():
-                if not key.startswith(module_address):
+                stripped_key = strip_iterations(key)
+                if not stripped_key.startswith(stripped_module_address):
                     continue
 
                 # Check if the resource/module has iterations
                 if '[' in key:
                     # Possibly module (or resource) is using foreach/count
-                    k = strip_iterations(key)
-                    if k == strip_iterations(full_address):
+                    if stripped_key == stripped_full_address:
                         resource_list.append(key)
                 else:
                     # Resource/module does not have any iteration
@@ -385,16 +390,44 @@ class TerraformParser(object):
         resource_type, resource_id = resource_name.split('.')[0:2]
 
         if resource_type == 'module':
-            # TODO: This wont work correctly, if an output is used within a module, coming from another module.
-            #       Fix multi-layer module structure for the outputs ?
             module_name, output_id = resource_name.split('.')[1:3]
-            module = self.raw['configuration']['root_module'].get('module_calls', {}).get(module_name, {})
+
+            # Walk the module_calls tree using module_address so output
+            # references that point to a nested (non root-level) module call
+            # resolve correctly. Without this we silently drop the reference,
+            # which surfaces as a "must have <attr>" failure on attributes that
+            # are (known after apply) inside an iterated parent module.
+            parent_module = self.raw.get('configuration', {}).get('root_module', {})
+            if module_address:
+                chain = module_address.split('.')
+                i = 0
+                while i + 1 < len(chain) and parent_module is not None:
+                    if chain[i] != 'module':
+                        break
+                    sub_name = chain[i + 1].split('[')[0]
+                    parent_module = parent_module.get('module_calls', {}).get(sub_name, {}).get('module', {})
+                    i += 2
+            module = (parent_module or {}).get('module_calls', {}).get(module_name, {})
 
             output_value = module.get('module', {}).get('outputs', {}).get(output_id, {})
 
-            resources = output_value.get('expression', {}).get('references', []) if 'expression' in output_value else output_value.get('value', [])
+            inner_refs = output_value.get('expression', {}).get('references', []) if 'expression' in output_value else output_value.get('value', [])
 
-            resources = ['{}.{}.{}'.format(resource_type, module_name, res) for res in resources]
+            # Inner refs are addresses inside the referenced module. Resolve
+            # them against that module's full address so we land on real
+            # (iteration-suffixed) keys in self.resources.
+            nested_module_address = '{}.module.{}'.format(module_address, module_name) if module_address else 'module.{}'.format(module_name)
+
+            # The same resource is typically referenced multiple times in an
+            # output's references list (e.g. both 'aws_x.y.arn' and 'aws_x.y'),
+            # so dedupe to avoid mounting the same target twice.
+            resources = []
+            seen = set()
+            for inner_ref in inner_refs:
+                for resolved in self._find_resource_from_name(inner_ref, nested_module_address):
+                    if resolved not in seen:
+                        seen.add(resolved)
+                        resources.append(resolved)
 
             if not resources:
                 for key, _ in self.resources.items():
