@@ -159,6 +159,8 @@ class TestHelperFunctions(TestCase):
         self.assertEqual(jsonify([]), [])
         self.assertEqual(jsonify(12), 12)
         self.assertEqual(jsonify('something'), 'something')
+        self.assertEqual(jsonify('1.30'), '1.30')
+        self.assertEqual(jsonify('10'), '10')
         self.assertEqual(jsonify('{"test": "test_value"}'), {'test': 'test_value'})
 
     def test_remove_mounted_resources(self, *args):
