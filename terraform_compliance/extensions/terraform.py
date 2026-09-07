@@ -393,6 +393,13 @@ class TerraformParser(object):
         resource_type, resource_id = resource_name.split('.')[0:2]
 
         if resource_type == 'module':
+            # A bare module reference (e.g. module.some_module) names no output,
+            # so there is nothing to resolve. _mount_references skips these as
+            # ambiguous too, but the ones arriving through an output's own
+            # reference list never reach that check.
+            if len(resource_name.split('.')) < 3:
+                return []
+
             module_name, output_id = resource_name.split('.')[1:3]
 
             # Walk the module_calls tree using module_address so output

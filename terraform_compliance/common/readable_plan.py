@@ -52,7 +52,7 @@ class ReadablePlan(Action):
             else:
                 plan_lines = plan_lines[0]
 
-            data = json.loads(plan_lines)
+            data = json.loads(plan_lines, parse_float=str)  # Preserve version strings like "1.30"
 
             # Write the changed plan file to the same file, since it is used in other places.
             if file_change_required:
