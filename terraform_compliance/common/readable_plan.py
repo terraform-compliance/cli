@@ -1,14 +1,10 @@
 import sys
 import os
+import json
 from argparse import Action
 import filetype
 from terraform_compliance.common.terraform_files import convert_terraform_plan_to_json
 from terraform_compliance.common.exceptions import TerraformComplianceInternalFailure
-
-try:
-    import orjson as json
-except ImportError:
-    import json
 
 
 class ReadablePlan(Action):
@@ -52,7 +48,11 @@ class ReadablePlan(Action):
             else:
                 plan_lines = plan_lines[0]
 
-            data = json.loads(plan_lines, parse_float=str)  # Preserve version strings like "1.30"
+            # Parse through the standard library so parse_float=str keeps version
+            # strings such as "1.30" from collapsing to 1.3 (#799, fixing #752).
+            # orjson always decodes numbers to int/float and offers no parse_float
+            # hook, so it cannot be used for this particular call.
+            data = json.loads(plan_lines, parse_float=str)
 
             # Write the changed plan file to the same file, since it is used in other places.
             if file_change_required:
