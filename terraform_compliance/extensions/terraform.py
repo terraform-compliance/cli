@@ -249,7 +249,10 @@ class TerraformParser(object):
         # Outputs
         self.configuration['outputs'] = {}
         for findings in seek_key_in_dict(self.raw.get('configuration', {}), 'outputs'):
-            for key, value in findings.get('outputs', {}).items():
+            outputs = findings.get('outputs', {})
+            if not isinstance(outputs, dict):
+                continue
+            for key, value in outputs.items():
                 tmp_output = dict(address=key, value={})
                 if 'expression' in value:
                     if 'references' in value['expression']:

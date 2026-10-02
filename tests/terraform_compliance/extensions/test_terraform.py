@@ -246,6 +246,26 @@ class TestTerraformParser(TestCase):
 
 
     @patch.object(TerraformParser, '_read_file', return_value={})
+    def test_parse_configurations_outputs_non_dict_is_skipped(self, *args):
+        # seek_key_in_dict matches every key named 'outputs' anywhere in the
+        # configuration, so a resource/attribute called 'outputs' that holds a
+        # list (rather than a map of output declarations) used to reach
+        # .items() and raise AttributeError. Such matches should be skipped.
+        obj = TerraformParser('somefile', parse_it=False)
+        obj.raw['configuration'] = {
+            'root_module': {
+                'resources': [
+                    {
+                        'address': 'aws_s3_bucket.example',
+                        'expressions': {'outputs': ['not', 'a', 'dict']}
+                    }
+                ]
+            }
+        }
+        obj._parse_configurations()
+        self.assertEqual(obj.configuration['outputs'], {})
+
+    @patch.object(TerraformParser, '_read_file', return_value={})
     def test_parse_configurations_providers(self, *args):
         obj = TerraformParser('somefile', parse_it=False)
         obj.raw['configuration'] = {
