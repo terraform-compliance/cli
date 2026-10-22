@@ -5,10 +5,12 @@ import filetype
 from terraform_compliance.common.terraform_files import convert_terraform_plan_to_json
 from terraform_compliance.common.exceptions import TerraformComplianceInternalFailure
 
+import json
+
 try:
-    import orjson as json
+    import orjson
 except ImportError:
-    import json
+    orjson = None
 
 
 class ReadablePlan(Action):
@@ -52,7 +54,13 @@ class ReadablePlan(Action):
             else:
                 plan_lines = plan_lines[0]
 
-            data = json.loads(plan_lines)
+            if orjson is not None:
+                try:
+                    data = orjson.loads(plan_lines)
+                except TypeError:
+                    data = json.loads(plan_lines, parse_float=str)
+            else:
+                data = json.loads(plan_lines, parse_float=str)  # Preserve version strings like "1.30"
 
             # Write the changed plan file to the same file, since it is used in other places.
             if file_change_required:
@@ -67,7 +75,7 @@ class ReadablePlan(Action):
             print('       Did you try to convert the binary plan file to json with '
                   '"terraform show -json {} > {}.json" ?'.format(values, values))
             sys.exit(1)
-        except:
+        except Exception:
             raise TerraformComplianceInternalFailure('Invalid file type.')
 
         # Check if this is a correct terraform plan file
