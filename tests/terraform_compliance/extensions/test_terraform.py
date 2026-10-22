@@ -246,6 +246,26 @@ class TestTerraformParser(TestCase):
 
 
     @patch.object(TerraformParser, '_read_file', return_value={})
+    def test_parse_configurations_outputs_non_dict_is_skipped(self, *args):
+        # seek_key_in_dict matches every key named 'outputs' anywhere in the
+        # configuration, so a resource/attribute called 'outputs' that holds a
+        # list (rather than a map of output declarations) used to reach
+        # .items() and raise AttributeError. Such matches should be skipped.
+        obj = TerraformParser('somefile', parse_it=False)
+        obj.raw['configuration'] = {
+            'root_module': {
+                'resources': [
+                    {
+                        'address': 'aws_s3_bucket.example',
+                        'expressions': {'outputs': ['not', 'a', 'dict']}
+                    }
+                ]
+            }
+        }
+        obj._parse_configurations()
+        self.assertEqual(obj.configuration['outputs'], {})
+
+    @patch.object(TerraformParser, '_read_file', return_value={})
     def test_parse_configurations_providers(self, *args):
         obj = TerraformParser('somefile', parse_it=False)
         obj.raw['configuration'] = {
@@ -433,17 +453,127 @@ class TestTerraformParser(TestCase):
                             "my_expression": {
                                 "expression": {
                                     "references": [
-                                        "var.example"
+                                        "aws_resource.example"
                                     ]
+                                }
+                            }
+                        },
+                        "resources": [
+                            {"address": "aws_resource.example", "type": "aws_resource", "name": "example"}
+                        ]
+                    }
+                }
+            }
+            }
+        }
+        obj.resources = {
+            'module.module_name.aws_resource.example': {
+                'type': 'aws_resource',
+                'name': 'example',
+            }
+        }
+        self.assertEqual(obj._find_resource_from_name('module.module_name.my_expression'),
+                         ['module.module_name.aws_resource.example'])
+
+    @patch.object(TerraformParser, '_read_file', return_value={})
+    def test_find_resource_from_name_skips_bare_module_reference_in_module_output(self, *args):
+        # Regression: terraform lists both 'module.inner.value' and the bare
+        # parent 'module.inner' in an output's references. The bare one carries
+        # no output id, so there is nothing to resolve and it must be skipped
+        # instead of blowing up while unpacking module_name/output_id.
+        obj = TerraformParser('somefile', parse_it=False)
+        obj.raw['configuration'] = {
+            "root_module": {
+                "module_calls": {
+                    "outer": {
+                        "module": {
+                            "outputs": {
+                                "forwarded_value": {
+                                    "expression": {
+                                        "references": [
+                                            "module.inner.value",
+                                            "module.inner"
+                                        ]
+                                    }
+                                }
+                            },
+                            "module_calls": {
+                                "inner": {
+                                    "module": {
+                                        "outputs": {
+                                            "value": {
+                                                "expression": {
+                                                    "references": [
+                                                        "var.value"
+                                                    ]
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
+        }
+        # Neither module declares a managed resource, so the child scan finds
+        # nothing and resolution falls through to the bare reference.
+        obj.resources = {}
+        self.assertEqual(obj._find_resource_from_name('module.outer.forwarded_value'), [])
+
+    @patch.object(TerraformParser, '_read_file', return_value={})
+    def test_find_resource_from_name_resolves_output_from_nested_module_in_iterated_parent(self, *args):
+        # Regression: outer module uses count/for_each and the resource's
+        # reference goes through a sibling (nested) module's output. Pre-fix
+        # this was silently dropped, surfacing as a "must have <attr>" failure
+        # on attributes that are (known after apply) inside iterated modules.
+        obj = TerraformParser('somefile', parse_it=False)
+        obj.raw['configuration'] = {
+            "root_module": {
+                "module_calls": {
+                    "outer": {
+                        "module": {
+                            "module_calls": {
+                                "inner": {
+                                    "module": {
+                                        "outputs": {
+                                            "event_rule_arn": {
+                                                "expression": {
+                                                    "references": [
+                                                        "aws_cloudwatch_event_rule.example.arn",
+                                                        "aws_cloudwatch_event_rule.example",
+                                                    ]
+                                                }
+                                            }
+                                        },
+                                        "resources": [
+                                            {"address": "aws_cloudwatch_event_rule.example",
+                                             "type": "aws_cloudwatch_event_rule",
+                                             "name": "example"}
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
-        self.assertEqual(obj._find_resource_from_name('module.module_name.my_expression'), ['module.module_name.var.example'])
+        obj.resources = {
+            'module.outer[0].module.inner.aws_cloudwatch_event_rule.example': {
+                'type': 'aws_cloudwatch_event_rule',
+                'name': 'example',
+            },
+            'module.outer[0].aws_lambda_permission.example': {
+                'type': 'aws_lambda_permission',
+                'name': 'example',
+            },
+        }
+        self.assertEqual(
+            obj._find_resource_from_name('module.inner.event_rule_arn', 'module.outer'),
+            ['module.outer[0].module.inner.aws_cloudwatch_event_rule.example']
+        )
 
     @patch.object(TerraformParser, '_read_file', return_value={})
     def test_find_resource_from_name_resource_name_in_module_outputs_expression(self, *args):
