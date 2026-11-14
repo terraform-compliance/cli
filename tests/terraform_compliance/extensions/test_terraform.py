@@ -1,5 +1,6 @@
 from unittest import TestCase, TestLoader
 from terraform_compliance.extensions.terraform import TerraformParser, seek_key_in_dict
+from terraform_compliance.common.defaults import Defaults
 from tests.mocks import MockedData
 from mock import patch
 from ddt import ddt, data
@@ -264,6 +265,40 @@ class TestTerraformParser(TestCase):
         }
         obj._parse_configurations()
         self.assertEqual(obj.configuration['outputs'], {})
+
+    @patch.object(TerraformParser, '_read_file', return_value={})
+    def test_mount_references_keeps_every_reference_of_a_nested_block(self, *args):
+        obj = TerraformParser('somefile', parse_it=False)
+        obj.resources = {
+            'aws_security_group.lambda': {'address': 'aws_security_group.lambda', 'type': 'aws_security_group',
+                                          'name': 'lambda', 'values': {'name': 'lambda-sg'}},
+            'aws_subnet.private': {'address': 'aws_subnet.private', 'type': 'aws_subnet',
+                                   'name': 'private', 'values': {'cidr_block': '10.0.1.0/24'}},
+            'aws_lambda_function.fn': {'address': 'aws_lambda_function.fn', 'type': 'aws_lambda_function',
+                                       'name': 'fn', 'values': {'vpc_config': [{}]}},
+        }
+        obj.configuration = {
+            'resources': {
+                'aws_security_group.lambda': {'address': 'aws_security_group.lambda', 'type': 'aws_security_group',
+                                              'name': 'lambda', 'expressions': {}},
+                'aws_subnet.private': {'address': 'aws_subnet.private', 'type': 'aws_subnet',
+                                       'name': 'private', 'expressions': {}},
+                'aws_lambda_function.fn': {
+                    'address': 'aws_lambda_function.fn', 'type': 'aws_lambda_function', 'name': 'fn',
+                    'expressions': {
+                        'vpc_config': [{
+                            'security_group_ids': {'references': ['aws_security_group.lambda.id',
+                                                                  'aws_security_group.lambda']},
+                            'subnet_ids': {'references': ['aws_subnet.private.id', 'aws_subnet.private']}
+                        }]
+                    }
+                }
+            }
+        }
+        obj._mount_references()
+        mounted = obj.resources['aws_lambda_function.fn'][Defaults.r_mount_addr_ptr_list]
+        self.assertIn('aws_security_group.lambda', mounted)
+        self.assertIn('aws_subnet.private', mounted)
 
     @patch.object(TerraformParser, '_read_file', return_value={})
     def test_parse_configurations_providers(self, *args):

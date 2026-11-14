@@ -479,7 +479,6 @@ class TerraformParser(object):
                     valid_references = []
                     for ref in references:
                         if isinstance(ref, dict) and ref.get('references'):
-                            valid_references = []
                             for r in ref['references']:
                                 if r.startswith('var'):
                                     # Try to track the resource given by a variable
