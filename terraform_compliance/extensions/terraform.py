@@ -455,6 +455,22 @@ class TerraformParser(object):
 
         return resource_list
 
+    @staticmethod
+    def _seek_references(expression):
+        '''
+        Like seek_key_in_dict(expression, 'references'), but a nested block that the provider
+        itself named "references" (a list of objects instead of a list of addresses) is searched
+        for the real references it holds instead of being returned as one.
+        '''
+        found = []
+        for ref in seek_key_in_dict(expression, 'references'):
+            addresses = ref.get('references')
+            if isinstance(addresses, list) and all(isinstance(r, str) for r in addresses):
+                found.append(ref)
+            else:
+                found.extend(TerraformParser._seek_references(addresses))
+        return found
+
     def _mount_references(self):
         '''
         Find the references that is defined in self.configuration
@@ -474,7 +490,7 @@ class TerraformParser(object):
                 ref_list = {}
 
                 for key, value in self.configuration['resources'][resource]['expressions'].items():
-                    references = seek_key_in_dict(value, 'references') if isinstance(value, (dict, list)) else []
+                    references = self._seek_references(value) if isinstance(value, (dict, list)) else []
 
                     valid_references = []
                     for ref in references:
