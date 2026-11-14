@@ -265,6 +265,54 @@ class TestTerraformParser(TestCase):
         obj._parse_configurations()
         self.assertEqual(obj.configuration['outputs'], {})
 
+    def test_seek_references_descends_into_provider_block_named_references(self):
+        expression = [
+            {
+                'references': [
+                    {
+                        'columns': {'constant_value': ['column']},
+                        'table_id': {'references': ['snowflake_table.table.id', 'snowflake_table.table']}
+                    }
+                ]
+            }
+        ]
+        self.assertEqual(TerraformParser._seek_references(expression),
+                         [{'references': ['snowflake_table.table.id', 'snowflake_table.table']}])
+
+    def test_seek_references_keeps_plain_references(self):
+        expression = {'references': ['aws_kms_key.key.arn', 'aws_kms_key.key']}
+        self.assertEqual(TerraformParser._seek_references(expression), [expression])
+
+    @patch.object(TerraformParser, '_read_file', return_value={})
+    def test_mount_references_with_provider_block_named_references(self, *args):
+        obj = TerraformParser('somefile', parse_it=False)
+        obj.resources = {
+            'snowflake_table.table': {'address': 'snowflake_table.table', 'type': 'snowflake_table',
+                                      'name': 'table', 'values': {'name': 'parent'}},
+            'snowflake_table_constraint.fk': {'address': 'snowflake_table_constraint.fk',
+                                              'type': 'snowflake_table_constraint', 'name': 'fk',
+                                              'values': {'foreign_key_properties': [{'references': [{}]}]}},
+        }
+        obj.configuration = {
+            'resources': {
+                'snowflake_table.table': {'address': 'snowflake_table.table', 'type': 'snowflake_table',
+                                          'name': 'table', 'expressions': {'name': {'constant_value': 'parent'}}},
+                'snowflake_table_constraint.fk': {
+                    'address': 'snowflake_table_constraint.fk', 'type': 'snowflake_table_constraint', 'name': 'fk',
+                    'expressions': {
+                        'foreign_key_properties': [{
+                            'references': [{
+                                'table_id': {'references': ['snowflake_table.table.id', 'snowflake_table.table']}
+                            }]
+                        }]
+                    }
+                }
+            }
+        }
+        obj._mount_references()
+        self.assertEqual(obj.resources['snowflake_table_constraint.fk']['values']['snowflake_table'][0]['name'],
+                         'parent')
+
     @patch.object(TerraformParser, '_read_file', return_value={})
     def test_parse_configurations_providers(self, *args):
         obj = TerraformParser('somefile', parse_it=False)
